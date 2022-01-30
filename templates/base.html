@@ -16,9 +16,12 @@
 <html class="ie11" lang="ru">
 <![endif]-->
 <!--[if gt IE 11]><!--> <html lang="ru"> <!--<![endif]-->
+
 <head>
-    {% block title %}
-    {% endblock %}
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
     <meta name="description" content="Описание страницы">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
@@ -34,16 +37,29 @@
     <link rel="stylesheet" href="{% static 'assets/css/extra.css' %}">
     <script src="{% static 'assets/plg/CountDown/countdown.js' %}"></script><!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    {% block top_scripts %}
+    {% endblock %}
 </head>
 
 <body class="Site">
-    {% block header %}
-    {% endblock %}
+
+    <header class="Header">
+        {% block header %}
+        {% endblock %}
+        {% block banner %}
+        {% endblock %}
+    </header>
+
     {% block main %}
     {% endblock %}
-    {% block footer %}
-    {% endblock %}
+
+    <footer class="Footer">
+        {% block footer %}
+        {% endblock %}
+    </footer>
+
     {% block scripts %}
     {% endblock %}
+
 </body>
 </html>
