@@ -1,9 +1,11 @@
 from django.contrib import admin
-from profiles_app.models import Customer
+from django.contrib.auth import get_user_model
 
 
-@admin.register(Customer)
+User = get_user_model()
+
+
+@admin.register(User)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'phone', 'city',)
-    list_filter = ('name', 'city',)
-    search_fields = ('name', 'phone', 'city',)
+    list_display = ('id', 'first_name', 'email', 'phone', 'city',)
+    list_filter = ('first_name', 'city',)

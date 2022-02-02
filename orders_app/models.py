@@ -1,13 +1,15 @@
+from django.contrib.auth import get_user_model
 from django.db import models
-from profiles_app.models import Customer
 from stores_app.models import SellerProduct
 
+
+User = get_user_model()
 
 class Order(models.Model):
     """
     Модель заказа
     """
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, related_name='orders')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='orders')
     delivery = models.CharField(max_length=25, null=True)
     city = models.CharField(max_length=25, null=True)
     address = models.TextField(max_length=255, null=True)
