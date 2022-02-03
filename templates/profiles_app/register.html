@@ -1,10 +1,80 @@
 {% extends 'base.html ' %}
 
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
 {% block main %}
-<h2>Регистрация</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">reg</button>
-    </form>
+<div class="Middle-top">
+    <div class="wrap">
+        <div class="Middle-header">
+            <h1 class="Middle-title">Регистрация нового пользователя</h1>
+            <ul class="breadcrumbs Middle-breadcrumbs">
+                <li class="breadcrumbs-item"><a href="index.html">home</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>Регистрация</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="Section Section_column">
+    <div class="wrap">
+        <div class="Section-content">
+            <div class="Profile">
+                <form class="form Profile-form" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="row-block">
+                            <div class="form-group">
+                                <label class="form-label" for="avatar">Аватар</label>
+                                <div class="Profile-avatar Profile-avatar_noimg">
+                                    <div class="Profile-img"><img src="assets/img/#.png" alt="#.png"></div>
+                                    <label class="Profile-fileLabel" for="avatar">Выберите аватар</label>
+                                    <input class="Profile-file form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar">
+                                </div>
+                            </div>
+                            <div class="name-block" style="display: flex; justify-content: space-between">
+                                <div class="form-group" style="width: 47%; margin-top: 28px;">
+                                    <label class="form-label" for="firstname">Имя</label>
+                                    <input class="form-input" id="firstname" name="first_name" type="text" placeholder="Ваше Имя">
+                                </div>
+                                <div class="form-group" style="width: 47%; margin-top: 28px;">
+                                    <label class="form-label" for="lastname">Фамилия</label>
+                                    <input class="form-input" id="lastname" name="last_name" type="text" placeholder="Ваша Фамилия">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-block">
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email</label>
+                                <input class="form-input" id="email" name="email" autofocus type="email" required placeholder="Ваш E-mail">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="password">Пароль</label>
+                                <input class="form-input" id="password" name="password1" type="password" required placeholder="Пароль">
+                                <span class="helptext"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="passwordReply">Подтверждение пароля</label>
+                                <input class="form-input" id="passwordReply" name="password2" type="password" required placeholder="Повторите пароль">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Телефон</label>
+                                <input class="form-input" id="phone" name="phone" type="text" required placeholder="Ваш телефон">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 30px">
+                        <div class="Profile-btn" style="text-align: center;">
+                            <button class="btn btn_success" type="submit">Зарегистрироваться</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
 {% endblock %}

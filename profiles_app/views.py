@@ -1,12 +1,18 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ImproperlyConfigured
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views import View
 from django.views.generic import CreateView
-from profiles_app.forms import RegisterForm
+from profiles_app.forms import RegisterForm, RestorePasswordForm
+from profiles_app.services import get_user_and_change_password
+from django.utils.translation import gettext_lazy as _
 
 
 class UserLogin(LoginView):
     """
-    Logout пользователей
+    Login пользователей
     """
     template_name = 'profiles_app/login.html'
     success_url = '/'
@@ -21,7 +27,7 @@ class UserLogout(LogoutView):
     """
     Logout пользователей
     """
-    template_name = 'app_users/logout.html'
+    template_name = 'profiles_app/logout.html'
     next_page = '/users/login'
 
 
@@ -34,3 +40,26 @@ class RegisterView(CreateView):
     success_url = '/'
 
 
+class RestorePasswordView(View):
+    """
+    Страница восстановления пароля
+    """
+
+    def get(self, request):
+        form = RestorePasswordForm()
+        return render(request, 'profiles_app/restore_password.html', context={'form': form})
+
+    def post(self, request):
+        form = RestorePasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = get_user_and_change_password(email=email)
+            if user:
+                send_mail(subject='Restore Password',
+                          message='Test',
+                          from_email='admin@example.com',
+                          recipient_list=[email])
+                return HttpResponse(_('Mail with new password was sent on your email'))
+            else:
+                return HttpResponse(_('The user with this email is not registered'))
+        return render(request, 'profiles_app/restore_password.html', context={'form': form})

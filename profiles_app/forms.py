@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.core.validators import RegexValidator
-from django.utils.translation import gettext_lazy as _
+from django import forms
 
 
 User = get_user_model()
@@ -16,3 +15,7 @@ class RegisterForm(UserCreationForm):
             'first_name', 'last_name', 'phone',
             'address', 'city', 'avatar',
         ]
+
+
+class RestorePasswordForm(forms.Form):
+    email = forms.EmailField(max_length=50, label="E-mail:")
