@@ -1,0 +1,65 @@
+{% load static %}
+<!--END-->
+<!--END--><!DOCTYPE html><!--[if IE 7]>
+<html class="ie7" lang="ru">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie8" lang="ru">
+<![endif]-->
+<!--[if IE 9]>
+<html class="ie9" lang="ru">
+<![endif]-->
+<!--[if IE 10]>
+<html class="ie10" lang="ru">
+<![endif]-->
+<!--[if IE 11]>
+<html class="ie11" lang="ru">
+<![endif]-->
+<!--[if gt IE 11]><!--> <html lang="ru"> <!--<![endif]-->
+
+<head>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <meta name="description" content="Описание страницы">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="{% static 'assets/img/icons/favicon.ico' %}" rel="shortcut icon">
+    <link rel="preload" href="{% static 'assets/fonts/Roboto/Roboto-Regular.woff' %}" as="font">
+    <link rel="preload" href="{% static 'assets/fonts/Roboto/Roboto-Italic.woff' %}" as="font">
+    <link rel="preload" href="{% static 'assets/fonts/Roboto/Roboto-Bold.woff' %}" as="font">
+    <link rel="preload" href="{% static 'assets/fonts/Roboto/Roboto-Bold_Italic.woff' %}" as="font">
+    <link rel="preload" href="{% static 'assets/fonts/Roboto/Roboto-Light.woff' %}" as="font">
+    <link rel="preload" href="{% static 'assets/fonts/Roboto/Roboto-Light_Italic.woff' %}" as="font">
+    <link rel="stylesheet" href="{% static 'assets/css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/basic.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/extra.css' %}">
+    <script src="{% static 'assets/plg/CountDown/countdown.js' %}"></script><!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    {% block top_scripts %}
+    {% endblock %}
+</head>
+
+<body class="Site">
+
+    <header class="Header">
+        {% block header %}
+        {% endblock %}
+        {% block banner %}
+        {% endblock %}
+    </header>
+
+    {% block main %}
+    {% endblock %}
+
+    <footer class="Footer">
+        {% block footer %}
+        {% endblock %}
+    </footer>
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+</html>
