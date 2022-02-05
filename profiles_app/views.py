@@ -1,12 +1,13 @@
+from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView
 from profiles_app.forms import RegisterForm, RestorePasswordForm
-from profiles_app.services import get_user_and_change_password
+from profiles_app.services import get_user_and_change_password, get_auth_user
 from django.utils.translation import gettext_lazy as _
 
 
@@ -31,13 +32,23 @@ class UserLogout(LogoutView):
     next_page = '/users/login'
 
 
-class RegisterView(CreateView):
+class RegisterView(View):
     """
     Страница регистрации нового пользователя
     """
-    form_class = RegisterForm
-    template_name = 'profiles_app/register.html'
-    success_url = '/'
+
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, 'profiles_app/register.html', context={'form': form})
+
+    def post(self, request):
+        form = RegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            login(request, get_auth_user(form))
+            return redirect('/')
+        form = RegisterForm()
+        return render(request, 'profiles_app/register.html', context={'form': form})
 
 
 class RestorePasswordView(View):

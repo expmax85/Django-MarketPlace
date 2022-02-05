@@ -1,4 +1,5 @@
 {% extends 'base.html ' %}
+{% load i18n %}
 
 {% block header %}
 {% include 'elems/header.html' %}
@@ -8,10 +9,10 @@
 <div class="Middle-top">
     <div class="wrap">
         <div class="Middle-header">
-            <h1 class="Middle-title">Вход на сайт</h1>
+            <h1 class="Middle-title">{% trans 'Login'  %}</h1>
             <ul class="breadcrumbs Middle-breadcrumbs">
-                <li class="breadcrumbs-item"><a href="index.html">home</a></li>
-                <li class="breadcrumbs-item breadcrumbs-item_current"><span>Войти</span></li>
+                <li class="breadcrumbs-item"><a href="index.html">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign in' %}</span></li>
             </ul>
         </div>
     </div>
@@ -19,22 +20,22 @@
 <div class="Section Section_column">
     <div class="wrap">
         <div class="Section-content">
-            <div class="Profile" style="display: flex; justify-content: center;">
-                <form class="form Profile-form" method="post" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="Profile">
+                <form class="form Profile-form custom_login-form" method="post">
                     {% csrf_token %}
-                    <div class="form-group" style="width: 50%;">
+                    <div class="form-group custom_login_form-group">
                         <label class="form-label" for="email">Email</label>
-                        <input class="form-input" id="email" name="username" autofocus type="email" required placeholder="Ваш E-mail">
+                        <input class="form-input" id="email" name="username" autofocus type="email" required placeholder="{% trans 'Your E-mail' %}">
                     </div>
-                    <div class="form-group" style="width: 50%;">
-                        <label class="form-label" for="password">Пароль</label>
-                        <input class="form-input" id="password" name="password" type="password" required placeholder="Пароль">
-                        <span class="helptext"></span>
+                    <div class="form-group custom_login_form-group">
+                        <label class="form-label" for="password">{% trans 'Password' %}</label>
+                        <input class="form-input" id="password" name="password" type="password" required placeholder="{% trans 'Password' %}">
+                        <span class="helptext"><a href="{% url 'restore_password' %}">{% trans 'Forgot the password?' %}</a></span>
                     </div>
-                    <div class="form-group" style="margin-top: 30px; ">
-                        <div class="Profile-btn" style="text-align: center; display: flex;">
-                            <button class="btn btn_success" type="submit" style="margin-right: 50px;">Войти</button>
-                            <a href="{% url 'register' %}" class="btn btn_success" type="submit">Регистрация</a>
+                    <div class="form-group custom_login_form-group-btns">
+                        <div class="Profile-btn custom_align-center">
+                            <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Sign in' %}</button>
+                            <a href="{% url 'register' %}" class="btn btn_success custom_margin-bottom" type="submit">{% trans 'Register' %}</a>
                         </div>
                     </div>
                 </form>

@@ -1,0 +1,73 @@
+/* custom styles for all */
+.custom_align-center {
+    text-align: center;
+}
+
+.helptext {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.require-field input {
+    border: 1px solid #0063d1 !important;
+}
+
+.require-field label {
+    color: #0063d1;
+}
+
+.helpspan {
+    margin-top:20px;
+    margin-left: 20px;
+}
+
+/* login.html */
+/* restore_password.html */
+.custom_login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.custom_login_form-group {
+    width: 50%;
+}
+
+.custom_login_form-group-btns {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.custom_login_btn-success {
+    margin-right: 50px;
+}
+
+.custom_margin-bottom {
+    margin-bottom: 300px;
+}
+
+/* register.html */
+
+.custom_register_name-block {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.custom_register_form-group {
+    width: 47%;
+    margin-top: 26.3px;
+}
+
+.custom_register_form-btns {
+    margin-top: 70px;
+}
+
+.custom_register_city-field {
+    width: 23%;
+}
+
+.custom_register_address-field {
+    width: 74%;
+    min-width: 400px;
+}

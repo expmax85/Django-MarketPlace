@@ -1,4 +1,5 @@
 {% extends 'base.html ' %}
+{% load i18n %}
 
 {% block header %}
 {% include 'elems/header.html' %}
@@ -8,10 +9,10 @@
 <div class="Middle-top">
     <div class="wrap">
         <div class="Middle-header">
-            <h1 class="Middle-title">Регистрация нового пользователя</h1>
+            <h1 class="Middle-title">{% trans 'Registration new user' %}</h1>
             <ul class="breadcrumbs Middle-breadcrumbs">
-                <li class="breadcrumbs-item"><a href="index.html">home</a></li>
-                <li class="breadcrumbs-item breadcrumbs-item_current"><span>Регистрация</span></li>
+                <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign Up' %}</span></li>
             </ul>
         </div>
     </div>
@@ -20,52 +21,63 @@
     <div class="wrap">
         <div class="Section-content">
             <div class="Profile">
-                <form class="form Profile-form" method="post">
+                <form class="form Profile-form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row">
                         <div class="row-block">
                             <div class="form-group">
-                                <label class="form-label" for="avatar">Аватар</label>
+                                <label class="form-label" for="avatar">{% trans 'Avatar' %}</label>
                                 <div class="Profile-avatar Profile-avatar_noimg">
                                     <div class="Profile-img"><img src="assets/img/#.png" alt="#.png"></div>
-                                    <label class="Profile-fileLabel" for="avatar">Выберите аватар</label>
+                                    <label class="Profile-fileLabel" for="avatar">{% trans 'Choose the picture' %}</label>
                                     <input class="Profile-file form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar">
                                 </div>
                             </div>
-                            <div class="name-block" style="display: flex; justify-content: space-between">
-                                <div class="form-group" style="width: 47%; margin-top: 28px;">
-                                    <label class="form-label" for="firstname">Имя</label>
-                                    <input class="form-input" id="firstname" name="first_name" type="text" placeholder="Ваше Имя">
+                            <div class="name-block custom_register_name-block">
+                                <div class="form-group custom_register_form-group require-field">
+                                    <label class="form-label" for="firstname">{% trans 'First name*' %}</label>
+                                    <input class="form-input" id="firstname" name="first_name" type="text" placeholder="{% trans 'Your first name' %}">
                                 </div>
-                                <div class="form-group" style="width: 47%; margin-top: 28px;">
-                                    <label class="form-label" for="lastname">Фамилия</label>
-                                    <input class="form-input" id="lastname" name="last_name" type="text" placeholder="Ваша Фамилия">
+                                <div class="custom_register_form-group require-field">
+                                    <label class="form-label" for="lastname">{% trans 'Last name*' %}</label>
+                                    <input class="form-input" id="lastname" name="last_name" type="text" placeholder="{% trans 'Your last name' %}">
                                 </div>
                             </div>
                         </div>
                         <div class="row-block">
-                            <div class="form-group">
-                                <label class="form-label" for="email">Email</label>
-                                <input class="form-input" id="email" name="email" autofocus type="email" required placeholder="Ваш E-mail">
+                            <div class="form-group require-field">
+                                <label class="form-label" for="email">Email*</label>
+                                <input class="form-input" id="email" name="email" autofocus type="email" required placeholder="{% trans 'Your E-mail' %}">
                             </div>
-                            <div class="form-group">
-                                <label class="form-label" for="password">Пароль</label>
-                                <input class="form-input" id="password" name="password1" type="password" required placeholder="Пароль">
+                            <div class="form-group require-field">
+                                <label class="form-label" for="password">{% trans 'Password*' %}</label>
+                                <input class="form-input" id="password" name="password1" type="password" required placeholder="{% trans 'Password' %}">
                                 <span class="helptext"></span>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label" for="passwordReply">Подтверждение пароля</label>
-                                <input class="form-input" id="passwordReply" name="password2" type="password" required placeholder="Повторите пароль">
+                            <div class="form-group require-field">
+                                <label class="form-label" for="passwordReply">{% trans 'Repeat password*' %}</label>
+                                <input class="form-input" id="passwordReply" name="password2" type="password" required placeholder="{% trans 'Repeat password' %}">
                             </div>
-                            <div class="form-group">
-                                <label class="form-label" for="phone">Телефон</label>
-                                <input class="form-input" id="phone" name="phone" type="text" required placeholder="Ваш телефон">
+                            <div class="form-group require-field">
+                                <label class="form-label" for="phone">{% trans 'Phone number*' %}</label>
+                                <input class="form-input" id="phone" name="phone" type="text" required placeholder="{% trans 'Your phone number' %}">
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" style="margin-top: 30px">
-                        <div class="Profile-btn" style="text-align: center;">
-                            <button class="btn btn_success" type="submit">Зарегистрироваться</button>
+                    <div class="row-block custom_register_name-block">
+                        <div class="form-group custom_register_city-field">
+                            <label class="form-label" for="city">City</label>
+                            <input class="form-input" id="city" name="city" autofocus type="text" placeholder="{% trans 'Your city' %}">
+                        </div>
+                        <div class="custom_register_address-field">
+                            <label class="form-label" for="address">{% trans 'Address' %}</label>
+                            <input class="form-input" id="address" name="address" type="text" placeholder="{% trans 'Your address' %}">
+                            <span class="helptext"></span>
+                        </div>
+                    </div>
+                    <div class="form-group custom_register_form-btns">
+                        <div class="Profile-btn custom_align-center">
+                            <button class="btn btn_success custom_margin-bottom" type="submit">{% trans 'Accept and Register' %}</button>
                         </div>
                     </div>
                 </form>
