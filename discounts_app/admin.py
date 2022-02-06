@@ -15,4 +15,4 @@ class DiscountAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'percent', 'amount', 'valid_from', 'valid_to')
     list_filter = ('name', 'category', 'percent', 'amount', 'valid_from', 'valid_to')
     search_fields = ('name', 'category', 'percent', 'amount', 'valid_from', 'valid_to')
-    prepopulated_fields = {'slug': ('name', 'category', 'valid_from', 'valid_to')}
+    prepopulated_fields = {'slug': ('name', 'category')}

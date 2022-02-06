@@ -1,3 +1,8 @@
 from django.shortcuts import render
+from banners_app.services import banner
 
-# Create your views here.
+
+def index(request):
+    banners = banner(request)
+
+    return render(request, 'index.html', {'banners': banners})
