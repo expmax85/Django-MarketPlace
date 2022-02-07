@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import F, Sum
-from profiles_app.models import Customer
+from profiles_app.models import User
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 
@@ -9,7 +9,7 @@ class Order(models.Model):
     """
     Модель заказа
     """
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, related_name='orders')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='orders')
     delivery = models.CharField(max_length=25, null=True)
     city = models.CharField(max_length=25, null=True)
     address = models.TextField(max_length=255, null=True)
