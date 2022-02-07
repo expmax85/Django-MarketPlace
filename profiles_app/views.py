@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import CreateView
 from profiles_app.forms import RegisterForm, RestorePasswordForm
 from profiles_app.services import get_user_and_change_password, get_auth_user
 from django.utils.translation import gettext_lazy as _
@@ -47,7 +46,6 @@ class RegisterView(View):
             form.save()
             login(request, get_auth_user(form))
             return redirect('/')
-        form = RegisterForm()
         return render(request, 'profiles_app/register.html', context={'form': form})
 
 
