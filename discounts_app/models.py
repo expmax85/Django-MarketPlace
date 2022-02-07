@@ -12,6 +12,9 @@ class DiscountCategory(models.Model):
     class Meta:
         verbose_name_plural = 'discount categories'
 
+    def __str__(self):
+        return self.name
+
 
 class Discount(models.Model):
     """
@@ -21,7 +24,10 @@ class Discount(models.Model):
     name = models.CharField(max_length=25, null=True)
     slug = models.SlugField(null=True)
     description = models.TextField(max_length=255, null=True)
-    percent = models.FloatField(null=True)
-    amount = models.FloatField(null=True)
+    percent = models.FloatField(null=True, blank=True)
+    amount = models.FloatField(null=True, blank=True)
     valid_from = models.DateTimeField(null=True)
     valid_to = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return self.name

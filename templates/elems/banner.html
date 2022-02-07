@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<div class="Header-slider">
+    <div class="Slider Slider_main">
+        <div class="Slider-box">
+            {% for banner in banners %}
+                <div class="Slider-item">
+                    <div class="Slider-content">
+                        <div class="row">
+                            <div class="row-block">
+                                <strong class="Slider-title">{{ banner.title }}
+                                </strong>
+                                <div class="Slider-text">{{ banner.description }}</div>
+                                <div class="Slider-footer"><a class="btn btn_primary" href="#">Get Started</a>
+                                </div>
+                            </div>
+                            <div class="row-block">
+                                <div class="Slider-img"><img src="{{ banner.image }}" alt="slider.png"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="Slider-navigateWrap">
+          <div class="Slider-navigate">
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

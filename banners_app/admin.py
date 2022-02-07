@@ -4,6 +4,6 @@ from banners_app.models import Banner
 
 @admin.register(Banner)
 class Banner(admin.ModelAdmin):
-    list_display = ('title', )
+    list_display = ('id', 'title', 'discount')
     list_filter = ('title',)
-    search_fields = ('title',)
+    search_fields = ('title', 'discount')
