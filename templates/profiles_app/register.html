@@ -23,6 +23,7 @@
             <div class="Profile">
                 <form class="form Profile-form" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+                    {{ form.non_field_errors }}
                     <div class="row">
                         <div class="row-block">
                             <div class="form-group">
@@ -35,54 +36,63 @@
                             </div>
                             <div class="name-block custom_register_name-block">
                                 <div class="form-group custom_register_form-group">
-                                    <label class="form-label" for="id_first_name">{% trans 'First name' %}</label>
-                                    <input class="form-input" id="id_first_name" name="first_name" type="text" placeholder="{% trans 'Your first name' %}">
+                                    <label class="form-label" for="{{ form.first_name.id_for_label}}">{% trans 'First name' %}</label>
+                                    {{form.first_name}}
+                                    <span class="formerror">{{form.errors.first_name}}</span>
                                 </div>
                                 <div class="custom_register_form-group">
-                                    <label class="form-label" for="id_lastname">{% trans 'Last name' %}</label>
-                                    <input class="form-input" id="id_lastname" name="last_name" type="text" placeholder="{% trans 'Your last name' %}">
+                                    <label class="form-label" for="{{ form.last_name.id_for_label}}">{% trans 'Last name' %}</label>
+                                    {{form.last_name}}
+                                    <span class="formerror">{{form.errors.last_name}}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="row-block">
                             <div class="form-group require-field">
-                                <label class="form-label" for="id_email">Email*</label>
-                                <input class="form-input" id="id_email" name="email" autofocus autocomplete="username" type="email" required placeholder="{% trans 'Your E-mail' %}">
+                                <label class="form-label" for="{{form.email.id_for_label}}">Email*</label>
+                                {{ form.email }}
                                 <span class="formerror">{{form.errors.email}}</span>
                             </div>
                             <div class="form-group require-field">
                                 <label class="form-label" for="password">{% trans 'Password*' %}</label>
-                                <input class="form-input" id="password" name="password1" type="password" required placeholder="{% trans 'Password' %}">
+                                <input class="form-input" id="password" name="password1" type="password" required>
                             </div>
                             <div class="form-group require-field">
                                 <label class="form-label" for="passwordReply">{% trans 'Repeat password*' %}</label>
-                                <input class="form-input" id="passwordReply" name="password2" type="password" required placeholder="{% trans 'Repeat password' %}">
+                                <input class="form-input" id="passwordReply" name="password2" type="password" required>
                                 <span class="formerror">{{form.errors.password2}}</span>
                             </div>
                             <div class="form-group require-field">
-                                <label class="form-label" for="id_phone">{% trans 'Phone number*' %}</label>
-                                <input class="form-input" id="id_phone" name="phone" type="text" required placeholder="{% trans 'Your phone number' %}">
+                                <label class="form-label" for="{{ form.phone.id_for_label }}">{% trans 'Phone number*' %}</label>
+                                {{ form.phone }}
                                 <span class="formerror">{{form.errors.phone}}</span>
                             </div>
                         </div>
                     </div>
                     <div class="row-block custom_register_name-block">
                         <div class="form-group custom_register_city-field">
-                            <label class="form-label" for="id_city">City</label>
-                            <input class="form-input" id="id_city" name="city" type="text" placeholder="{% trans 'Your city' %}">
+                            <label class="form-label" for="{{ form.city.id_for_label }}">{% trans 'City' %}</label>
+                            {{ form.city }}
+                            <span class="formerror">{{form.errors.city}}</span>
                         </div>
                         <div class="custom_register_address-field">
-                            <label class="form-label" for="id_address">{% trans 'Address' %}</label>
-                            <input class="form-input" id="id_address" name="address" type="text" placeholder="{% trans 'Your address' %}">
-                            <span class="helptext"></span>
+                            <label class="form-label" for="{{ form.address.id_for_label }}">{% trans 'Address' %}</label>
+                            {{ form.address }}
+                            <span class="formerror">{{form.errors.address}}</span>
                         </div>
                     </div>
                     <div class="form-group custom_register_form-btns">
                         <div class="Profile-btn custom_align-center">
-                            <button class="btn btn_success custom_margin-bottom" type="submit">{% trans 'Accept and Register' %}</button>
+                            <button class="btn btn_success" type="submit">{% trans 'Accept and Register' %}</button>
                         </div>
                     </div>
                 </form>
+
+                <div class="block-social-btn custom_register_form-btns">
+                      <ul class="socialaccount_providers custom_margin-bottom ">
+                        {% include "profiles_app/provider_list.html" with process="login" %}
+                      </ul>
+                </div>
             </div>
         </div>
     </div>

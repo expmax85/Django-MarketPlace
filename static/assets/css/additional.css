@@ -121,3 +121,14 @@
 .formerror {
     color: red;
     }
+
+.form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 25px;
+    border-radius: 0px;
+    border: 1px solid #e0e0e0;
+    font-size: 18px;
+    background-color: #f9fafc;
+    line-height: 46px;
+}

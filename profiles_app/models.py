@@ -35,8 +35,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name=_('email'), unique=True)
     username = models.CharField(verbose_name=_('username'), max_length=40, blank=True, null=True)
-    first_name = models.CharField(verbose_name=_('name'), max_length=30)
-    last_name = models.CharField(verbose_name=_('surname'), max_length=30)
+    first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True, null=True)
+    last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True, null=True)
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
                                                    str(_('Up to 15 digits allowed.'))]))
@@ -58,12 +58,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        if self.first_name:
-            return self.first_name + ' ' + self.last_name
+        if self.username:
+            return self.username
         else:
             return self.email
 
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
-
