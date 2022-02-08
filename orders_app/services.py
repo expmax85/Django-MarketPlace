@@ -1,7 +1,6 @@
 from django.http import HttpRequest
 
-#from orders_app.models import Cart, CartProduct
-#TODO модель корзины, модель просмотренных/товаров для сравнения
+from orders_app.models import Order, OrderProduct
 from goods_app.models import Product
 from stores_app.models import SellerProduct
 
@@ -63,12 +62,10 @@ class CartService:
 
 class ViewedGoodsService:
     """
-    Сервис добавления в список просмотренных товаров/ список товаров для сравнения?
+    Сервис просмотренных товаров
 
     add_to_list: добавляет товар в список сравнения
-    remove_from_list: убирает товар из списка
-    get_list: отдает список товаров для сравнения
-    get_quantity: отдает количество товаров в списке для сравнения
+    add_to_cart: добавляет товар в корзину
     """
 
     @classmethod
@@ -78,23 +75,7 @@ class ViewedGoodsService:
         pass
 
     @classmethod
-    def remove_from_list(cls, request: HttpRequest) -> None:
-        """убрать товар из списка"""
-
-        pass
-
-    @classmethod
-    def get_list(cls, request: HttpRequest, quantity: int = 3):
-        """
-        получить список товаров, добавленных к сравнению
-
-        quantity: ограничение на количество
-        """
-
-        pass
-
-    @classmethod
-    def get_quantity(cls, request: HttpRequest) -> int:
-        """ получить количество товаров в списке для сравнения """
+    def add_to_cart(cls, request: HttpRequest, product: Product) -> None:
+        """добавить товар в корзину"""
 
         pass
