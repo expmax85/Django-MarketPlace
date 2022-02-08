@@ -34,13 +34,13 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name=_('email'), unique=True)
-    first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True)
-    last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True)
+    username = models.CharField(verbose_name=_('username'), max_length=40, blank=True, null=True)
+    first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True, null=True)
+    last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True, null=True)
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
                                                    str(_('Up to 15 digits allowed.'))]))
-    phone = models.CharField(verbose_name=_('phone number'), max_length=16, validators=[phone_valid],
-                             null=True, blank=True)
+    phone = models.CharField(verbose_name=_('phone number'), max_length=17, validators=[phone_valid])
     date_joined = models.DateTimeField(verbose_name=_('registered'), auto_now_add=True)
     is_staff = models.BooleanField(verbose_name=_('is_staff'), default=False)
     is_active = models.BooleanField(verbose_name=_('is_active'), default=True)
@@ -58,12 +58,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        if self.first_name:
-            return self.first_name + ' ' + self.last_name
+        if self.username:
+            return self.username
         else:
             return self.email
 
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
-

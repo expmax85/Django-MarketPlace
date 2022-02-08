@@ -17,7 +17,7 @@
 }
 
 .helpspan {
-    margin-top:20px;
+    margin-top: 20px;
     margin-left: 20px;
 }
 
@@ -70,4 +70,65 @@
 .custom_register_address-field {
     width: 74%;
     min-width: 400px;
+}
+
+.block-social-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.social-btn {
+    display: block;
+    text-align: center;
+    width: 360px;
+    color: #71747a;
+    padding: 20px 0;
+    border-radius: 100px;
+    border: 1px solid #71747a;
+    transition: border-color 0.4s ease;
+    transition: color 0.4s ease;
+}
+
+.social-btn:hover {
+    border-color: #0063d1;
+    color: #0063d1;
+}
+
+.provider-item {
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
+.socialwrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+    margin-bottom: 300px;
+}
+
+.social-row-block {
+    padding: 50px 100px;
+    text-align: center;
+    max-width: 1000px;
+    border: 1px solid grey;
+}
+
+.social-accept-text {
+    font-size: 20px;
+    margin-bottom: 80px;
+}
+
+.formerror {
+    color: red;
+    }
+
+.form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 25px;
+    border-radius: 0px;
+    border: 1px solid #e0e0e0;
+    font-size: 18px;
+    background-color: #f9fafc;
+    line-height: 46px;
 }

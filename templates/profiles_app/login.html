@@ -1,5 +1,6 @@
 {% extends 'base.html ' %}
 {% load i18n %}
+{% load account socialaccount %}
 
 {% block header %}
 {% include 'elems/header.html' %}
@@ -10,6 +11,7 @@
     <div class="wrap">
         <div class="Middle-header">
             <h1 class="Middle-title">{% trans 'Login'  %}</h1>
+            {% get_providers as socialaccount_providers %}
             <ul class="breadcrumbs Middle-breadcrumbs">
                 <li class="breadcrumbs-item"><a href="index.html">{% trans 'home' %}</a></li>
                 <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign in' %}</span></li>
@@ -35,10 +37,16 @@
                     <div class="form-group custom_login_form-group-btns">
                         <div class="Profile-btn custom_align-center">
                             <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Sign in' %}</button>
-                            <a href="{% url 'register' %}" class="btn btn_success custom_margin-bottom" type="submit">{% trans 'Register' %}</a>
+                            <a href="{% url 'register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
                         </div>
                     </div>
                 </form>
+                <div class="block-social-btn custom_register_form-btns">
+
+                  <ul class="socialaccount_providers custom_margin-bottom ">
+                    {% include "profiles_app/provider_list.html" with process="login" %}
+                  </ul>
+                </div>
             </div>
         </div>
     </div>

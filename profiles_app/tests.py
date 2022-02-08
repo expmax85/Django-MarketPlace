@@ -27,6 +27,36 @@ class RestoredPasswordTestCase(TestCase):
         form = RegisterForm(form_params)
         self.assertFalse(form.is_valid())
 
+    def test_success_register(self):
+        """Проверка успешности регистрации, при верно введенных данных"""
+        response = self.client.post(
+            reverse("register"),
+            data={
+                "email": "john@example.com",
+                "password1": "johndoe12",
+                "password2": "johndoe12",
+                "phone": "+9999999999"
+            }, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        users = get_user_model().objects.all()
+        self.assertEqual(users.count(), 2)
+
+    def test_unsuccess_register(self):
+        """Проверка неуспешности регистрации, при неверно введенных данных"""
+        response = self.client.post(
+            reverse("register"),
+            data={
+                "email": "john@example.com",
+                "password1": "johndoe12",
+                "password2": "johndoe12",
+                "phone": "sadasd"
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        users = get_user_model().objects.all()
+        self.assertNotEqual(users.count(), 2)
+
     def test_login_user(self):
         """Проверка работы аутентификации"""
         response = self.client.post('/users/login/', {'email': self.user.email,
