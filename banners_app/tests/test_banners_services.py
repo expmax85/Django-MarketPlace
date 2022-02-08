@@ -28,8 +28,11 @@ class BannersTest(TestCase):
             )
 
     def test_main_page_exists(self):
+        """
+        Тест выдачи 3 рандомных баннеров на главной странице
+        """
         response = self.client.get('')
-        banners = banner(response)
+        banners = banner()
 
         self.assertEqual(response.status_code, 200)
 

@@ -11,9 +11,11 @@
 {% endblock %}
 
 {% block main %}
+    {% cache 300 banners_block %}
     {% block banners_block %}
         {% include 'elems/banner.html' %}
     {% endblock %}
+    {% endcache %}
 <div class="Middle">
   <div class="Section">
     <div class="wrap">
