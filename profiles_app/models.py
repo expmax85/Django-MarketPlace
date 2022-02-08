@@ -67,3 +67,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
+
+class ViewedProduct(models.Model):
+    """ Модель просмотренного товара """
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='viewed')
+    product = models.ForeignKey('goods_app.Product', on_delete=models.CASCADE, related_name='viewed_list')
+    shop = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
+    date = models.DateTimeField(auto_now=True)
+
