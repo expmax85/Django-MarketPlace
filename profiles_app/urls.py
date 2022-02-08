@@ -1,11 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from profiles_app.views import *
-# from allauth.account.views import
 
 
 urlpatterns = [
-    path('login/', UserLogin.as_view(), name='login'),
-    path('logout/', UserLogout.as_view(), name='logout'),
-    path('register/', RegisterView.as_view(), name='register'),
-    path('restore_password/', RestorePasswordView.as_view(), name='restore_password'),
+    path('accounts/', include('allauth.urls')),
+    path('users/login/', UserLogin.as_view(), name='login'),
+    path('users/logout/', UserLogout.as_view(), name='logout'),
+    path('users/register/', RegisterView.as_view(), name='register'),
+    path('users/restore_password/', RestorePasswordView.as_view(), name='restore_password'),
 ]
