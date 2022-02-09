@@ -78,7 +78,7 @@ class RestoredPasswordTestCase(TestCase):
         """Проверка шаблона восстановления пароля"""
         response = self.client.get(reverse('restore_password'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profiles_app/restore_password.html')
+        self.assertTemplateUsed(response, 'account/password_reset.html')
 
     def test_post_restore_password(self):
         """Отпрака письма с новым паролем"""

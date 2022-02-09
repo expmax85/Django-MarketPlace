@@ -34,6 +34,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name=_('email'), unique=True)
+    username = models.CharField(verbose_name=_('username'), max_length=30, blank=True, null=True)
     first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True)
     last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True)
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',

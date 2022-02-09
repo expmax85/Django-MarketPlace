@@ -4,10 +4,24 @@
   "pk": 1,
   "fields": {
     "provider": "google",
-    "name": "djangoauth",
+    "name": "googleauth",
     "client_id": "266726268975-7mg1o0oalvuieqbjkoe7i1jtq6grue7q.apps.googleusercontent.com",
     "secret": "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",
     "key": "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",
+    "sites": [
+      1
+    ]
+  }
+},
+{
+  "model": "socialaccount.socialapp",
+  "pk": 2,
+  "fields": {
+    "provider": "vk",
+    "name": "vkauth",
+    "client_id": "8075594",
+    "secret": "rnaf3HzTcu9JIdI2ebrL",
+    "key": "5bf9b58c5bf9b58c5bf9b58cfe5b828cc655bf95bf9b58c39fd91e91be293f3f2075e83",
     "sites": [
       1
     ]

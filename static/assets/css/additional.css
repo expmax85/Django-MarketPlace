@@ -97,6 +97,11 @@
 .provider-item {
     background-position: left center;
     background-repeat: no-repeat;
+    margin-bottom: 15px;
+}
+
+.provider-item:last-child {
+    margin-bottom: 0;
 }
 
 .socialwrap {

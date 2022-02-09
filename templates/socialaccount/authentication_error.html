@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="wrap socialwrap">
+  <div class="row-block social-row-block">
+    <h1 class="custom_align-center">{% trans "Social Network Login Failure" %}</h1>
+
+    <p>{% trans "An error occurred while attempting to login via your social network account." %}</p>
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}

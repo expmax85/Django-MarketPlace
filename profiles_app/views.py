@@ -14,7 +14,7 @@ class UserLogin(LoginView):
     """
     Login пользователей
     """
-    template_name = 'profiles_app/login.html'
+    template_name = 'account/login.html'
     success_url = '/'
 
     def get_success_url(self) -> str:
@@ -27,7 +27,7 @@ class UserLogout(LogoutView):
     """
     Logout пользователей
     """
-    template_name = 'profiles_app/logout.html'
+    template_name = 'account/logout.html'
     next_page = '/users/login'
 
 
@@ -38,7 +38,7 @@ class RegisterView(View):
 
     def get(self, request):
         form = RegisterForm()
-        return render(request, 'profiles_app/register.html', context={'form': form})
+        return render(request, 'account/signup.html', context={'form': form})
 
     def post(self, request):
         form = RegisterForm(request.POST, request.FILES)
@@ -46,7 +46,7 @@ class RegisterView(View):
             form.save()
             login(request, get_auth_user(form))
             return redirect('/')
-        return render(request, 'profiles_app/register.html', context={'form': form})
+        return render(request, 'account/signup.html', context={'form': form})
 
 
 class RestorePasswordView(View):
@@ -56,7 +56,7 @@ class RestorePasswordView(View):
 
     def get(self, request):
         form = RestorePasswordForm()
-        return render(request, 'profiles_app/restore_password.html', context={'form': form})
+        return render(request, 'account/password_reset.html', context={'form': form})
 
     def post(self, request):
         form = RestorePasswordForm(request.POST)
@@ -68,7 +68,7 @@ class RestorePasswordView(View):
                           message='Test',
                           from_email='admin@example.com',
                           recipient_list=[email])
-                return HttpResponse(_('Mail with new password was sent on your email'))
+                return render(request, 'account/password_reset_done.html', context={'form': form})
             else:
                 return HttpResponse(_('The user with this email is not registered'))
-        return render(request, 'profiles_app/restore_password.html', context={'form': form})
+        return render(request, 'account/password_reset.html', context={'form': form})
