@@ -1,12 +1,13 @@
 {% load static %}
+{% load i18n %}
 <div class="ControlPanel">
   <div class="wrap">
     <div class="row ControlPanel-row">
       <div class="row-block">
         <div class="row ControlPanel-rowSplit">
-          <div class="row-block"><a class="ControlPanel-title" href="#">Free Delivery</a>
+          <div class="row-block"><a class="ControlPanel-title" href="#">{% trans 'Free Delivery' %}</a>
           </div>
-          <div class="row-block hide_700"><span class="ControlPanel-title">Follow Us</span>
+          <div class="row-block hide_700"><span class="ControlPanel-title">{% trans 'Follow Us' %}</span>
             <ul class="menu menu_img menu_smallImg ControlPanel-menu">
               <li class="menu-item"><a class="menu-link" href="#"><img src="{% static 'assets/img/icons/socialHeader/fb.svg' %}" alt="fb.svg"/></a>
               </li>
@@ -26,9 +27,9 @@
         <div class="row ControlPanel-rowSplit">
           <div class="row-block">
               {% if request.user.is_authenticated %}
-                <a class="ControlPanel-title" href="{% url 'account' %}">My Account</a>/ <a class="ControlPanel-title" href="{% url 'logout' %}">Logout</a>
+                <a class="ControlPanel-title" href="#">{% trans 'My Account' %}</a> / <a class="ControlPanel-title" href="{% url 'logout' %}"> {% trans 'Logout' %}</a>
               {% else %}
-                  <a class="ControlPanel-title" href="{% url 'login' %}">Login</a>/ <a class="ControlPanel-title" href="{% url 'register' %}">Register</a>
+                  <a class="ControlPanel-title" href="{% url 'login' %}">{% trans 'Login' %}</a> / <a class="ControlPanel-title" href="{% url 'register' %}">{% trans 'Register' %}</a>
               {% endif %}
           </div>
         </div>
@@ -53,31 +54,31 @@
     <nav class="row-block row-block_right Header-menu">
       <div class="menuModal" id="navigate">
         <ul class="menu menu_main">
-          <li class="menu-item"><a class="menu-link" href="/">Home</a>
+          <li class="menu-item"><a class="menu-link" href="/">{% trans 'Home' %}</a>
           </li>
-          <li class="menu-item"><span class="menu-label menu-label_danger">New</span><a class="menu-link" href="{% url 'shop' %}">Shop</a>
+          <li class="menu-item"><span class="menu-label menu-label_danger">New</span><a class="menu-link" href="#">{% trans 'Shop' %}</a>
           </li>
-          <li class="menu-item"><a class="menu-link" href="{% url 'blog' %}">Blog</a>
+          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Blog' %}</a>
           </li>
-          <li class="menu-item"><span class="menu-label menu-label_success">Hot</span><a class="menu-link" href="{% url 'gallery' %}">Gallery</a>
+          <li class="menu-item"><span class="menu-label menu-label_success">{% trans 'Hot' %}</span><a class="menu-link" href="#">{% trans 'Gallery' %}</a>
           </li>
-          <li class="menu-item"><a class="menu-link" href="{% url 'contacts' %}">Contacts</a>
+          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Contacts' %}</a>
           </li>
-          <li class="menu-item"><a class="menu-link" href="{% url 'catalog' %}">Purchase</a>
+          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchase' %}</a>
           </li>
         </ul>
       </div>
     </nav>
     <div class="row-block">
       <div class="CartBlock">
-          <a class="CartBlock-block" href="{% url 'compare' %}"><img class="CartBlock-img" src="{% static 'assets/img/icons/exchange.svg' %}" alt="exchange.svg"/><span class="CartBlock-amount">4</span></a>
-          <a class="CartBlock-block" href="{% url 'cart' %}"><img class="CartBlock-img" src="{% static 'assets/img/icons/cart.svg' %}" alt="cart.svg"/><span class="CartBlock-amount">0</span></a>
+          <a class="CartBlock-block" href="#"><img class="CartBlock-img" src="{% static 'assets/img/icons/exchange.svg' %}" alt="exchange.svg"/><span class="CartBlock-amount">4</span></a>
+          <a class="CartBlock-block" href="#"><img class="CartBlock-img" src="{% static 'assets/img/icons/cart.svg' %}" alt="cart.svg"/><span class="CartBlock-amount">0</span></a>
         <div class="CartBlock-block"><span class="CartBlock-price">0.00$</span>
         </div>
       </div>
     </div>
     <div class="row-block Header-trigger"><a class="menuTrigger" href="#navigate">
-        <div class="menuTrigger-content">Показать навигацию
+        <div class="menuTrigger-content">{% trans 'Show navigation' %}
         </div><span></span><span></span><span></span></a>
     </div>
   </div>

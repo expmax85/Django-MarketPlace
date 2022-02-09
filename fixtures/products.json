@@ -1,0 +1,212 @@
+[
+  {
+    "model": "goods_app.product",
+    "pk": 1,
+    "fields": {
+      "category": 1,
+      "name": "test_good_1",
+      "code": "xz1",
+      "slug": "test_good_1-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "10.00",
+      "comments": 100
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 2,
+    "fields": {
+      "category": 1,
+      "name": "test_good_2",
+      "code": "xz2",
+      "slug": "test_good_2-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "11.00",
+      "comments": 101
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 3,
+    "fields": {
+      "category": 1,
+      "name": "test_good_3",
+      "code": "xz3",
+      "slug": "test_good_3-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "13.00",
+      "comments": 103
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 4,
+    "fields": {
+      "category": 1,
+      "name": "test_good_4",
+      "code": "xz4",
+      "slug": "test_good_4-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "14.00",
+      "comments": 104
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 5,
+    "fields": {
+      "category": 1,
+      "name": "test_good_5",
+      "code": "xz5",
+      "slug": "test_good_5-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "15.00",
+      "comments": 105
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 6,
+    "fields": {
+      "category": 1,
+      "name": "test_good_6",
+      "code": "xz6",
+      "slug": "test_good_6-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "16.00",
+      "comments": 106
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 7,
+    "fields": {
+      "category": 1,
+      "name": "test_good_7",
+      "code": "xz7",
+      "slug": "test_good_7-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "17.00",
+      "comments": 107
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 8,
+    "fields": {
+      "category": 1,
+      "name": "test_good_8",
+      "code": "xz8",
+      "slug": "test_good_8-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "18.00",
+      "comments": 108
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 9,
+    "fields": {
+      "category": 1,
+      "name": "test_good_9",
+      "code": "xz9",
+      "slug": "test_good_9-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "19.00",
+      "comments": 109
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 10,
+    "fields": {
+      "category": 1,
+      "name": "test_good_10",
+      "code": "xz10",
+      "slug": "test_good_10-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "20.00",
+      "comments": 110
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 11,
+    "fields": {
+      "category": 1,
+      "name": "test_good_11",
+      "code": "xz11",
+      "slug": "test_good_11-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "21.00",
+      "comments": 111
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 12,
+    "fields": {
+      "category": 1,
+      "name": "test_good_12",
+      "code": "xz12",
+      "slug": "test_good_12-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "22.00",
+      "comments": 112
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 13,
+    "fields": {
+      "category": 1,
+      "name": "test_good_13",
+      "code": "xz13",
+      "slug": "test_good_13-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "23.00",
+      "comments": 113
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 14,
+    "fields": {
+      "category": 1,
+      "name": "test_good_14",
+      "code": "xz14",
+      "slug": "test_good_14-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "24.00",
+      "comments": 114
+    }
+  },
+  {
+    "model": "goods_app.product",
+    "pk": 15,
+    "fields": {
+      "category": 1,
+      "name": "test_good_15",
+      "code": "xz15",
+      "slug": "test_good_15-1",
+      "image": "",
+      "description": "some test text",
+      "average_price": "25.00",
+      "comments": 115
+    }
+  }
+]
