@@ -1,0 +1,61 @@
+{% extends 'base.html ' %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle-top">
+    <div class="wrap">
+        <div class="Middle-header">
+            <h1 class="Middle-title">{% trans 'Login'  %}</h1>
+            {% get_providers as socialaccount_providers %}
+            <ul class="breadcrumbs Middle-breadcrumbs">
+                <li class="breadcrumbs-item"><a href="index.html">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign in' %}</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="Section Section_column">
+    <div class="wrap">
+        <div class="Section-content">
+            <div class="Profile">
+                <form class="form Profile-form custom_login-form" method="post">
+                    {% csrf_token %}
+                    <div class="form-group custom_login_form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-input" id="email" name="username" autofocus type="email" required placeholder="{% trans 'Your E-mail' %}">
+                    </div>
+                    <div class="form-group custom_login_form-group">
+                        <label class="form-label" for="password">{% trans 'Password' %}</label>
+                        <input class="form-input" id="password" name="password" type="password" required placeholder="{% trans 'Password' %}">
+                        <span class="helptext"><a href="{% url 'restore_password' %}">{% trans 'Forgot the password?' %}</a></span>
+                    </div>
+                    <div class="form-group custom_login_form-group-btns">
+                        <div class="Profile-btn custom_align-center">
+                            <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Sign in' %}</button>
+                            <a href="{% url 'register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
+                        </div>
+                    </div>
+                </form>
+                <div class="block-social-btn custom_register_form-btns">
+
+                  <ul class="socialaccount_providers custom_margin-bottom ">
+                    {% include "profiles_app/provider_list.html" with process="login" %}
+                  </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+
+
+

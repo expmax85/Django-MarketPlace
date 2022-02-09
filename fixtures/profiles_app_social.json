@@ -1,0 +1,16 @@
+[
+{
+  "model": "socialaccount.socialapp",
+  "pk": 1,
+  "fields": {
+    "provider": "google",
+    "name": "djangoauth",
+    "client_id": "266726268975-7mg1o0oalvuieqbjkoe7i1jtq6grue7q.apps.googleusercontent.com",
+    "secret": "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",
+    "key": "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",
+    "sites": [
+      1
+    ]
+  }
+}
+]

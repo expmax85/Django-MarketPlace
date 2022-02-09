@@ -1,4 +1,9 @@
 Django==4.0.1
-Pillow==9.0.0
 Jinja2==3.0.3
+Pillow==9.0.0
+django-allauth==0.48.0
+
+flake8==4.0.1
+black==21.12b0
+
 

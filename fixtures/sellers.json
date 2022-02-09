@@ -1,0 +1,62 @@
+[
+  {
+    "model": "stores_app.seller",
+    "pk": 1,
+    "fields": {
+      "name": "test_seller_1",
+      "slug": "seller_slug_1",
+      "description": "some text for test",
+      "address": "minsk",
+      "email": "xz@xz.xz",
+      "phone": "+111111111"
+    }
+  },
+  {
+    "model": "stores_app.seller",
+    "pk": 2,
+    "fields": {
+      "name": "test_seller_2",
+      "slug": "seller_slug_2",
+      "description": "some text for test",
+      "address": "ne minsk",
+      "email": "xz1@xz.xz",
+      "phone": "+111111112"
+    }
+  },
+  {
+    "model": "stores_app.seller",
+    "pk": 3,
+    "fields": {
+      "name": "test_seller_3",
+      "slug": "seller_slug_3",
+      "description": "some text for test",
+      "address": "paris",
+      "email": "xz3@xz.xz",
+      "phone": "+111111113"
+    }
+  },
+  {
+    "model": "stores_app.seller",
+    "pk": 4,
+    "fields": {
+      "name": "test_seller_4",
+      "slug": "seller_slug_4",
+      "description": "some text for test",
+      "address": "paris",
+      "email": "xz4@xz.xz",
+      "phone": "+111111114"
+    }
+  },
+  {
+    "model": "stores_app.seller",
+    "pk": 5,
+    "fields": {
+      "name": "test_seller_5",
+      "slug": "seller_slug_5",
+      "description": "some text for test",
+      "address": "paris",
+      "email": "xz5@xz.xz",
+      "phone": "+111111115"
+    }
+  }
+]

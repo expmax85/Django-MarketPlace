@@ -1,0 +1,43 @@
+[
+  {
+    "model": "profiles_app.user",
+    "pk": 1, "fields": {
+      "password": "pbkdf2_sha256$320000$NTVYj9pp5NU0JdMTuvbJgk$pisRE82f9SlDx4R8XWytLg22vJLi/fEPSIeMPIF7pCU=",
+      "last_login": "2022-02-05T17:36:02.346Z",
+      "email": "admin@example.com",
+      "first_name": "",
+      "last_name": "",
+      "phone": "+9999999999",
+      "date_joined": "2022-02-05T17:34:53.106Z",
+      "is_staff": true,
+      "is_active": true,
+      "is_superuser": true,
+      "avatar": "",
+      "city": null,
+      "address": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "profiles_app.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$2tmULBHGv3NWup0MucMGT9$pXGw7e0Rzf1V++R5B2lv0sajP8Pz2gejfBLX51/7x1k=",
+        "last_login": "2022-02-05T17:35:31.580Z",
+        "email": "user@test.com",
+        "first_name": "user",
+        "last_name": "test",
+        "phone": "+70000000000",
+        "date_joined": "2022-02-05T17:35:30.482Z",
+        "is_staff": true,
+        "is_active": true,
+        "is_superuser": false,
+        "avatar": "",
+        "city": null,
+        "address": null,
+        "groups": [2],
+        "user_permissions": []
+    }
+  }
+]

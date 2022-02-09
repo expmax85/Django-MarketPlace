@@ -7,7 +7,7 @@ class SellerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'phone')
     list_filter = ('name',)
     search_fields = ('name',)
-    prepopulated_fields = {'slug': ('id', 'name')}
+    # prepopulated_fields = {'slug': ('id', 'name')}
 
 
 @admin.register(SellerProduct)

@@ -1,0 +1,104 @@
+{% extends 'base.html ' %}
+{% load i18n %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle-top">
+    <div class="wrap">
+        <div class="Middle-header">
+            <h1 class="Middle-title">{% trans 'Registration new user' %}</h1>
+            <ul class="breadcrumbs Middle-breadcrumbs">
+                <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign Up' %}</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="Section Section_column">
+    <div class="wrap">
+        <div class="Section-content">
+            <div class="Profile">
+                <form class="form Profile-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="row">
+                        <div class="row-block">
+                            <div class="form-group">
+                                <label class="form-label" for="id_avatar">{% trans 'Avatar' %}</label>
+                                <div class="Profile-avatar Profile-avatar_noimg">
+                                    <div class="Profile-img"><img src="assets/img/#.png" alt="#.png"></div>
+                                    <label class="Profile-fileLabel" for="id_avatar">{% trans 'Choose the picture' %}</label>
+                                    <input class="Profile-file form-input" id="id_avatar" name="avatar" type="file" data-validate="onlyImgAvatar">
+                                </div>
+                            </div>
+                            <div class="name-block custom_register_name-block">
+                                <div class="form-group custom_register_form-group">
+                                    <label class="form-label" for="{{ form.first_name.id_for_label}}">{% trans 'First name' %}</label>
+                                    {{form.first_name}}
+                                    <span class="formerror">{{form.errors.first_name}}</span>
+                                </div>
+                                <div class="custom_register_form-group">
+                                    <label class="form-label" for="{{ form.last_name.id_for_label}}">{% trans 'Last name' %}</label>
+                                    {{form.last_name}}
+                                    <span class="formerror">{{form.errors.last_name}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-block">
+                            <div class="form-group require-field">
+                                <label class="form-label" for="{{form.email.id_for_label}}">Email*</label>
+                                {{ form.email }}
+                                <span class="formerror">{{form.errors.email}}</span>
+                            </div>
+                            <div class="form-group require-field">
+                                <label class="form-label" for="password">{% trans 'Password*' %}</label>
+                                <input class="form-input" id="password" name="password1" type="password" required>
+                            </div>
+                            <div class="form-group require-field">
+                                <label class="form-label" for="passwordReply">{% trans 'Repeat password*' %}</label>
+                                <input class="form-input" id="passwordReply" name="password2" type="password" required>
+                                <span class="formerror">{{form.errors.password2}}</span>
+                            </div>
+                            <div class="form-group require-field">
+                                <label class="form-label" for="{{ form.phone.id_for_label }}">{% trans 'Phone number*' %}</label>
+                                {{ form.phone }}
+                                <span class="formerror">{{form.errors.phone}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-block custom_register_name-block">
+                        <div class="form-group custom_register_city-field">
+                            <label class="form-label" for="{{ form.city.id_for_label }}">{% trans 'City' %}</label>
+                            {{ form.city }}
+                            <span class="formerror">{{form.errors.city}}</span>
+                        </div>
+                        <div class="custom_register_address-field">
+                            <label class="form-label" for="{{ form.address.id_for_label }}">{% trans 'Address' %}</label>
+                            {{ form.address }}
+                            <span class="formerror">{{form.errors.address}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group custom_register_form-btns">
+                        <div class="Profile-btn custom_align-center">
+                            <button class="btn btn_success" type="submit">{% trans 'Accept and Register' %}</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="block-social-btn custom_register_form-btns">
+                      <ul class="socialaccount_providers custom_margin-bottom ">
+                        {% include "profiles_app/provider_list.html" with process="login" %}
+                      </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
