@@ -15,6 +15,11 @@ class RestoredPasswordTestCase(TestCase):
         cls.user = User.objects.create_user(email='test@user.com', password='testp@sw0rd', first_name='user',
                                             last_name='test', phone='+79222222222')
 
+    def test_template_register_page(self):
+        """Проверка шаблона регистрации"""
+        response = self.client.get(reverse('register'))
+        self.assertTrue(response.status_code, 200)
+
     def test_register_form(self):
         """Проверка невозможности регистрации с идентичным email"""
         form_params = {'email': 'test@user.com',

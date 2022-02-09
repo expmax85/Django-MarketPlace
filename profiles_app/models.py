@@ -66,6 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+        db_table = 'profiles'
 
 
 class ViewedProduct(models.Model):
@@ -75,4 +76,3 @@ class ViewedProduct(models.Model):
     product = models.ForeignKey('goods_app.Product', on_delete=models.CASCADE, related_name='viewed_list')
     shop = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
     date = models.DateTimeField(auto_now=True)
-
