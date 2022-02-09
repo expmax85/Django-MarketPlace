@@ -132,3 +132,8 @@ dmypy.json
 
 # Jetbrains Intellij IDEA
 .idea/
+
+# Исключаем файлы миграций
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
