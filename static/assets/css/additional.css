@@ -3,6 +3,10 @@
     text-align: center;
 }
 
+.custom_align-right {
+    text-align: right;
+}
+
 .helptext {
     display: flex;
     justify-content: flex-end;

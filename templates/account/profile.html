@@ -1,0 +1,121 @@
+{% extends 'base.html ' %}
+{% load i18n %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle-top">
+    <div class="wrap">
+        <div class="Middle-header">
+            <h1 class="Middle-title">{% trans 'Profile info' %}</h1>
+            <ul class="breadcrumbs Middle-breadcrumbs">
+                <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign Up' %}</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="Section Section_column">
+    <div class="wrap">
+        <div class="Section-column">
+            <div class="Section-columnSection">
+                <header class="Section-header">
+                      <strong class="Section-title">{% trans 'Navigation' %}
+                      </strong>
+                </header>
+                <div class="Section-columnContent">
+                   <div class="NavigateProfile">
+                        <ul class="menu menu_vt">
+                            <li class="menu-item"><a class="menu-link" href="{% url 'users:private_room' %}">{% trans 'Account info' %}</a>
+                            </li>
+                            <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'users:account_edit' %}">{% trans 'Profile' %}</a>
+                            </li>
+                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchase history' %}</a>
+                            </li>
+                            <li class="menu-item"><a class="menu-link" href="{% url 'orders:viewed' %}">{% trans 'Viewed products' %}</a>
+                            </li>
+                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Sellers room' %}</a>
+                            </li>
+                        </ul>
+                   </div>
+                </div>
+            </div>
+        </div>
+        <div class="Section-content">
+            <div class="Profile">
+                <form class="form Profile-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="row-block">
+                            <div class="form-group">
+                                <label class="form-label" for="id_avatar">{% trans 'Avatar' %}</label>
+                                <div class="Profile-avatar Profile-avatar_noimg">
+                                    <div class="Profile-img"><img src="assets/img/#.png" alt="#.png"></div>
+                                    <label class="Profile-fileLabel" for="id_avatar">{% trans 'Choose the picture' %}</label>
+                                    <input class="Profile-file form-input" id="id_avatar" name="avatar" type="file" value="{{request.user.avatar}}" data-validate="onlyImgAvatar">
+                                </div>
+                            </div>
+                            <div class="name-block custom_register_name-block">
+                                <div class="form-group custom_register_form-group">
+                                    <label class="form-label" for="first_name">{% trans 'First name' %}</label>
+                                    <input class="form-input" id="first_name" value="{{request.user.first_name}}" name="first_name" type="text">
+                                </div>
+                                <div class="custom_register_form-group">
+                                    <label class="form-label" for="last_name">{% trans 'Last name' %}</label>
+                                    <input class="form-input" id="last_name" value="{{request.user.last_name}}" name="last_name" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-block">
+                            <div class="form-group">
+                                <label class="form-label" for="username">Username</label>
+                                <input class="form-input" id="username" value="{{request.user.username}}"  name="username" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="password">{% trans 'Password*' %}</label>
+                                <input class="form-input" id="password" name="new_password1" type="password">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="passwordReply">{% trans 'Repeat password*' %}</label>
+                                <input class="form-input" id="passwordReply" name="new_password2" type="password">
+                            </div>
+                            <div class="form-group require-field">
+                                <label class="form-label" for="phone">{% trans 'Phone number*' %}</label>
+                                <input class="form-input" id="phone" value="{{request.user.phone}}"  name="phone" required type="text">
+                                <span class="formerror">{{form.errors.phone}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-block custom_register_name-block">
+                        <div class="form-group custom_register_city-field">
+                            <label class="form-label" for="city">{% trans 'City' %}</label>
+                            <input class="form-input" id="city" value="{{request.user.city}}" name="city" required type="text">
+                            <span class="formerror">{{form.errors.city}}</span>
+                        </div>
+                        <div class="custom_register_address-field">
+                            <label class="form-label" for="address">{% trans 'Address' %}</label>
+                            <input class="form-input" id="address" value="{{request.user.address}}"  name="address" required type="text">
+                            <span class="formerror">{{form.errors.address}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group custom_register_form-btns">
+                        <div class="Profile-btn custom_align-right">
+                            <button class="btn btn_success" type="submit">{% trans 'Save changes' %}</button>
+                        <div class="Profile-success">{{text_message}}
+                        </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}

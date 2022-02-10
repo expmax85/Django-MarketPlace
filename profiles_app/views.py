@@ -1,12 +1,15 @@
+from typing import Callable
+
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from profiles_app.forms import RegisterForm, RestorePasswordForm
-from profiles_app.services import get_user_and_change_password, get_auth_user
+
+from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
+from profiles_app.services import get_user_and_change_password, get_auth_user, edit_user
 from django.utils.translation import gettext_lazy as _
 
 
@@ -36,11 +39,11 @@ class RegisterView(View):
     Страница регистрации нового пользователя
     """
 
-    def get(self, request):
+    def get(self, request) -> Callable:
         form = RegisterForm()
         return render(request, 'account/signup.html', context={'form': form})
 
-    def post(self, request):
+    def post(self, request) -> Callable:
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
@@ -54,11 +57,11 @@ class RestorePasswordView(View):
     Страница восстановления пароля
     """
 
-    def get(self, request):
+    def get(self, request) -> Callable:
         form = RestorePasswordForm()
         return render(request, 'account/password_reset.html', context={'form': form})
 
-    def post(self, request):
+    def post(self, request) -> Callable:
         form = RestorePasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
@@ -70,5 +73,35 @@ class RestorePasswordView(View):
                           recipient_list=[email])
                 return render(request, 'account/password_reset_done.html', context={'form': form})
             else:
-                return HttpResponse(_('The user with this email is not registered'))
+                return render(request, 'account/password_reset_error.html')
         return render(request, 'account/password_reset.html', context={'form': form})
+
+
+class AccountView(LoginRequiredMixin, View):
+    """
+    Информация об аккаунте
+    """
+    login_url = '/users/login/'
+    template_name = 'account/account.html'
+
+    def get(self, request) -> Callable:
+        return render(request, 'account/account.html')
+
+
+class AccountEditView(LoginRequiredMixin, View):
+    """
+    Редактирование профиля
+    """
+    login_url = '/users/login/'
+
+    def get(self, request) -> Callable:
+        form = AccountEditForm()
+        return render(request, 'account/profile.html', context={'form': form})
+
+    def post(self, request) -> Callable:
+        form = AccountEditForm(request.POST, request.FILES)
+        if form.is_valid():
+            text_message = _('The profile was saved successfully')
+            edit_user(request.user.id, form)
+            return render(request, 'account/profile.html', context={'form': form, 'text_message': text_message})
+        return render(request, 'account/profile.html', context={'form': form, 'text_message': ""})

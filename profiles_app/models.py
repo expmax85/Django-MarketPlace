@@ -9,7 +9,7 @@ from django.contrib.auth.base_user import BaseUserManager
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email, password, **extra_fields) -> 'User':
         """
         Создает и сохраняет пользователя с введенным им email и паролем.
         """
@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password) -> 'User':
         """
         Create superuser method
         """
@@ -58,11 +58,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    def __str__(self):
-        if self.first_name:
-            return self.first_name + ' ' + self.last_name
+    def __str__(self) -> str:
+        if self.username:
+            return str(self.username)
         else:
-            return self.email
+            return str(self.email)
 
     class Meta:
         verbose_name = _('user')
