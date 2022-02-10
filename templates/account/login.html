@@ -13,7 +13,7 @@
             <h1 class="Middle-title">{% trans 'Login'  %}</h1>
             {% get_providers as socialaccount_providers %}
             <ul class="breadcrumbs Middle-breadcrumbs">
-                <li class="breadcrumbs-item"><a href="index.html">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
                 <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign in' %}</span></li>
             </ul>
         </div>
@@ -32,12 +32,12 @@
                     <div class="form-group custom_login_form-group">
                         <label class="form-label" for="password">{% trans 'Password' %}</label>
                         <input class="form-input" id="password" name="password" type="password" required placeholder="{% trans 'Password' %}">
-                        <span class="helptext"><a href="{% url 'users:restore_password' %}">{% trans 'Forgot the password?' %}</a></span>
+                        <span class="helptext"><a href="{% url 'profiles-polls:restore-password' %}">{% trans 'Forgot the password?' %}</a></span>
                     </div>
                     <div class="form-group custom_login_form-group-btns">
                         <div class="Profile-btn custom_align-center">
                             <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Sign in' %}</button>
-                            <a href="{% url 'users:register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
+                            <a href="{% url 'profiles-polls:register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
                         </div>
                     </div>
                 </form>

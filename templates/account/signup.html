@@ -1,5 +1,6 @@
 {% extends 'base.html ' %}
 {% load i18n %}
+{% load static %}
 
 {% block header %}
 {% include 'elems/header.html' %}
@@ -29,7 +30,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="id_avatar">{% trans 'Avatar' %}</label>
                                 <div class="Profile-avatar Profile-avatar_noimg">
-                                    <div class="Profile-img"><img src="assets/img/#.png" alt="#.png"></div>
+                                    <div class="Profile-img"><img src="{%  static 'assets/img/#.png' %}" alt="#.png"></div>
                                     <label class="Profile-fileLabel" for="id_avatar">{% trans 'Choose the picture' %}</label>
                                     <input class="Profile-file form-input" id="id_avatar" name="avatar" type="file" data-validate="onlyImgAvatar">
                                 </div>

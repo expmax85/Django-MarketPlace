@@ -6,7 +6,7 @@
 
 {% for provider in socialaccount_providers %}
     <li class="provider-item" style="background-image: url('{{STATIC_URL}}/static/assets/img/icons/socialContent/{{provider.id}}.svg')">
-     <a type="Submit" title="{{provider.name}}" class="socialaccount_provider social-btn {{provider.id}}"
-         href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">{% trans 'Sign-in with' %} {{provider.name}}</a>
+     <a type="Submit" title="{{ provider.name }}" class="socialaccount_provider social-btn {{ provider.id }}"
+         href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">{% trans 'Sign-in with' %} {{ provider.name }}</a>
     </li>
 {% endfor %}

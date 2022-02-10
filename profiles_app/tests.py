@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 
 from .forms import RegisterForm
 
@@ -16,7 +17,7 @@ class RestoredPasswordTestCase(TestCase):
 
     def test_template_register_page(self):
         """Проверка шаблона регистрации"""
-        response = self.client.get('/users/register/')
+        response = self.client.get(reverse('profiles-polls:register'))
         self.assertTrue(response.status_code, 200)
 
     def test_register_form(self):
@@ -26,7 +27,7 @@ class RestoredPasswordTestCase(TestCase):
                        'last_name': 'Doe',
                        'password1': 'testpassword',
                        'password2': 'testpassword',
-                       'phone': '9999939999'
+                       'phone': '+79999939999'
                        }
         form = RegisterForm(form_params)
         self.assertFalse(form.is_valid())
@@ -34,7 +35,7 @@ class RestoredPasswordTestCase(TestCase):
     def test_success_register(self):
         """Проверка успешности регистрации, при верно введенных данных"""
         response = self.client.post(
-            '/users/register/',
+            reverse('profiles-polls:register'),
             data={
                 "email": "john@example.com",
                 "password1": "johndoe12",
@@ -49,7 +50,7 @@ class RestoredPasswordTestCase(TestCase):
     def test_unsuccess_register(self):
         """Проверка неуспешности регистрации, при неверно введенных данных"""
         response = self.client.post(
-            '/users/register/',
+            reverse('profiles-polls:register'),
             data={
                 "email": "john@example.com",
                 "password1": "johndoe12",
@@ -63,25 +64,25 @@ class RestoredPasswordTestCase(TestCase):
 
     def test_login_user(self):
         """Проверка работы аутентификации"""
-        response = self.client.post('/users/login/', {'email': self.user.email,
+        response = self.client.post(reverse('profiles-polls:login'), {'email': self.user.email,
                                                 'password': self.user.password})
         self.assertTrue(response.status_code, 200)
         self.assertTrue(self.user.is_authenticated)
 
     def test_restore_password_url_exist(self):
         """Доступ к странице восстановления пароля"""
-        response = self.client.get('/users/restore_password/')
+        response = self.client.get(reverse('profiles-polls:restore-password'))
         self.assertEqual(response.status_code, 200)
 
     def test_restore_password_template(self):
         """Проверка шаблона восстановления пароля"""
-        response = self.client.get('/users/restore_password/')
+        response = self.client.get(reverse('profiles-polls:restore-password'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'account/password_reset.html')
 
     def test_post_restore_password(self):
         """Отпрака письма с новым паролем"""
-        response = self.client.post('/users/restore_password/', {'email': self.user.email})
+        response = self.client.post(reverse('profiles-polls:restore-password'), {'email': self.user.email})
         self.assertEqual(response.status_code, 200)
         from django.core.mail import outbox
         self.assertEqual(len(outbox), 1)
@@ -90,7 +91,7 @@ class RestoredPasswordTestCase(TestCase):
     def test_password_was_changed(self):
         """Проверка изменения пароля"""
         old_password = self.user.password
-        response = self.client.post('/users/restore_password/', {'email': self.user.email})
+        response = self.client.post(reverse('profiles-polls:restore-password'), {'email': self.user.email})
         self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertNotEqual(old_password, self.user.password)
