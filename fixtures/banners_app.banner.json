@@ -1,0 +1,42 @@
+[
+{
+  "model": "banners_app.banner",
+  "pk": 1,
+  "fields": {
+    "discount": 1,
+    "title": "Test banner #1",
+    "description": "First test banner",
+    "image": "static/assets/img/content/home/banners/slider.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 2,
+  "fields": {
+    "discount": 2,
+    "title": "Brush for rush",
+    "description": "Get now or never",
+    "image": "static/assets/img/content/home/banners/Rectangle_69.jpg"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 3,
+  "fields": {
+    "discount": 6,
+    "title": "Python Basic",
+    "description": "Discount 15%",
+    "image": "static/assets/img/content/home/banners/python_basic.jpg"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 4,
+  "fields": {
+    "discount": 7,
+    "title": "Python Advanced",
+    "description": "Discount 5000",
+    "image": "static/assets/img/content/home/banners/python_advanced.jpg"
+  }
+}
+]
