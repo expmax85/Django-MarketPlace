@@ -1,6 +1,9 @@
 {% extends 'base.html ' %}
 {%  load i18n %}
 
+{% block title %}See you soon!
+{% endblock %}
+
 {% block header %}
 {% include 'elems/header.html' %}
 {% endblock %}
@@ -20,7 +23,7 @@
 <div class="Section Section_column">
     <div class="wrap">
         <div class="Section-content">
-            <div class="Profile" style="text-align: center;">
+            <div class="Profile custom-align-center">
                 <h2>{% trans 'See you soon!' %}</h2>
             </div>
         </div>
