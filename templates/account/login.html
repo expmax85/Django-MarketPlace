@@ -1,6 +1,10 @@
 {% extends 'base.html ' %}
 {% load i18n %}
+{% load static %}
 {% load account socialaccount %}
+
+{% block title %}Sign-in
+{% endblock %}
 
 {% block header %}
 {% include 'elems/header.html' %}
@@ -13,8 +17,8 @@
             <h1 class="Middle-title">{% trans 'Login'  %}</h1>
             {% get_providers as socialaccount_providers %}
             <ul class="breadcrumbs Middle-breadcrumbs">
-                <li class="breadcrumbs-item"><a href="index.html">{% trans 'home' %}</a></li>
-                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign in' %}</span></li>
+                <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sign-in' %}</span></li>
             </ul>
         </div>
     </div>
@@ -25,26 +29,27 @@
             <div class="Profile">
                 <form class="form Profile-form custom_login-form" method="post">
                     {% csrf_token %}
+                    <span class="formerror">{{ form.non_field_errors }}</span>
                     <div class="form-group custom_login_form-group">
-                        <label class="form-label" for="email">Email</label>
-                        <input class="form-input" id="email" name="username" autofocus type="email" required placeholder="{% trans 'Your E-mail' %}">
+                        <label class="form-label" for="{{form.username.id_for_label}}">Email</label>
+                        {{ form.username }}
                     </div>
                     <div class="form-group custom_login_form-group">
                         <label class="form-label" for="password">{% trans 'Password' %}</label>
-                        <input class="form-input" id="password" name="password" type="password" required placeholder="{% trans 'Password' %}">
-                        <span class="helptext"><a href="{% url 'restore_password' %}">{% trans 'Forgot the password?' %}</a></span>
+                        <input class="form-input" id="password" name="password" type="password" required>
+                        <span class="helptext"><a href="{% url 'profiles-polls:restore-password' %}">{% trans 'Forgot the password?' %}</a></span>
                     </div>
                     <div class="form-group custom_login_form-group-btns">
                         <div class="Profile-btn custom_align-center">
                             <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Sign in' %}</button>
-                            <a href="{% url 'register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
+                            <a href="{% url 'profiles-polls:register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
                         </div>
                     </div>
                 </form>
                 <div class="block-social-btn custom_register_form-btns">
 
                   <ul class="socialaccount_providers custom_margin-bottom ">
-                    {% include "profiles_app/provider_list.html" with process="login" %}
+                    {% include "account/provider_list.html" with process="login" %}
                   </ul>
                 </div>
             </div>
@@ -55,6 +60,15 @@
 
 {% block footer %}
 {% include 'elems/footer.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
+<script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
+<script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
+<script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
+<script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
+<script src="{% static 'assets/js/scripts.js' %}"></script>
 {% endblock %}
 
 

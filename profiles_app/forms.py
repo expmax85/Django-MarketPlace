@@ -18,5 +18,15 @@ class RegisterForm(UserCreationForm):
         field_classes = {'email': UsernameField}
 
 
+class AccountEditForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 'last_name', 'phone',
+            'city', 'avatar', 'address',
+        ]
+
+
 class RestorePasswordForm(forms.Form):
-    email = forms.EmailField(max_length=50, label="E-mail:")
+    email = forms.EmailField(max_length=50, required=True)

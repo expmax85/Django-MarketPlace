@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
+
 {% block main %}
 <div class="Header-slider">
     <div class="Slider Slider_main">
@@ -12,7 +14,7 @@
                                 <strong class="Slider-title">{{ banner.title }}
                                 </strong>
                                 <div class="Slider-text">{{ banner.description }}</div>
-                                <div class="Slider-footer"><a class="btn btn_primary" href="#">Get Started</a>
+                                <div class="Slider-footer"><a class="btn btn_primary" href="#">{% trans 'Get Started' %}</a>
                                 </div>
                             </div>
                             <div class="row-block">

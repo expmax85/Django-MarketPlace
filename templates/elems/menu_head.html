@@ -27,9 +27,9 @@
         <div class="row ControlPanel-rowSplit">
           <div class="row-block">
               {% if request.user.is_authenticated %}
-                <a class="ControlPanel-title" href="#">{% trans 'My Account' %}</a> / <a class="ControlPanel-title" href="{% url 'logout' %}"> {% trans 'Logout' %}</a>
+                <a class="ControlPanel-title" href="{% url 'profiles-polls:private-room' %}">{% trans 'My Account' %}</a> / <a class="ControlPanel-title" href="{% url 'profiles-polls:logout' %}"> {% trans 'Logout' %}</a>
               {% else %}
-                  <a class="ControlPanel-title" href="{% url 'login' %}">{% trans 'Login' %}</a> / <a class="ControlPanel-title" href="{% url 'register' %}">{% trans 'Register' %}</a>
+                  <a class="ControlPanel-title" href="{% url 'profiles-polls:login' %}">{% trans 'Login' %}</a> / <a class="ControlPanel-title" href="{% url 'profiles-polls:register' %}">{% trans 'Register' %}</a>
               {% endif %}
           </div>
         </div>

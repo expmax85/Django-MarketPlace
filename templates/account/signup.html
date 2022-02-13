@@ -1,5 +1,9 @@
 {% extends 'base.html ' %}
 {% load i18n %}
+{% load static %}
+
+{% block title %}Registration
+{% endblock %}
 
 {% block header %}
 {% include 'elems/header.html' %}
@@ -29,7 +33,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="id_avatar">{% trans 'Avatar' %}</label>
                                 <div class="Profile-avatar Profile-avatar_noimg">
-                                    <div class="Profile-img"><img src="assets/img/#.png" alt="#.png"></div>
+                                    <div class="Profile-img"><img src="{%  static 'assets/img/#.png' %}" alt="#.png"></div>
                                     <label class="Profile-fileLabel" for="id_avatar">{% trans 'Choose the picture' %}</label>
                                     <input class="Profile-file form-input" id="id_avatar" name="avatar" type="file" data-validate="onlyImgAvatar">
                                 </div>
@@ -90,7 +94,7 @@
 
                 <div class="block-social-btn custom_register_form-btns">
                       <ul class="socialaccount_providers custom_margin-bottom ">
-                        {% include "profiles_app/provider_list.html" with process="login" %}
+                        {% include "account/provider_list.html" with process="login" %}
                       </ul>
                 </div>
             </div>

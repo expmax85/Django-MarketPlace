@@ -9,7 +9,7 @@ from django.contrib.auth.base_user import BaseUserManager
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email, password, **extra_fields) -> 'User':
         """
         Создает и сохраняет пользователя с введенным им email и паролем.
         """
@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password) -> 'User':
         """
         Create superuser method
         """
@@ -34,6 +34,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name=_('email'), unique=True)
+    username = models.CharField(verbose_name=_('username'), max_length=30, blank=True, null=True)
     first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True)
     last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True)
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
@@ -57,11 +58,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    def __str__(self):
-        if self.first_name:
-            return self.first_name + ' ' + self.last_name
+    def __str__(self) -> str:
+        if self.username:
+            return str(self.username)
         else:
-            return self.email
+            return str(self.email)
 
     class Meta:
         verbose_name = _('user')

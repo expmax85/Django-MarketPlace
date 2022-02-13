@@ -36,7 +36,7 @@
         "avatar": "",
         "city": null,
         "address": null,
-        "groups": [2],
+        "groups": [],
         "user_permissions": []
     }
   }

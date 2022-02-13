@@ -1,1 +1,10 @@
-[{"model": "discounts_app.discountcategory", "pk": 1, "fields": {"name": "First category", "slug": "first-category", "description": "First category test"}}]
+[
+  {
+    "model": "discounts_app.discountcategory",
+    "pk": 1, "fields": {
+    "name": "First category",
+    "slug": "first-category",
+    "description": "First category test"
+  }
+  }
+]
