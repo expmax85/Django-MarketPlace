@@ -1,7 +1,7 @@
 [
   {
     "model": "goods_app.productcategory",
-    "pk": 11,
+    "pk": 1,
     "fields": {
       "name": "test_category_1",
       "slug": "test_category_slug_1",
@@ -10,7 +10,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 12,
+    "pk": 2,
     "fields": {
       "name": "test_category_2",
       "slug": "test_category_slug_2",
@@ -19,7 +19,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 13,
+    "pk": 3,
     "fields": {
       "name": "test_category_3",
       "slug": "test_category_slug_3",
@@ -28,7 +28,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 14,
+    "pk": 4,
     "fields": {
       "name": "test_category_4",
       "slug": "test_category_slug_4",
@@ -37,7 +37,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 15,
+    "pk": 5,
     "fields": {
       "name": "test_category_5",
       "slug": "test_category_slug_5",
@@ -46,7 +46,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 16,
+    "pk": 6,
     "fields": {
       "name": "test_category_6",
       "slug": "test_category_slug_6",
@@ -55,7 +55,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 17,
+    "pk": 7,
     "fields": {
       "name": "test_category_7",
       "slug": "test_category_slug_7",
@@ -64,7 +64,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 18,
+    "pk": 8,
     "fields": {
       "name": "test_category_8",
       "slug": "test_category_slug_8",
@@ -73,7 +73,7 @@
   },
   {
     "model": "goods_app.productcategory",
-    "pk": 19,
+    "pk": 9,
     "fields": {
       "name": "test_category_9",
       "slug": "test_category_slug_9",
