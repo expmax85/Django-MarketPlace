@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}Private Room
+{% block title %}{% trans 'Private Room' %}
 {% endblock %}
 
 {% block header %}
@@ -36,11 +36,11 @@
                             </li>
                             <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
                             </li>
-                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchase history' %}</a>
+                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchases history' %}</a>
                             </li>
                             <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Viewed products' %}</a>
                             </li>
-                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Sellers room' %}</a>
+                            <li class="menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
                             </li>
                         </ul>
                    </div>
@@ -95,26 +95,26 @@
                     <div class="row-block custom_register_name-block">
                         <div class="form-group custom_register_city-field">
                             <label class="form-label" for="city">{% trans 'City' %}</label>
-                            <input class="form-input" id="city" value="{{request.user.city}}" name="city" required type="text">
+                            <input class="form-input" id="city" value="{{request.user.city}}" name="city" type="text">
                             <span class="formerror">{{form.errors.city}}</span>
                         </div>
                         <div class="custom_register_address-field">
                             <label class="form-label" for="address">{% trans 'Address' %}</label>
-                            <input class="form-input" id="address" value="{{request.user.address}}"  name="address" required type="text">
+                            <input class="form-input" id="address" value="{{request.user.address}}"  name="address" type="text">
                             <span class="formerror">{{form.errors.address}}</span>
                         </div>
                     </div>
                     <div class="form-group custom_register_form-btns">
                         <div class="Profile-btn custom_align-right">
                             <button class="btn btn_success" type="submit">{% trans 'Save changes' %}</button>
-                        <div class="Profile-success">{{text_message}}
-                        </div>
+                        <div class="Profile-success">{{text_message}}</div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 </div>
 
 

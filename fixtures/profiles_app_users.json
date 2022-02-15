@@ -13,8 +13,8 @@
       "is_active": true,
       "is_superuser": true,
       "avatar": "",
-      "city": null,
-      "address": null,
+      "city": "",
+      "address": "",
       "groups": [],
       "user_permissions": []
     }
@@ -30,12 +30,12 @@
         "last_name": "test",
         "phone": "+70000000000",
         "date_joined": "2022-02-05T17:35:30.482Z",
-        "is_staff": true,
+        "is_staff": false,
         "is_active": true,
         "is_superuser": false,
         "avatar": "",
-        "city": null,
-        "address": null,
+        "city": "",
+        "address": "",
         "groups": [],
         "user_permissions": []
     }

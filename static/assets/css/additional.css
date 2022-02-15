@@ -3,6 +3,9 @@
     text-align: center;
 }
 
+.reset-margin {
+margin-top: 0;}
+
 .custom_align-right {
     text-align: right;
 }
@@ -140,4 +143,105 @@
     font-size: 18px;
     background-color: #f9fafc;
     line-height: 46px;
+}
+
+.Seller-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1220px;
+    min-height: 200px;
+}
+
+.seller-item {
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 200px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    margin-right: 20px;
+    margin-bottom: 30px;
+    transition: border 0.3s ease;
+}
+
+.seller-item img {
+    max-width: 200px;
+    height: 100px;
+    align-self: center;
+    object-fit: cover;
+}
+
+.Add-seller {
+    display: block;
+    width: 200px;
+    margin-right: 0;
+    position: relative;
+    transition: border 0.3s ease;
+}
+
+.seller-text {
+    font-size: 16px;
+    font-weight: 800;
+    color: #cacaca;
+    position: absolute;
+    left: 47px;
+    bottom: 22px;
+    transition: color 0.3s ease;
+}
+
+.Add-seller svg path{
+    transition: fill 0.3s ease;
+ }
+
+.seller-item:focus,
+.seller-item:hover,
+.Add-seller:focus,
+.Add-seller:hover {
+    border: 1px solid #3cb878;
+}
+
+.seller-item:active,
+.Add-seller:active {
+    border: 1px solid #0065D1;
+}
+
+.seller-item:focus h3,
+.seller-item:hover h3,
+.Add-seller:focus span,
+.Add-seller:hover span {
+    color: #3cb878;
+}
+
+.seller-item:active h3,
+.Add-seller:active span {
+    color: #0065D1;
+}
+
+.Add-seller:focus svg path:not(:nth-child(3n)),
+.Add-seller:hover svg path:not(:nth-child(3n)){
+    fill: #2C2F33;
+ }
+
+.Add-seller:focus svg path:nth-child(3n),
+.Add-seller:hover svg path:nth-child(3n){
+    fill: #3cb878;
+ }
+
+.Add-seller:active svg path:not(:nth-child(3n)),
+.Add-seller:active svg path:nth-child(3n){
+    fill: #0065D1;
+}
+
+.store-img {
+    position: relative;
+}
+
+.store-logo {
+    border: 1px solid #e0e0e0;
+    height: 10px;
+}
+
+.form-area {
+    width: 100%;
 }

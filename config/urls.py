@@ -23,4 +23,5 @@ urlpatterns = [
     path('users/', include('profiles_app.urls', namespace='profiles-polls')),
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders_app.urls', namespace='orders-polls')),
+    path('stores/', include('stores_app.urls', namespace='stores-polls')),
 ]

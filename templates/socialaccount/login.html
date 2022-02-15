@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block title %}
+{% trans 'Sign-in' %}
+{% endblock %}
+
 {% block header %}
 {% include 'elems/header.html' %}
 {% endblock %}
 
 {% block main %}
 <div class="wrap socialwrap">
-  <div class="row-block social-row-block">
-{% if process == "connect" %}
-<h1 class="custom_align-center">{% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}</h1>
-
-<p class="social-accept-text">{% blocktrans with provider.name as provider %}You are about to connect a new third party account from {{ provider }}.{% endblocktrans %}</p>
-{% else %}
-<h1 class="custom_align-center">{% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}</h1>
-
-<p class="social-accept-text">{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}</p>
-{% endif %}
-
-<form method="post">
-  {% csrf_token %}
-  <button class="btn btn_success custom_login_btn-success" type="submit">{% trans "Continue" %}</button>
-</form>
+     <div class="row-block social-row-block">
+        {% if process == "connect" %}
+        <h1 class="custom_align-center">{% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}</h1>
+        <p class="social-accept-text">{% blocktrans with provider.name as provider %}You are about to connect a new third party account from {{ provider }}.{% endblocktrans %}</p>
+        {% else %}
+        <h1 class="custom_align-center">{% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}</h1>
+        <p class="social-accept-text">{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn_success custom_login_btn-success" type="submit">{% trans "Continue" %}</button>
+        </form>
     </div>
-  </div>
+</div>
 {% endblock %}
 
 {% block footer %}

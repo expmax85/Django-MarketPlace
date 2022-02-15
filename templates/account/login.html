@@ -3,7 +3,7 @@
 {% load static %}
 {% load account socialaccount %}
 
-{% block title %}Sign-in
+{% block title %}{% trans 'Sign-in' %}
 {% endblock %}
 
 {% block header %}
@@ -42,7 +42,7 @@
                     <div class="form-group custom_login_form-group-btns">
                         <div class="Profile-btn custom_align-center">
                             <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Sign in' %}</button>
-                            <a href="{% url 'profiles-polls:register' %}" class="btn btn_success" type="submit">{% trans 'Register' %}</a>
+                            <a href="{% url 'profiles-polls:register' %}" class="btn btn_success">{% trans 'Register' %}</a>
                         </div>
                     </div>
                 </form>

@@ -1,0 +1,30 @@
+[
+  {
+    "model": "stores_app.seller",
+    "pk": 1,
+    "fields": {
+      "name": "test_store_1",
+      "slug": "first",
+      "description": "",
+      "address": "",
+      "icon": "",
+      "email": null,
+      "phone": null,
+      "owner": 2
+    }
+  },
+  {
+    "model": "stores_app.seller",
+    "pk": 2,
+    "fields": {
+      "name": "test_store_2",
+      "slug": "second",
+      "description": "",
+      "address": "",
+      "icon": "",
+      "email": null,
+      "phone": null,
+      "owner": 2
+    }
+  }
+]

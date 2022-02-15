@@ -11,7 +11,7 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password, **extra_fields) -> 'User':
         """
-        Создает и сохраняет пользователя с введенным им email и паролем.
+        Create and save new user with email and password
         """
         if not email:
             raise ValueError(_('Email must be entering'))
@@ -33,10 +33,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """Custom user model"""
     email = models.EmailField(verbose_name=_('email'), unique=True)
-    username = models.CharField(verbose_name=_('username'), max_length=30, blank=True, null=True)
-    first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True)
-    last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True)
+    username = models.CharField(verbose_name=_('username'), max_length=30, blank=True, null=True, default="")
+    first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True, default="")
+    last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True, default="")
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
                                                    str(_('Up to 15 digits allowed.'))]))
@@ -49,9 +50,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(verbose_name=_('avatar'), upload_to='avatars/',
                                null=True, blank=True)
     city = models.CharField(verbose_name=_('city'), max_length=40,
-                            null=True, blank=True)
+                            null=True, blank=True, default="")
     address = models.CharField(verbose_name=_('address'), max_length=70,
-                            null=True, blank=True)
+                            null=True, blank=True, default="")
 
     objects = UserManager()
 
@@ -64,10 +65,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return str(self.email)
 
+    def is_member(self, group_name) -> bool:
+        if self.groups.filter(name=group_name):
+            return True
+        return False
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
         db_table = 'profiles'
+        permissions = [('Sellers', 'can_sell')]
 
 
 class ViewedProduct(models.Model):
