@@ -16,7 +16,7 @@ class Command(BaseCommand):
         err_list = []
         n_iteration = len(fixtures_list) * 2
         self.stdout.write(f'\nFIXTURES LOAD...')
-        while fixtures_list or n_iteration:
+        while fixtures_list:
             err_list = []
             for item in fixtures_list:
                 try:
@@ -27,7 +27,10 @@ class Command(BaseCommand):
                     self.stdout.write(f'IntegrityError when loading {item}')
                     if item not in err_list:
                         err_list.append(item)
+            if n_iteration == 0:
+                break
             n_iteration -= 1
+
         if err_list:
             self.stdout.write(f'Not all fixtures was loading. Check it:')
             print([item for item in err_list])
