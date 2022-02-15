@@ -1,25 +1,44 @@
+from typing import Callable
+
+from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator
+from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.urls import reverse
+
 from goods_app.models import Product
 from discounts_app.models import Discount
 
 
+User = get_user_model()
+
+
 class Seller(models.Model):
     """
-    Модель магазина
+    Store model
     """
-    name = models.CharField(max_length=25, null=True, verbose_name='name')
-    slug = models.SlugField(null=True, verbose_name='slug')
-    description = models.TextField(max_length=255, null=True, verbose_name='description')
-    address = models.TextField(max_length=255, null=True, verbose_name='address')
-    email = models.EmailField(null=True, name='email')
-    phone = models.CharField(max_length=25, null=True, verbose_name='phone')
+    name = models.CharField(max_length=25, verbose_name=_('name'))
+    slug = models.SlugField(verbose_name='slug', unique=True)
+    description = models.TextField(max_length=255, null=True, blank=True, default="", verbose_name=_('description'))
+    address = models.TextField(max_length=100, null=True, blank=True, default="", verbose_name=_('address'))
+    icon = models.ImageField(upload_to='icons/', null=True, blank=True, verbose_name=_('icon'))
+    email = models.EmailField(null=True, blank=True, default="", verbose_name='email')
+    phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
+                                                   str(_('Up to 15 digits allowed.'))]))
+    phone = models.CharField(max_length=25, validators=[phone_valid], null=True, blank=True, default="",
+                             verbose_name=_('phone'))
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller', verbose_name=_('owner'))
 
-    def __str__(self):
-        return self.name
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def get_absolute_url(self) -> Callable:
+        return reverse('stores-polls:store_detail', kwargs={'slug': self.slug})
 
     class Meta:
-        verbose_name = 'store'
-        verbose_name_plural = 'stores'
+        verbose_name = _('store')
+        verbose_name_plural = _('stores')
 
 
 class SellerProduct(models.Model):
