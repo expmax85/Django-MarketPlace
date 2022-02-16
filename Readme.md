@@ -10,6 +10,10 @@ python manage.py loadscript with_clear
 ```
 python manage.py loadscript with_clear --db
 ```
+Справка по команде:
+```
+python manage.py help loadscript
+```
 
 #Пароли по тестовым пользователям
  - admin@example.com: 123456
