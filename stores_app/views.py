@@ -7,12 +7,15 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from stores_app.forms import AddStoreForm, EditStoreForm
+from stores_app.forms import *
 from stores_app.models import Seller
-from stores_app.services import add_store, get_user_stores, get_store, edit_store
+# from stores_app.services import create_store, get_user_stores, get_store, edit_store, \
+#     create_seller_product, get_products, get_categories, get_seller_products, get_stores, get_discounts, \
+
+from stores_app.services import QueryMixin
 
 
-class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, ListView):
     """Page for view seller room for Sellers-group"""
     permission_required = ('profiles_app.Sellers',)
     model = Seller
@@ -20,10 +23,16 @@ class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'stores'
 
     def get_queryset(self) -> 'QuerySet':
-        return get_user_stores(user=self.request.user)
+        return self.get_user_stores(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = self.get_categories()
+        context['seller_products'] = self.get_seller_products(user=self.request.user)
+        return context
 
 
-class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, View):
+class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, View):
     """Page for create new store"""
     permission_required = ('profiles_app.Sellers',)
 
@@ -35,22 +44,27 @@ class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, View):
         form = AddStoreForm(request.POST, request.FILES)
         if form.is_valid():
             form.save(commit=False)
-            add_store(user=request.user, form=form)
+            self.create_store(user=request.user, form=form)
             return redirect(reverse('stores-polls:sellers-room'))
         form = AddStoreForm()
         return render(request, 'stores_app/add_store.html', context={'form': form})
 
 
-class StoreDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class RemoveStoreView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, View):
+    permission_required = ('profiles_app.Sellers',)
+
+    def get(self, request):
+        self.remove_store(store_id=request.GET.get('id'))
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+class StoreDetailView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, DetailView):
     """Page for view and edit detail store"""
     permission_required = ('profiles_app.Sellers',)
     context_object_name = 'store'
     template_name = 'stores_app/store_detail.html'
     model = Seller
     slug_url_kwarg = 'slug'
-
-    def get_object(self, queryset=None) -> QuerySet:
-        return get_store(slug=self.kwargs.get('slug'))
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data()
@@ -60,6 +74,39 @@ class StoreDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     def post(self, request, slug) -> Callable:
         form = EditStoreForm(request.POST, request.FILES)
         if form.is_valid():
-            edit_store(store_slug=slug, form=form)
+            self.edit_store(store_slug=slug, form=form)
             return redirect(reverse('stores-polls:sellers-room'))
         return redirect(reverse('stores-polls:store_detail', kwargs={'slug': slug}))
+
+
+class AddSellerProduct(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, View):
+    """Page for adding new seller product"""
+    permission_required = ('profiles_app.Sellers',)
+
+    def get_queryset(self, request):
+        category_id = request.GET.get('category_id')
+        return self.get_products(category_id=category_id)
+
+    def get(self, request):
+        context = {}
+        context['products'] = self.get_queryset(request)
+        context['discounts'] = self.get_discounts()
+        context['stores'] = self.get_user_stores(user=request.user)
+        context['form'] = AddSellerProductForm()
+        return render(request, 'stores_app/new_product_in_store.html', context=context)
+
+    def post(self, request):
+        form = AddSellerProductForm(request.POST)
+        if form.is_valid():
+            self.create_seller_product(form=form)
+            return redirect(reverse('stores-polls:sellers-room'))
+        form = AddStoreForm()
+        return render(request, 'stores_app/new_product_in_store.html', context={'form': form})
+
+
+class RemoveSellerProductView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, View):
+    permission_required = ('profiles_app.Sellers',)
+
+    def get(self, request):
+        self.remove_seller_product(product_id=request.GET.get('id'))
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))

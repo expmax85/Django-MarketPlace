@@ -58,7 +58,7 @@
                                 <div class="Profile-avatar Profile-avatar_noimg">
                                     <div class="Profile-img"><img src="{%  static 'assets/img/#.png' %}" alt="#.png"></div>
                                     <label class="Profile-fileLabel" for="id_avatar">{% trans 'Choose the picture' %}</label>
-                                    <input class="Profile-file form-input" id="id_avatar" name="avatar" type="file" value="{{request.user.avatar}}" data-validate="onlyImgAvatar">
+                                    <input class="Profile-file form-input" id="id_avatar" accept="image/*" name="avatar" type="file" value="{{request.user.avatar}}" data-validate="onlyImgAvatar">
                                 </div>
                             </div>
                             <div class="name-block custom_register_name-block">
