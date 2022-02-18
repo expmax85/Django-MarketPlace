@@ -9,9 +9,6 @@ from django.views.generic import ListView, DetailView
 
 from stores_app.forms import *
 from stores_app.models import Seller
-# from stores_app.services import create_store, get_user_stores, get_store, edit_store, \
-#     create_seller_product, get_products, get_categories, get_seller_products, get_stores, get_discounts, \
-
 from stores_app.services import QueryMixin
 
 
@@ -43,8 +40,7 @@ class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, V
     def post(self, request) -> Callable:
         form = AddStoreForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(commit=False)
-            self.create_store(user=request.user, form=form)
+            form.save()
             return redirect(reverse('stores-polls:sellers-room'))
         form = AddStoreForm()
         return render(request, 'stores_app/add_store.html', context={'form': form})
@@ -72,9 +68,9 @@ class StoreDetailView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, D
         return context
 
     def post(self, request, slug) -> Callable:
-        form = EditStoreForm(request.POST, request.FILES)
+        form = EditStoreForm(request.POST, request.FILES, instance=self.get_object())
         if form.is_valid():
-            self.edit_store(store_slug=slug, form=form)
+            form.save()
             return redirect(reverse('stores-polls:sellers-room'))
         return redirect(reverse('stores-polls:store_detail', kwargs={'slug': slug}))
 
@@ -98,7 +94,7 @@ class AddSellerProduct(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, 
     def post(self, request):
         form = AddSellerProductForm(request.POST)
         if form.is_valid():
-            self.create_seller_product(form=form)
+            form.save()
             return redirect(reverse('stores-polls:sellers-room'))
         form = AddStoreForm()
         return render(request, 'stores_app/new_product_in_store.html', context={'form': form})

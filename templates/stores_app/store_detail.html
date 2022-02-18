@@ -92,7 +92,15 @@
                              <div class="form-group store-img">
                                  <label class="form-label" for="id_icon">
                                  </label>
-                                 <div class="Profile-img store-logo">{% trans 'Choose the logo image' %}</div>
+                                 <div class="Profile-img store-logo">
+                                 {%  if request.user.avatar %}
+                                     <img src="{{ MEDIA_ROOT }}/uploads/{{ store.icon }}" alt="icon store">
+                                 </div>
+                                 <span class="icon-span">{% trans 'Click on picture for change' %}</span>
+                                 {% else %}
+                                     {% trans 'Choose the logo image' %}
+                                 </div>
+                                 {% endif %}
                                  <input class="Profile-file form-input" type="file" value="{{store.icon}}" name="icon" id="id_icon" data-validate="onlyImgAvatar">
                              </div>
                              <div class="form-group">

@@ -7,8 +7,7 @@ class AddStoreForm(forms.ModelForm):
 
     class Meta:
         model = Seller
-        fields = ['name', 'description', 'address', 'slug', 'email', 'phone', 'icon']
-        exclude = ['owner']
+        fields = '__all__'
 
 
 class EditStoreForm(forms.ModelForm):

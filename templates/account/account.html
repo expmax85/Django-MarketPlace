@@ -58,8 +58,9 @@
         <div class="Account">
           <div class="Account-group">
             <div class="Account-column">
-              <div class="Account-avatar"><img src="{{ MEDIA_ROOT }}/avatars/{{ request.user.avatar }}" alt="avatar.jpg"/>
-              </div>
+              <figure class="figure-avatar">
+                  <img class="Account-avatar-img" src="{{ MEDIA_ROOT }}/uploads/{{ request.user.avatar }}" alt="avatar.jpg" height="100%"/>
+              </figure>
             </div>
             <div class="Account-column">
               <div class="Account-name">{{ request.user.last_name}} {{ request.user.first_name }}

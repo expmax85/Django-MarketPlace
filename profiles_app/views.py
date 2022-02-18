@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
-from profiles_app.services import get_user_and_change_password, get_auth_user, edit_user
+from profiles_app.services import get_user_and_change_password, get_auth_user, remove_old_avatar
 from django.utils.translation import gettext_lazy as _
 
 
@@ -56,7 +56,6 @@ class RestorePasswordView(View):
     """
     Страница восстановления пароля
     """
-
     def get(self, request) -> Callable:
         form = RestorePasswordForm()
         return render(request, 'account/password_reset.html', context={'form': form})
@@ -99,9 +98,12 @@ class AccountEditView(LoginRequiredMixin, View):
         return render(request, 'account/profile.html', context={'form': form})
 
     def post(self, request) -> Callable:
-        form = AccountEditForm(request.POST, request.FILES)
+        old_av = str(request.user.avatar)
+        form = AccountEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
+            form.save()
             text_message = _('The profile was saved successfully')
-            edit_user(request.user.id, form)
+            if 'avatar' in form.changed_data:
+                remove_old_avatar(old_av)
             return render(request, 'account/profile.html', context={'form': form, 'text_message': text_message})
         return render(request, 'account/profile.html', context={'form': form, 'text_message': ""})

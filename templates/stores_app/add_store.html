@@ -53,6 +53,7 @@
                   {% csrf_token %}
                   <div class="row">
                       <div class="row-block">
+                            <input class="form-input" name="owner" value="{{ request.user.id }}" type="hidden">
                           <div class="form-group">
                               <label class="form-label" for="id_name">{% trans 'Store name' %}</label>
                               <input class="form-input" id="id_name" required name="name" type="text">
@@ -89,7 +90,7 @@
                               <label class="form-label" for="id_icon">
                               </label>
                               <div class="Profile-img store-logo">{% trans 'Choose the logo image' %}</div>
-                              <input class="Profile-file form-input" type="file" name="icon" id="id_icon" data-validate="onlyImgAvatar">
+                              <input class="Profile-file form-input" type="file" accept="image/*" name="icon" id="id_icon" data-validate="onlyImgAvatar">
                           </div>
                           <div class="form-group">
                               <div class="Profile-btn  custom_align-center">

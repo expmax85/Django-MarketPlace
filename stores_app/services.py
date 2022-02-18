@@ -1,18 +1,14 @@
+import os
+
 from django.db.models import QuerySet
 
+from config.settings import MEDIA_ROOT
 from discounts_app.models import Discount
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product, ProductCategory
 
 
 class QueryMixin:
-
-    @classmethod
-    def create_store(cls, user, form) -> None:
-        """
-        Create new Seller instance
-        """
-        Seller.objects.create(owner=user, **form.cleaned_data)
 
     @classmethod
     def get_store(cls, slug: str) -> QuerySet:
@@ -22,33 +18,19 @@ class QueryMixin:
         return Seller.objects.select_related('owner').get(slug=slug)
 
     @classmethod
-    def edit_store(cls, store_slug: str, form) -> None:
-        """
-        Update Seller instance
-        """
-        Seller.objects.filter(slug=store_slug).update(**form.cleaned_data)
-
-    @classmethod
     def get_user_stores(cls, user) -> QuerySet:
         """
         Get all stores by user
         """
         return Seller.objects.filter(owner=user)
 
-    @classmethod
     def remove_store(self, store_id: int) -> None:
         """
         Remove store
         """
-        Seller.objects.filter(id=store_id).delete()
-
-    @classmethod
-    def create_seller_product(cls, form) -> None:
-        """
-        Create new product in store by seller
-        """
-        print(form.cleaned_data)
-        SellerProduct.objects.create(**form.cleaned_data)
+        store = Seller.objects.get(id=store_id)
+        self.remove_old_file(str(store.icon))
+        store.delete()
 
     @classmethod
     def get_seller_products(cls, user) -> QuerySet:
@@ -59,7 +41,7 @@ class QueryMixin:
                                     .filter(seller__owner=user)
 
     @classmethod
-    def remove_seller_product(self, product_id: int) -> None:
+    def remove_seller_product(cls, product_id: int) -> None:
         """
         Remove store
         """
@@ -83,6 +65,8 @@ class QueryMixin:
     def get_discounts(cls) -> QuerySet:
         return Discount.objects.all()
 
-
-
-
+    @classmethod
+    def remove_old_file(cls, file: str) -> None:
+        path = os.path.normpath(os.path.join(MEDIA_ROOT, str(file)))
+        if os.path.exists(path):
+            os.remove(path)

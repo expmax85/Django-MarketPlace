@@ -57,7 +57,7 @@
                         {% for store in stores %}
                         <div class="store">
                             <a href="{{ store.get_absolute_url }}" class="seller-item">
-                                <img src="{{MEDIA_ROOT}}/icons/{{store.icon}}" alt="store-icon" class="seller-icon">
+                                <img src="{{MEDIA_ROOT}}/uploads/{{store.icon}}" alt="store-icon" class="seller-icon">
                                 <h3 class="seller-title custom_align-center">{{ store.name }}</h3>
                                 <i class="fa-duotone fa-trash-slash"></i>
                             </a>
