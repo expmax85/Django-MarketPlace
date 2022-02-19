@@ -376,3 +376,10 @@ textarea:focus, textarea:hover{
 .delete-btn:focus svg path{
     fill: #3cb878;
 }
+
+.delete-product-success {
+    color: #3cb878;
+    display: block;
+    margin-top: 40px;
+    text-align: right;
+}

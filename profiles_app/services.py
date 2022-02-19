@@ -27,4 +27,5 @@ def get_auth_user(form) -> Callable:
 
 def remove_old_avatar(file: str) -> None:
     path = os.path.normpath(os.path.join(MEDIA_ROOT, str(file)))
-    os.remove(path)
+    if os.path.exists(path) and file:
+        os.remove(path)

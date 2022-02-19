@@ -1,6 +1,7 @@
 from typing import Callable
 
 from django.contrib.auth import login
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ImproperlyConfigured
@@ -98,12 +99,10 @@ class AccountEditView(LoginRequiredMixin, View):
         return render(request, 'account/profile.html', context={'form': form})
 
     def post(self, request) -> Callable:
-        old_av = str(request.user.avatar)
         form = AccountEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            text_message = _('The profile was saved successfully')
-            if 'avatar' in form.changed_data:
-                remove_old_avatar(old_av)
-            return render(request, 'account/profile.html', context={'form': form, 'text_message': text_message})
-        return render(request, 'account/profile.html', context={'form': form, 'text_message': ""})
+            messages.add_message(request, messages.SUCCESS,
+                                 _('The profile was saved successfully'))
+            return render(request, 'account/profile.html', context={'form': form})
+        return render(request, 'account/profile.html', context={'form': form})

@@ -28,7 +28,10 @@ class Seller(models.Model):
                                                    str(_('Up to 15 digits allowed.'))]))
     phone = models.CharField(max_length=25, validators=[phone_valid], null=True, blank=True, default="",
                              verbose_name=_('phone'))
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller', verbose_name=_('owner'))
+    owner = models.ForeignKey(User,
+              on_delete=models.CASCADE,
+              related_name='seller',
+              verbose_name=_('owner'))
 
     def __str__(self) -> str:
         return str(self.name)
@@ -36,29 +39,34 @@ class Seller(models.Model):
     def get_absolute_url(self) -> Callable:
         return reverse('stores-polls:store_detail', kwargs={'slug': self.slug})
 
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            old_self = User.objects.get(pk=self.pk)
+            if old_self.icon and self.icon != old_self.icon:
+                old_self.icon.delete(False)
+        return super(Seller, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = _('store')
         verbose_name_plural = _('stores')
+        db_table = 'sellers'
 
 
 class SellerProduct(models.Model):
     """
     Seller product model
     """
-    seller = models.ForeignKey(
-        Seller,
+    seller = models.ForeignKey(Seller,
         on_delete=models.CASCADE,
         related_name='seller_products',
         verbose_name=_('seller')
     )
-    product = models.ForeignKey(
-        Product,
+    product = models.ForeignKey(Product,
         on_delete=models.CASCADE,
         related_name='seller_products',
         verbose_name=_('product')
     )
-    discount = models.ForeignKey(
-        Discount,
+    discount = models.ForeignKey(Discount,
         on_delete=models.CASCADE,
         related_name='seller_products',
         verbose_name=_('discount')
@@ -68,8 +76,9 @@ class SellerProduct(models.Model):
     quantity = models.IntegerField(verbose_name=_('quantity'))
 
     def __str__(self):
-        return f'{self.product} in {self.store}'
+        return f'{self.product} in {self.seller}'
 
     class Meta:
         verbose_name = _('product in shop')
         verbose_name_plural = _('products in shop')
+        db_table = 'store_products'

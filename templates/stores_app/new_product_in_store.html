@@ -124,6 +124,13 @@
                   </div>
               </form>
           </div>
+          {% if messages %}
+            {% for message in messages %}
+                {% if message.level == 150 %}
+                <div style="position: absolute; color: red; top:500px;">{{message}}</div>
+                {% endif %}
+            {%endfor %}
+          {% endif %}
       </div>
   </div>
 </div>

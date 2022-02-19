@@ -1,7 +1,6 @@
 function PriceDiscount(valNum) {
     document.getElementById("id_discount").addEventListener("change", makeValue);
     let selectvalue = makeValue();
-    // document.getElementById("id_price_after_discount").value = valNum - selectvalue;
     document.querySelector("#id_price_after_discount").setAttribute("value", valNum - selectvalue);
 
     function makeValue() {
