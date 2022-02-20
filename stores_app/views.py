@@ -3,6 +3,7 @@ from typing import Callable, Dict
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 from django.db.models import QuerySet
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -11,14 +12,14 @@ from django.views.generic import ListView, DetailView
 
 from stores_app.forms import *
 from stores_app.models import Seller
-from stores_app.services import QueryMixin
+from stores_app.services import StoreServiceMixin
 
 
 CREATE_SP_ERROR = 150
 
 
-class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, ListView):
-    """Page for view seller room for Sellers-group"""
+class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, ListView):
+    """   Page for view seller room for Sellers-group   """
     permission_required = ('profiles_app.Sellers',)
     model = Seller
     template_name = 'stores_app/sellers_room.html'
@@ -34,8 +35,8 @@ class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, L
         return context
 
 
-class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, View):
-    """Page for create new store"""
+class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, View):
+    """   Page for creating new store   """
     permission_required = ('profiles_app.Sellers',)
 
     def get(self, request) -> Callable:
@@ -47,15 +48,14 @@ class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, V
         if form.is_valid():
             form.save()
             return redirect(reverse('stores-polls:sellers-room'))
-        form = AddStoreForm()
         return render(request, 'stores_app/add_store.html', context={'form': form})
 
 
-class StoreDetailView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, DetailView):
-    """Page for view and edit detail store"""
+class EditStoreView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, DetailView):
+    """   Page for view and edit detail store   """
     permission_required = ('profiles_app.Sellers',)
     context_object_name = 'store'
-    template_name = 'stores_app/store_detail.html'
+    template_name = 'stores_app/edit-store.html'
     model = Seller
     slug_url_kwarg = 'slug'
 
@@ -69,11 +69,24 @@ class StoreDetailView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, D
         if form.is_valid():
             form.save()
             return redirect(reverse('stores-polls:sellers-room'))
-        return redirect(reverse('stores-polls:store_detail', kwargs={'slug': slug}))
+        return redirect(reverse('stores-polls:edit-store', kwargs={'slug': slug}))
 
 
-class AddSellerProductView(LoginRequiredMixin, PermissionRequiredMixin, QueryMixin, View):
-    """Page for adding new seller product"""
+class StoreDetailView(StoreServiceMixin, DetailView):
+    """   Page for Store Detail   """
+    context_object_name = 'store'
+    template_name = 'stores_app/store_detail.html'
+    model = Seller
+    slug_url_kwarg = 'slug'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = self.get_products(instance=self.get_object())
+        return context
+
+
+class AddSellerProductView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, View):
+    """   Page for adding new seller product   """
     permission_required = ('profiles_app.Sellers',)
 
     def get_queryset(self, request):
@@ -91,26 +104,48 @@ class AddSellerProductView(LoginRequiredMixin, PermissionRequiredMixin, QueryMix
     def post(self, request):
         form = AddSellerProductForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(commit=False)
+            created = self.create_seller_product(data=form.cleaned_data)
+            if not created:
+                messages.add_message(request, CREATE_SP_ERROR, _('This product is already exist in those store!'))
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
-        else:
-            messages.add_message(request, CREATE_SP_ERROR, form.errors)
-            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return render(request, 'stores_app/new_product_in_store.html', {'form': form})
 
 
-class SelleProductDetailView(DetailView):
-    pass
+class EditSelleProductView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, DetailView):
+    """    Page for editing SellerProduct instance    """
+    permission_required = ('profiles_app.Sellers',)
+    context_object_name = 'item'
+    template_name = 'stores_app/edit-seller-product.html'
+    model = SellerProduct
+    slug_url_kwarg = 'slug'
+
+    def get_context_data(self, **kwargs) -> Dict:
+        context = super().get_context_data()
+        context['form'] = EditSellerProductForm(instance=self.get_object())
+        context['discounts'] = self.get_discounts()
+        return context
+
+    def post(self, request, slug, pk) -> Callable:
+        form = EditSellerProductForm(request.POST, instance=self.get_object())
+        if form.is_valid():
+            form.save(commit=False)
+            self.edit_seller_product(data=form.cleaned_data, instance=self.get_object())
+            return redirect(reverse('stores-polls:sellers-room'))
+        return redirect(reverse('stores-polls:edit-seller-product', kwargs={'slug': slug,
+                                                                            'pk': pk}))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_Store(request):
     if request.method == 'GET':
-        QueryMixin.remove_store(request)
+        StoreServiceMixin.remove_store(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_SellerProduct(request):
     if request.method == 'GET':
-        QueryMixin.remove_seller_product(request)
+        StoreServiceMixin.remove_seller_product(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))

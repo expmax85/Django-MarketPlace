@@ -23,6 +23,7 @@ class Seller(models.Model):
     address = models.TextField(max_length=100, null=True, blank=True, default="", verbose_name=_('address'))
     icon = models.ImageField(upload_to='icons/', null=True, blank=True, verbose_name=_('icon'))
     email = models.EmailField(null=True, blank=True, default="", verbose_name='email')
+    # email2 = models.EmailField(null=True, blank=True, default="", verbose_name='email')
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
                                                    str(_('Up to 15 digits allowed.'))]))
@@ -37,11 +38,11 @@ class Seller(models.Model):
         return str(self.name)
 
     def get_absolute_url(self) -> Callable:
-        return reverse('stores-polls:store_detail', kwargs={'slug': self.slug})
+        return reverse('stores-polls:store-detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
         if self.pk is not None:
-            old_self = User.objects.get(pk=self.pk)
+            old_self = Seller.objects.get(pk=self.pk)
             if old_self.icon and self.icon != old_self.icon:
                 old_self.icon.delete(False)
         return super(Seller, self).save(*args, **kwargs)
@@ -82,3 +83,7 @@ class SellerProduct(models.Model):
         verbose_name = _('product in shop')
         verbose_name_plural = _('products in shop')
         db_table = 'store_products'
+
+    def get_absolute_url(self):
+        return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
+                                                                   'pk': self.id})

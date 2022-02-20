@@ -350,30 +350,51 @@ textarea:focus, textarea:hover{
     border: none;
 }
 
-.delete-store {
+.bth-width-store {
     width: 32px;
 }
 
-.delete-seller-product {
+.edit-btn {
+    display: block;
     position: absolute;
+    padding: 3px;
+    top: 7px;
+    right: 70px;
+}
+
+.seller-product {
     top: 10px;
     right: 10px;
-    background-color: transparent;
-    border: none;
     width: 45px;
 }
 
-.delete-btn:hover,
-.delete-btn:focus {
-    border: none !important;
+.edit-seller-product {
+    display: block;
+    padding: 3px;
+    position: absolute;
+    top: 8px;
+    right: 60px;
+    width: 45px;
 }
 
-.delete-btn svg path{
+.seller-product:hover,
+.seller-product:focus,
+.bth-width-store:hover,
+.bth-width-store:focus {
+    border: none !important;
+    position: absolute !important;
+}
+
+.seller-product svg path,
+.bth-width-store svg path{
+    fill: #878a91;
     transition: fill 0.3s ease;
 }
 
-.delete-btn:hover svg path,
-.delete-btn:focus svg path{
+.seller-product:hover svg path,
+.seller-product:focus svg path,
+.bth-width-store:hover svg path,
+.bth-width-store:focus svg path{
     fill: #3cb878;
 }
 

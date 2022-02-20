@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 from django.contrib import messages
 from django.db.models import QuerySet
@@ -16,7 +17,24 @@ SUCCESS_DEL_PRODUCT = 100
 SUCCESS_DEL_STORE = 110
 
 
-class QueryMixin:
+class StoreServiceMixin:
+    """
+    Mixin with functions for queries by project models Seller and SellerProduct
+
+    All available methods:
+    get_store(slug) - get Seller instance with slug=slug
+    get_user_stores(user) - get all Seller models by owner=user
+    remove_store(request) - remove Seller instance with id=request.id=request
+    create_seller_product(data) - create SelleProduct instance
+    edit_seller_product(data, instance) - edit SellerProduct instance
+ ?? get_products(query params) - get products
+ ?? get_categories() - get all categories
+ ?? get_discounts() - get all discounts
+ ?? get_price_with_discount(price, discount) - Get the price with discount, if it had
+    get_seller_products(user) - get SellerProducts query by Sellers owner=user
+    remove_seller_product(request) - Remove SellerProduct instance with id=request.id
+    remove_old_file(file) - Method for remove file on path=MEDIA_ROOT + file
+    """
 
     @classmethod
     def get_store(cls, slug: str) -> QuerySet:
@@ -41,6 +59,48 @@ class QueryMixin:
         messages.add_message(request, SUCCESS_DEL_STORE,
                              _(f'The {store.name} was removed'))
         store.delete()
+
+    def create_seller_product(self, data):
+        """
+        Create new SellerProduct
+        """
+        if SellerProduct.objects.filter(seller=data['seller'], product=data['product']).exists():
+            return False
+        else:
+            price_after_discount = self.get_price_with_discount(data['price'], data['discount'])
+            SellerProduct.objects.create(
+                seller=data['seller'],
+                product=data['product'],
+                discount=data['discount'],
+                price=data['price'],
+                price_after_discount=price_after_discount,
+                quantity=data['quantity'])
+            return True
+
+    def edit_seller_product(self, data, instance):
+        """
+        Edit SellerProduct instance
+        """
+        price_after_discount = self.get_price_with_discount(data['price'], data['discount'])
+        instance.discount = data['discount']
+        instance.price = data['price']
+        instance.price_after_discount = price_after_discount
+        instance.quantity = data['quantity']
+        instance.save()
+
+    @classmethod
+    def get_price_with_discount(cls, price, discount):
+        """
+        Get the price with discount, if it had
+        """
+        if discount.percent:
+            return price * Decimal(1 - discount.percent / 100)
+        elif discount.amount:
+            print(discount.amount)
+            print(price - Decimal(discount.amount))
+            return price - Decimal(discount.amount)
+        else:
+            return price
 
     @classmethod
     def get_seller_products(cls, user) -> QuerySet:
@@ -71,8 +131,11 @@ class QueryMixin:
     def get_products(cls, **kwargs) -> QuerySet:
         if 'category_id' in kwargs.keys():
             return Product.objects.select_related('category').filter(category=kwargs.get('category_id'))
+        elif 'instance' in kwargs.keys():
+            return Product.objects.select_related('category').filter(seller_products__seller=kwargs.get('instance'))
         else:
             return Product.objects.select_related('category').all()
+
 
     @classmethod
     def get_discounts(cls) -> QuerySet:

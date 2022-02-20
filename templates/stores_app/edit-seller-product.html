@@ -13,7 +13,7 @@
 <div class="Middle-top">
     <div class="wrap">
         <div class="Middle-header">
-            <h1 class="Middle-title">{% trans 'Add Product in Store' %}</h1>
+            <h1 class="Middle-title">{% trans 'Edit Product' %}</h1>
             <ul class="breadcrumbs Middle-breadcrumbs">
                 <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
                 <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sellers Room' %}</span></li>
@@ -53,25 +53,13 @@
                   {% csrf_token %}
                   <div class="row flex column-direction">
                       <div class="row-block">
-                          <div class="form-group require-field">
-                              <label class="form-label" for="id_seller">{% trans 'Choose store' %}</label>
-                              <select class="form-area" name="seller" required="" id="id_seller">
-                                  <option value="" selected="">---------</option>
-                                  {% for store in stores %}
-                                  <option value="{{ store.id }}">{{ store.name }}</option>
-                                  {% endfor %}
-                              </select>
-                              <span class="formerror">{{form.errors.seller}}</span>
+                          <div class="form-groupd">
+                              <label class="form-label" for="id_seller">{% trans 'Store' %}</label>
+                              <input class="form-area" name="seller" required="" value="{{ item.seller.name }}" readonly id="id_seller">
                           </div>
-                          <div class="form-group require-field">
+                          <div class="form-group">
                               <label class="form-label" for="id_product">{% trans 'Product' %}</label>
-                              <select class="form-area" name="product" required="" id="id_product">
-                                  <option value="" selected="">---------</option>
-                                  {% for product in products %}
-                                  <option value="{{ product.id }}">{{ product.name }}</option>
-                                  {% endfor %}
-                              </select>
-                              <span class="formerror">{{form.errors.product}}</span>
+                              <input class="form-area" name="product" required="" value="{{ item.product.name }}" readonly id="id_product">
                           </div>
                       </div>
                   </div>
@@ -80,14 +68,17 @@
                           <div class="form-group reset-margin require-field">
                               <label class="form-label" for="id_quantity">{% trans 'Quantity' %}:
                               </label>
-                              <input class="form-input" type="number" name="quantity" required id="id_quantity">
+                              <input class="form-input" type="number" name="quantity" value="{{ item.quantity }}" required id="id_quantity">
                           </div>
                           <div class="form-group reset-margin">
                               <label class="form-label" for="id_discount">{% trans 'Discount' %}:</label>
                               <select class="form-input" name="discount" id="id_discount">
-                                  <option value="" selected="">---------</option>
                                   {% for discount in discounts %}
-                                  <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}">
+                                      {%  if discount.id == item.discount.id %}
+                                           <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}" selected="">
+                                      {% else %}
+                                           <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}">
+                                      {% endif %}
                                       {{ discount.name }} (
                                           {% if discount.percent == None %}
                                             {{discount.amount}}
@@ -97,20 +88,20 @@
                                   </option>
                                   {% endfor %}
                               </select>
-                              <span class="formerror">{{form.errors.discount}}</span>
+                              <span class="formerror">{{form.errors.item}}</span>
                           </div>
                       </div>
                       <div class="row-block">
                           <div class="form-group require-field">
                               <label class="form-label" for="id_price">{% trans 'Price' %}:</label>
-                              <input class="form-input" id="id_price" name="price" type="number" required step="100.00"
+                              <input class="form-input" id="id_price" name="price" type="number" value="{{ item.price }}" required step="100.00"
                               oninput="PriceDiscount(this.value)">
-                              <span class="formerror">{{form.errors.price}}</span>
+                              <span class="formerror">{{form.errors.quantity}}</span>
                           </div>
                           <div class="form-group reset-margin">
                               <label class="form-label" for="id_price_after_discount" >{% trans 'Price with discount' %}:
                               </label>
-                              <input class="form-input" type="number" name="price_after_discount" id="id_price_after_discount" readonly onchange="PriceDiscount(this.value)">
+                              <input class="form-input" type="number" name="price_after_discount" value="{{ item.price_after_discount }}" readonly id="id_price_after_discount" onchange="PriceDiscount(this.value)">
                           </div>
                       </div>
                   </div>
@@ -118,7 +109,7 @@
                       <div class="form-group custom_login_form-group-btns custom_margin-bottom">
                           <div class="Profile-btn custom_align-center">
                               <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">{%  trans 'Back to seller room' %}</a>
-                              <button class="btn btn_success" type="submit">{% trans 'Add product' %}</button>
+                              <button class="btn btn_success" type="submit">{% trans 'Accept and edit' %}</button>
                           </div>
                       </div>
                   </div>

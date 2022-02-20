@@ -25,5 +25,12 @@ class AddSellerProductForm(forms.ModelForm):
         fields = '__all__'
 
 
+class EditSellerProductForm(forms.ModelForm):
+
+    class Meta:
+        model = SellerProduct
+        fields = ['discount', 'price', 'price_after_discount', 'quantity']
+        exclude = ['seller', 'product',]
+
 class AddRequestNewProduct(forms.Form):
     pass
