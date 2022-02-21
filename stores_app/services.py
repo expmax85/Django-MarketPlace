@@ -1,7 +1,9 @@
 import os
 from decimal import Decimal
+from typing import Dict
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_delete
@@ -11,6 +13,8 @@ from discounts_app.models import Discount
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product, ProductCategory
 
+
+User = get_user_model()
 
 # Set custom level messages for django.contrib.messages
 SUCCESS_DEL_PRODUCT = 100
@@ -44,7 +48,7 @@ class StoreServiceMixin:
         return Seller.objects.select_related('owner').get(slug=slug)
 
     @classmethod
-    def get_user_stores(cls, user) -> QuerySet:
+    def get_user_stores(cls, user: User) -> QuerySet:
         """
         Get all stores by user
         """
@@ -60,7 +64,7 @@ class StoreServiceMixin:
                              _(f'The {store.name} was removed'))
         store.delete()
 
-    def create_seller_product(self, data):
+    def create_seller_product(self, data: Dict) -> bool:
         """
         Create new SellerProduct
         """
@@ -77,7 +81,7 @@ class StoreServiceMixin:
                 quantity=data['quantity'])
             return True
 
-    def edit_seller_product(self, data, instance):
+    def edit_seller_product(self, data: Dict, instance: SellerProduct) -> None:
         """
         Edit SellerProduct instance
         """
@@ -89,7 +93,7 @@ class StoreServiceMixin:
         instance.save()
 
     @classmethod
-    def get_price_with_discount(cls, price, discount):
+    def get_price_with_discount(cls, price: Decimal, discount: Discount) -> Decimal:
         """
         Get the price with discount, if it had
         """
@@ -103,7 +107,7 @@ class StoreServiceMixin:
             return price
 
     @classmethod
-    def get_seller_products(cls, user) -> QuerySet:
+    def get_seller_products(cls, user: User) -> QuerySet:
         """
         Get all products, added by user
         """
@@ -136,7 +140,6 @@ class StoreServiceMixin:
         else:
             return Product.objects.select_related('category').all()
 
-
     @classmethod
     def get_discounts(cls) -> QuerySet:
         return Discount.objects.all()
@@ -151,7 +154,7 @@ class StoreServiceMixin:
             os.remove(path)
 
 
-def delete_IconFile(**kwargs):
+def delete_IconFile(**kwargs) -> None:
     """
     The signal for removing icon Seller, when the store is deleting
     """
