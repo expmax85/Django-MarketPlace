@@ -1,0 +1,146 @@
+{% extends 'base.html ' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Add Product in Store' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle-top">
+    <div class="wrap">
+        <div class="Middle-header">
+            <h1 class="Middle-title">{% trans 'Add Product in Store' %}</h1>
+            <ul class="breadcrumbs Middle-breadcrumbs">
+                <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Sellers Room' %}</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="Section Section_column Section_columnLeft">
+  <div class="wrap">
+      <div class="Section-column">
+          <div class="Section-columnSection">
+              <header class="Section-header">
+                  <strong class="Section-title">{% trans 'Navigation' %}
+                  </strong>
+              </header>
+              <div class="Section-columnContent">
+                  <div class="NavigateProfile">
+                      <ul class="menu menu_vt">
+                          <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:private-room' %}">{% trans 'Account info' %}</a>
+                          </li>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
+                          </li>
+                          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchases history' %}</a>
+                          </li>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Viewed products' %}</a>
+                          </li>
+                          <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="Section-content">
+          <div class="Profile">
+              <form class="form Profile-form" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="row flex column-direction">
+                      <div class="row-block">
+                          <div class="form-group require-field">
+                              <label class="form-label" for="id_seller">{% trans 'Choose store' %}</label>
+                              <select class="form-area" name="seller" required="" id="id_seller">
+                                  <option value="" selected="">---------</option>
+                                  {% for store in stores %}
+                                  <option value="{{ store.id }}">{{ store.name }}</option>
+                                  {% endfor %}
+                              </select>
+                              <span class="formerror">{{form.errors.seller}}</span>
+                          </div>
+                          <div class="form-group require-field">
+                              <label class="form-label" for="id_product">{% trans 'Product' %}</label>
+                              <select class="form-area" name="product" required="" id="id_product">
+                                  <option value="" selected="">---------</option>
+                                  {% for product in products %}
+                                  <option value="{{ product.id }}">{{ product.name }}</option>
+                                  {% endfor %}
+                              </select>
+                              <span class="formerror">{{form.errors.product}}</span>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row flex block-input-numbers">
+                      <div class="row-block">
+                          <div class="form-group reset-margin require-field">
+                              <label class="form-label" for="id_quantity">{% trans 'Quantity' %}:
+                              </label>
+                              <input class="form-input" type="number" name="quantity" required id="id_quantity">
+                          </div>
+                          <div class="form-group reset-margin">
+                              <label class="form-label" for="id_discount">{% trans 'Discount' %}:</label>
+                              <select class="form-input" name="discount" id="id_discount">
+                                  <option value="" selected="">---------</option>
+                                  {% for discount in discounts %}
+                                  <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}">
+                                      {{ discount.name }} (
+                                          {% if discount.percent == None %}
+                                            {{discount.amount}}
+                                          {% else %}
+                                            {{ discount.percent }}%
+                                          {% endif %})
+                                  </option>
+                                  {% endfor %}
+                              </select>
+                              <span class="formerror">{{form.errors.discount}}</span>
+                          </div>
+                      </div>
+                      <div class="row-block">
+                          <div class="form-group require-field">
+                              <label class="form-label" for="id_price">{% trans 'Price' %}:</label>
+                              <input class="form-input" id="id_price" name="price" type="number" required step="100.00"
+                              oninput="PriceDiscount(this.value)">
+                              <span class="formerror">{{form.errors.price}}</span>
+                          </div>
+                          <div class="form-group reset-margin">
+                              <label class="form-label" for="id_price_after_discount" >{% trans 'Price with discount' %}:
+                              </label>
+                              <input class="form-input" type="number" name="price_after_discount" id="id_price_after_discount" readonly onchange="PriceDiscount(this.value)">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row-block flex custom_register_name-block">
+                      <div class="form-group custom_login_form-group-btns custom_margin-bottom">
+                          <div class="Profile-btn custom_align-center">
+                              <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">{%  trans 'Back to seller room' %}</a>
+                              <button class="btn btn_success" type="submit">{% trans 'Add product' %}</button>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+          </div>
+          {% if messages %}
+            {% for message in messages %}
+                {% if message.level == 150 %}
+                <div style="position: absolute; color: red; top:500px;">{{message}}</div>
+                {% endif %}
+            {%endfor %}
+          {% endif %}
+      </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'assets/js/main.js' %}"></script>
+{% endblock %}

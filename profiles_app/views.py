@@ -1,6 +1,7 @@
 from typing import Callable
 
 from django.contrib.auth import login
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import ImproperlyConfigured
@@ -9,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
-from profiles_app.services import get_user_and_change_password, get_auth_user, edit_user
+from profiles_app.services import get_user_and_change_password, get_auth_user, remove_old_avatar
 from django.utils.translation import gettext_lazy as _
 
 
@@ -56,7 +57,6 @@ class RestorePasswordView(View):
     """
     Страница восстановления пароля
     """
-
     def get(self, request) -> Callable:
         form = RestorePasswordForm()
         return render(request, 'account/password_reset.html', context={'form': form})
@@ -99,9 +99,10 @@ class AccountEditView(LoginRequiredMixin, View):
         return render(request, 'account/profile.html', context={'form': form})
 
     def post(self, request) -> Callable:
-        form = AccountEditForm(request.POST, request.FILES)
+        form = AccountEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            text_message = _('The profile was saved successfully')
-            edit_user(request.user.id, form)
-            return render(request, 'account/profile.html', context={'form': form, 'text_message': text_message})
-        return render(request, 'account/profile.html', context={'form': form, 'text_message': ""})
+            form.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 _('The profile was saved successfully'))
+            return render(request, 'account/profile.html', context={'form': form})
+        return render(request, 'account/profile.html', context={'form': form})

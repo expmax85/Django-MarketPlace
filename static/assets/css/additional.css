@@ -4,7 +4,8 @@
 }
 
 .reset-margin {
-margin-top: 0;}
+margin-top: 0 !important;
+}
 
 .custom_align-right {
     text-align: right;
@@ -15,7 +16,9 @@ margin-top: 0;}
     justify-content: flex-end;
 }
 
-.require-field input {
+.require-field input,
+.require-field textarea,
+.require-field select {
     border: 1px solid #0063d1 !important;
 }
 
@@ -61,6 +64,14 @@ margin-top: 0;}
     flex-wrap: wrap;
 }
 
+.flex {
+    display: flex;
+}
+
+.column-direction {
+    flex-direction: column;
+}
+
 .custom_register_form-group {
     width: 47%;
     margin-top: 26.3px;
@@ -79,6 +90,35 @@ margin-top: 0;}
     min-width: 400px;
 }
 
+.avatar-span {
+    position: absolute;
+    top: -35px;
+    right: 0;
+    font-size: 16px;
+    color: #0063d1;
+}
+
+.icon-span {
+    position: absolute;
+    top: -25px;
+    right: 0;
+    font-size: 16px;
+    color: #0063d1;
+}
+
+.figure-avatar{
+    margin: 0;
+    padding: 10px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid #e0e0e0;
+}
+.Account-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .block-social-btn {
     display: flex;
     justify-content: center;
@@ -92,8 +132,7 @@ margin-top: 0;}
     padding: 20px 0;
     border-radius: 100px;
     border: 1px solid #71747a;
-    transition: border-color 0.4s ease;
-    transition: color 0.4s ease;
+    transition: border-color 0.4s ease, color 0.4s ease;
 }
 
 .social-btn:hover {
@@ -138,7 +177,7 @@ margin-top: 0;}
     width: 100%;
     box-sizing: border-box;
     padding: 5px 25px;
-    border-radius: 0px;
+    border-radius: 0;
     border: 1px solid #e0e0e0;
     font-size: 18px;
     background-color: #f9fafc;
@@ -190,7 +229,18 @@ margin-top: 0;}
     transition: color 0.3s ease;
 }
 
+.seller-text-2 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #cacaca;
+    position: absolute;
+    left: 50px;
+    bottom: 18px;
+    transition: color 0.3s ease;
+}
+
 .Add-seller svg path{
+    cursor: pointer;
     transition: fill 0.3s ease;
  }
 
@@ -244,4 +294,113 @@ margin-top: 0;}
 
 .form-area {
     width: 100%;
+}
+
+.block-input-numbers {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    justify-content: space-around;
+}
+
+select:focus, select:hover, input:focus, input:hover,
+textarea:focus, textarea:hover{
+    outline: 1px solid #3cb878;
+}
+
+.Add-product {
+    padding: 20px;
+    justify-content: space-around;
+
+}
+
+.Add-product div {
+    padding: 20px;
+}
+
+.btn-reset {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+#Capa_1{
+    padding-top: 20px;
+    width: 85%;
+}
+
+.Account-editLink_view {
+    position: absolute;
+    bottom: -60px;
+    right: 0;
+}
+
+.Cards_account .Card {
+    min-width: 280px;
+}
+
+.store {
+    position: relative;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    background-color: transparent;
+    border: none;
+}
+
+.bth-width-store {
+    width: 32px;
+}
+
+.edit-btn {
+    display: block;
+    position: absolute;
+    padding: 3px;
+    top: 7px;
+    right: 70px;
+}
+
+.seller-product {
+    top: 10px;
+    right: 10px;
+    width: 45px;
+}
+
+.edit-seller-product {
+    display: block;
+    padding: 3px;
+    position: absolute;
+    top: 8px;
+    right: 60px;
+    width: 45px;
+}
+
+.seller-product:hover,
+.seller-product:focus,
+.bth-width-store:hover,
+.bth-width-store:focus {
+    border: none !important;
+    position: absolute !important;
+}
+
+.seller-product svg path,
+.bth-width-store svg path{
+    fill: #878a91;
+    transition: fill 0.3s ease;
+}
+
+.seller-product:hover svg path,
+.seller-product:focus svg path,
+.bth-width-store:hover svg path,
+.bth-width-store:focus svg path{
+    fill: #3cb878;
+}
+
+.delete-product-success {
+    color: #3cb878;
+    display: block;
+    margin-top: 40px;
+    text-align: right;
 }

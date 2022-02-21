@@ -55,10 +55,21 @@
                         <div class="row-block">
                             <div class="form-group">
                                 <label class="form-label" for="id_avatar">{% trans 'Avatar' %}</label>
-                                <div class="Profile-avatar Profile-avatar_noimg">
-                                    <div class="Profile-img"><img src="{%  static 'assets/img/#.png' %}" alt="#.png"></div>
+                                {% if request.user.avatar %}
+                                <div class="Profile-avatar" style="position: relative;">
+                                {% else %}
+                                <div class="Profile-avatar Profile-avatar_noimg" style="position: relative;">
+                                {% endif %}
+                                    <div class="Profile-img">
+                                        {%  if request.user.avatar %}
+                                            <img src="{{ MEDIA_ROOT }}/uploads/{{ request.user.avatar }}" alt="avatar image">
+                                        {% else %}
+                                            <img src="assets/img/#.png" alt="#.png">
+                                        {% endif %}
+                                    </div>
+                                    <span class="avatar-span">{% trans 'Click on picture for change' %}</span>
                                     <label class="Profile-fileLabel" for="id_avatar">{% trans 'Choose the picture' %}</label>
-                                    <input class="Profile-file form-input" id="id_avatar" name="avatar" type="file" value="{{request.user.avatar}}" data-validate="onlyImgAvatar">
+                                    <input class="Profile-file form-input" id="id_avatar" accept="image/*" name="avatar" type="file" value="{{request.user.avatar}}" data-validate="onlyImgAvatar">
                                 </div>
                             </div>
                             <div class="name-block custom_register_name-block">
@@ -107,7 +118,11 @@
                     <div class="form-group custom_register_form-btns">
                         <div class="Profile-btn custom_align-right">
                             <button class="btn btn_success" type="submit">{% trans 'Save changes' %}</button>
-                        <div class="Profile-success">{{text_message}}</div>
+                            {% if messages %}
+                                {% for message in messages %}
+                                <div class="Profile-success">{{message}}</div>
+                                {%endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </form>

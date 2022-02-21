@@ -1,7 +1,9 @@
+import os
 from typing import Callable, Union
 
 from django.contrib.auth import get_user_model, authenticate
 from django.forms import EmailField
+from config.settings import MEDIA_ROOT
 
 
 User = get_user_model()
@@ -23,9 +25,7 @@ def get_auth_user(form) -> Callable:
     return authenticate(email=email, password=raw_password)
 
 
-def get_customer(user_id: int) -> 'User':
-    return User.objects.get(id=user_id)
-
-
-def edit_user(user_id: int, form) -> None:
-    User.objects.filter(id=user_id).update(**form.cleaned_data)
+def remove_old_avatar(file: str) -> None:
+    path = os.path.normpath(os.path.join(MEDIA_ROOT, str(file)))
+    if os.path.exists(path) and file:
+        os.remove(path)
