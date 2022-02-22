@@ -1,4 +1,3 @@
-from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -38,10 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(verbose_name=_('username'), max_length=30, blank=True, null=True, default="")
     first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True, default="")
     last_name = models.CharField(verbose_name=_('surname'), max_length=30, blank=True, default="")
-    phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-                                 message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
-                                                   str(_('Up to 15 digits allowed.'))]))
-    phone = models.CharField(verbose_name=_('phone number'), max_length=16, validators=[phone_valid],
+    phone = models.CharField(verbose_name=_('phone number'), max_length=16,
                              null=True, blank=True)
     date_joined = models.DateTimeField(verbose_name=_('registered'), auto_now_add=True)
     is_staff = models.BooleanField(verbose_name=_('is_staff'), default=False)
