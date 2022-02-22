@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+import braintree
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
 from django.http import HttpRequest, HttpResponse
@@ -147,7 +148,48 @@ class OrderStepFour(View):
 
 class PaymentView(View):
     def get(self, request: HttpRequest, order_id):
-        return HttpResponse(order_id)
+        order = get_object_or_404(Order, id=order_id)
+        if order.payment_method == 'card':
+            return redirect('orders:payment_with_card', order_id)
+
+
+class PaymentWithCardView(View):
+    def get(self, request: HttpRequest, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        client_token = braintree.ClientToken.generate()
+        return render(request,
+                      'orders_app/payment.html',
+                      {'order': order,
+                       'client_token': client_token})
+
+    def post(self, request: HttpRequest, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        nonce = request.POST.get('payment_method_nonce', None)
+        # Создание и сохранение транзакции.
+        result = braintree.Transaction.sale({
+            'amount': '{:.2f}'.format(1500),
+            'payment_method_nonce': nonce,
+            'options': {
+                'submit_for_settlement': True
+            }
+        })
+        if result.is_success:
+            # Отметка заказа как оплаченного.
+            order.paid = True
+            # Сохранение ID транзакции в заказе.
+            order.braintree_id = result.transaction.id
+            order.save()
+            return redirect('orders:payment_done')
+        else:
+            return redirect('orders:payment_canceled')
+
+
+def payment_done(request):
+    return render(request, 'orders_app/payment_successful.html')
+
+
+def payment_canceled(request) :
+    return render(request, 'orders_app/payment_unsuccessful.html')
 
 
 class ViewedGoodsView(ListView):

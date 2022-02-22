@@ -46,8 +46,8 @@ class Order(models.Model):
     in_order = models.BooleanField(default=False, verbose_name=_('In order'))
     paid = models.BooleanField(default=False, verbose_name=_('Order is payed'))
 
-    #  status  TODO определить. Например: корзина, оформленный заказ, оплаченный заказ
     ordered = models.DateTimeField(null=True, blank=True, verbose_name=_('Order placement date'))
+    braintree_id = models.CharField(max_length=150, blank=True)
 
     @property
     def total_sum(self):
