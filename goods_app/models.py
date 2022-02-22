@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from django.utils.translation import gettext_lazy as _
+
 User = get_user_model()
 
 
@@ -8,12 +10,20 @@ class ProductCategory(models.Model):
     """
     Модель категории товаров
     """
-    name = models.CharField(max_length=25, null=True)
-    slug = models.SlugField(null=True)
-    description = models.TextField(max_length=255, null=True)
+    name = models.CharField(
+        max_length=25,
+        null=True,
+        verbose_name=_('product_category')
+    )
+    slug = models.SlugField(null=True, verbose_name=_('product_category_slug'))
+    description = models.TextField(max_length=255, null=True, verbose_name=_('product_category_description'))
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        verbose_name_plural = 'product categories'
+        verbose_name_plural = _('product categories')
+        verbose_name = _('product category')
 
 
 class Product(models.Model):
@@ -24,22 +34,22 @@ class Product(models.Model):
         ProductCategory,
         on_delete=models.CASCADE,
         related_name='products',
-        verbose_name='good_category',
+        verbose_name=_('good_category'),
     )
-    name = models.CharField(max_length=25, null=True, verbose_name='product_name')
-    code = models.CharField(max_length=25, null=True, verbose_name='product_code')
-    slug = models.SlugField(null=True, db_index=True, verbose_name='product_slug')
-    image = models.ImageField(null=True, blank=True, verbose_name='product_image')
-    description = models.TextField(max_length=255, null=True, verbose_name='product_description')
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, verbose_name='average_price')
-    comments = models.IntegerField(null=True, verbose_name='amount_of_comments')
+    name = models.CharField(max_length=25, null=True, verbose_name=_('product_name'))
+    code = models.CharField(max_length=25, null=True, verbose_name=_('product_code'))
+    slug = models.SlugField(null=True, db_index=True, verbose_name=_('product_slug'))
+    image = models.ImageField(null=True, blank=True, verbose_name=_('product_image'))
+    description = models.TextField(max_length=255, null=True, verbose_name=_('product_description'))
+    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, verbose_name=_('average_price'))
+    comments = models.IntegerField(null=True, verbose_name=_('amount_of_comments'))
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = 'product'
-        verbose_name_plural = 'products'
+        verbose_name = _('product')
+        verbose_name_plural = _('products')
 
 
 class ProductComment(models.Model):
