@@ -1,0 +1,308 @@
+{% extends 'base.html ' %}
+{% load i18n %}
+{% load static %}
+{% load account socialaccount %}
+
+{% block title %}{% trans 'Sellers Room' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                <h1 class="Middle-title">{{ store.name }}</h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Store Detail' %}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+ <div class="Section">
+      <div class="wrap">
+        <div class="Product">
+          <div class="ProductCard">
+            <div class="ProductCard-look">
+              <div class="ProductCard-photo">
+                <div class="ProductCard-sale">-15%
+                </div><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
+              </div>
+              <div class="ProductCard-picts"><a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png"><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png"></a><a class="ProductCard-pict" href="assets/img/content/home/slider.png"><img src="assets/img/content/home/slider.png" alt="slider.png"></a><a class="ProductCard-pict" href="assets/img/content/home/videoca.png"><img src="assets/img/content/home/videoca.png" alt="videoca.png"></a>
+              </div>
+            </div>
+            <div class="ProductCard-desc">
+              <div class="ProductCard-header">
+                <h2 class="ProductCard-title">{{ product.name }}</h2>
+                </h2>
+                <div class="ProductCard-info">
+                  <div class="ProductCard-cost">
+                    <div class="ProductCard-price">$55.00
+                    </div>
+                    <div class="ProductCard-priceOld">$115.00
+                    </div>
+                  </div>
+                  <div class="ProductCard-compare"><a class="btn btn_default" href="#"><img class="btn-icon" src="assets/img/icons/card/change.svg" alt="change.svg"></a>
+                  </div>
+                </div>
+              </div>
+              <div class="ProductCard-text">
+                <ul>
+                  <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, eiusmod
+                  </li>
+                  <li>tempor incididunt ut labore et dolore magna aliqua. Lorem
+                  </li>
+                  <li>ipsum dolor sit ameabore et dolore magna aliqua. Lorem ipsum
+                  </li>
+                </ul>
+              </div>
+              <div class="ProductCard-cart">
+                <div class="ProductCard-cartElement ProductCard-cartElement_amount">
+                  <div class="Amount Amount_product">
+                    <button class="Amount-remove" type="button">
+                    </button>
+                    <input class="Amount-input form-input" name="amount" type="text" value="1">
+                    <button class="Amount-add" type="button">
+                    </button>
+                  </div>
+                </div>
+                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Add To Cart</span></a>
+                </div>
+              </div>
+              <div class="ProductCard-footer">
+                <div class="ProductCard-tags">
+                  <strong class="ProductCard-tagsTitle">Tags:
+                  </strong><a href="#">Accesories</a>,<a href="#">Creative</a>,<a href="#">Design</a>,<a href="#">Gaming</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="Tabs Tabs_default">
+            <div class="Tabs-links"><a class="Tabs-link" href="#description"><span>Описание</span></a><a class="Tabs-link" href="#sellers"><span>Продавцы</span></a><a class="Tabs-link" href="#addit"><span>AdditionaL Info</span></a><a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>Reviews (3)</span></a>
+            </div>
+            <div class="Tabs-wrap">
+              <div class="Tabs-block" id="description" style="display: none;">
+                <h2>Megano Store Hystory
+                </h2>
+                <p>Lorem ipsum dolor sit amet, consectetuer
+                  <strong>adipiscing
+                  </strong> elit doli. Aenean commodo ligula eget dolor. Aenean massa. <a href="#">Cumtipsu</a> sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem.
+                </p><img class="pict pict_right" src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
+                <ul>
+                  <li>Lorem ipsum dolor sit amet, consectetuer
+                  </li>
+                  <li>adipiscing elit doli. <em>Aenean</em> commodo ligula
+                  </li>
+                  <li>eget dolor. Aenean massa. Cumtipsu sociis
+                  </li>
+                  <li>natoque penatibus et magnis dis parturient
+                  </li>
+                  <li>montesti, nascetur ridiculus mus. Donec
+                  </li>
+                  <li>quam felis, ultricies nec, pellentesque eutu
+                  </li>
+                </ul>
+                <div class="clearfix">
+                </div>
+                <div class="table">
+                  <table>
+                    <tbody><tr>
+                      <th>Характеристика
+                      </th>
+                      <th>Значение
+                      </th>
+                    </tr>
+                    <tr>
+                      <td>ываыв
+                      </td>
+                      <td>llslssl
+                      </td>
+                    </tr>
+                  </tbody></table>
+                </div>
+              </div>
+              <div class="Tabs-block" id="sellers" style="display: none;">
+                <div class="Categories Categories_product">
+                  <div class="Categories-row">
+                    <div class="Categories-block Categories-block_info">
+                      <div class="Categories-info">
+                        <strong>Очень дешево
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="Categories-splitProps">
+                    </div>
+                    <div class="Categories-block Categories-price">
+                      <strong>€ 40.58
+                      </strong>
+                    </div>
+                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
+                    </div>
+                  </div>
+                  <div class="Categories-row">
+                    <div class="Categories-block Categories-block_info">
+                      <div class="Categories-info">
+                        <strong>pleer.ru
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="Categories-splitProps">
+                    </div>
+                    <div class="Categories-block Categories-price">
+                      <strong>€ 69.04
+                      </strong>
+                    </div>
+                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
+                    </div>
+                  </div>
+                  <div class="Categories-row">
+                    <div class="Categories-block Categories-block_info">
+                      <div class="Categories-info">
+                        <strong>citilink.ru
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="Categories-splitProps">
+                    </div>
+                    <div class="Categories-block Categories-price">
+                      <strong>€ 112.69
+                      </strong>
+                    </div>
+                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
+                    </div>
+                  </div>
+                  <div class="Categories-row">
+                    <div class="Categories-block Categories-block_info">
+                      <div class="Categories-info">
+                        <strong>М.Видео
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="Categories-splitProps">
+                    </div>
+                    <div class="Categories-block Categories-price">
+                      <strong>€ 197.32
+                      </strong>
+                    </div>
+                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="Tabs-block" id="addit" style="display: none;">
+                <div class="Product-props">
+                  <div class="Product-prop">
+                    <strong>Lorem
+                    </strong><span> Pfizer</span>
+                  </div>
+                  <div class="Product-prop">
+                    <strong>ipsum
+                    </strong><span> Lorem ipsum dolor sit</span>
+                  </div>
+                  <div class="Product-prop">
+                    <strong>dolor sit
+                    </strong><span> 5 ans</span>
+                  </div>
+                  <div class="Product-prop">
+                    <strong>psum dolo
+                    </strong><span> 2–3 jours</span>
+                  </div>
+                </div>
+              </div>
+              <div class="Tabs-block" id="reviews" style="">
+                <header class="Section-header">
+                  <h3 class="Section-title">{{ reviews_count }} Review(s)
+                  </h3>
+                </header>
+                <div class="Comments">
+                  {% for comment in comments %}
+                  <div class="Comment">
+                    <div class="Comment-column Comment-column_pict">
+                      <div class="Comment-avatar">
+                      </div>
+                    </div>
+                    <div class="Comment-column">
+                      <header class="Comment-header">
+                        <div>
+                          <strong class="Comment-title">{{ comment.author }}
+                          </strong><span class="Comment-date">{{ comment.added|date:"F / d / o G:i" }}</span>
+                        </div>
+                      </header>
+                      <div class="Comment-content">{{ comment.content }}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+            {% if comments.paginator.num_pages > 1 %}
+                <ul class="reviews-pagination">
+                    {% if comments.has_previous %}
+                    <li><a href="?page=1#reviews_list">&laquo;&laquo; </a></li>
+                    <li><a href="?page={{ comments.previous_page_number }}#reviews_list">&laquo; </a></li>
+                    {% endif %}
+                    <li class="active">{{ comments.number }}</li>
+                    {% if comments.has_next %}
+                    <li><a href="?page={{ comments.next_page_number }}#reviews_list"> &raquo;</a></li>
+                    <li><a href="?page={{ comments.paginator.num_pages }}#reviews_list"> &raquo;&raquo;</a></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+                </div>
+                <header class="Section-header Section-header_product">
+                  <h3 class="Section-title">{% trans 'Add Review' %}
+                  </h3>
+                </header>
+                <div class="Tabs-addCommentreview-form ">
+                  <form class="form" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" name="user" value="{{ request.user.id }}">
+                      {{ form.errors.user }}
+                      <input type="hidden" name="product" value="{{ product.id }}">
+                      {{ form.errors.product }}
+                    <div class="form-group">
+                      <textarea class="form-textarea" name="content" id="content" required placeholder="Review" style="width: 1143px; height: 117px;"></textarea>
+                        {{ form.errors.content }}
+                    </div>
+                    <div class="form-group">
+                      <div class="row" style="margin-left: 0;">
+                        <div class="row-block">
+                          <input class="form-input" id="author" name="author" type="text" placeholder="Name">
+                            {{ form.errors.author }}
+                        </div>
+                        <div class="row-block">
+                          <input class="form-input" id="email" name="email" type="text" readonly value="{{ request.user.email }}" placeholder="Email">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group custom_register_name-block">
+                      <button class="btn btn_muted" type="submit">{% trans 'Submit Review' %}
+                      </button>
+                      <div class="input-rating">
+                          <span>{% trans 'Your Rating:' %} </span>
+                          <div class="rating">
+                              <input id="star5" name="rating" value="5" type="radio"><label for="star5">☆</label>
+                              <input id="star4" name="rating" value="4" type="radio"><label for="star4">☆</label>
+                              <input id="star3" name="rating" value="3" type="radio"><label for="star3">☆</label>
+                              <input id="star2" name="rating" value="2" type="radio"><label for="star2">☆</label>
+                              <input id="star1" name="rating" value="1" type="radio"><label for="star1">☆</label>
+                          </div>
+                          {{ form.errors.rating }}
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
