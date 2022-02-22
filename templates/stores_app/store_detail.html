@@ -18,98 +18,157 @@
                 <h1 class="Middle-title">{{ store.name }}</h1>
                 <ul class="breadcrumbs Middle-breadcrumbs">
                     <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
-                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Store Detail' %}</span></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'About Store' %}</span></li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="Section Section_column Section_columnLeft">
-        <div class="wrap">
+    <div class="Section Section_column Section_columnLeft Section_columnWide">
+          <div class="wrap">
             <div class="Section-column">
-                <div class="Section-columnSection">
-                    <header class="Section-header">
-                      <strong class="Section-title">{% trans 'Navigation' %}
-                      </strong>
-                    </header>
-                    <div class="Section-columnContent">
-                        <div class="NavigateProfile">
-                            <ul class="menu menu_vt">
-                                <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:private-room' %}">{% trans 'Account info' %}</a>
-                                </li>
-                                <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
-                                </li>
-                                <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchases history' %}</a>
-                                </li>
-                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Views history' %}</a>
-                                </li>
-                                {% if perms.profiles_app.Sellers %}
-                                <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_advantage">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/shipping.svg' %}" alt="shipping.svg">
+                  </div>
+                  <div class="media-content">
+                    <strong class="media-title">{% blocktrans %}Shipping &amp; Returns{% endblocktrans %}</strong>
+                    <p class="media-text">{% trans 'World wide shipping' %}
+                    </p>
+                  </div>
                 </div>
+              </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_advantage">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/moneyBack.svg' %}" alt="moneyBack.svg">
+                  </div>
+                  <div class="media-content">
+                    <strong class="media-title">{% trans "Money Back" %}
+                    </strong>
+                    <p class="media-text">{% trans 'Guaranted payments' %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_advantage">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/support.svg' %}" alt="support.svg">
+                  </div>
+                  <div class="media-content">
+                    <strong class="media-title">{% trans 'Support Policy' %}
+                    </strong>
+                    <p class="media-text">{% trans 'Fast support team' %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_advantage">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/quality.svg'%}" alt="quality.svg">
+                  </div>
+                  <div class="media-content">
+                    <strong class="media-title">{% trans 'Quality Guarantee' %}
+                    </strong>
+                    <p class="media-text">{% trans 'Best guaranted items' %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_middle">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/contacts/phone.svg' %}" alt="phone.svg">
+                  </div>
+                  <div class="media-content">{% trans 'Phone' %}:
+                    <nobr>+8 (200) 800-2000-600</nobr><br>{% trans 'Mobile' %}:
+                    <nobr>+8 (200) 800-2000-650</nobr>
+                  </div>
+                </div>
+              </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_middle">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/contacts/address.svg' %}" alt="address.svg">
+                  </div>
+                  <div class="media-content">
+                    Megano Business Center,
+                    0012 United States, Los Angeles
+                    Creative Street 15/4
+                  </div>
+                </div>
+              </div>
+              <div class="Section-columnSection Section-columnSection_mark">
+                <div class="media media_middle">
+                  <div class="media-image"><img src="{% static 'assets/img/icons/contacts/mail.svg' %}" alt="mail.svg">
+                  </div>
+                  <div class="media-content">{% trans 'General' %}: hello@ninzio.com<br>{% trans 'Editor' %}: editor@ninzio.com
+                  </div>
+                </div>
+              </div>
+              <div class="Section-columnSection">
+                <header class="Section-header">
+                  <strong class="Section-title">{% trans 'Follow Us' %}
+                  </strong>
+                </header>
+                <div class="Section-columnContent">
+                  <div class="Footer-payments Footer-payments_column">
+                    <div><img src="{% static 'assets/img/icons/socialContent/fb.png' %}" alt="fb.png">
+                    </div>
+                    <div><img src="{% static 'assets/img/icons/socialContent/tw.png' %}" alt="tw.png">
+                    </div>
+                    <div><img src="{% static 'assets/img/icons/socialContent/gg.png' %}" alt="gg.png">
+                    </div>
+                    <div><img src="{% static 'assets/img/icons/socialContent/in.png' %}" alt="in.png">
+                    </div>
+                    <div><img src="{% static 'assets/img/icons/socialContent/pt.png' %}" alt="pt.png">
+                    </div>
+                    <div><img src="{% static 'assets/img/icons/socialContent/ml.png' %}" alt="ml.png">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="Section-content">
-              <div class="Profile">
-                  <form class="form Profile-form" method="post" enctype="multipart/form-data">
-                      {% csrf_token %}
-                      <div class="row">
-                         <div class="row-block">
-                             <div class="form-group">
-                                 <label class="form-label" for="id_name">{% trans 'Store name' %}</label>
-                                 <input class="form-input" id="id_name" required name="name" value="{{store.name}}" type="text">
-                                 <span class="formerror">{{form.errors.name}}</span>
-                             </div>
-                             <div class="form-group">
-                                 <label class="form-label" for="id_email">{% trans 'Email' %}</label>
-                                 <input class="form-input" id="id_email" name="email" value="{{store.email}}" type="email">
-                                 <span class="formerror">{{form.errors.email}}</span>
-                             </div>
-                             <div class="form-group">
-                                 <label class="form-label" for="id_description">{% trans 'Description' %}</label>
-                                 <textarea class="form-area" name="description" cols="10" rows="9" maxlength="255" id="id_description"></textarea>
-                                 <span class="formerror">{{form.errors.description}}</span>
-                             </div>
-                         </div>
-                         <div class="row-block">
-                             <div class="form-group">
-                                 <label class="form-label" for="id_slug">{% trans 'URL-name' %}</label>
-                                 <input class="form-input" id="id_slug" name="slug" value="{{store.slug}}" disabled type="text">
-                                 <span class="formerror">{{form.errors.slug}}</span>
-                            </div>
-                             <div class="form-group">
-                                 <label class="form-label" for="id_phone">{% trans 'Phone Number' %}</label>
-                                 <input class="form-input" id="id_phone" name="phone" value="{{store.phone}}" type="text">
-                                 <span class="formerror">{{form.errors.phone}}</span>
-                             </div>
-                             <div class="form-group">
-                                 <label class="form-label" for="id_address">{% trans 'Address' %}</label>
-                                 <textarea class="form-area" name="address" cols="10" rows="4" maxlength="255" id="id_address"></textarea>
-                                 <span class="formerror">{{form.errors.phone}}</span>
-                             </div>
-                             <div class="form-group store-img">
-                                 <label class="form-label" for="id_icon">
-                                 </label>
-                                 <div class="Profile-img store-logo">{% trans 'Choose the logo image' %}</div>
-                                 <input class="Profile-file form-input" type="file" value="{{store.icon}}" name="icon" id="id_icon" data-validate="onlyImgAvatar">
-                             </div>
-                             <div class="form-group">
-                                 <div class="Profile-btn  custom_align-center">
-                                     <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">Back to seller room</a>
-                                     <button class="btn btn_success" type="submit">{% trans 'Save changes' %}</button>
-                                     <div class="Profile-success">{{form.non_field_errors}}</div>
-                                 </div>
+              <div class="row row_verticalCenter row_maxHalf">
+                <div class="row-block">
+                  <div class="pict"><img src="{{ store.icon }}" alt="bigGoods.png">
+                  </div>
+                </div>
+                <div class="row-block">
+                  <h2>{% trans 'About' %} {{ store.name }}
+                  </h2>
+                    {{ store.description }}
+                </div>
+              </div>
+              <header class="Section-header">
+                <h2 class="Section-title">{% trans 'Popular Products' %}
+                </h2>
+              </header>
+              <div class="Cards">
+                {% for product in products %}
+                <div class="Card"><a class="Card-picture" href="#"><img src="{{ MEDIA_ROOT }}/uploads/{{ product.image }}" alt="card.jpg"></a>
+                  <div class="Card-content">
+                    <strong class="Card-title"><a href="#">{{ product.name }}</a>
+                    </strong>
+                    <div class="Card-description">
+                      <div class="Card-cost">
+                          <span class="Card-priceOld"></span>
+                          <span class="Card-price"></span>
+                      </div>
+                      <div class="Card-category">{{ product.category.name }}
+                      </div>
+                      <div class="Card-hover"><a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"></a>
+                          <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"></a>
+                          <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="Card-sale"></div>
+                </div>
+                {% endfor %}
+              </div>
 
-                             </div>
-                         </div>
-                     </div>
-                 </form>
-             </div>
             </div>
+          </div>
         </div>
-    </div>
+
 </div>
 {% endblock %}
 

@@ -1,0 +1,137 @@
+{% extends 'base.html ' %}
+{% load i18n %}
+{% load static %}
+{% load account socialaccount %}
+
+{% block title %}{% trans 'Sellers Room' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                <h1 class="Middle-title">{{ store.name }}</h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Store Detail' %}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft">
+        <div class="wrap">
+            <div class="Section-column">
+                <div class="Section-columnSection">
+                    <header class="Section-header">
+                      <strong class="Section-title">{% trans 'Navigation' %}
+                      </strong>
+                    </header>
+                    <div class="Section-columnContent">
+                        <div class="NavigateProfile">
+                            <ul class="menu menu_vt">
+                                <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:private-room' %}">{% trans 'Account info' %}</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchases history' %}</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Views history' %}</a>
+                                </li>
+                                {% if perms.profiles_app.Sellers %}
+                                <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="Section-content">
+              <div class="Profile">
+                  <form class="form Profile-form" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="row">
+                         <div class="row-block">
+                             <div class="form-group require-field">
+                                 <label class="form-label" for="id_name">{% trans 'Store name' %}</label>
+                                 <input class="form-input" id="id_name" required name="name" value="{{store.name}}" type="text">
+                                 <span class="formerror">{{form.errors.name}}</span>
+                             </div>
+                             <div class="form-group require-field">
+                                 <label class="form-label" for="id_email">{% trans 'Email' %}</label>
+                                 <input class="form-input" id="id_email" name="email" value="{{store.email}}" type="email">
+                                 <span class="formerror">{{form.errors.email}}</span>
+                             </div>
+                             <div class="form-group">
+                                 <label class="form-label" for="id_description">{% trans 'Description' %}</label>
+                                 <textarea class="form-area" name="description" cols="10" rows="13" maxlength="255" id="id_description"></textarea>
+                                 <span class="formerror">{{form.errors.description}}</span>
+                             </div>
+                         </div>
+                         <div class="row-block">
+                             <div class="form-group require-field">
+                                 <label class="form-label" for="id_slug">{% trans 'URL-name' %}</label>
+                                 <input class="form-input" id="id_slug" name="slug" value="{{store.slug}}" disabled type="text">
+                                 <span class="formerror">{{form.errors.slug}}</span>
+                            </div>
+                             <div class="form-group require-field">
+                                 <label class="form-label" for="id_phone">{% trans 'Phone Number' %}</label>
+                                 <input class="form-input" id="id_phone" name="phone" value="{{store.phone}}" type="text">
+                                 <span class="formerror">{{form.errors.phone}}</span>
+                             </div>
+                             <div class="form-group">
+                                 <label class="form-label" for="id_address">{% trans 'Address' %}</label>
+                                 <textarea class="form-area" name="address" cols="10" rows="4" maxlength="255" id="id_address"></textarea>
+                                 <span class="formerror">{{form.errors.address}}</span>
+                             </div>
+                             <div class="form-group">
+                                <label class="form-label" for="avatar">{% trans 'Store logo' %}
+                                </label>
+                                {% if store.icon %}
+                                <div class="Profile-avatar" style="height: 175px;">
+                                {% else %}
+                                <div class="Profile-avatar Profile-avatar_noimg" style="height: 175px;">
+                                {% endif %}
+                                     <div class="Profile-img">
+                                     {% if store.icon %}
+                                        <img src="{{ MEDIAROOT }}/uploads/{{ store.icon }}" alt="#.png"/>
+                                     {% else %}
+                                         <img src="assets/img/#.png" alt="#.png">
+                                     {% endif %}
+                                     </div>
+                                     <span class="avatar-span">{% trans 'Click on picture for change' %}</span>
+                                     <label class="Profile-fileLabel" for="avatar">{% trans 'Choose logo'  %}
+                                     </label>
+                                     <input class="Profile-file form-input" id="avatar" name="icon" type="file" data-validate="onlyImgAvatar"/>
+                                </div>
+                                <span class="formerror">{{form.errors.icon}}</span>
+                             </div>
+                             <div class="form-group">
+                                 <div class="Profile-btn  custom_align-center">
+                                     <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">Back to seller room</a>
+                                     <button class="btn btn_success" type="submit">{% trans 'Save changes' %}</button>
+                                     <div class="Profile-success">{{form.non_field_errors}}</div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </form>
+             </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'assets/js/main.js' %}"></script>
+{% endblock %}

@@ -53,47 +53,64 @@
                   {% csrf_token %}
                   <div class="row">
                       <div class="row-block">
-                          <div class="form-group">
+                            <input class="form-input" name="owner" value="{{ request.user.id }}" type="hidden">
+                          <div class="form-group require-field">
                               <label class="form-label" for="id_name">{% trans 'Store name' %}</label>
                               <input class="form-input" id="id_name" required name="name" type="text">
                               <span class="formerror">{{form.errors.name}}</span>
                           </div>
-                          <div class="form-group">
+                          <div class="form-group require-field">
                               <label class="form-label" for="id_email">{% trans 'Email' %}</label>
-                              <input class="form-input" id="id_email" name="email" type="email">
+                              <input class="form-input" id="id_email" required name="email" type="email">
                               <span class="formerror">{{form.errors.email}}</span>
                           </div>
                           <div class="form-group">
                               <label class="form-label" for="id_description">{% trans 'Description' %}</label>
-                              <textarea class="form-area" name="description" cols="10" rows="9" maxlength="255" id="id_description"></textarea>
+                              <textarea class="form-area" name="description" cols="10" rows="13" maxlength="255" id="id_description"></textarea>
                               <span class="formerror">{{form.errors.description}}</span>
                           </div>
                       </div>
                       <div class="row-block">
-                          <div class="form-group">
+                          <div class="form-group require-field">
                               <label class="form-label" for="id_name2">{% trans 'URL-name' %}</label>
                               <input class="form-input" id="id_name2" name="slug" type="text">
                               <span class="formerror">{{form.errors.slug}}</span>
                           </div>
-                          <div class="form-group">
+                          <div class="form-group require-field">
                               <label class="form-label" for="id_phone">{% trans 'Phone Number' %}</label>
-                              <input class="form-input" id="id_phone" name="phone" type="text">
+                              <input class="form-input" id="id_phone" required name="phone" type="text">
                               <span class="formerror">{{form.errors.phone}}</span>
                           </div>
                           <div class="form-group">
                               <label class="form-label" for="id_address">{% trans 'Address' %}</label>
                               <textarea class="form-area" name="address" cols="10" rows="4" maxlength="255" id="id_address"></textarea>
-                              <span class="formerror">{{form.errors.phone}}</span>
-                          </div>
-                          <div class="form-group store-img">
-                              <label class="form-label" for="id_icon">
-                              </label>
-                              <div class="Profile-img store-logo">{% trans 'Choose the logo image' %}</div>
-                              <input class="Profile-file form-input" type="file" name="icon" id="id_icon" data-validate="onlyImgAvatar">
+                              <span class="formerror">{{form.errors.address}}</span>
                           </div>
                           <div class="form-group">
+                             <label class="form-label" for="avatar">{% trans 'Store logo' %}
+                             </label>
+                             {% if store.icon %}
+                             <div class="Profile-avatar" style="height: 175px;">
+                             {% else %}
+                             <div class="Profile-avatar Profile-avatar_noimg" style="height: 175px;">
+                             {% endif %}
+                                  <div class="Profile-img">
+                                  {% if store.icon %}
+                                     <img src="{{ MEDIAROOT }}/uploads/{{ store.icon }}" alt="#.png"/>
+                                  {% else %}
+                                      <img src="assets/img/#.png" alt="#.png">
+                                  {% endif %}
+                                  </div>
+                                  <span class="avatar-span">{% trans 'Click on picture for change' %}</span>
+                                  <label class="Profile-fileLabel" for="avatar">{% trans 'Choose logo'  %}
+                                  </label>
+                                  <input class="Profile-file form-input" id="avatar" name="icon" type="file" data-validate="onlyImgAvatar"/
+                             </div>
+                             <span class="formerror">{{form.errors.icon}}</span>
+                          </div>
+                          <div class="form-group custom_register_form-btns">
                               <div class="Profile-btn  custom_align-center">
-                                  <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">Back to seller room</a>
+                                  <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">{%  trans 'Back to seller room' %}</a>
                                   <button class="btn btn_success" type="submit">{% trans 'Accept and create' %}</button>
                               </div>
                           </div>
@@ -109,4 +126,8 @@
 
 {% block footer %}
 {% include 'elems/footer.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'assets/js/main.js' %}"></script>
 {% endblock %}

@@ -58,8 +58,9 @@
         <div class="Account">
           <div class="Account-group">
             <div class="Account-column">
-              <div class="Account-avatar"><img src="{%  static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/>
-              </div>
+              <figure class="figure-avatar">
+                  <img class="Account-avatar-img" src="{{ MEDIA_ROOT }}/uploads/{{ request.user.avatar }}" alt="avatar.jpg" height="100%"/>
+              </figure>
             </div>
             <div class="Account-column">
               <div class="Account-name">{{ request.user.last_name}} {{ request.user.first_name }}
@@ -109,7 +110,7 @@
           <div class="Account-group">
             <div class="Account-column Account-column_full">
               <header class="Section-header">
-                <h2 class="Section-title">История просмотров
+                <h2 class="Section-title">{% trans 'Views history' %}
                 </h2>
               </header>
               <div class="Cards Cards_account">
@@ -162,7 +163,7 @@
                   </div>
                 </div>
               </div>
-              <div class="Account-editLink Account-editLink_view"><a href="historyview.html">Перейти на полный список</a>
+              <div class="Account-editLink Account-editLink_view"><a href="{% url 'orders-polls:viewed' %}">{% trans 'Show all viewed products' %}</a>
               </div>
             </div>
           </div>

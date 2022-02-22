@@ -1,15 +1,16 @@
 from typing import Callable
 
 from django.contrib.auth import login
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView, LoginView
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.views import View
 
 from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
-from profiles_app.services import get_user_and_change_password, get_auth_user, edit_user
+from profiles_app.services import get_user_and_change_password, get_auth_user, reset_phone_format
 from django.utils.translation import gettext_lazy as _
 
 
@@ -21,6 +22,7 @@ class UserLogin(LoginView):
     success_url = '/'
 
     def get_success_url(self) -> str:
+        print(self.request)
         if not self.success_url:
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
         return str(self.success_url)
@@ -38,7 +40,6 @@ class RegisterView(View):
     """
     Страница регистрации нового пользователя
     """
-
     def get(self, request) -> Callable:
         form = RegisterForm()
         return render(request, 'account/signup.html', context={'form': form})
@@ -46,8 +47,9 @@ class RegisterView(View):
     def post(self, request) -> Callable:
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            login(request, get_auth_user(form))
+            user = form.save()
+            reset_phone_format(instance=user)
+            login(request, get_auth_user(data=form.cleaned_data))
             return redirect('/')
         return render(request, 'account/signup.html', context={'form': form})
 
@@ -56,7 +58,6 @@ class RestorePasswordView(View):
     """
     Страница восстановления пароля
     """
-
     def get(self, request) -> Callable:
         form = RestorePasswordForm()
         return render(request, 'account/password_reset.html', context={'form': form})
@@ -81,7 +82,6 @@ class AccountView(LoginRequiredMixin, View):
     """
     Информация об аккаунте
     """
-    login_url = '/users/login/'
     template_name = 'account/account.html'
 
     def get(self, request) -> Callable:
@@ -92,16 +92,16 @@ class AccountEditView(LoginRequiredMixin, View):
     """
     Редактирование профиля
     """
-    login_url = '/users/login/'
-
     def get(self, request) -> Callable:
         form = AccountEditForm()
         return render(request, 'account/profile.html', context={'form': form})
 
     def post(self, request) -> Callable:
-        form = AccountEditForm(request.POST, request.FILES)
+        form = AccountEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            text_message = _('The profile was saved successfully')
-            edit_user(request.user.id, form)
-            return render(request, 'account/profile.html', context={'form': form, 'text_message': text_message})
-        return render(request, 'account/profile.html', context={'form': form, 'text_message': ""})
+            user = form.save()
+            reset_phone_format(instance=user)
+            messages.add_message(request, messages.SUCCESS,
+                                 _('The profile was saved successfully'))
+            return render(request, 'account/profile.html', context={'form': form})
+        return render(request, 'account/profile.html', context={'form': form})
