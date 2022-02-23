@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import F, Sum
-from profiles_app.models import User
+from django.conf import settings
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 

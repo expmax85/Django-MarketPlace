@@ -66,3 +66,27 @@ class ProductComment(models.Model):
     class Meta:
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
+
+
+class SpecificationsNames(models.Model):
+    """ Все возможные характеристики """
+
+    name = models.CharField(max_length=32, null=False)
+
+
+    def __str__(self):
+        return self.name
+
+
+class Specifications(models.Model):
+    """ Модель Характеристики товара """
+
+    value = models.CharField(max_length=32, null=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True, related_name='specifications')
+    current_specification = models.ForeignKey(SpecificationsNames, on_delete=models.CASCADE, blank=True, null=True,
+                                              related_name='specifications')
+
+    def __str__(self):
+        return self.value
+
+

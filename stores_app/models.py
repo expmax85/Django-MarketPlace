@@ -74,6 +74,9 @@ class SellerProduct(models.Model):
     def __str__(self) -> str:
         return f'{self.product} in {self.seller}'
 
+    def serialize(self):
+        return self.__dict__
+
     class Meta:
         verbose_name = _('product in shop')
         verbose_name_plural = _('products in shop')
