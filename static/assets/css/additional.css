@@ -310,7 +310,6 @@ textarea:focus, textarea:hover{
 .Add-product {
     padding: 20px;
     justify-content: space-around;
-
 }
 
 .Add-product div {
@@ -403,4 +402,82 @@ textarea:focus, textarea:hover{
     display: block;
     margin-top: 40px;
     text-align: right;
+}
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: center;
+}
+.rating > label {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+  font-size: 30px;
+}
+
+.rating > input {
+    display: none;
+}
+
+.rating > label:hover,
+.rating > label:hover ~ label {
+  color: transparent;
+}
+
+.rating > label:hover:before,
+.rating > label:hover ~ label:before {
+   content: "\2605";
+   position: absolute;
+   left: 4px;
+   color: gold;
+}
+
+.rating > input:checked,
+.rating > input:checked~label:before{
+  content: "\2605";
+  position: absolute;
+  left: 4px;
+  color: gold;
+}
+
+.reviews-pagination {
+  text-align: center;
+  list-style-type: none;
+}
+
+.reviews-pagination li {
+  display: inline-block;
+  padding-left: 0 !important;
+  width: 80px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  color: #fff;
+  background-color: #0063d1;
+  border: 1px solid #E4E7ED;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+}
+
+.reviews-pagination li:hover {
+  background-color: #E4E7ED;
+  color: #D10024;
+}
+
+.reviews-pagination li.active {
+  background-color: #FFF;
+  border-color: #E4E7ED;
+  color: black;
+  cursor: default;
+}
+
+.reviews-pagination li a {
+  display: block;
+  color: #FFF;
+  border-bottom: none;
+}
+
+.reviews-pagination li:after{
+  display: none !important;
 }

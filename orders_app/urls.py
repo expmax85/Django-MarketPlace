@@ -1,20 +1,5 @@
 from django.urls import path
-from orders_app.views import (
-    cart_clear,
-    CartView,
-    CartAdd,
-    CartIncreaseQuantity,
-    CartDecreaseQuantity,
-    CartRemove,
-    OrderStepOne,
-    OrderStepTwo,
-    OrderStepThree,
-    OrderStepFour,
-    PaymentView,
-    PaymentWithCardView,
-    payment_done,
-    payment_canceled,
-    ViewedGoodsView)
+from orders_app.views import CartView, ViewedGoodsView, CompareView
 
 
 app_name = 'orders'
@@ -37,4 +22,5 @@ urlpatterns = [
     path('canceled/', payment_canceled, name='payment_canceled'),
 
     path('viewed/', ViewedGoodsView.as_view(), name='viewed'),
+    path('compare/', CompareView.as_view(), name='compare')
 ]
