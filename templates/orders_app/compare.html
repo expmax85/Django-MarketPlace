@@ -30,6 +30,7 @@
           <p>{% trans 'Bacon ipsum dolor amet venison beef ribs chuck, cow brisket cupim tri-tip chicken chislic tongue. Porchetta beef shoulder, fatback tongue venison buffalo landjaeger pork tri-tip beef ribs. Fatback filet mignon shankle, landjaeger prosciutto ham hock tongue strip steak bacon spare' %}
           </p>
         </article>
+        {% if compared %}
         <div class="Compare">
           <div class="Compare-header">
             <label class="toggle Compare-checkDifferent">
@@ -40,18 +41,24 @@
             <div class="Compare-title Compare-title_blank">
             </div>
             <div class="Compare-products">
+               <!-- Названия и изображения товаров -->
               {% for product in compared.keys %}
               <div class="Compare-product">
                 <div class="Compare-nameProduct Compare-nameProduct_main">{{ product }}
                 </div>
-                <div class="Compare-feature"><img class="Compare-pict" src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/>
+                <div class="Compare-feature"><img class="Compare-pict" 
+                  src="{% if compared.product.4 %}
+                        {{ compared.product.4 }}
+                        {% else %}
+                        {% static 'assets/img/content/home/card.jpg' %}
+                        {% endif %}" 
+                  alt="card.jpg"/>
                 </div>
               </div>
               {% endfor %}
             </div>
           </div>
           <div class="Compare-row">
-            <!-- Названия и изображения товаров -->
             {% for product in compared.keys %}
             <div class="Compare-title Compare-title_blank">
             </div>
@@ -146,6 +153,9 @@
             </div>
           </div>
         </div>
+        {% else %}
+          <h4>{% trans 'No items to compare' %}</h4>
+        {% endif %}
       </div>
     </div>
   </div>

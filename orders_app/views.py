@@ -43,8 +43,9 @@ class CompareView(View):
         for product in list(SellerProduct.objects.all().select_related('product')[:4]):
             specifications = ({spec.current_specification.name: spec.value for spec in
                               product.product.specifications.all()})
+            image = product.product.image.url if product.product.image else None
             compared[product.product.name] = [product.price, product.price_after_discount, product.product.rating,
-                                              specifications]
+                                              specifications, image]
         #Далее уже то что будет в get методе
         request.session['compared'] = json.dumps(compared, cls=DecimalEncoder)
         context = self.create_queryset(session_data=request.session['compared'])
