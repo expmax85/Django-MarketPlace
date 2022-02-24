@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load calculate_rating %}
+{% block title %}
+   {% trans 'Compare products' %}
+{% endblock %}
+{%block header %}
+   {% include 'elems/header.html' %}
+{% endblock %}
+{% block main %}
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">{% trans 'Compare' %}
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="index.html">home</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Compare' %}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Section">
+      <div class="wrap">
+        <article class="Article">
+          <p>{% trans 'Bacon ipsum dolor amet venison beef ribs chuck, cow brisket cupim tri-tip chicken chislic tongue. Porchetta beef shoulder, fatback tongue venison buffalo landjaeger pork tri-tip beef ribs. Fatback filet mignon shankle, landjaeger prosciutto ham hock tongue strip steak bacon spare' %}
+          </p>
+        </article>
+        <div class="Compare">
+          <div class="Compare-header">
+            <label class="toggle Compare-checkDifferent">
+              <input type="checkbox" name="differentFeature" value="true" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">{% trans 'Only different features' %}</span>
+            </label>
+          </div>
+          <div class="Compare-row">
+            <div class="Compare-title Compare-title_blank">
+            </div>
+            <div class="Compare-products">
+              {% for product in compared.keys %}
+              <div class="Compare-product">
+                <div class="Compare-nameProduct Compare-nameProduct_main">{{ product }}
+                </div>
+                <div class="Compare-feature"><img class="Compare-pict" src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="Compare-row">
+            <!-- Названия и изображения товаров -->
+            {% for product in compared.keys %}
+            <div class="Compare-title Compare-title_blank">
+            </div>
+            <div class="Compare-products">
+              <div class="Compare-product">
+                <div class="Compare-nameProduct">{{ product }}
+                </div>
+                <div class="Compare-feature"><a class="Compare-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a><a class="Compare-btn" href="#"><img src="{% static 'assets/img/icons/card/delete.svg' %}" alt="delete.svg"/></a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="Compare-row">
+            <!-- Рейтинг -->
+            <div class="Compare-title">{% trans 'Rating' %}
+            </div>
+            <div class="Compare-products">
+              {% for key, value in compared.items %}
+              <div class="Compare-product">
+                <div class="Compare-feature">
+                  <div class="Rating">
+                    <div class="Rating-stars">
+                        {% for i in value.2|filled_stars %}
+                        <span class="Rating-star Rating-star_view">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18">
+                          <g>
+                            <g>
+                              <path fill="#ffc000" d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"></path>
+                            </g>
+                          </g>
+                        </svg></span>
+                        {% endfor %}
+                          {% for i in value.2|empty_stars %}
+                            <span class="Rating-star">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18">
+                                <g>
+                                  <g>
+                                    <path fill="#ffc000" d="M9.5 14.925L3.629 18l1.121-6.512L0 6.875l6.564-.95L9.5 0l2.936 5.925 6.564.95-4.75 4.613L15.371 18z"></path>
+                                  </g>
+                                </g>
+                            </svg></span>
+                          {% endfor %}
+                    </div>
+                    <div class="Rating-title">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% for key, values in specifications.items %}
+          <div class="Compare-row 
+            {% if True in values %}
+            Compare-row_hide
+            {% endif %}">
+            <!-- Характеристики -->
+            <div class="Compare-title">{{key}}
+            </div>
+            {% for value in values %}
+            {% if value != True %}
+              <div class="Compare-products">
+                <div class="Compare-product">
+                  <div class="Compare-feature">{{ value }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+          {% endfor %}
+          <div class="Compare-row">
+            <!-- Цены -->
+            <div class="Compare-title">{% trans 'Price' %}
+            </div>
+            <div class="Compare-products">
+              {% for key, value in compared.items %}
+                <div class="Compare-product">
+                  <div class="Compare-nameProduct">Ноутбук SE40302
+                  </div>
+                  <div class="Compare-feature">
+                    {% if value.0 != value.1 %}
+                    <strong class="Compare-priceOld">{{ value.0 }}
+                    </strong>
+                    {% endif %}
+                    <strong class="Compare-price">{{ value.1 }}
+                    </strong>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block footer %}
+  {% include 'elems/footer.html' %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
+  <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
+  <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
+  <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
+  <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
+  <script src="{% static 'assets/js/scripts.js' %}"></script>
+{% endblock %}
