@@ -9,13 +9,14 @@ from orders_app.services import CartService
 
 
 def cart_clear(request):
+    """Очистка корзины"""
     cart = CartService(request)
     cart.clear()
     return redirect('orders:cart_detail')
 
 
 class CartView(View):
-    """ Представление корзины """
+    """Представление корзины"""
 
     @staticmethod
     def get(request: HttpRequest):
@@ -41,7 +42,7 @@ class CartView(View):
 
 
 class CartAdd(View):
-    """Добавление позиции в корзине"""
+    """Добавление позиций в корзине"""
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
         cart.add_to_cart(product_id)
@@ -57,7 +58,7 @@ class CartIncreaseQuantity(View):
 
 
 class CartDecreaseQuantity(View):
-    """Увеличение позиции в корзине"""
+    """Уменьшение позиции в корзине"""
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
         cart.decrease_in_cart(product_id)
@@ -73,6 +74,7 @@ class CartRemove(View):
 
 
 class OrderStepOne(View):
+    """Представление первого шага оформления заказа"""
     def get(self, request: HttpRequest):
         user = request.user
         initial = {'fio': f'{user.first_name} {user.last_name}',
@@ -98,10 +100,10 @@ class OrderStepOne(View):
             return redirect('orders:order_step_two')
         print(form.errors)
         return render(request, 'orders_app/order_step_one.html', {'form': form})
-        # return render(request, 'orders_app/order_step_one.html', {'form': form})
 
 
 class OrderStepTwo(View):
+    """Представление второго шага оформления заказа"""
     def get(self, request: HttpRequest):
         form = OrderStepTwoForm()
         return render(request, 'orders_app/order_step_two.html', {'form': form})
@@ -123,6 +125,7 @@ class OrderStepTwo(View):
 
 
 class OrderStepThree(View):
+    """Представление третьего шага оформления заказа"""
     def get(self, request: HttpRequest):
         form = OrderStepThreeForm()
         return render(request, 'orders_app/order_step_three.html', {'form': form})
@@ -141,12 +144,18 @@ class OrderStepThree(View):
 
 
 class OrderStepFour(View):
+    """Представление четвертого шага оформления заказа"""
     def get(self, request: HttpRequest):
         order = Order.objects.filter(customer=request.user, in_order=True).last()
         return render(request, 'orders_app/order_step_four.html', {'order': order})
 
 
 class PaymentView(View):
+    """
+    Оплата заказа. Логика направлеемя в зависимости от способа оплаты.
+    Пока реализована оплата картой.
+    Оплата рандомным счетом в разработке
+    """
     def get(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
         if order.payment_method == 'card':
@@ -154,6 +163,9 @@ class PaymentView(View):
 
 
 class PaymentWithCardView(View):
+    """
+    Представление оплаты банковской картой
+    """
     def get(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
         client_token = braintree.ClientToken.generate()
@@ -185,10 +197,12 @@ class PaymentWithCardView(View):
 
 
 def payment_done(request):
+    """Представление удачной оплаты"""
     return render(request, 'orders_app/payment_successful.html')
 
 
-def payment_canceled(request) :
+def payment_canceled(request):
+    """Представление неудачной оплаты"""
     return render(request, 'orders_app/payment_unsuccessful.html')
 
 

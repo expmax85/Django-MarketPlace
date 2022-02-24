@@ -1,3 +1,6 @@
+from decimal import Decimal
+from typing import List, Optional
+
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from orders_app.models import Order, OrderProduct
@@ -11,10 +14,15 @@ class CartService:
     Сервис корзины
 
     add_to_cart: метод добавления товара в корзину
+    increase_in_cart: увеличивает количество конкретной позиции в заказе на 1
+    decrease_in_cart: уменьшает количество конкретной позиции в заказе на 1
     remove_from_cart: убирает товар из корзины
     change_quantity: изменяет количество товара в корзине
     get_goods: получение товаров из корзины
     get_quantity: получение количества товаров в корзине
+    get_total_sum: получение общей суммы товаров в корзине
+    get_total_discounted_sum: получение общей суммы товаров в корзине со скидками
+    clear: очистка корзины
     """
     def __init__(self, request):
         if request.user.is_authenticated:
@@ -94,7 +102,7 @@ class CartService:
 
         pass
 
-    def get_goods(self):
+    def get_goods(self) -> Optional[List[OrderProduct], AnonymCart]:
         """получить товары из корзины"""
         if isinstance(self.cart, Order):
             return self.cart.order_products.all()
@@ -104,33 +112,24 @@ class CartService:
         """получить количество товаров в корзине"""
         return len(self.cart)
 
-    def get_total_sum(self):
+    def get_total_sum(self) -> Decimal:
+        """получить общую сумму заказа"""
         if isinstance(self.cart, Order):
             return self.cart.total_sum
         return self.cart.total_sum()
 
-    def get_total_discounted_sum(self):
+    def get_total_discounted_sum(self) -> Decimal:
+        """получить общую сумму заказа со скидками"""
         if isinstance(self.cart, Order):
             return self.cart.total_discounted_sum
         return self.cart.total_discounted_sum()
 
-    # def merge_to_logined(self, products):
-    #     for product in products:
-    #         if product in self.get_goods():
-    #             print('Wow')
-    #         else:
-    #             product_id = product['seller_product'].id
-    #             quantity = product['quantity']
-    #             product = get_object_or_404(SellerProduct, id=product_id)
-    #             OrderProduct.objects.create(order=self.cart,
-    #                                         seller_product=product,
-    #                                         quantity=quantity,
-    #                                         final_price=product.price_after_discount)
-
-    def clear(self):
+    def clear(self) -> None:
+        """очистить корзину"""
         return self.cart.clear()
 
     def __len__(self):
+        """получить общее количество товаров в корзине"""
         return len(self.cart)
 
 
@@ -145,11 +144,5 @@ class ViewedGoodsService:
     @classmethod
     def add_to_list(cls, request: HttpRequest) -> None:
         """добавить товар в список сравнения"""
-
-        pass
-
-    @classmethod
-    def add_to_cart(cls, request: HttpRequest, product: Product) -> None:
-        """добавить товар в корзину"""
 
         pass

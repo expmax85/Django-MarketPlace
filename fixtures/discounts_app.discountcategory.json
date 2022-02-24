@@ -1,7 +1,7 @@
 [
   {
     "model": "discounts_app.discountcategory",
-    "pk": 11, "fields": {
+    "pk": 1, "fields": {
     "name": "First category",
     "slug": "first-category",
     "description": "First category test"

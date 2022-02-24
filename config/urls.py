@@ -25,4 +25,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders_app.urls', namespace='orders-polls')),
     path('stores/', include('stores_app.urls', namespace='stores-polls')),
+    path('', include('goods_app.urls', namespace='goods')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
