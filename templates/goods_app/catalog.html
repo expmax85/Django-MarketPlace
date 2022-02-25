@@ -35,14 +35,15 @@
                         </strong>
                     </header>
                     <div class="Section-columnContent">
-                        <form class="form" action="#" method="post">
+                        <form class="form" action="{% url 'catalog_filter_url' category.slug sort_type 1 %}" method="post">
+                            {% csrf_token %}
                             <div class="form-group">
                                 <div class="range Section-columnRange">
                                     <input class="range-line" id="price" name="price" type="text" data-type="double"
-                                           data-min="7" data-max="50" data-from="7" data-to="27"/>
+                                           data-min="{{ mini }}" data-max="{{ maxi }}" data-from="{{ min }}"
+                                           data-to="{{  midi }}"/>
                                     <div class="range-price">{% trans 'Price:' %}&#32;
-                                        <div class="rangePrice">
-                                        </div>
+                                        <div class="rangePrice"></div>
                                     </div>
                                 </div>
                             </div>
@@ -52,28 +53,32 @@
                             </div>
                             <div class="form-group">
                                 <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
-                                <select class="form-select">
+                                <select class="form-select" name="select">
                                     <option value="seller" selected="selected" disabled="disabled">{% trans 'Seller:' %}
                                     </option>
-                                    <option value="kkk">Kkkk
-                                    </option>
-                                    <option value="sdfsdf">sdfsdf
-                                    </option>
+                                    <option value="kkk">Kkkk</option>
+                                    <option value="sdfsdf">sdfsdf</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label class="toggle">
-                                    <input type="checkbox"/><span class="toggle-box"></span><span class="toggle-text">{% trans 'Only items in stock:' %}</span>
+                                    <input type="checkbox" name="ch_box_1"/>
+                                    <span class="toggle-box"></span>
+                                    <span class="toggle-text">{% trans 'Only items in stock:' %}</span>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label class="toggle">
-                                    <input type="checkbox"/><span class="toggle-box"></span><span class="toggle-text">{% trans 'With free shipping:' %}</span>
+                                    <input type="checkbox" name="ch_box_2"/>
+                                    <span class="toggle-box"></span>
+                                    <span class="toggle-text">{% trans 'With free shipping:' %}</span>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <div class="buttons">
-                                    <a class="btn btn_square btn_dark btn_narrow" href="#">{% trans 'Filter' %}</a>
+                                    <button class="btn btn_square btn_dark btn_narrow" type="submit">
+                                        {% trans 'Filter' %}
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -100,17 +105,22 @@
                     <div class="Sort-title">{% trans 'Sort by:' %}
                     </div>
                     <div class="Sort-variants">
-                        <a class="Sort-sortBy Sort-sortBy_dec" href="#">{% trans 'Popularity'%}
-                        </a><a class="Sort-sortBy" href="#">{% trans 'Price' %}</a>
-                        <a class="Sort-sortBy" href="#">{% trans 'Comments' %}</a>
-                        <a class="Sort-sortBy Sort-sortBy_inc" href="#">{% trans 'Name' %}</a>
+                        <a class="Sort-sortBy Sort-sortBy_dec" href="#">{% trans 'Popularity'%}</a>
+                        <a class="Sort-sortBy" href="{% url 'catalog_by_category_url' category.slug 'price_inc' 1 %}">
+                            {% trans 'Price' %}
+                        </a>
+                        <a class="Sort-sortBy" href="{% url 'catalog_by_category_url' category.slug 'comment_inc' 1 %}">
+                            {% trans 'Comments' %}
+                        </a>
+                        <a class="Sort-sortBy" href="{% url 'catalog_by_category_url' category.slug 'name_dec' 1 %}">
+                            {% trans 'Name' %}
+                        </a>
                     </div>
                 </div>
                 <div class="Cards">
 
-                    {% if category %}
-                    {% for item in category.products.all %}
-                    {% for elem in item.seller_products.all %}
+
+                    {% for elem in page_obj %}
                     <div class="Card"><a class="Card-picture" href="#">
                         <img src={% static "assets/img/content/home/card.jpg" %} alt="card.jpg"/></a>
                         <div class="Card-content">
@@ -139,130 +149,44 @@
                         </div>
                     </div>
                     {% endfor %}
-                    {% endfor %}
-                    {% endif %}
-                    <!--            <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Barand New Phone Smart Business</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Games' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
-                    <!--            <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Mavic PRO Mini Drones Hobby RC Quadcopter</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$185.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Digital' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
-                    <!--            <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Corsair Carbide Series Arctic White Steel</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-price">$210.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Media' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
-                    <!--            <div class="Card hide_md"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Corsair Carbide Series Arctic White Steel</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Games' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
-                    <!--            <div class="Card hide_md"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Barand New Phone Smart Business</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Games' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
-                    <!--            <div class="Card hide_md hide_1450"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Mavic PRO Mini Drones Hobby RC Quadcopter</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$185.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Digital' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
-                    <!--            <div class="Card hide_md hide_1450"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>-->
-                    <!--              <div class="Card-content">-->
-                    <!--                <strong class="Card-title"><a href="product.html">Corsair Carbide Series Arctic White Steel</a>-->
-                    <!--                </strong>-->
-                    <!--                <div class="Card-description">-->
-                    <!--                  <div class="Card-cost"><span class="Card-price">$210.00</span>-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-category">{% trans 'Media' %} / {% trans 'xbox' %}-->
-                    <!--                  </div>-->
-                    <!--                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>-->
-                    <!--                  </div>-->
-                    <!--                </div>-->
-                    <!--              </div>-->
-                    <!--              <div class="Card-sale">-60%-->
-                    <!--              </div>-->
-                    <!--            </div>-->
+
                 </div>
                 <div class="Pagination">
-                    <div class="Pagination-ins"><a class="Pagination-element Pagination-element_prev" href="#"><img
-                            src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/></a><a
-                            class="Pagination-element Pagination-element_current" href="#"><span
-                            class="Pagination-text">1</span></a><a class="Pagination-element" href="#"><span
-                            class="Pagination-text">2</span></a><a class="Pagination-element" href="#"><span
-                            class="Pagination-text">3</span></a><a class="Pagination-element Pagination-element_prev"
-                                                                   href="#"><img
-                            src={% static "assets/img/icons/nextPagination.svg" %} alt="next"/></a>
+                    <div class="Pagination-ins">
+
+                        {% if page_obj.paginator.page.has_previous %}
+                        <a class="Pagination-element Pagination-element_prev"
+                           href="{% url 'catalog_by_category_url' category.slug sort_type page_obj.paginator.page.previous_page_number %}">
+                            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
+                        </a>
+                        {% else %}
+                        <a class="Pagination-element Pagination-element_prev" href="1">
+                            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
+                        </a>
+                        {% endif %}
+
+                        {% for page in page_obj.paginator.page_range %}
+                        {% if page_obj.paginator.number == page %}
+                        <a class="Pagination-element Pagination-element_current" href="{{ page }}">
+                            <span class="Pagination-text">{{ page }}</span></a>
+                        {% else %}
+                        <a class="Pagination-element" href="{{ page }}">
+                            <span class="Pagination-text">{{ page }}</span></a>
+                        {% endif %}
+                        {% endfor %}
+
+
+                        {% if page_obj.paginator.page.has_next %}
+                        <a class="Pagination-element Pagination-element_next"
+                           href="{% url 'catalog_by_category_url' category.slug sort_type page_obj.paginator.page.next_page_number %}">
+                            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
+                        </a>
+                        {% else %}
+                        <a class="Pagination-element Pagination-element_prev" href="{{ page_obj.paginator.num_pages }}">
+                            <img src={% static "assets/img/icons/nextPagination.svg" %} alt="prev"/>
+                        </a>
+                        {% endif %}
+
 
                     </div>
                 </div>

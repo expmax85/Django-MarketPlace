@@ -2,11 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from django.utils.translation import gettext_lazy as _
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 
 User = get_user_model()
 
 
-class ProductCategory(models.Model):
+class ProductCategory(MPTTModel):
     """
     Модель категории товаров
     """
@@ -17,6 +19,7 @@ class ProductCategory(models.Model):
     )
     slug = models.SlugField(null=True, verbose_name=_('product_category_slug'))
     description = models.TextField(max_length=255, null=True, verbose_name=_('product_category_description'))
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
     def __str__(self):
         return self.name
@@ -24,6 +27,9 @@ class ProductCategory(models.Model):
     class Meta:
         verbose_name_plural = _('product categories')
         verbose_name = _('product category')
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
 
 class Product(models.Model):
