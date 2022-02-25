@@ -47,10 +47,10 @@ class Command(BaseCommand):
             n_iteration -= 1
 
         if err_list:
-            self.stdout.write(self.style.WARNING(f'Not all fixtures was loading. Check it:'))
+            self.stdout.write(self.style.WARNING(f'Not all fixtures have been loaded. Check it:'))
             self.stdout.write(self.style.WARNING(err_list))
         else:
-            self.stdout.write(self.style.SUCCESS(f'\nAll commands and loadings was successfully!'))
+            self.stdout.write(self.style.SUCCESS(f'\nAll commands and loadings have been successful!'))
 
     def _remove_old_migrations(self):
         self.stdout.write(f'\nRemove old migration files...\n')
