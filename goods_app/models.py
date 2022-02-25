@@ -16,7 +16,9 @@ class ProductCategory(models.Model):
     description = models.TextField(max_length=255, null=True)
 
     class Meta:
-        verbose_name_plural = 'product categories'
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
+        db_table = 'categories'
 
 
 class Product(models.Model):
@@ -45,8 +47,9 @@ class Product(models.Model):
         return reverse('product-detail', kwargs={'pk': self.id})
 
     class Meta:
-        verbose_name = 'product'
-        verbose_name_plural = 'products'
+        verbose_name = _('product')
+        verbose_name_plural = _('products')
+        db_table = 'products'
 
 
 class ProductComment(models.Model):
@@ -64,8 +67,9 @@ class ProductComment(models.Model):
         return f'Comments for {str(self.product)}'
 
     class Meta:
-        verbose_name = 'comment'
-        verbose_name_plural = 'comments'
+        verbose_name = _('product comment')
+        verbose_name_plural = _('product comments')
+        db_table = 'comments'
 
 
 class SpecificationsNames(models.Model):
@@ -76,6 +80,12 @@ class SpecificationsNames(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _('specification name')
+        verbose_name_plural = _('specification names')
+        db_table = 'specification_names'
+
 
 
 class Specifications(models.Model):
@@ -88,5 +98,11 @@ class Specifications(models.Model):
 
     def __str__(self):
         return self.value
+
+    class Meta:
+        verbose_name = _('specification')
+        verbose_name_plural = _('specifications')
+        db_table = 'specifications'
+
 
 

@@ -1,5 +1,3 @@
-from typing import Dict
-
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Avg, QuerySet

@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.shortcuts import redirect
+from django.urls import path
+from django.utils.translation import gettext_lazy as _
+
 from goods_app.models import ProductCategory, Product, ProductComment, Specifications, SpecificationsNames
 
 
@@ -8,6 +12,19 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_filter = ('name',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
+
+    change_list_template = "admin/model_change_list.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('stores_cache/', self.clear_cache, name='clear_cache'), ]
+        return custom_urls + urls
+
+    def clear_cache(self, request):
+        #Код очистки кэша
+        self.message_user(request, _('Cache from applocation "Users" has cleared.'))
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class SpecificationsAdmin(admin.TabularInline):
