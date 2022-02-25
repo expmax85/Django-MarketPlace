@@ -13,19 +13,6 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
 
-    change_list_template = "admin/model_change_list.html"
-
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('stores_cache/', self.clear_cache, name='clear_cache'), ]
-        return custom_urls + urls
-
-    def clear_cache(self, request):
-        #Код очистки кэша
-        self.message_user(request, _('Cache from applocation "Users" has cleared.'))
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-
 
 class SpecificationsAdmin(admin.TabularInline):
     model = Specifications
@@ -50,9 +37,9 @@ class ProductComment(admin.ModelAdmin):
 
 @admin.register(Specifications)
 class SpecificationAdmin(admin.ModelAdmin):
-    list_display = ('value',)
+    list_display = ('value', )
 
 
 @admin.register(SpecificationsNames)
 class SpecificationAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', )

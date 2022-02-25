@@ -58,8 +58,8 @@ class ProductComment(models.Model):
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_comments')
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    author = models.CharField(verbose_name=_('author'),max_length=25, null=True)
-    content = models.TextField(verbose_name=_('content'),max_length=255, null=True)
+    author = models.CharField(verbose_name=_('author'), max_length=25, null=True)
+    content = models.TextField(verbose_name=_('content'), max_length=255, null=True)
     added = models.DateTimeField(verbose_name=_('added'), auto_now_add=True, null=True)
     rating = models.IntegerField(verbose_name=_('rating'), null=True, blank=True)
 
@@ -77,7 +77,6 @@ class SpecificationsNames(models.Model):
 
     name = models.CharField(max_length=32, null=False)
 
-
     def __str__(self):
         return self.name
 
@@ -85,7 +84,6 @@ class SpecificationsNames(models.Model):
         verbose_name = _('specification name')
         verbose_name_plural = _('specification names')
         db_table = 'specification_names'
-
 
 
 class Specifications(models.Model):
@@ -103,6 +101,3 @@ class Specifications(models.Model):
         verbose_name = _('specification')
         verbose_name_plural = _('specifications')
         db_table = 'specifications'
-
-
-

@@ -46,21 +46,19 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups',)
 
-    change_list_template = "admin/model_change_list.html"
-
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path('profiles_cache/', self.clear_cache, name='clear_cache'), ]
-        return custom_urls + urls
-
-    def clear_cache(self, request):
-        #Код очистки кэша
-        self.message_user(request, _('Cache from applocation "Users" has cleared.'))
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    # change_list_template = "admin/model_change_list.html"
+    #
+    # def get_urls(self):
+    #     urls = super().get_urls()
+    #     custom_urls = [
+    #         path('profiles_cache/', self.clear_cache, name='clear_cache'), ]
+    #     return custom_urls + urls
+    #
+    # def clear_cache(self, request):
+    #     #Код очистки кэша
+    #     self.message_user(request, _('Cache from applocation "Users" has cleared.'))
+    #     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
-
-
