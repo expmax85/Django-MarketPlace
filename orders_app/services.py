@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -102,7 +102,7 @@ class CartService:
 
         pass
 
-    def get_goods(self) -> Optional[List[OrderProduct], AnonymCart]:
+    def get_goods(self) -> Union[OrderProduct, AnonymCart]:
         """получить товары из корзины"""
         if isinstance(self.cart, Order):
             return self.cart.order_products.all()
