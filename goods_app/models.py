@@ -63,6 +63,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = _('product')
         verbose_name_plural = _('products')
+        db_table = 'products'
 
 
 class ProductComment(models.Model):
@@ -70,7 +71,47 @@ class ProductComment(models.Model):
     Модель комментария к товару
     """
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_comments')
-    author = models.CharField(max_length=25, null=True)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    content = models.TextField(max_length=255, null=True)
-    added = models.DateTimeField(auto_now_add=True, null=True)
+    author = models.CharField(verbose_name=_('author'), max_length=25, null=True)
+    content = models.TextField(verbose_name=_('content'), max_length=255, null=True)
+    added = models.DateTimeField(verbose_name=_('added'), auto_now_add=True, null=True)
+    rating = models.IntegerField(verbose_name=_('rating'), null=True, blank=True)
+
+    def __str__(self):
+        return f'Comments for {str(self.product)}'
+
+    class Meta:
+        verbose_name = _('product comment')
+        verbose_name_plural = _('product comments')
+        db_table = 'comments'
+
+
+class SpecificationsNames(models.Model):
+    """ Все возможные характеристики """
+
+    name = models.CharField(max_length=32, null=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('specification name')
+        verbose_name_plural = _('specification names')
+        db_table = 'specification_names'
+
+
+class Specifications(models.Model):
+    """ Модель Характеристики товара """
+
+    value = models.CharField(max_length=32, null=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True, related_name='specifications')
+    current_specification = models.ForeignKey(SpecificationsNames, on_delete=models.CASCADE, blank=True, null=True,
+                                              related_name='specifications')
+
+    def __str__(self):
+        return self.value
+
+    class Meta:
+        verbose_name = _('specification')
+        verbose_name_plural = _('specifications')
+        db_table = 'specifications'

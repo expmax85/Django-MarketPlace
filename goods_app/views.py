@@ -26,19 +26,9 @@ class IndexView(ListView):
     template_name = 'index.html'
     context_object_name = 'products'
 
-    #Заглушка
+    # Заглушка
     def get_queryset(self, queryset=None):
         return SellerProduct.objects.all()
-def index(request):
-    banners = banner()
-    return render(request, 'index.html', {'banners': banners,})
-
-
-class CatalogByCategory(CatalogByCategoriesMixin, View):
-
-    def get(self, request, slug, sort_type, page):
-        row_items_for_catalog, category = self.get_data_without_filters(slug)
-        items_for_catalog = self.simple_sort(row_items_for_catalog, sort_type)
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -46,6 +36,11 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
         cart = CartService(self.request)
         context['total'] = cart.get_quantity()
         return context
+
+
+# def index(request):
+#     banners = banner()
+#     return render(request, 'index.html', {'banners': banners,})
 
 
 class ProductDetailView(DetailView):
@@ -74,15 +69,23 @@ class ProductDetailView(DetailView):
         context['reviews_count'] = reviews.count
         context['comments'] = context_pagination(self.request, reviews)
         return render(request, 'goods_app/product_detail.html', context=context)
+
+
+class CatalogByCategory(CatalogByCategoriesMixin, View):
+
+    def get(self, request, slug, sort_type, page):
+        # get data and sort this data
+        row_items_for_catalog, category = self.get_data_without_filters(slug)
+        items_for_catalog = self.simple_sort(row_items_for_catalog, sort_type)
+
+        # paginator
         paginator = Paginator(items_for_catalog, 8)
         page_obj = paginator.get_page(page)
 
         # custom levels for range input
-        mini = self.get_min_price(items_for_catalog)
         maxi = self.get_max_price(items_for_catalog)
-        midi = maxi // 2
-
-        categories = ProductCategory.objects.all()
+        mini = self.get_min_price(items_for_catalog)
+        midi = maxi / 2
 
         return render(
             request,
@@ -94,7 +97,6 @@ class ProductDetailView(DetailView):
                 'mini': mini,
                 'maxi': maxi,
                 'midi': midi,
-                'categories': categories,
             })
 
 

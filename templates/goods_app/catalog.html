@@ -18,7 +18,7 @@
                 <h1 class="Middle-title">{% trans 'Catalog Megano' %}
                 </h1>
                 <ul class="breadcrumbs Middle-breadcrumbs">
-                    <li class="breadcrumbs-item"><a href="{% url 'index_url' %}">{% trans 'home' %}</a>
+                    <li class="breadcrumbs-item"><a href="{% url 'goods-polls:index_url' %}">{% trans 'home' %}</a>
                     </li>
                     <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Catalog' %}</span>
                     </li>
@@ -35,7 +35,7 @@
                         </strong>
                     </header>
                     <div class="Section-columnContent">
-                        <form class="form" action="{% url 'catalog_filter_url' category.slug sort_type 1 %}" method="post">
+                        <form class="form" action="{% url 'goods-polls:catalog_filter_url' category.slug sort_type 1 %}" method="post">
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="range Section-columnRange">
@@ -106,13 +106,13 @@
                     </div>
                     <div class="Sort-variants">
                         <a class="Sort-sortBy Sort-sortBy_dec" href="#">{% trans 'Popularity'%}</a>
-                        <a class="Sort-sortBy" href="{% url 'catalog_by_category_url' category.slug 'price_inc' 1 %}">
+                        <a class="Sort-sortBy" href="{% url 'goods-polls:catalog_by_category_url' category.slug 'price_inc' 1 %}">
                             {% trans 'Price' %}
                         </a>
-                        <a class="Sort-sortBy" href="{% url 'catalog_by_category_url' category.slug 'comment_inc' 1 %}">
+                        <a class="Sort-sortBy" href="{% url 'goods-polls:catalog_by_category_url' category.slug 'comment_inc' 1 %}">
                             {% trans 'Comments' %}
                         </a>
-                        <a class="Sort-sortBy" href="{% url 'catalog_by_category_url' category.slug 'name_dec' 1 %}">
+                        <a class="Sort-sortBy" href="{% url 'goods-polls:catalog_by_category_url' category.slug 'name_dec' 1 %}">
                             {% trans 'Name' %}
                         </a>
                     </div>
@@ -156,7 +156,7 @@
 
                         {% if page_obj.paginator.page.has_previous %}
                         <a class="Pagination-element Pagination-element_prev"
-                           href="{% url 'catalog_by_category_url' category.slug sort_type page_obj.paginator.page.previous_page_number %}">
+                           href="{% url 'goods-polls:catalog_by_category_url' category.slug sort_type page_obj.paginator.page.previous_page_number %}">
                             <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
                         </a>
                         {% else %}
@@ -178,7 +178,7 @@
 
                         {% if page_obj.paginator.page.has_next %}
                         <a class="Pagination-element Pagination-element_next"
-                           href="{% url 'catalog_by_category_url' category.slug sort_type page_obj.paginator.page.next_page_number %}">
+                           href="{% url 'goods-polls:catalog_by_category_url' category.slug sort_type page_obj.paginator.page.next_page_number %}">
                             <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
                         </a>
                         {% else %}
