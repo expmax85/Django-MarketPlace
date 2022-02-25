@@ -1,3 +1,6 @@
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -40,18 +43,22 @@ class Product(models.Model):
         ProductCategory,
         on_delete=models.CASCADE,
         related_name='products',
-        verbose_name=_('good_category'),
+        verbose_name='good_category',
     )
-    name = models.CharField(max_length=25, null=True, verbose_name=_('product_name'))
-    code = models.CharField(max_length=25, null=True, verbose_name=_('product_code'))
-    slug = models.SlugField(null=True, db_index=True, verbose_name=_('product_slug'))
-    image = models.ImageField(null=True, blank=True, verbose_name=_('product_image'))
-    description = models.TextField(max_length=255, null=True, verbose_name=_('product_description'))
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, verbose_name=_('average_price'))
-    comments = models.IntegerField(null=True, verbose_name=_('amount_of_comments'))
+    name = models.CharField(max_length=25, null=True, verbose_name='product_name')
+    code = models.CharField(max_length=25, null=True, verbose_name='product_code')
+    slug = models.SlugField(null=True, db_index=True, verbose_name='product_slug')
+    image = models.ImageField(null=True, blank=True, verbose_name='product_image')
+    description = models.TextField(max_length=255, null=True, verbose_name='product_description')
+    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, verbose_name='average_price')
+    comments = models.IntegerField(null=True, verbose_name='amount_of_comments')
+    rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('goods-polls:product-detail', kwargs={'pk': self.id})
 
     class Meta:
         verbose_name = _('product')

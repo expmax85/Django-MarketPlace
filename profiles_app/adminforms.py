@@ -1,3 +1,5 @@
+from typing import Callable
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -25,7 +27,7 @@ class GroupAdminForm(forms.ModelForm):
          widget=FilteredSelectMultiple('users', False)
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # Do the normal form initialisation.
         super(GroupAdminForm, self).__init__(*args, **kwargs)
         # If it is an existing group (saved objects have a pk).
@@ -33,11 +35,11 @@ class GroupAdminForm(forms.ModelForm):
             # Populate the users field with the current Group users.
             self.fields['users'].initial = self.instance.user_set.all()
 
-    def save_m2m(self):
+    def save_m2m(self) -> None:
         # Add the users to the Group.
         self.instance.user_set.set(self.cleaned_data['users'])
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> Callable:
         # Default save
         instance = super(GroupAdminForm, self).save()
         # Save many-to-many data
@@ -55,7 +57,7 @@ class UserCreationForm(forms.ModelForm):
         model = User
         fields = ('email',)
 
-    def clean_password2(self):
+    def clean_password2(self) -> str:
         # Check that the two password entries match
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
@@ -63,7 +65,7 @@ class UserCreationForm(forms.ModelForm):
             raise ValidationError("Passwords don't match")
         return password2
 
-    def save(self, commit=True):
+    def save(self, commit=True) -> Callable:
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
