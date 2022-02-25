@@ -6,4 +6,4 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = ProductComment
         fields = ['product', 'user', 'author', 'content', 'rating']
-        exclude = ['added',]
+        exclude = ['added', ]

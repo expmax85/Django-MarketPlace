@@ -52,5 +52,5 @@ class OrderStepThreeForm(forms.ModelForm):
                 attrs={
                     'class': 'toggle-box'
                 }
-            ),}
+            ), }
         fields = ['payment_method']

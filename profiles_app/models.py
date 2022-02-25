@@ -77,7 +77,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
         db_table = 'profiles'
-        permissions = [('Sellers', 'can_sell')]
+        permissions = [
+            ('Sellers', 'can sell'),
+            ('Content_manager', 'app management')]
 
 
 class ViewedProduct(models.Model):

@@ -19,9 +19,12 @@ from stores_app.services import StoreServiceMixin
 CREATE_SP_ERROR = 150
 
 
-class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, ListView):
-    """   Page for view seller room for Sellers-group   """
+class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
     permission_required = ('profiles_app.Sellers',)
+
+
+class SellersRoomView(StoreAppMixin, ListView):
+    """   Page for view seller room for Sellers-group   """
     model = Seller
     template_name = 'stores_app/sellers_room.html'
     context_object_name = 'stores'
@@ -36,10 +39,8 @@ class SellersRoomView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceM
         return context
 
 
-class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, View):
+class AddNewStoreView(StoreAppMixin, View):
     """   Page for creating new store   """
-    permission_required = ('profiles_app.Sellers',)
-
 
     def get(self, request) -> Callable:
         form = AddStoreForm()
@@ -54,9 +55,8 @@ class AddNewStoreView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceM
         return render(request, 'stores_app/add_store.html', context={'form': form})
 
 
-class EditStoreView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, DetailView):
+class EditStoreView(StoreAppMixin, DetailView):
     """   Page for view and edit detail store   """
-    permission_required = ('profiles_app.Sellers',)
     context_object_name = 'store'
     template_name = 'stores_app/edit-store.html'
     model = Seller
@@ -78,6 +78,7 @@ class EditStoreView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMix
 
 class StoreDetailView(StoreServiceMixin, DetailView):
     """   Page for Store Detail   """
+    permission_required = None
     context_object_name = 'store'
     template_name = 'stores_app/store_detail.html'
     model = Seller
@@ -89,9 +90,8 @@ class StoreDetailView(StoreServiceMixin, DetailView):
         return context
 
 
-class AddSellerProductView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, View):
+class AddSellerProductView(StoreAppMixin, View):
     """   Page for adding new seller product   """
-    permission_required = ('profiles_app.Sellers',)
 
     def get_queryset(self, request) -> QuerySet:
         category_id = request.GET.get('category_id')
@@ -117,9 +117,8 @@ class AddSellerProductView(LoginRequiredMixin, PermissionRequiredMixin, StoreSer
         return render(request, 'stores_app/new_product_in_store.html', {'form': form})
 
 
-class EditSelleProductView(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin, DetailView):
+class EditSelleProductView(StoreAppMixin, DetailView):
     """    Page for editing SellerProduct instance    """
-    permission_required = ('profiles_app.Sellers',)
     context_object_name = 'item'
     template_name = 'stores_app/edit-seller-product.html'
     model = SellerProduct

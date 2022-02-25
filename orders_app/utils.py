@@ -1,6 +1,7 @@
 import json
 from decimal import Decimal
 
+
 class DecimalEncoder(json.JSONEncoder):
     """ Отбрасывает Decimal у объекта из queryset """
 

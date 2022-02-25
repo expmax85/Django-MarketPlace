@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.shortcuts import redirect
+from django.urls import path
+from django.utils.translation import gettext_lazy as _
+
 from goods_app.models import ProductCategory, Product, ProductComment, Specifications, SpecificationsNames
 
 
@@ -33,9 +37,9 @@ class ProductComment(admin.ModelAdmin):
 
 @admin.register(Specifications)
 class SpecificationAdmin(admin.ModelAdmin):
-    list_display = ('value',)
+    list_display = ('value', )
 
 
 @admin.register(SpecificationsNames)
 class SpecificationAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', )

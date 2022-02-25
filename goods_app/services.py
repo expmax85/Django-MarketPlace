@@ -1,5 +1,3 @@
-from typing import Dict
-
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Avg, QuerySet
@@ -31,4 +29,3 @@ def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Pagin
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return page_obj
-

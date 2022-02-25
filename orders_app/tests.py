@@ -43,7 +43,3 @@ class CompareTest(TestCase):
         self.assertContains(response, 'no data')
         self.assertContains(response, '100')
         self.assertContains(response, '90')
-
-
-
-

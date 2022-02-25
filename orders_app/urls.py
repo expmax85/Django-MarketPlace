@@ -23,5 +23,6 @@ urlpatterns = [
     path('canceled/', payment_canceled, name='payment_canceled'),
 
     path('viewed/', ViewedGoodsView.as_view(), name='viewed'),
-    path('compare/', CompareView.as_view(), name='compare')
+    path('compare/', CompareView.as_view(), name='compare'),
+    path('compare/add/<int:product_id>/', add_to_compare, name='add-to-compare')
 ]

@@ -9,6 +9,8 @@ from banners_app.services import banner
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from goods_app.services import get_reviews, calculate_product_rating, context_pagination
+from orders_app.services import CartService
+from stores_app.models import SellerProduct
 
 
 class IndexView(ListView):
@@ -16,9 +18,15 @@ class IndexView(ListView):
     template_name = 'index.html'
     context_object_name = 'products'
 
+    #Заглушка
+    def get_queryset(self, queryset=None):
+        return SellerProduct.objects.all()
+
     def get_context_data(self, **kwargs) -> Dict:
         context = super(IndexView, self).get_context_data(**kwargs)
         context['banners'] = banner()
+        cart = CartService(self.request)
+        context['total'] = cart.get_quantity()
         return context
 
 
