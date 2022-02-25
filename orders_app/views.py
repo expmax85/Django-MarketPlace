@@ -2,12 +2,13 @@ import json
 from typing import Dict
 
 import braintree
+from django.contrib.messages.storage import session
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
-from django.http import HttpRequest, HttpResponse
-from orders_app.models import Order
-from orders_app.forms import CartAddProductForm, OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
+from django.http import HttpRequest
+from orders_app.models import Order, CompareProductStorage
+from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.services import CartService
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
@@ -103,7 +104,7 @@ class OrderStepOne(View):
             order.phone = phone
             order.save()
             return redirect('orders:order_step_two')
-        print(form.errors)
+        # print(form.errors)
         return render(request, 'orders_app/order_step_one.html', {'form': form})
 
 
@@ -125,7 +126,7 @@ class OrderStepTwo(View):
             order.address = address
             order.save()
             return redirect('orders:order_step_three')
-        print(form.errors)
+        # print(form.errors)
         return render(request, 'orders_app/order_step_two.html', {'form': form})
 
 
@@ -144,7 +145,7 @@ class OrderStepThree(View):
             order.in_order = True
             order.save()
             return redirect('orders:order_step_four')
-        print(form.errors)
+        # print(form.errors)
         return render(request, 'orders_app/order_step_three.html', {'form': form})
 
 
@@ -230,7 +231,8 @@ class CompareView(View):
         #Сделать добавление в список для сранения, в сессию добавляются первые 4 товара из БД
         #На основе этого(примерно) можно реализовать сервис добавления в список для сравнения
         compared = dict()
-        for product in list(SellerProduct.objects.all().select_related('product')[:4]):
+        # for product in list(SellerProduct.objects.all())[:4]:
+        for product in list(SellerProduct.objects.filter(compare_storage__user=request.user)):
             specifications = ({spec.current_specification.name: spec.value for spec in
                               product.product.specifications.all()})
             image = product.product.image.url if product.product.image else None
@@ -260,3 +262,10 @@ class CompareView(View):
             if len(value) == value.count(value[0]):
                 value.append(True)
         return {'compared': compared, 'specifications': specifications}
+
+
+def add_to_compare(request, product_id):
+    compare, created = CompareProductStorage.objects.get_or_create(product_id=product_id, user=request.user)
+    # if created:
+    #     compare.delete()
+    return redirect(request.META.get('HTTP_REFERER'))

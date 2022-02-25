@@ -2,8 +2,7 @@ from decimal import Decimal
 
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import F, Sum
-from django.conf import settings
+from django.db.models import F, Sum, ForeignKey
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 from django.utils.translation import gettext_lazy as _
@@ -90,3 +89,8 @@ class OrderProduct(models.Model):
         # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
         # Пока цена магазина. Название метода получения цкны со скидкой пока условное
         return self.seller_product.price
+
+
+class CompareProductStorage(models.Model):
+    user = ForeignKey(User, on_delete=models.CASCADE)
+    product = ForeignKey(SellerProduct, on_delete=models.CASCADE, related_name='compare_storage')
