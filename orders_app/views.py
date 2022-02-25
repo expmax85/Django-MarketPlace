@@ -1,3 +1,6 @@
+import json
+from typing import Dict
+
 import braintree
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -6,6 +9,8 @@ from django.http import HttpRequest, HttpResponse
 from orders_app.models import Order
 from orders_app.forms import CartAddProductForm, OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.services import CartService
+from orders_app.utils import DecimalEncoder
+from stores_app.models import SellerProduct
 
 
 def cart_clear(request):
@@ -236,7 +241,7 @@ class CompareView(View):
         context = self.create_queryset(session_data=request.session['compared'])
         return render(request, 'orders_app/compare.html', context)
 
-    def create_queryset(self, session_data: json) -> dict[str, any]:
+    def create_queryset(self, session_data: json) -> Dict:
         """ Здесь формируется queryset для сравнения товаров """
 
         # Здесь достаем товары для сравнения из сессии
