@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
+from braintree import Configuration, Environment
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'orders_app.context_processors.cart'
             ],
         },
     },
@@ -160,3 +162,16 @@ LOGIN_URL = 'profiles-polls:login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'profiles_app.User'
+
+CART_SESSION_ID = 'cart'
+
+BRAINTREE_MERCHANT_ID = 'm3wfb5j4gbvcrh3b'  # ID продавца.
+BRAINTREE_PUBLIC_KEY = '93btdgpyybsjkvpf'  # Публичный ключ.
+BRAINTREE_PRIVATE_KEY = 'a9813a01dfac799dec1be1f6b2663878'  # Секретный ключ.
+
+Configuration.configure(
+    Environment.Sandbox,
+    BRAINTREE_MERCHANT_ID,
+    BRAINTREE_PUBLIC_KEY,
+    BRAINTREE_PRIVATE_KEY
+)

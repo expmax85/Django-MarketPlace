@@ -5,5 +5,4 @@ django-allauth==0.48.0
 
 flake8==4.0.1
 black==21.12b0
-
-
+braintree==4.14.0

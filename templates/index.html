@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block main %}
-    {% cache 300 banners_block %}
+    {% cache 30 banners_block %}
     {% block banners_block %}
         {% include 'elems/banner.html' %}
     {% endblock %}

@@ -42,15 +42,15 @@ class Command(BaseCommand):
                 break
             n_iteration -= 1
         if err_list:
-            self.stdout.write(self.style.WARNING(f'Not all fixtures was loading. Check it:'))
+            self.stdout.write(self.style.WARNING(f'Not all fixtures have been loaded. Check it:'))
             self.stdout.write(self.style.WARNING(err_list))
         else:
-            self.stdout.write(self.style.SUCCESS(f'\nAll commands and loadings was successfully!'))
+            self.stdout.write(self.style.SUCCESS(f'\nAll commands and loadings have been successful!'))
 
     def _remove_old_migrations(self):
         list_apps = self._get_apps_list()
         for item in list_apps:
-            path = ''.join([os.path.abspath(item), '\migrations'])
+            path = ''.join([os.path.abspath(item), r'\migrations'])
             for file in os.listdir(path):
                 if not file.startswith('__'):
                     os.remove(os.path.join(path, file))
@@ -66,7 +66,7 @@ class Command(BaseCommand):
     def _get_apps_list(self):
         list_apps = []
         for item in INSTALLED_APPS:
-            path = ''.join([os.path.abspath(item), '\migrations'])
+            path = ''.join([os.path.abspath(item), r'\migrations'])
             if os.path.exists(path):
                 list_apps.append(item)
         return list_apps

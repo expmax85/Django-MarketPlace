@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  {% trans 'Error' %}
+{% endblock %}
+
+{%block header %}
+  {% include 'elems/header.html' %}
+{% endblock %}
+{%block main %}
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">{% trans 'Payment' %}
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="/">home</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Payment' %}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="Section">
+      <div class="wrap">
+        <p class="form-label">{% trans 'Sorry, something went wrong!' %}</p>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
+  <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
+  <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
+  <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
+  <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
+  <script src="{% static 'assets/js/scripts.js' %}"></script>
+{% endblock %}
