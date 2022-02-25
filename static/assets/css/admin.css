@@ -1,0 +1,25 @@
+.breadcrumbs {
+    background: black !important;
+}
+
+#changelist-filter h2,
+.module h2, .module caption, .inline-group h2,
+.selector-chosen h2 {
+    background: black !important;
+    color: var(--header-link-color) !important;
+}
+
+input[type=submit],
+.deletelink {
+    border-radius: 100px !important;
+}
+
+.submit-row input[type=submit],
+input[type=submit] {
+    background: #0063d1 !important;
+    color: var(--header-link-color) !important;
+}
+
+.object-tools a:link, .object-tools a:visited {
+    background-color: green !important;
+}
