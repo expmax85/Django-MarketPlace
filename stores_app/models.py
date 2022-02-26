@@ -8,7 +8,6 @@ from django.urls import reverse
 from goods_app.models import Product
 from discounts_app.models import Discount
 
-
 User = get_user_model()
 
 
@@ -25,9 +24,9 @@ class Seller(models.Model):
     phone = models.CharField(max_length=16, null=True, blank=True, default="",
                              verbose_name=_('phone'))
     owner = models.ForeignKey(User,
-              on_delete=models.CASCADE,
-              related_name='seller',
-              verbose_name=_('owner'))
+                              on_delete=models.CASCADE,
+                              related_name='seller',
+                              verbose_name=_('owner'))
 
     def __str__(self) -> str:
         return self.name
@@ -53,20 +52,20 @@ class SellerProduct(models.Model):
     Seller product model
     """
     seller = models.ForeignKey(Seller,
-        on_delete=models.CASCADE,
-        related_name='seller_products',
-        verbose_name=_('seller')
-    )
+                               on_delete=models.CASCADE,
+                               related_name='seller_products',
+                               verbose_name=_('seller')
+                               )
     product = models.ForeignKey(Product,
-        on_delete=models.CASCADE,
-        related_name='seller_products',
-        verbose_name=_('product')
-    )
+                                on_delete=models.CASCADE,
+                                related_name='seller_products',
+                                verbose_name=_('product')
+                                )
     discount = models.ForeignKey(Discount,
-        on_delete=models.CASCADE,
-        related_name='seller_products',
-        verbose_name=_('discount')
-    )
+                                 on_delete=models.CASCADE,
+                                 related_name='seller_products',
+                                 verbose_name=_('discount')
+                                 )
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price'))
     price_after_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price_after_discount'))
     quantity = models.IntegerField(verbose_name=_('quantity'))
