@@ -1,7 +1,4 @@
 from django.contrib import admin
-from django.shortcuts import redirect
-from django.urls import path
-from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductCategory, Product, ProductComment, Specifications, SpecificationsNames
 
