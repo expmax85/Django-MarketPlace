@@ -33,8 +33,6 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super(IndexView, self).get_context_data(**kwargs)
         context['banners'] = banner()
-        cart = CartService(self.request)
-        context['total'] = cart.get_quantity()
         return context
 
 

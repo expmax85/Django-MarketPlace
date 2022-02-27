@@ -71,6 +71,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:
                 old_self.avatar.delete(False)
+        if self.is_member('Content-manager'):
+            self.is_staff = True
         return super(User, self).save(*args, **kwargs)
 
     class Meta:

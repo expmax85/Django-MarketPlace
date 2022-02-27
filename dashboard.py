@@ -18,7 +18,39 @@ try:
 except ImportError:
     from django.utils.translation import ugettext_lazy as _
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
-from admin_tools.utils import get_admin_site_name
+
+
+class HistoryDashboardModule(modules.LinkList):
+    title = 'History'
+
+    def init_with_context(self, context):
+        request = context['request']
+        # we use sessions to store the visited pages stack
+        history = request.session.get('history', [])
+        for item in history:
+            self.children.append(item)
+        # add the current page to the history
+        history.insert(0, {
+            'title': context['title'],
+            'url': request.META['PATH_INFO']
+        })
+        if len(history) > 10:
+            history = history[:10]
+        request.session['history'] = history
+        print(history)
+
+
+class CustomPagesModule(modules.DashboardModule):
+    title = _('Settings')
+    template = 'admin/admin-setup-dashboard.html'
+
+    def is_empty(self):
+        return False
+
+    def init_with_context(self, context):
+        if self._initialized:
+            return
+        self._initialized = True
 
 
 class CustomIndexDashboard(Dashboard):
@@ -38,12 +70,11 @@ class CustomIndexDashboard(Dashboard):
                     title=_('Applications'),
                     exclude=('django.contrib.*', 'allauth.*', 'profiles_app.*'),
                 ),
-                modules.DashboardModule(title='sdsdsd', content='lorem')
+                CustomPagesModule()
             ]
         ))
         self.children.append(modules.RecentActions(_('Recent Actions'), 5))
-
-
+        self.children.append(CustomPagesModule())
 
 
 class CustomAppIndexDashboard(AppIndexDashboard):
@@ -74,26 +105,3 @@ class CustomAppIndexDashboard(AppIndexDashboard):
         Use this method if you need to access the request context.
         """
         return super(CustomAppIndexDashboard, self).init_with_context(context)
-
-
-from admin_tools.dashboard import modules
-
-
-class HistoryDashboardModule(modules.LinkList):
-    title = 'History'
-
-    def init_with_context(self, context):
-        request = context['request']
-        # we use sessions to store the visited pages stack
-        history = request.session.get('history', [])
-        for item in history:
-            self.children.append(item)
-        # add the current page to the history
-        history.insert(0, {
-            'title': context['title'],
-            'url': request.META['PATH_INFO']
-        })
-        if len(history) > 10:
-            history = history[:10]
-        request.session['history'] = history
-        print(history)

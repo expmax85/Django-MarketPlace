@@ -22,27 +22,6 @@ except ImportError:
 from admin_tools.menu import items, Menu
 
 
-class HistoryMenuItem(items.MenuItem):
-    title = 'History'
-
-    def init_with_context(self, context):
-        request = context['request']
-        # we use sessions to store the visited pages stack
-        history = request.session.get('history', [])
-        for item in history:
-            self.children.append(items.MenuItem(
-                title=item['title'],
-                url=item['url']
-            ))
-        # add the current page to the history
-        history.insert(0, {
-            'title': context['title'],
-            'url': request.META['PATH_INFO']
-        })
-        if len(history) > 10:
-            history = history[:10]
-        request.session['history'] = history
-
 class CustomMenu(Menu):
     """
     Custom Menu for python_django_team5 admin site.
@@ -59,11 +38,12 @@ class CustomMenu(Menu):
             items.AppList(
                 _('Administration'),
                 models=('django.contrib.*', 'allauth.*', 'profiles_app.*'),
-                children=[items.MenuItem('Administration commands',
+                children=[items.MenuItem('Administration',
                                children=[
-                                   items.MenuItem('Clear cache', url=reverse('admin-setup'))
+                                   items.MenuItem(_('Settings'), url=reverse('admin-setup'))
                                ]
-                               )],
+                               ),
+                          ],
             ),
         ]
         self.children.append(items.Bookmarks('My bookmarks'))
@@ -73,15 +53,3 @@ class CustomMenu(Menu):
         Use this method if you need to access the request context.
         """
         super().init_with_context(context)
-
-
-class ClearCache(View):
-
-    def get(self, request):
-        cache.clear()
-        print('ok')
-        message = _('Cache from app profiles_app was cleared.')
-        # messages.add_message(request, messages.INFO, message, fail_silently=False)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-
-
