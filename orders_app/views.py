@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
 from django.http import HttpRequest
-from orders_app.models import Order, CompareProductStorage
+from orders_app.models import Order
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.services import CartService
 from orders_app.utils import DecimalEncoder
