@@ -59,14 +59,14 @@
             </div>
           </div>
           <div class="Compare-row">
-            {% for product in compared.keys %}
+            {% for key, value in compared.items %}
             <div class="Compare-title Compare-title_blank">
             </div>
             <div class="Compare-products">
               <div class="Compare-product">
-                <div class="Compare-nameProduct">{{ product }}
+                <div class="Compare-nameProduct">{{ key }}
                 </div>
-                <div class="Compare-feature"><a class="Compare-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a><a class="Compare-btn" href="#"><img src="{% static 'assets/img/icons/card/delete.svg' %}" alt="delete.svg"/></a>
+                <div class="Compare-feature"><a class="Compare-btn" href="{% url 'orders-polls:cart_add' value.5 %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a><a class="Compare-btn" href="{% url 'orders-polls:remove-from-compare' key %}"><img src="{% static 'assets/img/icons/card/delete.svg' %}" alt="delete.svg"/></a>
                 </div>
               </div>
             </div>
