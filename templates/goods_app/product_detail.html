@@ -3,7 +3,7 @@
 {% load static %}
 {% load account socialaccount %}
 
-{% block title %}{% trans 'Sellers Room' %}
+{% block title %}{% trans 'Product detail' %}
 {% endblock %}
 
 {% block header %}
@@ -15,10 +15,10 @@
     <div class="Middle-top">
         <div class="wrap">
             <div class="Middle-header">
-                <h1 class="Middle-title">{{ store.name }}</h1>
+                <h1 class="Middle-title">{{ product.name }}</h1>
                 <ul class="breadcrumbs Middle-breadcrumbs">
                     <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
-                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Store Detail' %}</span></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Product Detail' %}</span></li>
                 </ul>
             </div>
         </div>
@@ -46,7 +46,7 @@
                     <div class="ProductCard-priceOld">$115.00
                     </div>
                   </div>
-                  <div class="ProductCard-compare"><a class="btn btn_default" href="#"><img class="btn-icon" src="assets/img/icons/card/change.svg" alt="change.svg"></a>
+                  <div class="ProductCard-compare"><a class="btn btn_default" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
                   </div>
                 </div>
               </div>
@@ -70,7 +70,7 @@
                     </button>
                   </div>
                 </div>
-                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Add To Cart</span></a>
+                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span></a>
                 </div>
               </div>
               <div class="ProductCard-footer">
@@ -214,10 +214,12 @@
                 </div>
               </div>
               <div class="Tabs-block" id="reviews" style="">
+              {% if comments %}
                 <header class="Section-header">
                   <h3 class="Section-title">{{ reviews_count }} Review(s)
                   </h3>
                 </header>
+              {% endif %}
                 <div class="Comments">
                   {% for comment in comments %}
                   <div class="Comment">
@@ -237,7 +239,7 @@
                     </div>
                   </div>
                   {% endfor %}
-            {% if comments.paginator.num_pages > 1 %}
+            {% if comments.paginator.num_pages > 2 %}
                 <ul class="reviews-pagination">
                     {% if comments.has_previous %}
                     <li><a href="?page=1#reviews_list">&laquo;&laquo; </a></li>
@@ -256,6 +258,7 @@
                   </h3>
                 </header>
                 <div class="Tabs-addCommentreview-form ">
+                {% if request.user.is_authenticated %}
                   <form class="form" method="post">
                       {% csrf_token %}
                       <input type="hidden" name="user" value="{{ request.user.id }}">
@@ -293,6 +296,10 @@
                       </div>
                     </div>
                   </form>
+                    {% else %}
+                    <div>{% trans 'Please' %} <a href="{% url 'profiles-polls:login' %}">{% trans 'sign-in' %}</a> {% trans 'or' %} <a
+                            href="{% url 'profiles-polls:register' %}">{% trans 'registering' %}</a> {% trans 'for leave the comments on the site.' %}</div>
+                    {% endif %}
                 </div>
               </div>
             </div>

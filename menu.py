@@ -16,37 +16,34 @@ try:
     from django.urls import reverse
     from django.utils.translation import gettext_lazy as _
 except ImportError:
-
     from django.utils.translation import ugettext_lazy as _
-
 from admin_tools.menu import items, Menu
 
 
 class CustomMenu(Menu):
     """
-    Custom Menu for python_django_team5 admin site.
+    Custom Menu for admin site.
     """
     def __init__(self, **kwargs):
         Menu.__init__(self, **kwargs)
         self.children += [
             items.MenuItem(_('Dashboard'), reverse('admin:index')),
-            # items.Bookmarks(),
             items.AppList(
                 _('Applications'),
-                exclude=('django.contrib.*', 'allauth.*', 'profiles_app.*'),
+                exclude=('django.contrib.*', 'allauth.*', 'profiles_app.*', 'dynamic_preferences.*', 'taggit.*',),
             ),
             items.AppList(
                 _('Administration'),
-                models=('django.contrib.*', 'allauth.*', 'profiles_app.*'),
-                children=[items.MenuItem('Administration',
-                               children=[
-                                   items.MenuItem(_('Settings'), url=reverse('admin-setup'))
-                               ]
-                               ),
-                          ],
+                models=('django.contrib.*', 'allauth.*', 'profiles_app.*', 'taggit.*',),
             ),
+            items.AppList(_('Settings'),
+                          models=('dynamic_preferences.*',),
+                          children=[
+                               items.MenuItem(_('Settings'),
+                                              url=reverse('admin-setup')),
+                           ]
+                           ),
         ]
-        self.children.append(items.Bookmarks('My bookmarks'))
 
     def init_with_context(self, context):
         """

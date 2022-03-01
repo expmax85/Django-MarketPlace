@@ -20,26 +20,6 @@ except ImportError:
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 
 
-class HistoryDashboardModule(modules.LinkList):
-    title = 'History'
-
-    def init_with_context(self, context):
-        request = context['request']
-        # we use sessions to store the visited pages stack
-        history = request.session.get('history', [])
-        for item in history:
-            self.children.append(item)
-        # add the current page to the history
-        history.insert(0, {
-            'title': context['title'],
-            'url': request.META['PATH_INFO']
-        })
-        if len(history) > 10:
-            history = history[:10]
-        request.session['history'] = history
-        print(history)
-
-
 class CustomPagesModule(modules.DashboardModule):
     title = _('Settings')
     template = 'admin/admin-setup-dashboard.html'
@@ -55,7 +35,7 @@ class CustomPagesModule(modules.DashboardModule):
 
 class CustomIndexDashboard(Dashboard):
     """
-    Custom index dashboard for python_django_team5.
+    Custom index dashboard.
     """
     def init_with_context(self, context):
         # append an app list module for "Applications"
@@ -64,25 +44,25 @@ class CustomIndexDashboard(Dashboard):
             children=[
                 modules.AppList(
                     title=_('Administration'),
-                    models=('django.contrib.*', 'allauth.*', 'profiles_app.*'),
+                    models=('django.contrib.*', 'allauth.*', 'profiles_app.*', 'taggit.*',),
                 ),
                 modules.AppList(
                     title=_('Applications'),
-                    exclude=('django.contrib.*', 'allauth.*', 'profiles_app.*'),
+                    exclude=('django.contrib.*', 'allauth.*', 'profiles_app.*', 'taggit.*',),
                 ),
-                CustomPagesModule()
+                modules.AppList(
+                    title=_('Settings'),
+                    models=('dynamic_preferences.*',),
+                    children=[CustomPagesModule()]),
             ]
         ))
         self.children.append(modules.RecentActions(_('Recent Actions'), 5))
-        self.children.append(CustomPagesModule())
 
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     """
-    Custom app index dashboard for python_django_team5.
+    Custom app index dashboard.
     """
-
-    # we disable title because its redundant with the model list module
     title = ''
 
     def __init__(self, *args, **kwargs):
@@ -98,7 +78,6 @@ class CustomAppIndexDashboard(AppIndexDashboard):
             ),
 
         ]
-        self.children.append(HistoryDashboardModule())
 
     def init_with_context(self, context):
         """

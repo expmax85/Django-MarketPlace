@@ -1,12 +1,12 @@
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-
 from django.contrib.auth import get_user_model
 from django.db import models
-
 from django.utils.translation import gettext_lazy as _
+
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from taggit.managers import TaggableManager
+
 
 User = get_user_model()
 
@@ -51,8 +51,8 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True, verbose_name='product_image')
     description = models.TextField(max_length=255, null=True, verbose_name='product_description')
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, verbose_name='average_price')
-    comments = models.IntegerField(null=True, verbose_name='amount_of_comments')
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
+    tags = TaggableManager()
 
     def __str__(self):
         return self.name

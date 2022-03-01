@@ -81,7 +81,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'profiles'
         permissions = [
             ('Sellers', 'can sell'),
-            ('Content_manager', 'app management')]
+            ('Content_manager', 'app management'),
+        ]
 
 
 class ViewedProduct(models.Model):

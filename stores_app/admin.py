@@ -1,7 +1,4 @@
 from django.contrib import admin
-from django.shortcuts import redirect
-from django.urls import path
-from django.utils.translation import gettext_lazy as _
 
 from stores_app.models import Seller, SellerProduct
 

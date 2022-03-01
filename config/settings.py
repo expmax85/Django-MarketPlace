@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
 import os
 from pathlib import Path
 from braintree import Configuration, Environment
@@ -51,6 +50,9 @@ INSTALLED_APPS = [
     'discounts_app',
     'stores_app',
     'orders_app',
+    'settings_app',
+    'taggit',
+    'dynamic_preferences',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -84,9 +86,10 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'dynamic_preferences.processors.global_preferences',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'orders_app.context_processors.cart'
+                'orders_app.context_processors.cart',
             ],
             'loaders': [
                 'admin_tools.template_loaders.Loader',

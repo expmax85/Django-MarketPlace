@@ -18,11 +18,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from settings_app.views import AdminView, clear_all_cache
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin/', include('admin_tools.urls')),
-    path('', include('banners_app.urls')),
+    path('settings-admin/setup/', AdminView.as_view(), name='admin-setup'),
+    path('settings-admin/setupclear-cache/', clear_all_cache, name='clear-cache'),
     path('', include('goods_app.urls', namespace='goods-polls')),
     path('users/', include('profiles_app.urls', namespace='profiles-polls')),
     path('accounts/', include('allauth.urls')),
