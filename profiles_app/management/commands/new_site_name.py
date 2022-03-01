@@ -10,4 +10,6 @@ class Command(BaseCommand):
         site.domain = 'http://127.0.0.1:8000'
         site.name = 'http://127.0.0.1:8000'
         site.save()
-        self.stdout.write(self.style.SUCCESS('Domain and site name was successfully changed!'))
+        self.stdout.write(self.style.SUCCESS(
+            'Domain and site name was successfully changed!'
+        ))

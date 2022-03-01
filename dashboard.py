@@ -10,13 +10,8 @@ And to activate the app index dashboard::
     ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'python_django_team5.dashboard.CustomAppIndexDashboard'
 """
 
-try:
-    # we use django.urls import as version detection as it will fail on django 1.11 and thus we are safe to use
-    # gettext_lazy instead of ugettext_lazy instead
-    from django.urls import reverse
-    from django.utils.translation import gettext_lazy as _
-except ImportError:
-    from django.utils.translation import ugettext_lazy as _
+
+from django.utils.translation import gettext_lazy as _
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 
 
@@ -44,11 +39,17 @@ class CustomIndexDashboard(Dashboard):
             children=[
                 modules.AppList(
                     title=_('Administration'),
-                    models=('django.contrib.*', 'allauth.*', 'profiles_app.*', 'taggit.*',),
+                    models=('django.contrib.*',
+                            'allauth.*',
+                            'profiles_app.*',
+                            'taggit.*',),
                 ),
                 modules.AppList(
                     title=_('Applications'),
-                    exclude=('django.contrib.*', 'allauth.*', 'profiles_app.*', 'taggit.*',),
+                    exclude=('django.contrib.*',
+                             'allauth.*',
+                             'profiles_app.*',
+                             'taggit.*',),
                 ),
                 modules.AppList(
                     title=_('Settings'),

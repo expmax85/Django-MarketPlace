@@ -7,6 +7,7 @@ from dynamic_preferences.registries import global_preferences_registry
 
 shipping = Section('general')
 
+
 @global_preferences_registry.register
 class ShippingPrice(DecimalPreference):
     section = shipping

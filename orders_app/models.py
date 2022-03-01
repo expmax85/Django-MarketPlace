@@ -64,7 +64,8 @@ class Order(models.Model):
     @property
     def total_discounted_sum(self) -> Decimal:
         """Метод получения общей стоимости товаров в заказе со скидками"""
-        total = self.order_products.aggregate(total=Sum(F('final_price') * F('quantity')))['total']
+        total = self.order_products.aggregate(
+            total=Sum(F('final_price') * F('quantity')))['total']
         if not total:
             total = 0
         return total
@@ -78,10 +79,20 @@ class OrderProduct(models.Model):
     """
     Модель товара в заказе
     """
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_products')
-    seller_product = models.ForeignKey(SellerProduct, on_delete=models.CASCADE, related_name='order_products')
-    final_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Guess discount price'))
-    quantity = models.IntegerField(null=True, default=1, verbose_name=_('quantity'))
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='order_products'
+    )
+    seller_product = models.ForeignKey(
+        SellerProduct,
+        on_delete=models.CASCADE,
+        related_name='order_products'
+    )
+    final_price = models.DecimalField(max_digits=10, decimal_places=2,
+                                      verbose_name=_('Guess discount price'))
+    quantity = models.IntegerField(null=True, default=1,
+                                   verbose_name=_('quantity'))
 
     @property
     def position_price(self):

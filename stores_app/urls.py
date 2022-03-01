@@ -1,6 +1,6 @@
 from django.urls import path
-from stores_app.views import *
-
+from stores_app.views import AddNewStoreView, AddSellerProductView, SellersRoomView, remove_Store, \
+    remove_SellerProduct, EditStoreView, StoreDetailView, EditSelleProductView
 
 app_name = 'stores'
 urlpatterns = [
