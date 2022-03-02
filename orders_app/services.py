@@ -41,10 +41,18 @@ class CartService:
         """
         product = get_object_or_404(SellerProduct, id=product_id)
         if isinstance(self.cart, Order):
-            OrderProduct.objects.create(order=self.cart,
-                                        seller_product=product,
-                                        quantity=1,
-                                        final_price=product.price_after_discount)
+            cart_products = self.cart.order_products.select_related('seller_product')
+            for cart_product in cart_products:
+                if product.id == cart_product.seller_product.id:
+                    cart_product.quantity += 1
+                    cart_product.save()
+                    self.cart.save()
+                    break
+            else:
+                OrderProduct.objects.create(order=self.cart,
+                                            seller_product=product,
+                                            quantity=1,
+                                            final_price=product.price_after_discount)
         else:
             self.cart.add(product)
 
@@ -92,15 +100,32 @@ class CartService:
         else:
             self.cart.remove(product)
 
-    @classmethod
-    def change_quantity(cls, request: HttpRequest, quantity: int) -> None:
+    def change_quantity(self, product, quantity: int, update_quantity=False) -> None:
         """
         изменить количество товара в корзине
 
         quantity: новое количество
         """
+        if isinstance(self.cart, Order):
+            cart_product = get_object_or_404(OrderProduct, order=self.cart, seller_product=product)
+            if update_quantity:
+                cart_product.quantity = quantity
+            else:
+                cart_product.quantity += quantity
+            cart_product.save()
+            self.cart.save()
+        else:
+            self.cart.add(product, quantity, update_quantity=update_quantity)
 
-        pass
+    def update_product(self, product: SellerProduct, quantity: int, product_id: int) -> None:
+        """
+        изменить количество товара в корзине и заменить продавца
+
+        quantity: новое количество
+        """
+
+        self.change_quantity(product, quantity)
+        self.remove_from_cart(product_id)
 
     def get_goods(self) -> Union[OrderProduct, AnonymCart]:
         """получить товары из корзины"""

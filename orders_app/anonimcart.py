@@ -21,7 +21,7 @@ class AnonymCart:
             self.cart[product_id] = {'quantity': 0,
                                      'price': str(product.price),
                                      'discounted_price': str(product.price_after_discount)}
-        # if update_quantity: Пока не удалять
+        if update_quantity:
             self.cart[product_id]['quantity'] = quantity
         else:
             self.cart[product_id]['quantity'] += quantity
@@ -68,7 +68,7 @@ class AnonymCart:
 
     def __len__(self) -> int:
         """Получение количества товаров в корзине"""
-        return sum(item['quantity'] for item in self.cart.values())
+        return len(self.cart.values())
 
     def total_sum(self):
         """Получение общей стоимости товаров в корзине"""

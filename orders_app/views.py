@@ -41,10 +41,21 @@ class CartView(View):
 
         return render(request, 'orders_app/cart.html', context=context)
 
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest, product_id):
         """ Здесь будет происходить добавление/обновление/удаление товаров """
+        cart = CartService(request)
+        product = get_object_or_404(SellerProduct, id=str(request.POST['option']))
+        quantity = int(request.POST['amount'])
+        print(f'old_product id: {product_id}; new_product_id: {product.id}; quantity: {quantity}')
 
-        pass
+        if quantity < 1:
+            quantity = 1
+        if int(product_id) == product.id:
+            cart.change_quantity(product, quantity, True)
+        else:
+            cart.update_product(product, quantity, product_id)
+
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class CartAdd(View):
