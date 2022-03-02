@@ -1,5 +1,7 @@
 from django import forms
+from django.forms import CheckboxInput
 
+from goods_app.models import Product, ProductRequest
 from stores_app.models import Seller, SellerProduct
 
 
@@ -33,5 +35,17 @@ class EditSellerProductForm(forms.ModelForm):
         exclude = ['seller', 'product', ]
 
 
-class AddRequestNewProduct(forms.Form):
-    pass
+class AddRequestNewProduct(forms.ModelForm):
+
+    class Meta:
+        model = ProductRequest
+        fields = ['category', 'name', 'description', 'store']
+        exclude = ['code', 'slug', 'image', 'average_price', 'rating', 'is_published', 'tags']
+
+
+class AddRequestNewProductAdminForm(forms.ModelForm):
+    is_published = forms.BooleanField(label='Publishing status', required=False, widget=CheckboxInput())
+
+    class Meta:
+        model = ProductRequest
+        exclude = ['rating', 'average_price', 'tags']

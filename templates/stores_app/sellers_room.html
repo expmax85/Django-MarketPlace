@@ -53,8 +53,15 @@
                         <h2 class="Section-title">{% trans 'Your Stores' %}
                         </h2>
                     </header>
-                    <div class="Seller-wrap" style="justify-content: center;">
+                        {% if messages %}
+                            {% for message in messages %}
+                            {% if message.level == 160 %}
+                            <div class="send-product-request">{{message}}</div>
+                            {% endif %}
+                            {%endfor %}
+                        {% endif %}
                         {% for store in stores %}
+                    <div class="Seller-wrap" style="justify-content: center;">
                         <div class="store">
                             <a href="{% url 'stores-polls:store-detail' store.slug %}" class="seller-item">
                                 <img src="{{MEDIA_ROOT}}/uploads/{{store.icon}}" alt="store-icon" class="seller-icon">

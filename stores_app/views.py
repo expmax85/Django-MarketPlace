@@ -11,12 +11,14 @@ from django.views import View
 from django.views.generic import ListView, DetailView
 
 from profiles_app.services import reset_phone_format
-from stores_app.forms import AddStoreForm, EditStoreForm, AddSellerProductForm, EditSellerProductForm
+from stores_app.forms import AddStoreForm, EditStoreForm, AddSellerProductForm, EditSellerProductForm, \
+    AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
-from stores_app.services import StoreServiceMixin
+from stores_app.services import StoreServiceMixin, SUCCESS_DEL_PRODUCT
 
 
 CREATE_SP_ERROR = 150
+SEND_PRODUCTREQUEST = 160
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -151,3 +153,28 @@ def remove_SellerProduct(request) -> Callable:
     if request.method == 'GET':
         StoreServiceMixin.remove_seller_product(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+class RequestNewProduct(StoreAppMixin, View):
+
+    def get(self, request):
+        categories = self.get_categories()
+        stores = self.get_user_stores(user=request.user)
+        form = AddRequestNewProduct()
+        return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
+                                                                                   'categories': categories,
+                                                                                   'stores': stores})
+
+    def post(self, request):
+        form = AddRequestNewProduct(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            self.request_add_new_product(product=product, user=request.user)
+            messages.add_message(request, SEND_PRODUCTREQUEST,
+                                 _('Your request was sending. Wait the answer some before time to your email!'))
+            return redirect(reverse('stores-polls:sellers-room'))
+        categories = self.get_categories()
+        stores = self.get_user_stores(user=request.user)
+        return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
+                                                                                   'categories': categories,
+                                                                                   'stores': stores})

@@ -115,10 +115,11 @@
                       </div>
                   </div>
                   <div class="row-block flex custom_register_name-block">
-                      <div class="form-group custom_login_form-group-btns custom_margin-bottom">
-                          <div class="Profile-btn custom_align-center">
+                      <div class="form-group custom_login_form-group-btns">
+                          <div class="Profile-btn custom_align-center custom_margin-bottom">
                               <a class="btn btn_success" href="{% url 'stores-polls:sellers-room' %}">{%  trans 'Back to seller room' %}</a>
                               <button class="btn btn_success" type="submit">{% trans 'Add product' %}</button>
+                              <a href="{% url 'stores-polls:request-new-product' %}" class="btn btn_success">Request for new product</a>
                           </div>
                       </div>
                   </div>

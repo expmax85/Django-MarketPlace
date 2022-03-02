@@ -1,3 +1,4 @@
+from django.db.models.signals import post_save
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -45,14 +46,15 @@ class Product(models.Model):
         related_name='products',
         verbose_name='good_category',
     )
-    name = models.CharField(max_length=25, null=True, verbose_name='product_name')
-    code = models.CharField(max_length=25, null=True, verbose_name='product_code')
-    slug = models.SlugField(null=True, db_index=True, verbose_name='product_slug')
-    image = models.ImageField(null=True, blank=True, verbose_name='product_image')
-    description = models.TextField(max_length=255, null=True, verbose_name='product_description')
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, verbose_name='average_price')
+    name = models.CharField(max_length=25, null=True, verbose_name='product name')
+    code = models.CharField(max_length=25, null=True, blank=True, verbose_name='product code')
+    slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name='product slug')
+    image = models.ImageField(null=True, blank=True, verbose_name='product image')
+    description = models.TextField(max_length=255, null=True, verbose_name='product description')
+    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='average price')
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
-    tags = TaggableManager()
+    is_published = models.BooleanField(verbose_name='is published', null=True, blank=True, default=True)
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.name
@@ -115,3 +117,30 @@ class Specifications(models.Model):
         verbose_name = _('specification')
         verbose_name_plural = _('specifications')
         db_table = 'specifications'
+
+
+class ProductRequest(Product):
+    product_ptr = models.OneToOneField(Product, on_delete=models.DO_NOTHING, parent_link=True, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    store = models.CharField(verbose_name=_('store'), max_length=30)
+    notes = models.TextField(verbose_name=_('notes'), max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('new product')
+        verbose_name_plural = _('new products')
+        db_table = 'add_products'
+
+
+def delete_Instance(sender, **kwargs) -> None:
+    """
+    The signal for removing icon Seller, when the store is deleting
+    """
+    instance = kwargs.get('instance')
+    if instance.is_published:
+        instance.delete(keep_parents=True)
+
+
+post_save.connect(delete_Instance, ProductRequest)
