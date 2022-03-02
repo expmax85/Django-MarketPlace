@@ -38,22 +38,22 @@
             <div class="Section-columnContent">
               <ul class="menu menu_vt Order-navigate">
                 <li class="menu-item_ACTIVE menu-item">
-                    <a class="menu-link" href="#step1">
+                    <a class="menu-link" href="">
                         {% trans 'Step 1. User requisites' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#">
+                    <a class="menu-link" href="">
                         {% trans 'Step 2. Way of delivery' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#step3">
+                    <a class="menu-link" href="">
                         {% trans 'Step 3. Payment method' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#step4">
+                    <a class="menu-link" href="">
                         {% trans 'Step 4. Order confirmation' %}
                     </a>
                 </li>
@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="Section-content">
-          <form class="form" action="{% url 'orders:order_step_one' %}" method="post">
+          <form class="form" action="{% url 'orders-polls:order_step_one' %}" method="post">
             <div class="Order-block Order-block_OPEN" id="step1">
               <header class="Section-header Section-header_sm">
                 <h2 class="Section-title">{% trans 'Step 1. User requisites' %}
@@ -106,10 +106,9 @@
                 </div>
               </div>
               <div class="Order-footer">
-{#                  <a class="btn btn_success Order-next" href="#">Дальше</a>#}
-                  {% csrf_token %}
-                  <input type="submit" class="btn btn_success Order-next" value="Next">
+                <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Next' %}</button>
               </div>
+              {% csrf_token %}
             </div>
           </form>
         </div>

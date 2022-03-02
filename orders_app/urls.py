@@ -21,6 +21,7 @@ urlpatterns = [
     # эндпоинты оплаты
     path('payment/<int:order_id>', PaymentView.as_view(), name='payment'),
     path('payment/card/<int:order_id>', PaymentWithCardView.as_view(), name='payment_with_card'),
+    path('payment/account/<int:order_id>', PaymentWithAccountView.as_view(), name='payment_with_account'),
     path('done/', payment_done, name='payment_done'),
     path('canceled/', payment_canceled, name='payment_canceled'),
 

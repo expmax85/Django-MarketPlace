@@ -69,25 +69,12 @@
                 </h2>
               </header>
                   <div class="form-group">
-{#                    <div>#}
-{#                      <label class="toggle">#}
-{#                        <input type="radio" name="delivery" value="ordinary" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>#}
-{#                      </label>#}
-{#                    </div>#}
-{#                    <div>#}
-{#                      <label class="toggle">#}
-{#                        <input type="radio" name="delivery" value="express"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>#}
-{#                      </label>#}
-{#                    </div>#}
-                    <div>
-                        {{ form.payment_method }}
-                    </div>
+                      {{ form.payment_method }}
                   </div>
               <div class="Order-footer">
-{#                  <a class="btn btn_success Order-next" href="#">Дальше</a>#}
-                  {% csrf_token %}
-                  <input type="submit" class="btn btn_success Order-next" value="Next">
+                <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Next' %}</button>
               </div>
+              {% csrf_token %}
             </div>
           </form>
         </div>

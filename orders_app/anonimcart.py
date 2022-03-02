@@ -14,7 +14,7 @@ class AnonymCart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
-    def add(self, product, quantity=1, update_quantity=False):
+    def add(self, product: SellerProduct, quantity: int = 1, update_quantity: bool = False):
         """Добавление товара в корзину или обновление его количества"""
         product_id = str(product.id)
         if product_id not in self.cart:
@@ -23,8 +23,13 @@ class AnonymCart:
                                      'discounted_price': str(product.price_after_discount)}
         if update_quantity:
             self.cart[product_id]['quantity'] = quantity
+            print('Changed')
         else:
+            print(self.cart[product_id]['quantity'])
             self.cart[product_id]['quantity'] += quantity
+            print(self.cart[product_id]['quantity'])
+            print(quantity)
+            print('Added')
         self.save()
 
     def increase(self, product):
@@ -48,7 +53,6 @@ class AnonymCart:
     def remove(self, product):
         """Удаление товара из корзины."""
         product_id = str(product.id)
-        print('Trying removing')
         if product_id in self.cart:
             del self.cart[product_id]
         self.save()
@@ -62,7 +66,8 @@ class AnonymCart:
         for product in products:
             cart[str(product.id)]['seller_product'] = product
         for item in cart.values():
-            item['price'] = Decimal(item['price'])
+            # item['price'] = Decimal(item['price'])
+            item['price'] = float(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             yield item
 
