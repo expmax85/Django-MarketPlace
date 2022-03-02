@@ -1,11 +1,8 @@
+from typing import Dict, Callable
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
-
-from typing import Dict, Callable
-
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -13,11 +10,9 @@ from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
 from goods_app.services import CatalogByCategoriesMixin
-from goods_app.models import ProductCategory
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from goods_app.services import get_reviews, calculate_product_rating, context_pagination
-from orders_app.services import CartService
 from stores_app.models import SellerProduct
 
 

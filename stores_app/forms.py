@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import CheckboxInput
 
-from goods_app.models import Product, ProductRequest
+from goods_app.models import ProductRequest
 from stores_app.models import Seller, SellerProduct
 
 
@@ -39,7 +39,7 @@ class AddRequestNewProduct(forms.ModelForm):
 
     class Meta:
         model = ProductRequest
-        fields = ['category', 'name', 'description', 'store']
+        fields = ['category', 'name', 'description', 'store', 'notes']
         exclude = ['code', 'slug', 'image', 'average_price', 'rating', 'is_published', 'tags']
 
 
