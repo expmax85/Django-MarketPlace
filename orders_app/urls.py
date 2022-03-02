@@ -21,8 +21,10 @@ urlpatterns = [
     path('payment/card/<int:order_id>', PaymentWithCardView.as_view(), name='payment_with_card'),
     path('done/', payment_done, name='payment_done'),
     path('canceled/', payment_canceled, name='payment_canceled'),
-
+    # эндпоинты просмотренных товаров
     path('viewed/', ViewedGoodsView.as_view(), name='viewed'),
+    # эндпоинты товаров для сравнения
     path('compare/', CompareView.as_view(), name='compare'),
-    path('compare/add/<int:product_id>/', add_to_compare, name='add-to-compare')
+    path('compare/add/<int:product_id>/', AddToCompare.as_view(), name='add-to-compare'),
+    path('compare/remove/<str:product_name>/', RemoveFromCompare.as_view(), name='remove-from-compare')
 ]

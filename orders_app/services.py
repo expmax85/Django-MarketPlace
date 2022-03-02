@@ -130,18 +130,3 @@ class CartService:
     def __len__(self):
         """получить общее количество товаров в корзине"""
         return len(self.cart)
-
-
-class ViewedGoodsService:
-    """
-    Сервис просмотренных товаров
-
-    add_to_list: добавляет товар в список сравнения
-    add_to_cart: добавляет товар в корзину
-    """
-
-    @classmethod
-    def add_to_list(cls, request: HttpRequest) -> None:
-        """добавить товар в список сравнения"""
-
-        pass
