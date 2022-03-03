@@ -3,6 +3,7 @@ from typing import Callable, Dict
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
+from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.db.models import QuerySet
 from django.shortcuts import render, redirect
@@ -10,11 +11,12 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
+from goods_app.models import Product
 from profiles_app.services import reset_phone_format
 from stores_app.forms import AddStoreForm, EditStoreForm, AddSellerProductForm, EditSellerProductForm, \
     AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
-from stores_app.services import StoreServiceMixin, SUCCESS_DEL_PRODUCT
+from stores_app.services import StoreServiceMixin
 
 
 CREATE_SP_ERROR = 150
@@ -95,13 +97,10 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 class AddSellerProductView(StoreAppMixin, View):
     """   Page for adding new seller product   """
 
-    def get_queryset(self, request) -> QuerySet:
-        category_id = request.GET.get('category_id')
-        return self.get_products(category_id=category_id)
-
     def get(self, request) -> Callable:
         context = dict()
-        context['products'] = self.get_queryset(request)
+        context['categories'] = self.get_categories()
+        context['products'] = self.get_products()
         context['discounts'] = self.get_discounts()
         context['stores'] = self.get_user_stores(user=request.user)
         context['form'] = AddSellerProductForm()
@@ -117,6 +116,17 @@ class AddSellerProductView(StoreAppMixin, View):
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
         return render(request, 'stores_app/new_product_in_store.html', {'form': form})
+
+
+class CategoryFilter(StoreServiceMixin, ListView):
+
+    def get_queryset(self):
+        category_id = self.request.GET.get('category_id')
+        return self.get_products(category_id=category_id).values("id", "name")
+
+    def get(self, request, *args, **kwargs) -> JsonResponse:
+        queryset = self.get_queryset()
+        return JsonResponse({'products': list(queryset)}, safe=False)
 
 
 class EditSelleProductView(StoreAppMixin, DetailView):

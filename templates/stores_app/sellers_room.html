@@ -146,18 +146,18 @@
 								  </form>
                               </div>
                               {% endfor %}
-                            <form class="Card Add-product flex column-direction" id="id_add_product" action="{% url 'stores-polls:add-store-product' %}">
-                                <div>
-                                    <label class="form-label" style ="font-size: 20px;" for="id_category">{% trans 'Choose Category Product' %}:</label>
-                                    <select class="form-area" name="category_id" required="" id="id_category">
-                                        <option value="" selected="">---------</option>
-                                        {% for category in categories %}
-                                        <option value="{{ category.id }}">{{ category.name }}</option>
-                                        {%  endfor %}
-                                    </select>
-                                    <span class="formerror">{{form.errors.seller}}</span>
-                                </div>
-                                <button type="submit" form="id_add_product" class="btn-reset seller-item Add-seller reset-margin">
+<!--                            <form class="Card Add-product flex column-direction" id="id_add_product" action="{% url 'stores-polls:add-store-product' %}">-->
+<!--                                <div>-->
+<!--                                    <label class="form-label" style ="font-size: 20px;" for="id_category">{% trans 'Choose Category Product' %}:</label>-->
+<!--                                    <select class="form-area" name="category_id" required="" id="id_category">-->
+<!--                                        <option value="" selected="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+<!--                                        {% for category in categories %}-->
+<!--                                        <option value="{{ category.id }}">{{ category.name }}</option>-->
+<!--                                        {%  endfor %}-->
+<!--                                    </select>-->
+<!--                                    <span class="formerror">{{form.errors.seller}}</span>-->
+<!--                                </div>-->
+                                <a href="{% url 'stores-polls:add-store-product' %}" class="btn-reset seller-item Add-seller reset-margin">
                                     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                                viewBox="0 0 55 55" style="enable-background:new 0 0 55 55;" xml:space="preserve">
                                         <path d="M49,8.5v-8H0v47h7v7h48v-46H49z M2,45.5v-43h45v6H7v37H2z M53,52.5H9v-5v-37h40h4V52.5z" fill="gray"/>
@@ -166,9 +166,9 @@
                                                   s1-0.447,1-1v-10h10c0.553,0,1-0.447,1-1S42.553,30.5,42,30.5z" fill="#CACACA"/>
                                     </svg>
                                     <span class="seller-text-2">{% trans 'ADD PRODUCT' %}</span>
-                                </button>
-                                <div class="Account-editLink Account-editLink_view"><a href="#">{% trans 'Show all your products' %}</a></div>
-                            </form>
+                                </a>
+<!--                                <div class="Account-editLink Account-editLink_view"><a href="#">{% trans 'Show all your products' %}</a></div>-->
+<!--                            </form>-->
                         </div>
                        {% if messages %}
                             {% for message in messages %}
