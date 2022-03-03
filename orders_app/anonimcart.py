@@ -23,13 +23,8 @@ class AnonymCart:
                                      'discounted_price': str(product.price_after_discount)}
         if update_quantity:
             self.cart[product_id]['quantity'] = quantity
-            print('Changed')
         else:
-            print(self.cart[product_id]['quantity'])
             self.cart[product_id]['quantity'] += quantity
-            print(self.cart[product_id]['quantity'])
-            print(quantity)
-            print('Added')
         self.save()
 
     def increase(self, product):

@@ -1,6 +1,8 @@
+import json
 from typing import Callable
 
 from django.contrib.auth import get_user_model
+from django.forms import model_to_dict
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.urls import reverse
@@ -74,7 +76,10 @@ class SellerProduct(models.Model):
         return f'{self.product} in {self.seller}'
 
     def serialize(self):
-        return self.__dict__
+    #     return self.__dict__
+    # def __repr__(self):
+        obj = model_to_dict(self)
+        return json.dumps(obj)
 
     class Meta:
         verbose_name = _('product in shop')

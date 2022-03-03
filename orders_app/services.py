@@ -1,10 +1,8 @@
 from decimal import Decimal
 from typing import List, Optional, Union
-
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from orders_app.models import Order, OrderProduct
-from goods_app.models import Product
 from orders_app.anonimcart import AnonymCart
 from stores_app.models import SellerProduct
 
@@ -29,6 +27,7 @@ class CartService:
             self.cart, _ = Order.objects.get_or_create(defaults={'customer': request.user},
                                                        customer=request.user,
                                                        in_order=False)
+
         else:
             self.cart = AnonymCart(request)
 
@@ -137,9 +136,7 @@ class CartService:
         """
 
         self.change_quantity(product, quantity)
-        print('Tryed first')
         self.remove_from_cart(product_id)
-        print('Tryed second')
 
     def get_goods(self) -> Union[OrderProduct, AnonymCart]:
         """получить товары из корзины"""
@@ -167,6 +164,7 @@ class CartService:
         """Перенос анонимной корзины в корзину зарешистрированного"""
         for item in other.get_goods():
             self.change_quantity(item['seller_product'], item['quantity'])
+        other.clear()
 
     def clear(self) -> None:
         """очистить корзину"""
