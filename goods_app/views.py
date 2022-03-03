@@ -9,10 +9,10 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
-from goods_app.services import CatalogByCategoriesMixin
+from goods_app.services import CatalogByCategoriesMixin, ProductMixin
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
-from goods_app.services import get_reviews, calculate_product_rating, context_pagination
+from goods_app.services import context_pagination
 from stores_app.models import SellerProduct
 
 
@@ -31,21 +31,18 @@ class IndexView(ListView):
         return context
 
 
-# def index(request):
-#     banners = banner()
-#     return render(request, 'index.html', {'banners': banners,})
-
-
-class ProductDetailView(DetailView):
+class ProductDetailView(DetailView, ProductMixin):
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        reviews = get_reviews(context['product'])
-        context['reviews_count'] = reviews.count
+        product = context['product']
+        context['product'] = product
+        reviews = self.get_reviews()
         context['comments'] = context_pagination(self.request, reviews)
+        context['reviews_count'] = reviews.count
         context['form'] = ReviewForm()
         return context
 
@@ -53,12 +50,12 @@ class ProductDetailView(DetailView):
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
-            calculate_product_rating(product=self.get_object())
+            self.calculate_product_rating()
             return redirect(reverse('goods-polls:product-detail', kwargs={'pk': pk}))
         context = dict()
-        context['form'] = form
         context['product'] = self.get_object()
-        reviews = get_reviews(context['product'])
+        context['form'] = form
+        reviews = self.get_reviews()
         context['reviews_count'] = reviews.count
         context['comments'] = context_pagination(self.request, reviews)
         return render(request, 'goods_app/product_detail.html', context=context)
