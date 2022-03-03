@@ -1,13 +1,14 @@
 from typing import List, Dict, Tuple, Any
 
+from django.db import reset_queries, connection, connections
 from django.http import HttpRequest
-
-from goods_app.models import ProductCategory
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet
+from django.db.models import Avg, QuerySet, Model
+
+from goods_app.models import ProductCategory
 from goods_app.models import ProductComment
-from stores_app.models import Seller
+from stores_app.models import SellerProduct
 
 
 class ProductMixin:
@@ -15,29 +16,52 @@ class ProductMixin:
     def get_object(self, queryset=None):
         return queryset
 
+    def get_queryset(self, queryset=None):
+        return queryset
+
     @property
-    def product(self):
-        return self.get_object()
+    def obj(self):
+       return self.get_object()
 
-    def get_stores(self):
-        return Seller.objects.filter(seller_products__product=self.product)
 
-    def get_specification(self):
-        return self.product.specifications.all()
+    @property
+    def get_sellers(self):
+        return SellerProduct.objects.select_related('seller', 'product', 'discount').prefetch_related('product__category')\
+                                    .filter(product=self.obj)\
+                                    .order_by('price_after_discount')
+
+    @property
+    def get_specifications(self):
+        return self.obj.specifications.all()
 
     def calculate_product_rating(self) -> None:
-        rating = ProductComment.objects.only('rating').filter(product_id=self.product.id).aggregate(Avg('rating'))['rating__avg']
+        rating = ProductComment.objects.only('rating')\
+                                       .filter(product_id=self.obj.id)\
+                                       .aggregate(Avg('rating'))['rating__avg']
         if rating:
-            self.product.rating = round(float(rating), 0)
-            self.product.save(update_fields=['rating'])
+            self.obj.rating = round(float(rating), 0)
+            self.obj.save(update_fields=['rating'])
 
+    @property
     def get_reviews(self):
-        reviews_cache_key = 'reviews:{}'.format(self.product.id)
+        reset_queries()
+        reviews_cache_key = 'reviews:{}'.format(self.obj.id)
         reviews = cache.get(reviews_cache_key)
         if not reviews:
-            reviews = self.product.product_comments.all()
+            reviews = self.obj.product_comments.all()
             cache.set(reviews_cache_key, reviews, 120 * 60)
+        for item in connection.queries:
+            print(item)
         return reviews
+
+    @property
+    def get_tags(self):
+        return self.obj.tags.all()
+
+    def update_context(self, context, elements=[]):
+        for elem in elements:
+            context[elem] = getattr(self, 'get_' + elem)
+        return context
 
 
 def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Paginator:

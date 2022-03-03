@@ -54,13 +54,13 @@ class Product(models.Model):
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='average price')
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
     is_published = models.BooleanField(verbose_name='is published', null=True, blank=True, default=True)
-    # tags = TaggableManager(blank=True)
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('goods-polls:product-detail', kwargs={'pk': self.id})
+        return reverse('goods-polls:product-detail', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = _('product')

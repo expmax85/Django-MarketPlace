@@ -147,9 +147,9 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-ADMIN_TOOLS_MENU = 'menu.CustomMenu'
-ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
-ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dashboard.CustomAppIndexDashboard'
+ADMIN_TOOLS_MENU = 'settings_app.menu.CustomMenu'
+ADMIN_TOOLS_INDEX_DASHBOARD = 'settings_app.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'settings_app.dashboard.CustomAppIndexDashboard'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

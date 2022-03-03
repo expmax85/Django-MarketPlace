@@ -29,8 +29,12 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <div class="ProductCard-photo">
-                <div class="ProductCard-sale">-15%
-                </div><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
+                  {%  if sellers.first.discount.percent %}
+                <div class="ProductCard-sale">-{{ sellers.first.discount.percent }}%</div>
+                  {% elif sellers.first.discount.amount %}
+                <div class="ProductCard-sale custom_align-center">Hot price</div>
+                  {% endif %}
+                <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
               </div>
               <div class="ProductCard-picts"><a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png"><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png"></a><a class="ProductCard-pict" href="assets/img/content/home/slider.png"><img src="assets/img/content/home/slider.png" alt="slider.png"></a><a class="ProductCard-pict" href="assets/img/content/home/videoca.png"><img src="assets/img/content/home/videoca.png" alt="videoca.png"></a>
               </div>
@@ -38,26 +42,21 @@
             <div class="ProductCard-desc">
               <div class="ProductCard-header">
                 <h2 class="ProductCard-title">{{ product.name }}</h2>
-                </h2>
                 <div class="ProductCard-info">
                   <div class="ProductCard-cost">
-                    <div class="ProductCard-price">$55.00
+                    <div class="ProductCard-price">{{ sellers.first.price_after_discount }}
                     </div>
-                    <div class="ProductCard-priceOld">$115.00
+                    <div class="ProductCard-priceOld">{{ sellers.first.price }}
                     </div>
                   </div>
-                  <div class="ProductCard-compare"><a class="btn btn_default" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+                  <div class="ProductCard-compare"><a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
                   </div>
                 </div>
               </div>
               <div class="ProductCard-text">
                 <ul>
-                  <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, eiusmod
-                  </li>
-                  <li>tempor incididunt ut labore et dolore magna aliqua. Lorem
-                  </li>
-                  <li>ipsum dolor sit ameabore et dolore magna aliqua. Lorem ipsum
-                  </li>
+                    <li>Seller: {{ sellers.first.seller }}</li>
+                    <li>{{ product.description }}</li>
                 </ul>
               </div>
               <div class="ProductCard-cart">
@@ -70,19 +69,23 @@
                     </button>
                   </div>
                 </div>
-                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span></a>
+
+                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="{% url 'orders-polls:cart_add' sellers.first.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span></a>
                 </div>
               </div>
               <div class="ProductCard-footer">
                 <div class="ProductCard-tags">
-                  <strong class="ProductCard-tagsTitle">Tags:
-                  </strong><a href="#">Accesories</a>,<a href="#">Creative</a>,<a href="#">Design</a>,<a href="#">Gaming</a>
+                  <strong class="ProductCard-tagsTitle">{% trans 'Tags' %}:
+                  </strong>
+                    {% for tag in tags %}
+                    <a href="#">{{ tag }}</a>
+                    {% endfor %}
                 </div>
               </div>
             </div>
           </div>
           <div class="Tabs Tabs_default">
-            <div class="Tabs-links"><a class="Tabs-link" href="#description"><span>Описание</span></a><a class="Tabs-link" href="#sellers"><span>Продавцы</span></a><a class="Tabs-link" href="#addit"><span>AdditionaL Info</span></a><a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>Reviews (3)</span></a>
+            <div class="Tabs-links"><a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a><a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a><a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a><a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} ({{ reviews_count|default_if_none:"0" }})</span></a>
             </div>
             <div class="Tabs-wrap">
               <div class="Tabs-block" id="description" style="display: none;">
@@ -111,86 +114,42 @@
                 <div class="table">
                   <table>
                     <tbody><tr>
-                      <th>Характеристика
+                      <th>{% trans 'Performance' %}
                       </th>
-                      <th>Значение
+                      <th>{% trans 'Value' %}
                       </th>
                     </tr>
+                    {% for spec in specifications %}
                     <tr>
-                      <td>ываыв
+                      <td>{{ spec.current_specification }}
                       </td>
-                      <td>llslssl
+                      <td>{{ spec.value }}
                       </td>
                     </tr>
+                    {% endfor %}
                   </tbody></table>
                 </div>
               </div>
               <div class="Tabs-block" id="sellers" style="display: none;">
                 <div class="Categories Categories_product">
+                {% for item in sellers %}
                   <div class="Categories-row">
                     <div class="Categories-block Categories-block_info">
                       <div class="Categories-info">
-                        <strong>Очень дешево
+                        <strong>{{ item.seller.name }}
                         </strong>
                       </div>
                     </div>
                     <div class="Categories-splitProps">
                     </div>
                     <div class="Categories-block Categories-price">
-                      <strong>€ 40.58
+                      <strong>{{ item.price_after_discount }}
                       </strong>
                     </div>
-                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
+                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Buy' %}</span></a>
                     </div>
                   </div>
-                  <div class="Categories-row">
-                    <div class="Categories-block Categories-block_info">
-                      <div class="Categories-info">
-                        <strong>pleer.ru
-                        </strong>
-                      </div>
-                    </div>
-                    <div class="Categories-splitProps">
-                    </div>
-                    <div class="Categories-block Categories-price">
-                      <strong>€ 69.04
-                      </strong>
-                    </div>
-                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
-                    </div>
-                  </div>
-                  <div class="Categories-row">
-                    <div class="Categories-block Categories-block_info">
-                      <div class="Categories-info">
-                        <strong>citilink.ru
-                        </strong>
-                      </div>
-                    </div>
-                    <div class="Categories-splitProps">
-                    </div>
-                    <div class="Categories-block Categories-price">
-                      <strong>€ 112.69
-                      </strong>
-                    </div>
-                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
-                    </div>
-                  </div>
-                  <div class="Categories-row">
-                    <div class="Categories-block Categories-block_info">
-                      <div class="Categories-info">
-                        <strong>М.Видео
-                        </strong>
-                      </div>
-                    </div>
-                    <div class="Categories-splitProps">
-                    </div>
-                    <div class="Categories-block Categories-price">
-                      <strong>€ 197.32
-                      </strong>
-                    </div>
-                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="assets/img/icons/card/cart_white.svg" alt="cart_white.svg"><span class="btn-content">Купить</span></a>
-                    </div>
-                  </div>
+                {% endfor %}
                 </div>
               </div>
               <div class="Tabs-block" id="addit" style="display: none;">
@@ -216,7 +175,7 @@
               <div class="Tabs-block" id="reviews" style="">
               {% if comments %}
                 <header class="Section-header">
-                  <h3 class="Section-title">{{ reviews_count }} Review(s)
+                  <h3 class="Section-title">{{ reviews_count|default_if_none:"0" }} {% trans 'Review(s)' %}
                   </h3>
                 </header>
               {% endif %}

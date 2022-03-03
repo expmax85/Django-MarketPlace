@@ -1,5 +1,6 @@
 from typing import Dict, Callable
 from django.core.paginator import Paginator
+from django.db import connection, reset_queries
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
@@ -17,16 +18,12 @@ from stores_app.models import SellerProduct
 
 
 class IndexView(ListView):
-    model = Product
+    model = SellerProduct
     template_name = 'index.html'
     context_object_name = 'products'
 
-    # Заглушка
-    def get_queryset(self, queryset=None):
-        return SellerProduct.objects.all()
-
     def get_context_data(self, **kwargs) -> Dict:
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['banners'] = banner()
         return context
 
@@ -35,29 +32,31 @@ class ProductDetailView(DetailView, ProductMixin):
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
+    slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        product = context['product']
-        context['product'] = product
-        reviews = self.get_reviews()
-        context['comments'] = context_pagination(self.request, reviews)
+        # reset_queries()
+        reviews = self.get_reviews
         context['reviews_count'] = reviews.count
+        context['comments'] = context_pagination(self.request, reviews)
         context['form'] = ReviewForm()
+        self.update_context(context=context, elements=['specifications', 'sellers', 'tags'])
         return context
 
-    def post(self, request: HttpRequest, pk: int) -> Callable:
+    def post(self, request: HttpRequest, slug: str) -> Callable:
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
             self.calculate_product_rating()
-            return redirect(reverse('goods-polls:product-detail', kwargs={'pk': pk}))
+            return redirect(reverse('goods-polls:product-detail', kwargs={'slug': slug}))
         context = dict()
-        context['product'] = self.get_object()
-        context['form'] = form
-        reviews = self.get_reviews()
+        reviews = self.get_reviews
         context['reviews_count'] = reviews.count
         context['comments'] = context_pagination(self.request, reviews)
+        context['product'] = self.get_object()
+        context['form'] = form
+        self.update_context(context=context, elements=['specifications', 'sellers', 'tags'])
         return render(request, 'goods_app/product_detail.html', context=context)
 
 
