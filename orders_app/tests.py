@@ -1,5 +1,6 @@
 from django.test import TestCase
 from goods_app.models import Product, SpecificationsNames, Specifications, ProductCategory
+from orders_app.models import Order, OrderProduct
 from stores_app.models import SellerProduct, Seller
 from discounts_app.models import Discount, DiscountCategory
 from profiles_app.models import User
@@ -43,3 +44,51 @@ class CompareTest(TestCase):
         self.assertContains(response, 'no data')
         self.assertContains(response, '100')
         self.assertContains(response, '90')
+
+    def test_cart_page(self):
+        response = self.client.get('/orders/cart/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_cart_template(self):
+        response = self.client.get('/orders/cart/')
+        self.assertTemplateUsed(response, 'orders_app/cart.html')
+
+    def test_order_step_one(self):
+        response = self.client.get('/orders/step1/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_order_step_one_template(self):
+        response = self.client.get('/orders/step1/')
+        self.assertTemplateUsed(response, 'orders_app/order_step_one.html')
+
+    def test_order_step_two(self):
+        user = User.objects.get(email='test@ru.ru')
+        self.client.force_login(user=user)
+        order = Order.objects.create(customer=user)
+        seller_product = SellerProduct.objects.first()
+        OrderProduct.objects.create(order=order,
+                                    seller_product=seller_product,
+                                    final_price=100.00,
+                                    quantity=5)
+        response = self.client.post('/orders/step2/', {'city': 'Some city'})
+        self.assertEquals(response.status_code, 200)
+
+    def test_order_step_two_template(self):
+        user = User.objects.get(email='test@ru.ru')
+        self.client.force_login(user=user)
+        order = Order.objects.create(customer=user)
+        seller_product = SellerProduct.objects.first()
+        OrderProduct.objects.create(order=order,
+                                    seller_product=seller_product,
+                                    final_price=100.00,
+                                    quantity=5)
+        response = self.client.post('/orders/step2/', {'city': 'Some city'})
+        self.assertTemplateUsed(response, 'orders_app/order_step_two.html')
+
+    def test_order_step_three(self):
+        response = self.client.get('/orders/step3/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_order_step_three_template(self):
+        response = self.client.get('/orders/step1/')
+        self.assertTemplateUsed(response, 'orders_app/order_step_one.html')

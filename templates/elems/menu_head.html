@@ -72,8 +72,8 @@
     <div class="row-block">
       <div class="CartBlock">
           <a class="CartBlock-block" href="{% url 'orders-polls:compare' %}"><img class="CartBlock-img" src="{% static 'assets/img/icons/exchange.svg' %}" alt="exchange.svg"/><span class="CartBlock-amount">{{ total_compared }}</span></a>
-          <a class="CartBlock-block" href="{% url 'orders-polls:cart_detail' %}"><img class="CartBlock-img" src="{% static 'assets/img/icons/cart.svg' %}" alt="cart.svg"/><span class="CartBlock-amount">{{ cart.get_quantity|default_if_none:"0" }}</span></a>
-        <div class="CartBlock-block"><span class="CartBlock-price">0.00$</span>
+          <a class="CartBlock-block" href="{% url 'orders-polls:cart_detail' %}"><img class="CartBlock-img" src="{% static 'assets/img/icons/cart.svg' %}" alt="cart.svg"/><span class="CartBlock-amount">{{ cart|length }}</span></a>
+        <div class="CartBlock-block"><span class="CartBlock-price">{{ cart.get_total_discounted_sum }}$</span>
         </div>
       </div>
     </div>

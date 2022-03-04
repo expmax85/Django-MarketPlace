@@ -6,12 +6,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView, LoginView
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views import View
 
 from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
 from profiles_app.services import get_user_and_change_password, get_auth_user, reset_phone_format
 from django.utils.translation import gettext_lazy as _
+from orders_app.services import CartService
 
 
 class UserLogin(LoginView):
@@ -22,10 +24,21 @@ class UserLogin(LoginView):
     success_url = '/'
 
     def get_success_url(self) -> str:
-        print(self.request)
         if not self.success_url:
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
         return str(self.success_url)
+
+    def form_valid(self, form):
+        """
+        Security check complete. Log the user in.
+        Метод переопределен для слияние анонимной корзины
+        с корзиной аутентифицированного пользователя
+        """
+        old_cart = CartService(self.request)
+        login(self.request, form.get_user())
+        new_cart = CartService(self.request)
+        new_cart.merge_carts(old_cart)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class UserLogout(LogoutView):
@@ -45,11 +58,18 @@ class RegisterView(View):
         return render(request, 'account/signup.html', context={'form': form})
 
     def post(self, request) -> Callable:
+        """
+        Метод переопределен для слияние анонимной корзины
+        с корзиной аутентифицированного пользователя
+        """
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
+            old_cart = CartService(self.request)
             user = form.save()
             reset_phone_format(instance=user)
             login(request, get_auth_user(data=form.cleaned_data))
+            new_cart = CartService(self.request)
+            new_cart.merge_carts(old_cart)
             return redirect('/')
         return render(request, 'account/signup.html', context={'form': form})
 

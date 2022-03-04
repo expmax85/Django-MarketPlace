@@ -31,7 +31,8 @@ class CartView(View):
         """ Данный метод пока только рендерит страницу корзины """
         cart = CartService(request)
 
-        items = cart.get_goods
+        items = cart.get_goods()
+
         total = cart.get_quantity
         total_price = cart.get_total_sum
         total_discounted_price = cart.get_total_discounted_sum
@@ -43,10 +44,20 @@ class CartView(View):
 
         return render(request, 'orders_app/cart.html', context=context)
 
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest, product_id):
         """ Здесь будет происходить добавление/обновление/удаление товаров """
+        cart = CartService(request)
+        product = get_object_or_404(SellerProduct, id=str(request.POST['option']))
+        quantity = int(request.POST['amount'])
 
-        pass
+        if quantity < 1:
+            quantity = 1
+        if int(product_id) == product.id:
+            cart.change_quantity(product, quantity, True)
+        else:
+            cart.update_product(product, quantity, product_id)
+
+        return redirect('orders:cart_detail')
 
 
 class CartAdd(View):
@@ -83,61 +94,87 @@ class CartRemove(View):
 
 class OrderStepOne(View):
     """Представление первого шага оформления заказа"""
-    def get(self, request: HttpRequest):
-        user = request.user
-        initial = {'fio': f'{user.first_name} {user.last_name}',
-                   'email': user.email,
-                   'phone': user.phone,
-                   'delivery': 'exp',
-                   'payment': 'cash'}
+    form_class = OrderStepOneForm
+    template_name = 'orders_app/order_step_one.html'
 
-        form = OrderStepOneForm(initial=initial)
-        return render(request, 'orders_app/order_step_one.html', {'form': form})
+    def get(self, request: HttpRequest, *args, **kwargs):
+        user = request.user
+        if user.is_authenticated:
+            initial = {'fio': f'{user.first_name} {user.last_name}',
+                       'email': user.email,
+                       'phone': user.phone,
+                       'delivery': 'exp',
+                       'payment': 'cash'}
+        else:
+            initial = {'delivery': 'exp',
+                       'payment': 'cash'}
+        form = self.form_class(initial=initial)
+
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest):
-        form = OrderStepOneForm(request.POST)
-        order = Order.objects.get(customer=request.user, in_order=False)
+        form = self.form_class(request.POST)
+
         if form.is_valid():
-            fio = form.cleaned_data['fio']
-            email = form.cleaned_data['email']
-            phone = form.cleaned_data['phone']
-            order.fio = fio
-            order.email = email
-            order.phone = phone
-            order.save()
-            return redirect('orders:order_step_two')
-        return render(request, 'orders_app/order_step_one.html', {'form': form})
+            if request.user.is_authenticated:
+                order = Order.objects.get(customer=request.user, in_order=False)
+                fio = form.cleaned_data['fio']
+                email = form.cleaned_data['email']
+                phone = form.cleaned_data['phone']
+
+                order.fio = fio
+                order.email = email
+                order.phone = phone
+                order.save()
+                return redirect('orders:order_step_two')
+            else:
+                return redirect('profiles:login')
+
+        return render(request, self.template_name, {'form': form})
 
 
 class OrderStepTwo(View):
     """Представление второго шага оформления заказа"""
+    form_class = OrderStepTwoForm
+    template_name = 'orders_app/order_step_two.html'
+
     def get(self, request: HttpRequest):
-        form = OrderStepTwoForm()
-        return render(request, 'orders_app/order_step_two.html', {'form': form})
+        user = request.user
+        initial = {'city': user.city,
+                   'address': user.address,
+                   'delivery': 'exp',
+                   'payment': 'cash'}
+        form = self.form_class(initial=initial)
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest):
-        form = OrderStepTwoForm(request.POST)
+        form = self.form_class(request.POST)
         order = Order.objects.get(customer=request.user, in_order=False)
         if form.is_valid():
             delivery = form.cleaned_data['delivery']
             city = form.cleaned_data['city']
             address = form.cleaned_data['address']
+
             order.delivery = delivery
             order.city = city
             order.address = address
             order.save()
+
             return redirect('orders:order_step_three')
-        return render(request, 'orders_app/order_step_two.html', {'form': form})
+        return render(request, self.template_name, {'form': form})
 
 
 class OrderStepThree(View):
     """Представление третьего шага оформления заказа"""
+    form_class = OrderStepThreeForm
+    template_name = 'orders_app/order_step_three.html'
+
     def get(self, request: HttpRequest):
-        form = OrderStepThreeForm()
-        return render(request, 'orders_app/order_step_three.html', {'form': form})
+        form = OrderStepThreeForm
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest):
-        form = OrderStepThreeForm(request.POST)
+        form = self.form_class(request.POST)
         order = Order.objects.get(customer=request.user, in_order=False)
         if form.is_valid():
             payment_method = form.cleaned_data['payment_method']
@@ -145,14 +182,17 @@ class OrderStepThree(View):
             order.in_order = True
             order.save()
             return redirect('orders:order_step_four')
-        return render(request, 'orders_app/order_step_three.html', {'form': form})
+
+        return render(request, self.template_name, {'form': form})
 
 
 class OrderStepFour(View):
     """Представление четвертого шага оформления заказа"""
+    template_name = 'orders_app/order_step_four.html'
+
     def get(self, request: HttpRequest):
         order = Order.objects.filter(customer=request.user, in_order=True).last()
-        return render(request, 'orders_app/order_step_four.html', {'order': order})
+        return render(request, self.template_name, {'order': order})
 
 
 class PaymentView(View):
@@ -165,26 +205,28 @@ class PaymentView(View):
         order = get_object_or_404(Order, id=order_id)
         if order.payment_method == 'card':
             return redirect('orders:payment_with_card', order_id)
+        else:
+            return redirect('orders:payment_with_account', order_id)
 
 
 class PaymentWithCardView(View):
     """
     Представление оплаты банковской картой
     """
+    template_name = 'orders_app/payment_card.html'
+
     def get(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
         client_token = braintree.ClientToken.generate()
-        return render(request,
-                      'orders_app/payment.html',
-                      {'order': order,
-                       'client_token': client_token})
+        context = {'order': order, 'client_token': client_token}
+        return render(request, self.template_name, context=context)
 
     def post(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
         nonce = request.POST.get('payment_method_nonce', None)
         # Создание и сохранение транзакции.
         result = braintree.Transaction.sale({
-            'amount': '{:.2f}'.format(1500),
+            'amount': '{:.2f}'.format(order.total_discounted_sum),
             'payment_method_nonce': nonce,
             'options': {
                 'submit_for_settlement': True
@@ -199,6 +241,19 @@ class PaymentWithCardView(View):
             return redirect('orders:payment_done')
         else:
             return redirect('orders:payment_canceled')
+
+
+class PaymentWithAccountView(View):
+    """
+    Представление оплаты банковской картой
+    """
+    template_name = 'orders_app/payment_account.html'
+
+    def get(self, request: HttpRequest, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        client_token = braintree.ClientToken.generate()
+        context = {'order': order, 'client_token': client_token}
+        return render(request, self.template_name, context=context)
 
 
 def payment_done(request):
@@ -250,9 +305,9 @@ class CompareView(View):
         """ Данный метод возвращает количество товаров в списке для сравнения """
         try:
             compared = json.loads(request.session['compared'])
+            return len(list(compared.keys()))
         except KeyError:
             return 0
-        return len(list(compared.keys()))
 
 
 class AddToCompare(View):

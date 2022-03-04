@@ -6,6 +6,8 @@ app_name = 'orders'
 urlpatterns = [
     # эндпоинты корзины
     path('cart/', CartView.as_view(), name='cart_detail'),
+    path('cart/<product_id>', CartView.as_view(), name='cart_detail_post'),
+
     path('add/<int:product_id>/', CartAdd.as_view(), name='cart_add'),
     path('decrease/<int:product_id>/', CartDecreaseQuantity.as_view(), name='cart_decrease'),
     path('increase/<int:product_id>/', CartIncreaseQuantity.as_view(), name='cart_increase'),
@@ -19,6 +21,7 @@ urlpatterns = [
     # эндпоинты оплаты
     path('payment/<int:order_id>', PaymentView.as_view(), name='payment'),
     path('payment/card/<int:order_id>', PaymentWithCardView.as_view(), name='payment_with_card'),
+    path('payment/account/<int:order_id>', PaymentWithAccountView.as_view(), name='payment_with_account'),
     path('done/', payment_done, name='payment_done'),
     path('canceled/', payment_canceled, name='payment_canceled'),
     # эндпоинты просмотренных товаров

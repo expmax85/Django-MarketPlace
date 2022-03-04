@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
-
 {% block title %}
   {% trans 'Order step 1' %}
 {% endblock %}
@@ -38,22 +37,22 @@
             <div class="Section-columnContent">
               <ul class="menu menu_vt Order-navigate">
                 <li class="menu-item">
-                    <a class="menu-link" href="#step1">
+                    <a class="menu-link" href="{% url 'orders:order_step_one' %}">
                         {% trans 'Step 1. User requisites' %}
                     </a>
                 </li>
                 <li class="menu-item_ACTIVE menu-item">
-                    <a class="menu-link" href="#">
+                    <a class="menu-link" href="{% url 'orders:order_step_two' %}">
                         {% trans 'Step 2. Way of delivery' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#step3">
+                    <a class="menu-link" href="{% url 'orders:order_step_three' %}">
                         {% trans 'Step 3. Payment method' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#step4">
+                    <a class="menu-link" href="{% url 'orders:order_step_four' %}">
                         {% trans 'Step 4. Order confirmation' %}
                     </a>
                 </li>
@@ -69,39 +68,18 @@
                 </h2>
               </header>
                   <div class="form-group">
-{#                    <div>#}
-{#                      <label class="toggle">#}
-{#                        <input type="radio" name="delivery" value="ordinary" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>#}
-{#                      </label>#}
-{#                    </div>#}
-{#                    <div>#}
-{#                      <label class="toggle">#}
-{#                        <input type="radio" name="delivery" value="express"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>#}
-{#                      </label>#}
-{#                    </div>#}
-                    <div>
-                        {{ form.delivery }}
-                    </div>
+                      {{ form.delivery }}
                   </div>
                   <div class="form-group">
-{#                    <label class="form-label" for="city">Город#}
-{#                    </label>#}
-{#                    <input class="form-input" id="city" name="city" type="text"/>#}
-                      {{ form.city.label }}
-                      {{ form.city }}
+                      {{ form.city.label }} {{ form.city }}
                   </div>
                   <div class="form-group">
-{#                    <label class="form-label" for="address">Адрес#}
-{#                    </label>#}
-{#                    <textarea class="form-textarea" name="address" id="address"></textarea>#}
-                      {{ form.address.label }}
-                      {{ form.address }}
+                      {{ form.address.label }} {{ form.address }}
                   </div>
               <div class="Order-footer">
-{#                  <a class="btn btn_success Order-next" href="#">Дальше</a>#}
-                  {% csrf_token %}
-                  <input type="submit" class="btn btn_success Order-next" value="Next">
+                <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Next' %}</button>
               </div>
+              {% csrf_token %}
             </div>
           </form>
         </div>
