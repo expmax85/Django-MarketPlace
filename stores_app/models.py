@@ -76,10 +76,7 @@ class SellerProduct(models.Model):
         return f'{self.product} in {self.seller}'
 
     def serialize(self):
-    #     return self.__dict__
-    # def __repr__(self):
-        obj = model_to_dict(self)
-        return json.dumps(obj)
+        return self.__dict__
 
     class Meta:
         verbose_name = _('product in shop')
