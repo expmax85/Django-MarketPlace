@@ -296,8 +296,11 @@ class CompareView(View):
 
     def get_quantity(self, request):
         """ Данный метод возвращает количество товаров в списке для сравнения """
-        compared = json.loads(request.session['compared'])
-        return len(list(compared.keys()))
+        try:
+            compared = json.loads(request.session['compared'])
+            return len(list(compared.keys()))
+        except KeyError:
+            return 0
 
 
 class AddToCompare(View):
