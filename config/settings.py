@@ -86,7 +86,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'orders_app.context_processors.cart'
+                'orders_app.context_processors.cart',
+                'orders_app.context_processors.compare'
             ],
             'loaders': [
                 'admin_tools.template_loaders.Loader',

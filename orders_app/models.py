@@ -89,8 +89,3 @@ class OrderProduct(models.Model):
         # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
         # Пока цена магазина. Название метода получения цкны со скидкой пока условное
         return self.seller_product.price
-
-
-class CompareProductStorage(models.Model):
-    user = ForeignKey(User, on_delete=models.CASCADE)
-    product = ForeignKey(SellerProduct, on_delete=models.CASCADE, related_name='compare_storage')
