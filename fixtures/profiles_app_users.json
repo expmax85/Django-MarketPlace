@@ -30,13 +30,13 @@
         "last_name": "test",
         "phone": "+70000000000",
         "date_joined": "2022-02-05T17:35:30.482Z",
-        "is_staff": false,
+        "is_staff": true,
         "is_active": true,
         "is_superuser": false,
         "avatar": "",
         "city": "",
         "address": "",
-        "groups": [],
+        "groups": [1, 2],
         "user_permissions": []
     }
   }

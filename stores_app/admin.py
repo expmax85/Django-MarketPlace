@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.shortcuts import redirect
-from django.urls import path
 from django.utils.translation import gettext_lazy as _
 
+from goods_app.models import ProductRequest
+from stores_app.forms import AddRequestNewProductAdminForm
 from stores_app.models import Seller, SellerProduct
 
 
@@ -19,3 +19,21 @@ class SellerProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'seller', 'price', 'discount', 'price_after_discount', 'quantity')
     list_filter = ('product', 'seller', 'price', 'discount', 'price_after_discount', 'quantity')
     search_fields = ('product', 'seller', 'price', 'discount', 'price_after_discount', 'quantity')
+
+
+@admin.register(ProductRequest)
+class ProductRequestAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_published', 'user', 'store')
+    list_filter = ('user', 'store', 'category')
+    search_fields = ('name', 'store', 'category')
+    readonly_fields = ('user', 'store', 'notes')
+    form = AddRequestNewProductAdminForm
+
+    actions = ['mark_published']
+
+    def mark_published(self, request, queryset):
+        for item in queryset:
+            item.is_published = True
+            item.save(update_fields=['is_published'])
+
+    mark_published.short_description = _('Publish')

@@ -65,7 +65,7 @@ class ProfilesAppTestCase(TestCase):
     def test_login_user(self):
         """Проверка работы аутентификации"""
         response = self.client.post(reverse('profiles-polls:login'), {'email': self.user.email,
-                                                'password': self.user.password})
+                                                                      'password': self.user.password})
         self.assertTrue(response.status_code, 200)
         self.assertTrue(self.user.is_authenticated)
 

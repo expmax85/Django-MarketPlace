@@ -106,7 +106,6 @@ class OrderStepOne(View):
             order.phone = phone
             order.save()
             return redirect('orders:order_step_two')
-        # print(form.errors)
         return render(request, 'orders_app/order_step_one.html', {'form': form})
 
 
@@ -128,7 +127,6 @@ class OrderStepTwo(View):
             order.address = address
             order.save()
             return redirect('orders:order_step_three')
-        # print(form.errors)
         return render(request, 'orders_app/order_step_two.html', {'form': form})
 
 
@@ -147,7 +145,6 @@ class OrderStepThree(View):
             order.in_order = True
             order.save()
             return redirect('orders:order_step_four')
-        # print(form.errors)
         return render(request, 'orders_app/order_step_three.html', {'form': form})
 
 
@@ -249,10 +246,12 @@ class CompareView(View):
                 value.append(True)
         return {'compared': compared, 'specifications': specifications}
 
-
     def get_quantity(self, request):
         """ Данный метод возвращает количество товаров в списке для сравнения """
-        compared = json.loads(request.session['compared'])
+        try:
+            compared = json.loads(request.session['compared'])
+        except KeyError:
+            return 0
         return len(list(compared.keys()))
 
 
@@ -322,6 +321,3 @@ class HistoryOrderDetail(DetailView):
         pk = kwargs['order_id']
         order = self.model.objects.prefetch_related('order_products').get(id=pk)
         return render(request, 'orders_app/oneorder.html', context={'order': order})
-
-
-

@@ -3,11 +3,6 @@ from goods_app.models import ProductCategory
 
 register = template.Library()
 
-#
-# @register.simple_tag()
-# def get_categories():
-#     return ProductCategory.objects.all()
-
 
 @register.simple_tag()
 def get_tree_dict():
