@@ -38,22 +38,22 @@
             <div class="Section-columnContent">
               <ul class="menu menu_vt Order-navigate">
                 <li class="menu-item">
-                    <a class="menu-link" href="#step1">
+                    <a class="menu-link" href="{% url 'orders:order_step_one' %}">
                         {% trans 'Step 1. User requisites' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#">
+                    <a class="menu-link" href="{% url 'orders:order_step_two' %}">
                         {% trans 'Step 2. Way of delivery' %}
                     </a>
                 </li>
                 <li class="menu-item_ACTIVE menu-item">
-                    <a class="menu-link" href="#step3">
+                    <a class="menu-link" href="{% url 'orders:order_step_three' %}">
                         {% trans 'Step 3. Payment method' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#step4">
+                    <a class="menu-link" href="{% url 'orders:order_step_four' %}">
                         {% trans 'Step 4. Order confirmation' %}
                     </a>
                 </li>

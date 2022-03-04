@@ -98,29 +98,36 @@ class OrderStepOne(View):
 
     def get(self, request: HttpRequest, *args, **kwargs):
         user = request.user
-        initial = {'fio': f'{user.first_name} {user.last_name}',
-                   'email': user.email,
-                   'phone': user.phone,
-                   'delivery': 'exp',
-                   'payment': 'cash'}
+        if user.is_authenticated:
+            initial = {'fio': f'{user.first_name} {user.last_name}',
+                       'email': user.email,
+                       'phone': user.phone,
+                       'delivery': 'exp',
+                       'payment': 'cash'}
+        else:
+            initial = {'delivery': 'exp',
+                       'payment': 'cash'}
         form = self.form_class(initial=initial)
 
         return render(request, self.template_name, {'form': form})
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
-        order = Order.objects.get(customer=request.user, in_order=False)
 
         if form.is_valid():
-            fio = form.cleaned_data['fio']
-            email = form.cleaned_data['email']
-            phone = form.cleaned_data['phone']
+            if request.user.is_authenticated:
+                order = Order.objects.get(customer=request.user, in_order=False)
+                fio = form.cleaned_data['fio']
+                email = form.cleaned_data['email']
+                phone = form.cleaned_data['phone']
 
-            order.fio = fio
-            order.email = email
-            order.phone = phone
-            order.save()
-            return redirect('orders:order_step_two')
+                order.fio = fio
+                order.email = email
+                order.phone = phone
+                order.save()
+                return redirect('orders:order_step_two')
+            else:
+                return redirect('profiles:login')
 
         return render(request, self.template_name, {'form': form})
 
@@ -218,7 +225,7 @@ class PaymentWithCardView(View):
         nonce = request.POST.get('payment_method_nonce', None)
         # Создание и сохранение транзакции.
         result = braintree.Transaction.sale({
-            'amount': '{:.2f}'.format(1500),
+            'amount': '{:.2f}'.format(order.total_discounted_sum),
             'payment_method_nonce': nonce,
             'options': {
                 'submit_for_settlement': True
@@ -292,7 +299,6 @@ class CompareView(View):
             if len(value) == value.count(value[0]):
                 value.append(True)
         return {'compared': compared, 'specifications': specifications}
-
 
     def get_quantity(self, request):
         """ Данный метод возвращает количество товаров в списке для сравнения """
