@@ -208,7 +208,7 @@ margin-top: 0 !important;
     max-width: 200px;
     height: 100px;
     align-self: center;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .Add-seller {

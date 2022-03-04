@@ -28,7 +28,8 @@ $(function(){
   $("#id_phone").mask("+7(999)999-99-99");
 });
 
-function ajaxSend(url, params) {
+// Филтр
+function ajaxSend(url, params, render_data) {
     // Отправляем запрос
     fetch(`${url}?${params}`, {
         method: 'GET',
@@ -37,28 +38,65 @@ function ajaxSend(url, params) {
         },
     })
         .then(response => response.json())
-        .then(json => render(json))
+        .then(json => render(json, render_data))
         .catch(error => console.error(error))
 }
 
- const forms = document.querySelector('form[name=category-filter]');
-
- forms.addEventListener('submit', function (e) {
-     // Получаем данные из формы
-     e.preventDefault();
-     let url = this.action;
-     let params = new URLSearchParams(new FormData(this)).toString();
-     ajaxSend(url, params);
- });
-
-function render(data) {
+function render(data, render_data) {
     // Рендер шаблона
-    let template = Hogan.compile(html);
+
+    let template = Hogan.compile(render_data);
     let output = template.render(data);
 
-    const div = document.querySelector('#id_product');
+    const div = document.querySelector('.product_js');
     div.innerHTML = output;
 }
+
+const form_filter = document.querySelector('form[name=json-filter]');
+form_filter.addEventListener('submit', function(e) {
+    // Получаем данные из формы
+    e.preventDefault();
+    let url = this.action;
+    let params = new URLSearchParams(new FormData(this)).toString();
+    console.log(params)
+    ajaxSend(url, params, html_filter);
+});
+
+let html_filter = '\
+{{#products}}\
+<div class="Card"><a class="Card-picture" href="#"><img src="/uploads/{{ prodict__image }}" alt="card.jpg"></a>\
+  <div class="Card-content">\
+    <strong class="Card-title"><a href="/product-detail/{{ product__slug }}/">{{ product__name }}</a>\
+    </strong>\
+    <div class="Card-description">\
+      <div class="Card-cost"><span class="Card-priceOld">{{ price }}</span><span class="Card-price">{{ price_after_discount }}</span>\
+      </div>\
+      <div class="Card-category">{{ product__category__name }}\
+      </div>\
+      <div class="Card-hover"><a class="Card-btn" href="#"><img src="/static/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"></a><a class="Card-btn" href="/orders/add/{{ id }}/"><img src="/static/assets/img/icons/card/cart.svg" alt="cart.svg"></a><a class="Card-btn" href="/orders/compare/add/{{ id }}/"><img src="/static/assets/img/icons/card/change.svg" alt="change.svg"></a>\
+      </div>\
+    </div>\
+      {{#discount__percent }}\
+      <div class="Card-sale">-{{ discount__percent }}%\
+      </div>\
+      {{/discount__percent }}\
+      {{#discount__amount }}\
+      <div class="Card-sale">Hot deal\
+      </div>\
+      {{/discount__amount }}\
+  </div>\
+</div>\
+{{/products}}'
+
+
+const forms = document.querySelector('form[name=category-filter]');
+forms.addEventListener('submit', function (e) {
+ // Получаем данные из формы
+ e.preventDefault();
+ let url = this.action;
+ let params = new URLSearchParams(new FormData(this)).toString();
+ ajaxSend2(url, params, html);
+});
 
 let html = '\
 <option value="" selected="">---------</option>\
