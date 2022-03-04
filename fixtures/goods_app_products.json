@@ -10,7 +10,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "10.00",
-      "comments": 100
+      "is_published": true
     }
   },
   {
@@ -24,7 +24,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "11.00",
-      "comments": 101
+      "is_published": true
     }
   },
   {
@@ -38,7 +38,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "13.00",
-      "comments": 103
+      "is_published": true
     }
   },
   {
@@ -52,7 +52,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "14.00",
-      "comments": 104
+      "is_published": true
     }
   },
   {
@@ -66,7 +66,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "15.00",
-      "comments": 105
+      "is_published": true
     }
   },
   {
@@ -80,7 +80,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "16.00",
-      "comments": 106
+      "is_published": true
     }
   },
   {
@@ -94,7 +94,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "17.00",
-      "comments": 107
+      "is_published": true
     }
   },
   {
@@ -108,7 +108,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "18.00",
-      "comments": 108
+      "is_published": true
     }
   },
   {
@@ -122,7 +122,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "19.00",
-      "comments": 109
+      "is_published": true
     }
   },
   {
@@ -136,7 +136,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "20.00",
-      "comments": 110
+      "is_published": true
     }
   },
   {
@@ -150,7 +150,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "21.00",
-      "comments": 111
+      "is_published": true
     }
   },
   {
@@ -164,7 +164,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "22.00",
-      "comments": 112
+      "is_published": true
     }
   },
   {
@@ -178,7 +178,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "23.00",
-      "comments": 113
+      "is_published": true
     }
   },
   {
@@ -192,7 +192,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "24.00",
-      "comments": 114
+      "is_published": true
     }
   },
   {
@@ -206,7 +206,7 @@
       "image": "",
       "description": "some test text",
       "average_price": "25.00",
-      "comments": 115
+      "is_published": true
     }
   }
 ]

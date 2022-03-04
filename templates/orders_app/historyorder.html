@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}
+   {% trans 'Order history' %}
+{% endblock %}
+{%block header %}
+   {% include 'elems/header.html' %}
+{% endblock %}
+{% block main %}
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">{% trans 'Order history' %}
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="index.html">home</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'order history' %}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft">
+      <div class="wrap">
+        <div class="Section-column">
+          <div class="Section-columnSection">
+            <header class="Section-header">
+              <strong class="Section-title">{% trans 'order history' %}
+              </strong>
+            </header>
+            <div class="Section-columnContent">
+              <div class="NavigateProfile">
+                <ul class="menu menu_vt">
+                  <li class="menu-item"><a class="menu-link" href="account.html">Личный кабинет</a>
+                  </li>
+                  <li class="menu-item"><a class="menu-link" href="profile.html">Профиль</a>
+                  </li>
+                  <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="historyorder.html">История заказов</a>
+                  </li>
+                  <li class="menu-item"><a class="menu-link" href="historyview.html">История просмотра</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="Section-content">
+          <div class="Orders">
+            {% for order in orders %}
+            <!--Данные о заказах-->
+            <div class="Order Order_anons">
+              <div class="Order-personal">
+                <div class="row">
+                  <div class="row-block"><a class="Order-title" href="{{ order.id }}">{% trans 'Order' %}&#32;<span class="Order-numberOrder">{{ order.id }}</span>&#32;{% trans 'from' %}&#32;<span class="Order-dateOrder">{{ order.ordered }}</span></a>
+                  </div>
+                  <div class="row-block">
+                    <div class="Order-info Order-info_delivery">
+                      <div class="Order-infoType">{% trans 'Delivery' %}:
+                      </div>
+                      
+                      <div class="Order-infoContent">
+                        {% if order.delivery == 'reg' %}
+                          {% trans 'Regular delivery' %}
+                        {% else %}
+                        {% trans 'Express delivery' %}
+                        {% endif %}
+                      </div>
+                      
+                    </div>
+                    <div class="Order-info Order-info_pay">
+                      <div class="Order-infoType">{% trans 'Payment' %}:
+                      </div>
+                      <div class="Order-infoContent">
+                        {% if order.payment_method == 'card' %}
+                          {% trans 'Card' %}
+                        {% else %}
+                        {% trans 'Cash' %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">{% trans 'Price' %}:
+                      </div>
+                      <div class="Order-infoContent"><span class="Order-price">{{ order.total_discounted_sum }}$</span><span class="Order-price_old">{{ order.total_sum }}$</span>
+                      </div>
+                    </div>
+                    <div class="Order-info Order-info_status">
+                      <div class="Order-infoType">{% trans 'Status' %}:
+                      </div>
+                      
+                      <div class="Order-infoContent">
+                        {% if order.in_ordered %}
+                        {% trans 'Not paid' %}
+                        {% else %}
+                        {% trans 'Paid' %}
+                        {% endif %}
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+{% block scripts %}
+  <script src="assets/plg/jQuery/jquery-3.5.0.slim.min.js"></script>
+  <script src="assets/plg/form/jquery.form.js"></script>
+  <script src="assets/plg/form/jquery.maskedinput.min.js"></script>
+  <script src="assets/plg/range/ion.rangeSlider.min.js"></script>
+  <script src="assets/plg/Slider/slick.min.js"></script>
+  <script src="assets/js/scripts.js"></script>
+{% endblock %}

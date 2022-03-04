@@ -48,7 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(verbose_name=_('city'), max_length=40,
                             null=True, blank=True, default="")
     address = models.CharField(verbose_name=_('address'), max_length=70,
-                            null=True, blank=True, default="")
+                               null=True, blank=True, default="")
 
     objects = UserManager()
 
@@ -65,12 +65,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.groups.filter(name=group_name):
             return True
         return False
-    
+
     def save(self, *args, **kwargs):
         if self.pk is not None:
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:
                 old_self.avatar.delete(False)
+        if self.is_member('Content-manager'):
+            self.is_staff = True
         return super(User, self).save(*args, **kwargs)
 
     class Meta:
@@ -79,7 +81,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'profiles'
         permissions = [
             ('Sellers', 'can sell'),
-            ('Content_manager', 'app management')]
+            ('Content_manager', 'app management'),
+        ]
 
 
 class ViewedProduct(models.Model):
