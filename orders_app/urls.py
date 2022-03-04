@@ -26,5 +26,8 @@ urlpatterns = [
     # эндпоинты товаров для сравнения
     path('compare/', CompareView.as_view(), name='compare'),
     path('compare/add/<int:product_id>/', AddToCompare.as_view(), name='add-to-compare'),
-    path('compare/remove/<str:product_name>/', RemoveFromCompare.as_view(), name='remove-from-compare')
+    path('compare/remove/<str:product_name>/', RemoveFromCompare.as_view(), name='remove-from-compare'),
+    # эндпоинты истории заказов
+    path('history/', HistoryOrderView.as_view(), name='history-order'),
+    path('history/<int:order_id>', HistoryOrderDetail.as_view(), name='history-order-detail')
 ]

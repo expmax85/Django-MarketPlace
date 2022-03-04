@@ -6,6 +6,7 @@ from django.contrib.messages.storage import session
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView
+from django.views.generic import DetailView
 from django.http import HttpRequest
 from orders_app.models import Order
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
@@ -294,6 +295,33 @@ class RemoveFromCompare(View):
         compared.pop(product_name)
         request.session['compared'] = json.dumps(compared, cls=DecimalEncoder)
         return redirect(request.META.get('HTTP_REFERER'))
+
+
+class HistoryOrderView(ListView):
+    """ Представление истории заказов """
+
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'orders_app/historyorder.html'
+
+    def get_queryset(self):
+        """ Получить заказы """
+
+        queryset = Order.objects.filter(customer=self.request.user)
+        return queryset
+
+
+class HistoryOrderDetail(DetailView):
+    """ Детальное представление заказа"""
+
+    model = Order
+
+    def get(self, request, *args, **kwargs):
+        """ Получить заказ """
+
+        pk = kwargs['order_id']
+        order = self.model.objects.prefetch_related('order_products').get(id=pk)
+        return render(request, 'orders_app/oneorder.html', context={'order': order})
 
 
 
