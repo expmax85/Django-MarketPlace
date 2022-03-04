@@ -31,5 +31,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders_app.urls', namespace='orders-polls')),
     path('stores/', include('stores_app.urls', namespace='stores-polls')),
-    # path('__debug__/', include('debug_toolbar.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
