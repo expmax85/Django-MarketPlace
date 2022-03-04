@@ -28,7 +28,7 @@ class IndexView(ListView):
         return context
 
 
-class ProductDetailView(DetailView, ProductMixin):
+class ProductDetailView(ProductMixin, DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
@@ -36,27 +36,33 @@ class ProductDetailView(DetailView, ProductMixin):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        # reset_queries()
-        reviews = self.get_reviews
+
+        reviews = self.get_reviews(product=context['product'])
         context['reviews_count'] = reviews.count
         context['comments'] = context_pagination(self.request, reviews)
         context['form'] = ReviewForm()
-        self.update_context(context=context, elements=['specifications', 'sellers', 'tags'])
+        context['specifications'] = self.get_specifications(context['product'])
+        context['sellers'] = self.get_sellers(context['product'])
+        context['best_offer'] = self.get_best_seller(context['product'])
+        context['tags'] =  self.get_tags(context['product'])
         return context
 
     def post(self, request: HttpRequest, slug: str) -> Callable:
         form = ReviewForm(request.POST)
+        product = self.get_object()
         if form.is_valid():
             form.save()
-            self.calculate_product_rating()
+            self.calculate_product_rating(product)
             return redirect(reverse('goods-polls:product-detail', kwargs={'slug': slug}))
         context = dict()
-        reviews = self.get_reviews
+        context['product'] = product
+        reviews = self.get_reviews(product)
         context['reviews_count'] = reviews.count
         context['comments'] = context_pagination(self.request, reviews)
-        context['product'] = self.get_object()
+        context['specifications'] = self.get_specifications(product)
+        context['sellers'] = self.get_sellers(product)
+        context['tags'] =  self.get_tags(product)
         context['form'] = form
-        self.update_context(context=context, elements=['specifications', 'sellers', 'tags'])
         return render(request, 'goods_app/product_detail.html', context=context)
 
 

@@ -29,9 +29,9 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <div class="ProductCard-photo">
-                  {%  if sellers.first.discount.percent %}
-                <div class="ProductCard-sale">-{{ sellers.first.discount.percent }}%</div>
-                  {% elif sellers.first.discount.amount %}
+                  {%  if best_offer.discount.percent %}
+                <div class="ProductCard-sale">-{{ best_offer.discount.percent }}%</div>
+                  {% elif best_offer.discount.amount %}
                 <div class="ProductCard-sale custom_align-center">Hot price</div>
                   {% endif %}
                 <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
@@ -44,9 +44,9 @@
                 <h2 class="ProductCard-title">{{ product.name }}</h2>
                 <div class="ProductCard-info">
                   <div class="ProductCard-cost">
-                    <div class="ProductCard-price">{{ sellers.first.price_after_discount }}
+                    <div class="ProductCard-price">{{ best_offer.price_after_discount }}
                     </div>
-                    <div class="ProductCard-priceOld">{{ sellers.first.price }}
+                    <div class="ProductCard-priceOld">{{ best_offer.price }}
                     </div>
                   </div>
                   <div class="ProductCard-compare"><a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
@@ -55,7 +55,7 @@
               </div>
               <div class="ProductCard-text">
                 <ul>
-                    <li>Seller: {{ sellers.first.seller }}</li>
+                    <li>Seller: {{ best_offer.seller }}</li>
                     <li>{{ product.description }}</li>
                 </ul>
               </div>
@@ -70,7 +70,7 @@
                   </div>
                 </div>
 
-                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="{% url 'orders-polls:cart_add' sellers.first.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span></a>
+                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="{% url 'orders-polls:cart_add' best_offer.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span></a>
                 </div>
               </div>
               <div class="ProductCard-footer">
