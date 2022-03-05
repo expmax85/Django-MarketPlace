@@ -62,10 +62,19 @@
                   <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
                   <div class="form-selectWrap"><select class="form-select" name="category">
                     <option value="" selected="selected" disabled="disabled">Select Category</option>
-                        {% for category in categories %}
-                    <option value="{{ category.name }}">{{ category.name }}
+                    {% load mptt_tags %}
+                    {% load categories_tag %}
+                    {% get_tree_dict as dict %}
+                    {% for key, value in dict.items %}
+                     <option value="{{ key.name }}">{{ key.name }}
+                     {% if value %}
+                         {% for elem in value %}
+                     <option value="{{ elem.name }}">{{ elem.name }}
+                         {% endfor %}
+                     {% endif %}
+
                     </option>
-                        {%  endfor %}
+                    {% endfor %}
                   </select></div>
                 </div>
                 <div class="form-group">

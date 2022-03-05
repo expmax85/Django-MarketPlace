@@ -85,8 +85,6 @@ class JsonFilterStore(ListView):
         print(list(queryset)[0])
         return queryset
 
-
-
     def get(self, request, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
         return JsonResponse({'products': list(queryset)}, safe=False)
