@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Dict
 
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet, Q, Count
 from django.http import JsonResponse
 from django.views.generic import ListView
 from taggit.models import Tag
@@ -70,21 +70,43 @@ class JsonFilterStore(ListView):
             stock = 1
         else:
             stock = 0
-        queryset = SellerProduct.objects.select_related('product', 'seller', 'discount')\
-                                        .prefetch_related('product__category')\
-                                        .filter(seller__name__icontains=self.request.GET.get('seller', ""),
-                                                product__name__icontains=self.request.GET.get('title', ""),
-                                                product__category__name__icontains=self.request.GET.get('category', ""),
-                                                price_after_discount__range=(price_min, price_max),
-                                                quantity__gte=stock)\
-                                        .values('id','product__category', 'product__name',
-                                                'product__category__name', 'product__slug',
-                                                'discount__percent', 'discount__amount',
-                                                'price', 'price_after_discount')
-
-        print(list(queryset)[0])
+        if self.request.GET.get('tag'):
+            queryset = SellerProduct.objects.select_related('product', 'seller', 'discount')\
+                                            .prefetch_related('product__category')\
+                                            .filter(product__tags__name__in=[str(self.request.GET.get('tag'))])\
+                                            .annotate(Count('product__product_comments'))
+        else:
+            queryset = SellerProduct.objects.select_related('product', 'seller', 'discount')\
+                                            .prefetch_related('product__category')\
+                                            .filter(seller__name__icontains=self.request.GET.get('seller', ""),
+                                                    product__name__icontains=self.request.GET.get('title', ""),
+                                                    product__category__name__icontains=self.request.GET.get('category', ""),
+                                                    price_after_discount__range=(price_min, price_max),
+                                                    quantity__gte=stock)\
+                                            .annotate(Count('product__product_comments'))
         return queryset
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
+        sort_type = self.sort_type(['price_after_discount', 'product__product_comments__count'])
+        if sort_type:
+            if int(sort_type[1]) == 0:
+                queryset = queryset.order_by(str(sort_type[0]))
+            else:
+                queryset = queryset.order_by('-' + str(sort_type[0]))
+        queryset = queryset.values('id', 'product__category', 'product__name',
+                                   'product__category__name', 'product__slug',
+                                   'discount__percent', 'discount__amount',
+                                   'price', 'price_after_discount', 'product__product_comments__count')
         return JsonResponse({'products': list(queryset)}, safe=False)
+
+    def sort_type(self, params):
+        for item in params:
+            try:
+                print(item)
+                value = int(self.request.GET.get(str(item)))
+                return (item, value)
+            except ValueError:
+                pass
+        return False
+

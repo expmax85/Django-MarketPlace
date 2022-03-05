@@ -27,6 +27,7 @@
       </div>
     </div>
     <div class="Section Section_column Section_columnLeft">
+    <form class="form" action="{% url 'goods-polls:json-filter' %}" name="json-filter" method="get">
       <div class="wrap">
         <div class="Section-column">
           <div class="Section-columnSection">
@@ -35,7 +36,7 @@
               </strong>
             </header>
             <div class="Section-columnContent">
-              <form class="form" action="{% url 'goods-polls:json-filter' %}" name="json-filter" method="get">
+{#              <form class="form" action="{% url 'goods-polls:json-filter' %}" name="json-filter" method="get">#}
                 <div class="form-group">
                     <div class="range Section-columnRange">
                     <input class="range-line" id="price" name="price" type="text" data-type="double" data-min="1" data-max="500000" data-from="1" data-to="500000"/>
@@ -91,7 +92,7 @@
                   <div class="buttons"><button class="btn btn_square btn_dark btn_narrow" type="submit">Filter</button>
                   </div>
                 </div>
-              </form>
+
             </div>
           </div>
           <div class="Section-columnSection">
@@ -101,32 +102,129 @@
             </header>
             <div class="Section-columnContent">
             <div class="buttons">
+                  <button class="btn btn_default btn_sm" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
+                <select name="tag" id="id_tags" multiple style="border: none; padding: 0; overflow-y: auto;">
               {% for tag in tags %}
-                  <a class="btn btn_default btn_sm" href="#">{{ tag }}</a>
+                <option class="btn btn_default btn_sm" type="ratio" name="tag" value="{{ tag.name }}" >
+                    {{ tag }}</option>
+
               {% endfor %}
+                </select>
+              </button>
             </div>
-            </div>
+              </div>
           </div>
         </div>
         <div class="Section-content">
           <div class="Sort">
-            <div class="Sort-title">Сортировать по:
-            </div>
-            <div class="Sort-variants"><a class="Sort-sortBy Sort-sortBy_dec" href="#">Популярности</a><a class="Sort-sortBy" href="#">Цене</a><a class="Sort-sortBy" href="#">Отзывам</a><a class="Sort-sortBy Sort-sortBy_inc" href="#">Новизне</a>
+            <div class="Sort-title">Sort by:</div>
+            <div class="Sort-variants">
+              <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
+                  <label class="footer__checkbox flex" for="checkbox-1">Popular
+                      <input id="checkbox-1" type="checkbox">
+                      <span class="spancheck" role="checkbox"></span>
+                      <input id="popular_sort" type="hidden" name="popular_sort">
+                      <script>
+                          element = document.getElementById("checkbox-1")
+                          document.getElementById("checkbox-1").addEventListener('click', function (){
+                              let checkbox = document.getElementById('popular_sort')
+                          if(document.getElementById("checkbox-1").checked) {
+                                checkbox.value = '1';
+                            }
+                          else{
+                                checkbox.value = '0';
+                          }
+                          })
+                          element.addEventListener("blur", function(e) {
+                              let checkbox = document.getElementById('popular_sort');
+                              checkbox.value = '';
+                            });
+                      </script>
+                  </label>
+              </button>
+              <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
+                  <label class="footer__checkbox flex" for="checkbox-2">Price
+                      <input id="checkbox-2" type="checkbox">
+                      <span class="spancheck" role="checkbox"></span>
+                      <input class="hidden-input" id="price_sort" type="hidden" name="price_after_discount">
+                      <script>
+                          element = document.getElementById("checkbox-2")
+                          document.getElementById("checkbox-2").addEventListener('click', function (){
+                              let checkbox = document.getElementById('price_sort')
+                          if(document.getElementById("checkbox-2").checked) {
+                                checkbox.value = '1';
+                            }
+                          else{
+                                checkbox.value = '0';
+                          }
+                          })
+                          element.addEventListener("blur", function(e) {
+                              let checkbox = document.getElementById('price_sort');
+                              checkbox.value = '';
+                            });
+                      </script>
+                  </label>
+              </button>
+              <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
+                  <label class="footer__checkbox flex" for="checkbox-3">Reviews
+                      <input id="checkbox-3" type="checkbox">
+                      <span class="spancheck" role="checkbox"></span>
+                      <input class="hidden-input" id="reviews_sort" type="hidden" name="product__product_comments__count">
+                      <script>
+                          element = document.getElementById("checkbox-3")
+                          document.getElementById("checkbox-3").addEventListener('click', function (){
+                              let checkbox = document.getElementById('reviews_sort')
+                          if(document.getElementById("checkbox-3").checked) {
+                                checkbox.value = '1';
+                            }
+                          else{
+                                checkbox.value = '0';
+                          }
+                          })
+                          element.addEventListener("blur", function(e) {
+                              let checkbox = document.getElementById('reviews_sort');
+                              checkbox.value = '';
+                            });
+                      </script>
+                  </label>
+              </button>
+              <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
+                  <label class="footer__checkbox flex" for="checkbox-4">Newest
+                      <input id="checkbox-4" type="checkbox">
+                      <span class="spancheck" role="checkbox"></span>
+                      <input id="date_sort" type="hidden" name="date_sort">
+                      <script>
+                          element = document.getElementById("checkbox-4")
+                          document.getElementById("checkbox-4").addEventListener('click', function (){
+                              let checkbox = document.getElementById('date_sort')
+                          if(document.getElementById("checkbox-4").checked) {
+                                checkbox.value = '1';
+                            }
+                          else{
+                                checkbox.value = '0';
+                          }
+                          })
+                          element.addEventListener("blur", function(e) {
+                              let checkbox = document.getElementById('date_sort');
+                              checkbox.value = '';
+                            });
+                      </script>
+                  </label>
+              </button>
             </div>
           </div>
           <div class="Cards product_js">
               {% for item in products %}
             <div class="Card"><a class="Card-picture" href="{{ item.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}/uploads/{{ item.product.image }}" alt="card.jpg"></a>
               <div class="Card-content">
-                <strong class="Card-title"><a href="product.html">{{ item.product.name }}</a>
+                <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
                 </strong>
                 <div class="Card-description">
                   <div class="Card-cost"><span class="Card-priceOld">{{ item.price }}</span><span class="Card-price">{{ item.price_after_discount }}</span>
                   </div>
                   <div class="Card-category">{{ item.product.category }}
                   </div>
-                  <div class="Card-hover"><a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"></a><a class="Card-btn" href="{% url 'orders-polls:cart_add' item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"></a><a class="Card-btn" href="{% url 'orders-polls:add-to-compare' item.id %}"><img src="{%  static  'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+                  <div class="Card-hover"><a class="Card-btn" href="{{ item.product.get_absolute_url }}"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"></a><a class="Card-btn" href="{% url 'orders-polls:cart_add' item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"></a><a class="Card-btn" href="{% url 'orders-polls:add-to-compare' item.id %}"><img src="{%  static  'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
                   </div>
                 </div>
               </div>
@@ -146,6 +244,7 @@
 {#          </div>#}
         </div>
       </div>
+    </form>
     </div>
   </div>
 {% endblock %}
