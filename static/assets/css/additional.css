@@ -539,3 +539,8 @@ textarea:focus, textarea:hover{
   background-size: contain;
   display: block;
 }
+#id_tags:focus,
+#id_tags:active,
+#id_tags:hover {
+    outline: none;
+}

@@ -59,25 +59,25 @@
                         {%  endfor %}
                   </select></div>
                 </div>
-                <div class="form-group">
-                  <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
-                  <div class="form-selectWrap"><select class="form-select" name="category">
-                    <option value="" selected="selected" disabled="disabled">Select Category</option>
-                    {% load mptt_tags %}
-                    {% load categories_tag %}
-                    {% get_tree_dict as dict %}
-                    {% for key, value in dict.items %}
-                     <option value="{{ key.name }}">{{ key.name }}
-                     {% if value %}
-                         {% for elem in value %}
-                     <option value="{{ elem.name }}">{{ elem.name }}
-                         {% endfor %}
-                     {% endif %}
-
-                    </option>
-                    {% endfor %}
-                  </select></div>
-                </div>
+{#                <div class="form-group">#}
+{#                  <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->#}
+{#                  <div class="form-selectWrap"><select class="form-select" name="category">#}
+{#                    <option value="" selected="selected" disabled="disabled">Select Category</option>#}
+{#                    {% load mptt_tags %}#}
+{#                    {% load categories_tag %}#}
+{#                    {% get_tree_dict as dict %}#}
+{#                    {% for key, value in dict.items %}#}
+{#                     <option value="{{ key.name }}">{{ key.name }}#}
+{#                     {% if value %}#}
+{#                         {% for elem in value %}#}
+{#                     <option value="{{ elem.name }}">{{ elem.name }}#}
+{#                         {% endfor %}#}
+{#                     {% endif %}#}
+{##}
+{#                    </option>#}
+{#                    {% endfor %}#}
+{#                  </select></div>#}
+{#                </div>#}
                 <div class="form-group">
                   <label class="toggle">
                     <input type="checkbox" name="in_stock"><span class="toggle-box"></span><span class="toggle-text">Только товары в наличии</span>
@@ -192,7 +192,7 @@
                   <label class="footer__checkbox flex" for="checkbox-4">Newest
                       <input id="checkbox-4" type="checkbox">
                       <span class="spancheck" role="checkbox"></span>
-                      <input id="date_sort" type="hidden" name="date_sort">
+                      <input id="date_sort" type="hidden" name="date_added">
                       <script>
                           element = document.getElementById("checkbox-4")
                           document.getElementById("checkbox-4").addEventListener('click', function (){

@@ -71,6 +71,7 @@ class SellerProduct(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price'))
     price_after_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price_after_discount'))
     quantity = models.IntegerField(verbose_name=_('quantity'))
+    date_added = models.DateTimeField(verbose_name=_('date added'), auto_now_add=True)
 
     def __str__(self) -> str:
         return f'{self.product} in {self.seller}'
