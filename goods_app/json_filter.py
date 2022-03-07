@@ -12,6 +12,7 @@ from stores_app.models import SellerProduct, Seller
 
 
 CATALOG_PAGE_SIZE = 12
+BASE_SORT_LIST = ['price_after_discount', 'product__product_comments__count', 'date_added']
 
 
 class DefSortType:
@@ -47,20 +48,19 @@ Type_sorting = DefSortType()
 
 
 class JsonFilterStore(ListView):
+    """
+    Фильтр с использованием jquery, ajax и hogan c частичным обновлением страницы.
+    """
     model = SellerProduct
     context_object_name = 'products'
     template_name = 'goods_app/test-catalog.html'
 
-    """
-    Фильтр с использованием jquery, ajax и hogan c частичным обновлением страницы.
-    """
     def get_queryset(self) -> QuerySet:
         try:
             price = self.request.GET.get('price').split(';')
             price_min = Decimal(price[0])
             price_max = Decimal(price[1])
         except AttributeError:
-            category = self.request.GET.get('category')
             return SellerProduct.objects.select_related('product', 'discount', 'seller') \
                 .prefetch_related('product__category').all()
         if self.request.GET.get('in_stock') == 'on':
@@ -85,8 +85,7 @@ class JsonFilterStore(ListView):
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
-
-        base_list = self.sort_list(['price_after_discount', 'product__product_comments__count', 'date_added'])
+        base_list = self._sort_list(BASE_SORT_LIST)
         if base_list:
             Type_sorting.define_sort_type(base_list)
             queryset = queryset.order_by(str(Type_sorting.get_sort_type))
@@ -94,7 +93,8 @@ class JsonFilterStore(ListView):
             queryset = queryset.values('id', 'product__category', 'product__name',
                                        'product__category__name', 'product__slug',
                                        'discount__percent', 'discount__amount', 'price',
-                                       'price_after_discount', 'product__product_comments__count', 'date_added')
+                                       'price_after_discount', 'date_added', 'product__product_comments__count')
+            print(queryset)
         except FieldError:
             context = dict()
             context['sellers'] = Seller.objects.all()
@@ -125,7 +125,7 @@ class JsonFilterStore(ListView):
                              'has_next':  None if page_obj.has_next() is False else "next",
                              'next_page_number': page_obj.number + 1}, safe=False)
 
-    def sort_list(self, params):
+    def _sort_list(self, params):
         """Форирование списка полей, по которым производится соритровка"""
         list_order = []
         for item in params:
@@ -140,5 +140,3 @@ class JsonFilterStore(ListView):
             except TypeError:
                 pass
         return list_order
-
-

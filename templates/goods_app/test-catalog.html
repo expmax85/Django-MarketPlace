@@ -118,10 +118,9 @@
                       <span class="spancheck" role="checkbox"></span>
                       <input id="popular_sort" type="hidden" name="popular_sort">
                       <script>
-                          element = document.getElementById("checkbox-1")
-                          document.getElementById("checkbox-1").addEventListener('click', function (){
+                          document.getElementById("checkbox-1").addEventListener('click', function (e){
                               let checkbox = document.getElementById('popular_sort')
-                          if(document.getElementById("checkbox-1").checked) {
+                          if(e.target.checked) {
                                 checkbox.value = '1';
                             }
                           else{
@@ -137,10 +136,9 @@
                       <span class="spancheck" role="checkbox"></span>
                       <input class="hidden-input" id="price_sort" type="hidden" name="price_after_discount">
                       <script>
-                          element = document.getElementById("checkbox-2")
-                          document.getElementById("checkbox-2").addEventListener('click', function (){
+                          document.getElementById("checkbox-2").addEventListener('click', function (e){
                               let checkbox = document.getElementById('price_sort')
-                          if(document.getElementById("checkbox-2").checked) {
+                          if(e.target.checked) {
                                 checkbox.value = '1';
                             }
                           else{
@@ -156,10 +154,9 @@
                       <span class="spancheck" role="checkbox"></span>
                       <input class="hidden-input" id="reviews_sort" type="hidden" name="product__product_comments__count">
                       <script>
-                          element = document.getElementById("checkbox-3")
-                          document.getElementById("checkbox-3").addEventListener('click', function (){
+                          document.getElementById("checkbox-3").addEventListener('click', function (e){
                               let checkbox = document.getElementById('reviews_sort')
-                          if(document.getElementById("checkbox-3").checked) {
+                          if(e.target.checked) {
                                 checkbox.value = '1';
                             }
                           else{
@@ -175,10 +172,9 @@
                       <span class="spancheck" role="checkbox"></span>
                       <input id="date_sort" type="hidden" name="date_added">
                       <script>
-                          element = document.getElementById("checkbox-4")
-                          document.getElementById("checkbox-4").addEventListener('click', function (){
+                          document.getElementById("checkbox-4").addEventListener('click', function (e){
                               let checkbox = document.getElementById('date_sort')
-                          if(document.getElementById("checkbox-4").checked) {
+                          if(e.target.checked) {
                                 checkbox.value = '1';
                             }
                           else{
