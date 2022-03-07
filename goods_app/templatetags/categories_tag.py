@@ -29,3 +29,8 @@ def get_tree_dict():
     #     del res_dict[e]
     # print(res_dict)
     return res_dict
+
+
+@register.filter(name='times')
+def times(number: int):
+    return range(number)
