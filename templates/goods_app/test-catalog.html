@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 {% load cache %}
 
 {% block title %}
@@ -13,18 +13,15 @@
 {% block main %}
 <div class="Middle Middle_top">
     <div class="Middle-top">
-      <div class="wrap">
-        <div class="Middle-header">
-          <h1 class="Middle-title">Catalog Megano
-          </h1>
-          <ul class="breadcrumbs Middle-breadcrumbs">
-            <li class="breadcrumbs-item"><a href="index.html">home</a>
-            </li>
-            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Catalog</span>
-            </li>
-          </ul>
+        <div class="wrap">
+            <div class="Middle-header">
+                <h1 class="Middle-title">{% trans 'Catalog Megano' %}</h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Catalog' %}</span></li>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
     <div class="Section Section_column Section_columnLeft">
     <form class="form" action="{% url 'goods-polls:json-filter' %}" name="json-filter" method="get">
@@ -32,15 +29,14 @@
         <div class="Section-column">
           <div class="Section-columnSection">
             <header class="Section-header">
-              <strong class="Section-title">Filter
+              <strong class="Section-title">{% trans 'Filter' %}
               </strong>
             </header>
             <div class="Section-columnContent">
-{#              <form class="form" action="{% url 'goods-polls:json-filter' %}" name="json-filter" method="get">#}
                 <div class="form-group">
                     <div class="range Section-columnRange">
-                    <input class="range-line" id="price" name="price" type="text" data-type="double" data-min="1" data-max="500000" data-from="1" data-to="500000"/>
-                    <div class="range-price">Price:&#32;
+                    <input class="range-line" id="price" name="price" type="text" data-type="double" data-min="1" data-max="50000" data-from="1" data-to="50000"/>
+                    <div class="range-price">{% trans 'Price' %}:&#32;
                       <div class="rangePrice">
                       </div>
                     </div>
@@ -50,9 +46,8 @@
                   <input class="form-input form-input_full" id="title" name="title" type="text" placeholder="Название">
                 </div>
                 <div class="form-group">
-                  <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
                   <div class="form-selectWrap"><select class="form-select" name="seller">
-                    <option value="" selected="selected" disabled="disabled">Select Store</option>
+                    <option value="" selected="selected" disabled="disabled">{% trans 'Select Store' %}</option>
                         {% for seller in sellers %}
                     <option value="{{ seller.name }}">{{ seller.name }}
                     </option>
@@ -60,9 +55,8 @@
                   </select></div>
                 </div>
 {#                <div class="form-group">#}
-{#                  <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->#}
 {#                  <div class="form-selectWrap"><select class="form-select" name="category">#}
-{#                    <option value="" selected="selected" disabled="disabled">Select Category</option>#}
+{#                    <option value="" selected="selected" disabled="disabled">{% trans 'Select Category' %}</option>#}
 {#                    {% load mptt_tags %}#}
 {#                    {% load categories_tag %}#}
 {#                    {% get_tree_dict as dict %}#}
@@ -80,16 +74,16 @@
 {#                </div>#}
                 <div class="form-group">
                   <label class="toggle">
-                    <input type="checkbox" name="in_stock"><span class="toggle-box"></span><span class="toggle-text">Только товары в наличии</span>
+                    <input type="checkbox" name="in_stock"><span class="toggle-box"></span><span class="toggle-text">{% trans 'Only in stock' %}</span>
                   </label>
                 </div>
                 <div class="form-group">
                   <label class="toggle">
-                    <input type="checkbox"><span class="toggle-box"></span><span class="toggle-text">С бесплатной доставкой</span>
+                    <input type="checkbox"><span class="toggle-box"></span><span class="toggle-text">{% trans 'Free delivery' %}</span>
                   </label>
                 </div>
                 <div class="form-group">
-                  <div class="buttons"><button class="btn btn_square btn_dark btn_narrow" type="submit">Filter</button>
+                  <div class="buttons"><button class="btn btn_square btn_dark btn_narrow" type="submit">{% trans 'Filter' %}</button>
                   </div>
                 </div>
 
@@ -97,7 +91,7 @@
           </div>
           <div class="Section-columnSection">
             <header class="Section-header">
-              <strong class="Section-title">Popular tags
+              <strong class="Section-title">{% trans 'Popular tags' %}
               </strong>
             </header>
             <div class="Section-columnContent">
@@ -105,9 +99,8 @@
                   <button class="btn btn_default btn_sm" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
                 <select name="tag" id="id_tags" multiple style="border: none; padding: 0; overflow-y: auto;">
               {% for tag in tags %}
-                <option class="btn btn_default btn_sm" type="ratio" name="tag" value="{{ tag.name }}" >
+                <option class="btn btn_default btn_sm" name="tag" value="{{ tag.name }}" >
                     {{ tag }}</option>
-
               {% endfor %}
                 </select>
               </button>
@@ -120,7 +113,7 @@
             <div class="Sort-title">Sort by:</div>
             <div class="Sort-variants">
               <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
-                  <label class="footer__checkbox flex" for="checkbox-1">Popular
+                  <label class="footer__checkbox flex" for="checkbox-1">{% trans 'Popular' %}
                       <input id="checkbox-1" type="checkbox">
                       <span class="spancheck" role="checkbox"></span>
                       <input id="popular_sort" type="hidden" name="popular_sort">
@@ -135,15 +128,11 @@
                                 checkbox.value = '0';
                           }
                           })
-                          element.addEventListener("blur", function(e) {
-                              let checkbox = document.getElementById('popular_sort');
-                              checkbox.value = '';
-                            });
                       </script>
                   </label>
               </button>
               <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
-                  <label class="footer__checkbox flex" for="checkbox-2">Price
+                  <label class="footer__checkbox flex" for="checkbox-2">{% trans 'Price' %}
                       <input id="checkbox-2" type="checkbox">
                       <span class="spancheck" role="checkbox"></span>
                       <input class="hidden-input" id="price_sort" type="hidden" name="price_after_discount">
@@ -158,15 +147,11 @@
                                 checkbox.value = '0';
                           }
                           })
-                          element.addEventListener("blur", function(e) {
-                              let checkbox = document.getElementById('price_sort');
-                              checkbox.value = '';
-                            });
                       </script>
                   </label>
               </button>
               <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
-                  <label class="footer__checkbox flex" for="checkbox-3">Reviews
+                  <label class="footer__checkbox flex" for="checkbox-3">{% trans 'Reviews count' %}
                       <input id="checkbox-3" type="checkbox">
                       <span class="spancheck" role="checkbox"></span>
                       <input class="hidden-input" id="reviews_sort" type="hidden" name="product__product_comments__count">
@@ -181,15 +166,11 @@
                                 checkbox.value = '0';
                           }
                           })
-                          element.addEventListener("blur", function(e) {
-                              let checkbox = document.getElementById('reviews_sort');
-                              checkbox.value = '';
-                            });
                       </script>
                   </label>
               </button>
               <button class="Sort-sortBy" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
-                  <label class="footer__checkbox flex" for="checkbox-4">Newest
+                  <label class="footer__checkbox flex" for="checkbox-4">{% trans 'Newest' %}
                       <input id="checkbox-4" type="checkbox">
                       <span class="spancheck" role="checkbox"></span>
                       <input id="date_sort" type="hidden" name="date_added">
@@ -204,16 +185,13 @@
                                 checkbox.value = '0';
                           }
                           })
-                          element.addEventListener("blur", function(e) {
-                              let checkbox = document.getElementById('date_sort');
-                              checkbox.value = '';
-                            });
                       </script>
                   </label>
               </button>
             </div>
           </div>
           <div class="Cards product_js">
+              <div class="Cards-wrap">
               {% for item in products %}
             <div class="Card"><a class="Card-picture" href="{{ item.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}/uploads/{{ item.product.image }}" alt="card.jpg"></a>
               <div class="Card-content">
@@ -237,11 +215,21 @@
                 {% endif %}
             </div>
            {% endfor %}
+                  </div>
+                <button id="btn_page" class="btn btn_default btn_sm">
+                <select id="id_page" name="page" multiple>
+                {% if has_previous %}
+                <option class="btn btn_default btn_sm" name="page" value="1">1</option>
+                <option class="btn btn_default btn_sm" name="page" value={{previous_page_number}}><<</option>
+                {% endif %}
+                <option class="btn btn_default btn_sm pagination" name="page" value={{number}} selected>{{number}}</option>
+                {% if has_next %}
+                <option class="btn btn_default btn_sm" name="page" value={{next_page_number}}>>></option>
+                <option class="btn btn_default btn_sm" name="page" value={{num_pages}}>{{num_pages}}</option>
+                {% endif %}
+                </select>
+                </button>
           </div>
-{#          <div class="Pagination">#}
-{#            <div class="Pagination-ins"><a class="Pagination-element Pagination-element_prev" href="#"><img src="assets/img/icons/prevPagination.svg" alt="prevPagination.svg"></a><a class="Pagination-element Pagination-element_current" href="#"><span class="Pagination-text">1</span></a><a class="Pagination-element" href="#"><span class="Pagination-text">2</span></a><a class="Pagination-element" href="#"><span class="Pagination-text">3</span></a><a class="Pagination-element Pagination-element_prev" href="#"><img src="assets/img/icons/nextPagination.svg" alt="nextPagination.svg"></a>#}
-{#            </div>#}
-{#          </div>#}
         </div>
       </div>
     </form>

@@ -302,11 +302,6 @@ margin-top: 0 !important;
     justify-content: space-around;
 }
 
-select:focus, select:hover, input:focus, input:hover,
-textarea:focus, textarea:hover{
-    outline: 1px solid #3cb878;
-}
-
 .Add-product {
     padding: 20px;
     justify-content: space-around;
@@ -525,22 +520,59 @@ textarea:focus, textarea:hover{
   top: 50%;
   width: 34px;
   height: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M40.2 13c-4 5.5-7.2 10.3-7.2 10.5 0 .3 2.5.5 5.5.5H44v72h8V24h5.5c3 0 5.5-.3 5.5-.6C63 22.4 48.8 3 48.1 3c-.4 0-4 4.5-7.9 10z' fill='%230063d1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
 }
 
 .footer__checkbox input:checked + span::after{
   display: block;
+background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M40.2 13c-4 5.5-7.2 10.3-7.2 10.5 0 .3 2.5.5 5.5.5H44v72h8V24h5.5c3 0 5.5-.3 5.5-.6C63 22.4 48.8 3 48.1 3c-.4 0-4 4.5-7.9 10z' fill='%230063d1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
   transform: rotate(180deg);
 }
 
-.footer__checkbox input:focus + span::after{
+.footer__checkbox input + span::after{
   background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M40.2 13c-4 5.5-7.2 10.3-7.2 10.5 0 .3 2.5.5 5.5.5H44v72h8V24h5.5c3 0 5.5-.3 5.5-.6C63 22.4 48.8 3 48.1 3c-.4 0-4 4.5-7.9 10z' fill='%230063d1'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: left center;
   background-size: contain;
   display: block;
 }
+
+.footer__checkbox input:target + span::after{
+  display: none;
+}
+}
+
+#id_page:focus,
+#id_page:active,
+#id_page:hover,
 #id_tags:focus,
 #id_tags:active,
 #id_tags:hover {
-    outline: none;
+    outline: none !important;
 }
+#btn_page {
+    padding:0;
+    margin: 0;
+    border: none;
+    border-radius:0;
+    background-color: transparent;
+}
+
+#id_page {
+    border: none;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.Cards-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    }

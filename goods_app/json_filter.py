@@ -1,41 +1,68 @@
 from decimal import Decimal
-from typing import Dict
 
+from django.core.exceptions import FieldError
+from django.core.paginator import Paginator
 from django.db.models import QuerySet, Count
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.generic import ListView
 from taggit.models import Tag
 
 from stores_app.models import SellerProduct, Seller
 
 
-class CatalogView(ListView):
+CATALOG_PAGE_SIZE = 12
+
+
+class DefSortType:
     """
-    Базовое View для фильтрации продуктов с помощью ProductFilterView или JsonFilterStoreView
+    Класс для определения последнего выбранного типа сортировки
     """
+
+    def __init__(self):
+        self._previous = []
+        self._sort_type = None
+        self._pre_result = None
+
+    def define_sort_type(self, sort_list):
+        self._previous.append(sort_list)
+        if len(self._previous) >= 2:
+            self._previous = self._previous[-2:]
+            set1 = (*self._previous[0], )
+            set2 = (*self._previous[1], )
+            self._pre_result = set.difference(set(set2), set(set1))
+        elif len(self._previous) == 1:
+            self._pre_result = self._previous[0]
+        try:
+            self._sort_type = list(self._pre_result)[0]
+        except IndexError:
+            pass
+
+    @property
+    def get_sort_type(self):
+        return self._sort_type
+
+
+Type_sorting = DefSortType()
+
+
+class JsonFilterStore(ListView):
     model = SellerProduct
     context_object_name = 'products'
     template_name = 'goods_app/test-catalog.html'
 
-    def get_queryset(self) -> QuerySet:
-        return SellerProduct.objects.select_related('product', 'discount', 'seller')\
-                                        .prefetch_related('product__category').all()
-
-    def get_context_data(self, *args, **kwargs) -> Dict:
-        context = super().get_context_data(*args, **kwargs)
-        context['sellers'] = Seller.objects.all()
-        context['tags'] = Tag.objects.all()
-        return context
-
-
-class JsonFilterStore(ListView):
     """
-    Фильтр с использованием jquery, ajax и hogan для частичного обновления страницы.
+    Фильтр с использованием jquery, ajax и hogan c частичным обновлением страницы.
     """
     def get_queryset(self) -> QuerySet:
-        price = self.request.GET.get('price').split(';')
-        price_min = Decimal(price[0])
-        price_max = Decimal(price[1])
+        try:
+            price = self.request.GET.get('price').split(';')
+            price_min = Decimal(price[0])
+            price_max = Decimal(price[1])
+        except AttributeError:
+            category = self.request.GET.get('category')
+            return SellerProduct.objects.select_related('product', 'discount', 'seller') \
+                .prefetch_related('product__category').all()
         if self.request.GET.get('in_stock') == 'on':
             stock = 1
         else:
@@ -58,23 +85,60 @@ class JsonFilterStore(ListView):
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
-        sort_type = self.sort_type(['price_after_discount', 'product__product_comments__count', 'date_added'])
-        if sort_type:
-            if int(sort_type[1]) == 0:
-                queryset = queryset.order_by(str(sort_type[0]))
-            else:
-                queryset = queryset.order_by('-' + str(sort_type[0]))
-        queryset = queryset.values('id', 'product__category', 'product__name',
-                                   'product__category__name', 'product__slug',
-                                   'discount__percent', 'discount__amount','price',
-                                   'price_after_discount', 'product__product_comments__count', 'date_added')
-        return JsonResponse({'products': list(queryset)}, safe=False)
 
-    def sort_type(self, params):
+        base_list = self.sort_list(['price_after_discount', 'product__product_comments__count', 'date_added'])
+        if base_list:
+            Type_sorting.define_sort_type(base_list)
+            queryset = queryset.order_by(str(Type_sorting.get_sort_type))
+        try:
+            queryset = queryset.values('id', 'product__category', 'product__name',
+                                       'product__category__name', 'product__slug',
+                                       'discount__percent', 'discount__amount', 'price',
+                                       'price_after_discount', 'product__product_comments__count', 'date_added')
+        except FieldError:
+            context = dict()
+            context['sellers'] = Seller.objects.all()
+            context['tags'] = Tag.objects.all()
+            paginator = Paginator(queryset, per_page=CATALOG_PAGE_SIZE)
+            page_number = request.GET.get('page', "")
+            if page_number == "":
+                page_number = 1
+            page_obj = paginator.get_page(page_number)
+            context['products'] = page_obj.object_list
+            context['has_previous'] = page_obj.has_previous()
+            context['previous_page_number'] = page_obj.number - 1
+            context['num_pages'] = page_obj.paginator.num_pages
+            context['number'] = page_obj.number
+            context['has_next'] = page_obj.has_next()
+            context['next_page_number'] = page_obj.number + 1
+            return render(request, 'goods_app/test-catalog.html', context=context)
+        paginator = Paginator(queryset, per_page=CATALOG_PAGE_SIZE)
+        page_number = request.GET.get('page', "")
+        if page_number == "":
+            page_number = 1
+        page_obj = paginator.get_page(page_number)
+        return JsonResponse({'products': list(page_obj.object_list),
+                             'has_previous': None if page_obj.has_previous() is False else "previous",
+                             'previous_page_number': page_obj.number - 1,
+                             'num_pages': page_obj.paginator.num_pages,
+                             'number': page_obj.number,
+                             'has_next':  None if page_obj.has_next() is False else "next",
+                             'next_page_number': page_obj.number + 1}, safe=False)
+
+    def sort_list(self, params):
+        """Форирование списка полей, по которым производится соритровка"""
+        list_order = []
         for item in params:
             try:
                 value = int(self.request.GET.get(str(item)))
-                return (item, value)
+                if value == 0:
+                    list_order.append("".join(['-', str(item)]))
+                else:
+                    list_order.append(str(item))
             except ValueError:
                 pass
-        return False
+            except TypeError:
+                pass
+        return list_order
+
+

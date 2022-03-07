@@ -47,7 +47,7 @@ function render(data, render_data) {
 
     let template = Hogan.compile(render_data);
     let output = template.render(data);
-
+    console.log(data)
     const div = document.querySelector('.product_js');
     div.innerHTML = output;
 }
@@ -58,13 +58,13 @@ form_filter.addEventListener('submit', function(e) {
     e.preventDefault();
     let url = this.action;
     let params = new URLSearchParams(new FormData(this)).toString();
-    console.log(params)
     ajaxSend(url, params, html_filter);
 });
 
 let html_filter = '\
+<div class="Cards-wrap">\
 {{#products}}\
-<div class="Card"><a class="Card-picture" href="#"><img src="/uploads/{{ prodict__image }}" alt="card.jpg"></a>\
+<div class="Card"><a class="Card-picture" href="#"><img src="/uploads/{{ product__image }}" alt="card.jpg"></a>\
   <div class="Card-content">\
     <strong class="Card-title"><a href="/product-detail/{{ product__slug }}/">{{ product__name }}</a>\
     </strong>\
@@ -86,8 +86,21 @@ let html_filter = '\
       {{/discount__amount }}\
   </div>\
 </div>\
-{{/products}}'
-
+{{/products}}\
+</div>\
+<button id="btn_page" class="btn btn_default btn_sm">\
+<select id="id_page" name="page" multiple>\
+{{#has_previous }}\
+<option class="btn btn_default btn_sm" name="page" value="1">1</option>\
+<option class="btn btn_default btn_sm" name="page" value="{{previous_page_number}}"><<</option>\
+{{/has_previous }}\
+<option class="btn btn_default btn_sm" name="page" value="{{number}}" selected>{{number}}</option>\
+{{#has_next }}\
+<option class="btn btn_default btn_sm" name="page" value="{{next_page_number}}">>></option>\
+<option class="btn btn_default btn_sm" name="page" value="{{num_pages}}">{{num_pages}}</option>\
+{{/has_next }}\
+</select>\
+</button>'
 
 const forms = document.querySelector('form[name=category-filter]');
 forms.addEventListener('submit', function (e) {
