@@ -11,10 +11,9 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from goods_app.models import Product
 from profiles_app.services import reset_phone_format
-from stores_app.forms import AddStoreForm, EditStoreForm, AddSellerProductForm, EditSellerProductForm, \
-    AddRequestNewProduct
+from stores_app.forms import AddStoreForm, EditStoreForm, \
+    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
 from stores_app.services import StoreServiceMixin
 

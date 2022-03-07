@@ -99,7 +99,7 @@
                   <button class="btn btn_default btn_sm" style="padding:0; margin: 0; border: none; border-radius:0; background-color: transparent;">
                 <select name="tag" id="id_tags" multiple style="border: none; padding: 0; overflow-y: auto;">
               {% for tag in tags %}
-                <option class="btn btn_default btn_sm" name="tag" value="{{ tag.name }}" >
+                <option class="btn btn_default btn_sm" name="tag" value="{{ tag.name }}">
                     {{ tag }}</option>
               {% endfor %}
                 </select>
@@ -187,44 +187,48 @@
             </div>
           </div>
           <div class="Cards product_js">
-              <div class="Cards-wrap">
+            <div class="Cards-wrap">
               {% for item in products %}
-            <div class="Card"><a class="Card-picture" href="{{ item.product.get_absolute_url }}"><img src="{{ MEDIA_URL }}/uploads/{{ item.product.image }}" alt="card.jpg"></a>
-              <div class="Card-content">
-                <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
-                </strong>
-                <div class="Card-description">
-                  <div class="Card-cost"><span class="Card-priceOld">{{ item.price }}</span><span class="Card-price">{{ item.price_after_discount }}</span>
-                  </div>
-                  <div class="Card-category">{{ item.product.category }}
-                  </div>
-                  <div class="Card-hover"><a class="Card-btn" href="{{ item.product.get_absolute_url }}"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"></a><a class="Card-btn" href="{% url 'orders-polls:cart_add' item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"></a><a class="Card-btn" href="{% url 'orders-polls:add-to-compare' item.id %}"><img src="{%  static  'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+              <div class="Card"><a class="Card-picture" href="{{ item.product.get_absolute_url }}"><img src="{{ MEDIA_ROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"></a>
+                <div class="Card-content">
+                  <strong class="Card-title">
+                      <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+                  </strong>
+                  <div class="Card-description">
+                    <div class="Card-cost">
+                        <span class="Card-priceOld">{{ item.price }}</span>
+                        <span class="Card-price">{{ item.price_after_discount }}</span>
+                    </div>
+                    <div class="Card-category">{{ item.product.category }}
+                    </div>
+                    <div class="Card-hover">
+                        <a class="Card-btn" href="{{ item.product.get_absolute_url }}"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:cart_add' item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' item.id %}"><img src="{%  static  'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+                    </div>
                   </div>
                 </div>
-              </div>
                 {% if item.discount.percent %}
-              <div class="Card-sale">-{{ item.discount.percent }}%
-              </div>
+                <div class="Card-sale">-{{ item.discount.percent }}%</div>
                 {% else %}
-              <div class="Card-sale">Hot deal
+                <div class="Card-sale">Hot deal</div>
+                {% endif %}
               </div>
-                {% endif %}
+              {% endfor %}
             </div>
-           {% endfor %}
-                  </div>
-                <button id="btn_page" class="btn btn_default btn_sm">
-                <select id="id_page" name="page" multiple>
-                {% if has_previous %}
-                <option class="btn btn_default btn_sm" name="page" value="1">1</option>
-                <option class="btn btn_default btn_sm" name="page" value={{previous_page_number}}><<</option>
-                {% endif %}
-                <option class="btn btn_default btn_sm pagination" name="page" value={{number}} selected>{{number}}</option>
-                {% if has_next %}
-                <option class="btn btn_default btn_sm" name="page" value={{next_page_number}}>>></option>
-                <option class="btn btn_default btn_sm" name="page" value={{num_pages}}>{{num_pages}}</option>
-                {% endif %}
-                </select>
-                </button>
+            <button id="btn_page" class="btn btn_default btn_sm">
+            <select id="id_page" name="page" multiple>
+            {% if has_previous %}
+            <option class="btn btn_default btn_sm" name="page" value="1">1</option>
+            <option class="btn btn_default btn_sm" name="page" value={{previous_page_number}}><<</option>
+            {% endif %}
+            <option class="btn btn_default btn_sm pagination" name="page" value={{number}} selected>{{number}}</option>
+            {% if has_next %}
+            <option class="btn btn_default btn_sm" name="page" value={{next_page_number}}>>></option>
+            <option class="btn btn_default btn_sm" name="page" value={{num_pages}}>{{num_pages}}</option>
+            {% endif %}
+            </select>
+            </button>
           </div>
         </div>
       </div>

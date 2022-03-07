@@ -11,7 +11,7 @@ from taggit.models import Tag
 
 from stores_app.models import SellerProduct, Seller
 
-CATALOG_PAGE_SIZE = 12
+CATALOG_PAGE_SIZE = 6
 BASE_SORT_LIST = [
     'price_after_discount',
     'product__product_comments__count',
@@ -134,7 +134,7 @@ class JsonFilterStore(ListView):
                              'next_page_number': page_obj.number + 1}, safe=False)
 
     def _sort_list(self, params: List) -> List:
-        """Форирование списка полей, по которым производится соритровка"""
+        """Формирование списка полей, по которым производится сортировка"""
         list_order = []
         for item in params:
             try:
