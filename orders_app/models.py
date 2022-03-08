@@ -64,7 +64,8 @@ class Order(models.Model):
     @property
     def total_discounted_sum(self) -> Decimal:
         """Метод получения общей стоимости товаров в заказе со скидками"""
-        total = self.order_products.aggregate(total=Sum(F('final_price') * F('quantity')))['total']
+        total = self.order_products.aggregate(
+            total=Sum(F('final_price') * F('quantity')))['total']
         if not total:
             total = 0
         return total
@@ -78,10 +79,20 @@ class OrderProduct(models.Model):
     """
     Модель товара в заказе
     """
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_products')
-    seller_product = models.ForeignKey(SellerProduct, on_delete=models.CASCADE, related_name='order_products')
-    final_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Guess discount price'))
-    quantity = models.IntegerField(null=True, default=1, verbose_name=_('quantity'))
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='order_products'
+    )
+    seller_product = models.ForeignKey(
+        SellerProduct,
+        on_delete=models.CASCADE,
+        related_name='order_products'
+    )
+    final_price = models.DecimalField(max_digits=10, decimal_places=2,
+                                      verbose_name=_('Guess discount price'))
+    quantity = models.IntegerField(null=True, default=1,
+                                   verbose_name=_('quantity'))
 
     @property
     def position_price(self):
@@ -89,8 +100,3 @@ class OrderProduct(models.Model):
         # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
         # Пока цена магазина. Название метода получения цкны со скидкой пока условное
         return self.seller_product.price
-
-
-class CompareProductStorage(models.Model):
-    user = ForeignKey(User, on_delete=models.CASCADE)
-    product = ForeignKey(SellerProduct, on_delete=models.CASCADE, related_name='compare_storage')

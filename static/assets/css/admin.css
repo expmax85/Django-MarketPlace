@@ -23,3 +23,19 @@ input[type=submit] {
 .object-tools a:link, .object-tools a:visited {
     background-color: green !important;
 }
+
+.block-cache {
+    padding: 30px 10px;
+}
+
+.label-cache-btn {
+    margin-right: 30px;
+}
+
+.clear-cache{
+    font-size: 12px;
+}
+
+.block-major {
+    margin: 30px 0;
+}

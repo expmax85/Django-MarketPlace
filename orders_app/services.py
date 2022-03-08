@@ -1,10 +1,8 @@
 from decimal import Decimal
 from typing import List, Optional, Union
-
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from orders_app.models import Order, OrderProduct
-from goods_app.models import Product
 from orders_app.anonimcart import AnonymCart
 from stores_app.models import SellerProduct
 
@@ -29,10 +27,11 @@ class CartService:
             self.cart, _ = Order.objects.get_or_create(defaults={'customer': request.user},
                                                        customer=request.user,
                                                        in_order=False)
+
         else:
             self.cart = AnonymCart(request)
 
-    def add_to_cart(self, product_id: int) -> None:
+    def add_to_cart(self, product_id: int, update_quantity=False) -> None:
         """
         добавить товар в корзину
 
@@ -41,10 +40,22 @@ class CartService:
         """
         product = get_object_or_404(SellerProduct, id=product_id)
         if isinstance(self.cart, Order):
-            OrderProduct.objects.create(order=self.cart,
-                                        seller_product=product,
-                                        quantity=1,
-                                        final_price=product.price_after_discount)
+            cart_products = self.cart.order_products.select_related('seller_product')
+
+            for cart_product in cart_products:
+                if product.id == cart_product.seller_product.id:
+                    if update_quantity:
+                        cart_product.quantity = 1
+                    else:
+                        cart_product.quantity += 1
+                    cart_product.save()
+                    self.cart.save()
+                    break
+            else:
+                OrderProduct.objects.create(order=self.cart,
+                                            seller_product=product,
+                                            quantity=1,
+                                            final_price=product.price_after_discount)
         else:
             self.cart.add(product)
 
@@ -92,15 +103,40 @@ class CartService:
         else:
             self.cart.remove(product)
 
-    @classmethod
-    def change_quantity(cls, request: HttpRequest, quantity: int) -> None:
+    def change_quantity(self, product, quantity: int, update_quantity=False) -> None:
         """
         изменить количество товара в корзине
 
         quantity: новое количество
         """
+        if isinstance(self.cart, Order):
+            # TODO Доработать
+            try:
+                cart_products = OrderProduct.objects.filter(order=self.cart, seller_product=product).all()
+                cart_product = cart_products[0]
+                if update_quantity:
+                    cart_product.quantity = quantity
+                else:
+                    cart_product.quantity += quantity
+            except IndexError:
+                cart_product = OrderProduct(order=self.cart,
+                                            seller_product=product,
+                                            quantity=quantity,
+                                            final_price=product.price_after_discount)
+            cart_product.save()
+            self.cart.save()
+        else:
+            self.cart.add(product, quantity, update_quantity=update_quantity)
 
-        pass
+    def update_product(self, product: SellerProduct, quantity: int, product_id: int) -> None:
+        """
+        изменить количество товара в корзине и заменить продавца
+
+        quantity: новое количество
+        """
+
+        self.change_quantity(product, quantity)
+        self.remove_from_cart(product_id)
 
     def get_goods(self) -> Union[OrderProduct, AnonymCart]:
         """получить товары из корзины"""
@@ -124,6 +160,12 @@ class CartService:
             return self.cart.total_discounted_sum
         return self.cart.total_discounted_sum()
 
+    def merge_carts(self, other):
+        """Перенос анонимной корзины в корзину зарешистрированного"""
+        for item in other.get_goods():
+            self.change_quantity(item['seller_product'], item['quantity'])
+        other.clear()
+
     def clear(self) -> None:
         """очистить корзину"""
         return self.cart.clear()
@@ -131,18 +173,3 @@ class CartService:
     def __len__(self):
         """получить общее количество товаров в корзине"""
         return len(self.cart)
-
-
-class ViewedGoodsService:
-    """
-    Сервис просмотренных товаров
-
-    add_to_list: добавляет товар в список сравнения
-    add_to_cart: добавляет товар в корзину
-    """
-
-    @classmethod
-    def add_to_list(cls, request: HttpRequest) -> None:
-        """добавить товар в список сравнения"""
-
-        pass

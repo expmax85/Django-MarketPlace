@@ -38,22 +38,22 @@
             <div class="Section-columnContent">
               <ul class="menu menu_vt Order-navigate">
                 <li class="menu-item">
-                    <a class="menu-link" href="#step1">
+                    <a class="menu-link" href="{% url 'orders:order_step_one' %}">
                         {% trans 'Step 1. User requisites' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#">
+                    <a class="menu-link" href="{% url 'orders:order_step_two' %}">
                         {% trans 'Step 2. Way of delivery' %}
                     </a>
                 </li>
                 <li class="menu-item_ACTIVE menu-item">
-                    <a class="menu-link" href="#step3">
+                    <a class="menu-link" href="{% url 'orders:order_step_three' %}">
                         {% trans 'Step 3. Payment method' %}
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#step4">
+                    <a class="menu-link" href="{% url 'orders:order_step_four' %}">
                         {% trans 'Step 4. Order confirmation' %}
                     </a>
                 </li>
@@ -69,25 +69,12 @@
                 </h2>
               </header>
                   <div class="form-group">
-{#                    <div>#}
-{#                      <label class="toggle">#}
-{#                        <input type="radio" name="delivery" value="ordinary" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>#}
-{#                      </label>#}
-{#                    </div>#}
-{#                    <div>#}
-{#                      <label class="toggle">#}
-{#                        <input type="radio" name="delivery" value="express"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>#}
-{#                      </label>#}
-{#                    </div>#}
-                    <div>
-                        {{ form.payment_method }}
-                    </div>
+                      {{ form.payment_method }}
                   </div>
               <div class="Order-footer">
-{#                  <a class="btn btn_success Order-next" href="#">Дальше</a>#}
-                  {% csrf_token %}
-                  <input type="submit" class="btn btn_success Order-next" value="Next">
+                <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Next' %}</button>
               </div>
+              {% csrf_token %}
             </div>
           </form>
         </div>

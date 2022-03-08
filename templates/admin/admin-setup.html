@@ -1,0 +1,40 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Site settings' %}{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" href="{% static 'assets/css/basic.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/admin.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo;
+        <a href="{% url 'admin-setup' %}">{% trans 'Settnigs' %}</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="fieldsets">
+        <fieldset class="module">
+            <div class="block-major">
+                <div class="form-row">
+                    <span>Shipping price: {{ global_preferences.general__shipping_price }}</span>
+                </div>
+            </div>
+            <div>
+                <header>
+                    <h2>{% trans 'Cache Control'%}</h2>
+                </header>
+                <div class="block-cache">
+                    <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'clear-cache' %}">{% trans 'Clear cache' %}</a>
+                </div>
+                                <div class="block-cache">
+                    <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'clear-cache' %}">{% trans 'Clear cache' %}</a>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}

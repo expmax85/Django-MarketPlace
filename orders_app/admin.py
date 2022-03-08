@@ -1,14 +1,11 @@
 from django.contrib import admin
-from django.shortcuts import redirect
-from django.urls import path
-from django.utils.translation import gettext_lazy as _
-
 from orders_app.models import Order, OrderProduct
-from stores_app.models import SellerProduct
 
-#
-# @admin.register(Order)
-# class OrderAdmin(admin.ModelAdmin):
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'phone', 'email', 'payment_method',
+                    'in_order', 'paid', 'ordered')
 
 
 @admin.register(OrderProduct)

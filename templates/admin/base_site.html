@@ -1,6 +1,10 @@
 {% extends "admin:admin/base.html" %}
-{% load static %}
+{% load static i18n %}
 {% load admin_tools_menu_tags %}
+
+{% block extrahead %}
+    <link rel="shortcut icon" href="{% static 'assets/img/icons/favicon.ico' %}" />
+{% endblock %}
 {% block extrastyle %}
     {{ block.super }}
     {% if user.is_active and user.is_staff and not is_popup %}{% admin_tools_render_menu_css %}{% endif %}
@@ -22,6 +26,7 @@
 }
 </style>
 {% endblock %}
+
 {% block nav-global %}
     {{ block.super }}
     {% if user.is_active and user.is_staff and not is_popup %}{% admin_tools_render_menu %}{% endif %}

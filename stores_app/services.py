@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 
 from config.settings import MEDIA_ROOT
 from discounts_app.models import Discount
@@ -152,6 +152,11 @@ class StoreServiceMixin:
         path = os.path.normpath(os.path.join(MEDIA_ROOT, str(file)))
         if os.path.exists(path):
             os.remove(path)
+
+    def request_add_new_product(self, product, user):
+        product.is_published = False
+        product.user = user
+        product.save()
 
 
 def delete_IconFile(**kwargs) -> None:

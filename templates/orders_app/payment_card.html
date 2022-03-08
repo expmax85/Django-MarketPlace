@@ -55,18 +55,11 @@
               <div id="expiration-date" class="form-input Payment-bill" style="height: 50px;"></div>
               <input type="hidden" id="nonce" name="payment_method_nonce" value="">
               {% csrf_token %}
-{#              <input type="submit" value="Pay">#}
-{#                <label class="form-label">Номер счета#}
-{#              </label>#}
-{#              <input class="form-input Payment-bill" id="numero1" name="numero1" type="text" placeholder="9999 9999" data-mask="9999 9999" data-validate="require pay"/>#}
+
             </div>
-{#            <div class="form-group"><a class="btn btn_success Payment-generate" href="#">Сгенирировать случайный счет</a>#}
-{#            </div>#}
           </div>
-{#          <div class="Payment-pay"><a class="btn btn_primary" href="progressPayment.html">Оплатить</a>#}
-{#          </div>#}
           <div class="Payment-pay">
-              <input type="submit" value="Pay" class="btn btn_primary">
+              <button class="btn btn_primary" type="submit">{% trans 'Pay now' %}</button>
           </div>
         </form>
         <!—Подключаем клиента Braintree. -->

@@ -1,30 +1,53 @@
 from typing import List, Dict, Tuple, Any
 
+from django.db import reset_queries, connection, connections
 from django.http import HttpRequest
-from goods_app.models import ProductCategory
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet
-from goods_app.models import Product, ProductComment
+from django.db.models import Avg, QuerySet, Model
+from django.views.generic import DetailView
+
+from goods_app.models import ProductCategory, Product
+from goods_app.models import ProductComment
+from stores_app.models import SellerProduct
 
 
-def calculate_product_rating(product: 'Product') -> None:
-    rating = ProductComment.objects.only('rating').filter(product_id=product.id).aggregate(Avg('rating'))['rating__avg']
-    if rating:
-        product.rating = round(float(rating), 0)
-        product.save(update_fields=['rating'])
+class ProductMixin:
 
-# TODO сервис добавления комментариев к товару
-def create_comment(request: HttpRequest) -> None:
-    pass
+    def get_sellers(self, product):
+        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category')\
+                                    .filter(product=product)\
+                                    .order_by('price_after_discount')
 
-def get_reviews(product: 'Product'):
-    reviews_cache_key = 'reviews:{}'.format(product.id)
-    reviews = cache.get(reviews_cache_key)
-    if not reviews:
-        reviews = product.product_comments.all()
-        cache.set(reviews_cache_key, reviews, 120 * 60)
-    return reviews
+    def get_best_seller(self, product):
+        return self.get_sellers(product).first()
+
+    def get_specifications(self, product):
+        return product.specifications.all()
+
+    def calculate_product_rating(self,product) -> None:
+        rating = ProductComment.objects.only('rating')\
+                                       .filter(product_id=product.id)\
+                                       .aggregate(Avg('rating'))['rating__avg']
+        if rating:
+            product.rating = round(float(rating), 0)
+            product.save(update_fields=['rating'])
+
+    def get_reviews(self, product):
+        reviews_cache_key = 'reviews:{}'.format(product.id)
+        reviews = cache.get(reviews_cache_key)
+        if not reviews:
+            reviews = product.product_comments.all()
+            cache.set(reviews_cache_key, reviews, 120 * 60)
+        return reviews
+
+    def get_tags(self, product):
+        return product.tags.all()
+
+    def update_context(self, context, elements=[]):
+        for elem in elements:
+            context[str(elem)] = elem
+        return context
 
 
 def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Paginator:
