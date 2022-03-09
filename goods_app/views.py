@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
@@ -38,8 +38,8 @@ class ProductDetailView(ProductMixin, DetailView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-
-        reviews = self.get_reviews(product=context['product'])
+        context['product'] = self.get_object()
+        reviews = self.get_reviews(product=self.get_object())
         context['reviews_count'] = reviews.count
         context['comments'] = context_pagination(self.request, reviews)
         context['form'] = ReviewForm()
@@ -49,23 +49,77 @@ class ProductDetailView(ProductMixin, DetailView):
         context['tags'] = self.get_tags(context['product'])
         return context
 
-    def post(self, request: HttpRequest, slug: str) -> Callable:
-        form = ReviewForm(request.POST)
-        product = self.get_object()
-        if form.is_valid():
-            form.save()
-            self.calculate_product_rating(product)
-            return redirect(reverse('goods-polls:product-detail', kwargs={'slug': slug}))
-        context = dict()
-        context['product'] = product
-        reviews = self.get_reviews(product)
-        context['reviews_count'] = reviews.count
-        context['comments'] = context_pagination(self.request, reviews)
-        context['specifications'] = self.get_specifications(product)
-        context['sellers'] = self.get_sellers(product)
-        context['tags'] = self.get_tags(product)
-        context['form'] = form
-        return render(request, 'goods_app/product_detail.html', context=context)
+    # def post(self, request: HttpRequest, slug: str) -> Callable:
+    #     form = ReviewForm(request.POST)
+    #     product = self.get_object()
+    #     if form.is_valid():
+    #         form.save()
+    #         self.calculate_product_rating(product)
+    #         return redirect(reverse('goods-polls:product-detail', kwargs={'slug': slug}))
+    #     context = dict()
+    #     context['product'] = product
+    #     reviews = self.get_reviews(product)
+    #     context['reviews_count'] = reviews.count
+    #     context['comments'] = context_pagination(self.request, reviews)
+    #     context['specifications'] = self.get_specifications(product)
+    #     context['sellers'] = self.get_sellers(product)
+    #     context['tags'] = self.get_tags(product)
+    #     context['form'] = form
+    #     return render(request, 'goods_app/product_detail.html', context=context)
+
+
+def get_reviews(request):
+    if request.method == "GET":
+        slug = request.GET.get('slug')
+        page = request.GET.get('page')
+        product = Product.objects.get(slug=slug)
+        reviews = product.product_comments.all()
+        reviews = reviews.values('author', 'content', 'added')
+        paginator = Paginator(reviews, per_page=3)
+        page_obj = paginator.get_page(page)
+        empty_pages = None if page_obj.paginator.num_pages < 2 else "not_empty"
+        return JsonResponse({'comments': list(page_obj.object_list),
+                             'has_previous': None if page_obj.has_previous() is False
+                             else "previous",
+                             'previous_page_number': page_obj.number - 1,
+                             'num_pages': page_obj.paginator.num_pages,
+                             'number': page_obj.number,
+                             'has_next': None if page_obj.has_next() is False
+                             else "next",
+                             'next_page_number': page_obj.number + 1,
+                             'empty_pages': empty_pages,
+                             'slug': slug}, safe = False)
+
+
+def post_review(request):
+    product_id = request.POST.get('product')
+    slug = request.POST.get('slug')
+    product = Product.objects.get(id=product_id)
+    form = ReviewForm(request.POST)
+    print('ok')
+    if form.is_valid():
+        form.save()
+        fr = ProductMixin()
+        print('ok')
+        fr.calculate_product_rating(product=product)
+        reviews = product.product_comments.all()
+        reviews = reviews.values('author', 'content', 'added')
+        paginator = Paginator(reviews, per_page=3)
+        page_obj = paginator.get_page(paginator.num_pages)
+        empty_pages = None if page_obj.paginator.num_pages < 2 else "not_empty"
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        # return JsonResponse({'comments': list(page_obj.object_list),
+        #                      'has_previous': None if page_obj.has_previous() is False
+        #                      else "previous",
+        #                      'previous_page_number': page_obj.number - 1,
+        #                      'num_pages': page_obj.paginator.num_pages,
+        #                      'number': page_obj.number,
+        #                      'has_next': None if page_obj.has_next() is False
+        #                      else "next",
+        #                      'next_page_number': page_obj.number + 1,
+        #                      'empty_pages': empty_pages,
+        #                      'slug': slug}, status = 200)
+
 
 
 class CatalogByCategory(CatalogByCategoriesMixin, View):

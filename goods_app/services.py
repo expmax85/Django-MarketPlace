@@ -39,7 +39,7 @@ class ProductMixin:
         if not reviews:
             reviews = product.product_comments.all()
             cache.set(reviews_cache_key, reviews, 120 * 60)
-        return reviews
+        return product.product_comments.all()
 
     def get_tags(self, product):
         return product.tags.all()

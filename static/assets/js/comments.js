@@ -1,0 +1,98 @@
+// Филтр
+function ajaxSend(url, params, render_data, target) {
+    // Отправляем запрос
+    fetch(`${url}?${params}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then(response => response.json())
+        .then(json => render(json, render_data, target))
+        .catch(error => console.error(error))
+}
+
+function render(data, render_data, target) {
+    // Рендер шаблона
+
+    let template = Hogan.compile(render_data);
+    let month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    (data.comments).forEach(function(item){
+        let date = new Date(item.added)
+        item.added = month[date.getMonth()] + ' / ' + String(date.getDay()) + ' / ' + String(date.getFullYear()) + ' ' + String(date.getHours()) + ':' + String(date.getMinutes())
+    })
+    let output = template.render(data);
+    target.innerHTML = output;
+}
+
+const target = document.querySelector('.comments-js');
+const forms = document.querySelector('form[name=page-filter]');
+forms.addEventListener('click', function (e) {
+ // Получаем данные из формы
+ //    console.log('dfdf')
+ //    alert(2000)
+ e.preventDefault();
+ let url = this.action;
+ let params = new URLSearchParams(new FormData(this)).toString();
+ ajaxSend(url, params, html, target);
+});
+
+let html = '\
+<div class="Comments">\
+{{#comments}}\
+<div class="Comment">\
+    <div class="Comment-column Comment-column_pict">\
+      <div class="Comment-avatar"></div>\
+    </div>\
+    <div class="Comment-column">\
+      <header class="Comment-header">\
+        <div>\
+          <strong class="Comment-title">{{ author }}\
+          </strong><span class="Comment-date">{{ added }}</span>\
+        </div>\
+      </header>\
+      <div class="Comment-content">{{ content }}</div>\
+    </div>\
+</div>\
+{{/comments}}\
+</div>\
+<button type="Submit" id="btn_page" class="btn btn_default btn_sm">\
+    <input type="hidden" name="slug" value="{{ slug }}">\
+<select id="id_page" name="page" multiple>\
+{{#has_previous}}\
+<option class="btn btn_default btn_sm" value="1">1</option>\
+<option class="btn btn_default btn_sm" value="{{ previous_page_number }}">&laquo;</option>\
+{{/has_previous}}\
+<option class="btn btn_default btn_sm active" value="{{ number }}">{{ number }}</option>\
+{{#has_next }}\
+<option class="btn btn_default btn_sm" value="{{next_page_number }}"> &raquo;</option>\
+<option id="last_pages" class="btn btn_default btn_sm" value="{{ num_pages }}"> &raquo;&raquo;</option>\
+{{^has_next }}\
+<input id="last_pages" type="hidden" value="1">\
+\{{/has_next }}\
+</select>\
+  </button>'
+
+  //     $(document).ready(function () {
+  //     // отслеживаем событие отправки формы
+  //     $('#comment-form').submit(function () {
+  //         // создаем AJAX-вызов
+  //         $.ajax({
+  //             data: $(this).serialize(), // получаем данные формы
+  //             type: 'post', // GET или POST
+  //             url: "{% url 'goods-polls:post_review' %}",
+  //             // если успешно, то
+  //             success: function (response) {
+  //
+  //             },
+  //             // если ошибка, то
+  //             error: function (response) {
+  //                 // предупредим об ошибке
+  //                 alert(response.responseJSON.errors);
+  //                 console.log(response.responseJSON.errors)
+  //             }
+  //         });
+  //         return false;
+  //     });
+  // })
+
