@@ -104,6 +104,7 @@
                             {%endfor %}
                         {% endif %}
                     </div>
+              {% if stores %}
                     <div class="Account-group">
                         <div class="Account-column Account-column_full">
                             <header class="Section-header">
@@ -112,7 +113,7 @@
                             <div class="Cards Cards_account">
                               {% for item in seller_products %}
                               <div class="Card">
-                                  <a class="Card-picture" href="#"><img src="{{ MEDIA_URL }}/uploads/{{ item.product.image }}" alt="card.jpg"/></a>
+                                  <a class="Card-picture" href="#"><img src="{{ MEDIA_ROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"/></a>
                                   <div class="Card-content">
                                       <strong class="Card-title"><a href="#">{{ item.product.name }}</a>
                                       </strong>
@@ -178,6 +179,7 @@
                             {%endfor %}
                         {% endif %}
                     </div>
+                {% endif %}
               </div>
             </div>
         </div>

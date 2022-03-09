@@ -215,6 +215,7 @@ margin-top: 0 !important;
     display: block;
     width: 200px;
     margin-right: 0;
+    margin-bottom: 30px;
     position: relative;
     transition: border 0.3s ease;
 }
@@ -314,11 +315,11 @@ margin-top: 0 !important;
 .btn-reset {
     background-color: transparent;
     padding: 0;
-    margin-bottom: 0;
 }
 
 #Capa_1{
     padding-top: 20px;
+    margin-left: 15px;
     width: 85%;
 }
 
@@ -545,7 +546,6 @@ background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w
 
 .footer__checkbox input:target + span::after{
   display: none;
-}
 }
 
 #id_page:focus,
