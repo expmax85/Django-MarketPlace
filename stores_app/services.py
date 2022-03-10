@@ -31,7 +31,7 @@ class StoreServiceMixin:
     remove_store(request) - remove Seller instance with id=request.id=request
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
- ?? get_products(query params) - get products
+    get_products(query params) - get products
  ?? get_categories() - get all categories
  ?? get_discounts() - get all discounts
  ?? get_price_with_discount(price, discount) - Get the price with discount, if it had

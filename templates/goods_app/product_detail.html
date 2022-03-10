@@ -85,7 +85,11 @@
             </div>
           </div>
           <div class="Tabs Tabs_default">
-            <div class="Tabs-links"><a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a><a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a><a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a><a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} ({{ reviews_count|default_if_none:"0" }})</span></a>
+            <div class="Tabs-links">
+                <a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a>
+                <a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a>
+                <a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a>
+                <a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} (<span id="id_count_reviews">{{ reviews_count|default_if_none:"0" }}</span>)</span></a>
             </div>
             <div class="Tabs-wrap">
               <div class="Tabs-block" id="description" style="display: none;">
@@ -175,7 +179,7 @@
               <div class="Tabs-block" id="reviews" style="">
               {% if comments %}
                 <header class="Section-header">
-                  <h3 class="Section-title">{{ reviews_count|default_if_none:"0" }} {% trans 'Review(s)' %}
+                  <h3 class="Section-title"><span id="id_count_reviews">{{ reviews_count|default_if_none:"0" }}</span>{% trans 'Review(s)' %}
                   </h3>
                 </header>
               {% endif %}
@@ -201,7 +205,7 @@
                   </div>
                   {% endfor %}
                     </div>
-
+                  {% if comments.paginator.num_pages > 2%}
                     <button type="Submit" id="btn_page" class="btn btn_default btn_sm">
                         <input type="hidden" name="slug" value="{{ product.slug }}">
                     <select id="id_page" name="page" multiple>
@@ -212,11 +216,11 @@
                         <option class="btn btn_default btn_sm" class="active" value="{{ comments.number }}">{{ comments.number }}</option>
                         {% if comments.has_next %}
                         <option class="btn btn_default btn_sm" value="{{comments.next_page_number }}"> &raquo;</option>
-                        <option id="last_pages" class="btn btn_default btn_sm" value="{{ comments.paginator.num_pages }}"> &raquo;&raquo;</option>
+                        <option class="btn btn_default btn_sm" value="{{ comments.paginator.num_pages }}"> &raquo;&raquo;</option>
                         {% endif %}
                     </select>
                       </button>
-
+                  {% endif %}
                 </div>
               </form>
                 <header class="Section-header Section-header_product">
@@ -286,35 +290,31 @@
     <script src="{% static 'assets/js/comments.js' %}"></script>
     <script>
       $(document).ready(function () {
-          let slug = document.getElementById('id_slug_post')
-          let last_page = document.getElementById('last_pages')
-          console.log('asdasdasdasd', last_page)
-          let param = slug.value;
-          let page = last_page.value
       // отслеживаем событие отправки формы
-      $('#comment-form').submit(function () {
-          // создаем AJAX-вызов
-          $.ajax({
-              data: $(this).serialize(), // получаем данные формы
-              type: 'post', // GET или POST
-              url: "{% url 'goods-polls:post_review' %}",
-              // если успешно, то
-              success: function (response) {
-                 {#let url = '{% url 'goods-polls:get_reviews' %}';#}
-                 {##}
-                 {#let params = 'slug='+ param.toString() + '&page=';#}
-                 {#ajaxSend(url, params, html, target);#}
-              },
-
-              // если ошибка, то
-              error: function (response) {
-                  // предупредим об ошибке
-                  alert(response.responseJSON.errors);
-                  console.log(response.responseJSON.errors)
-              }
+          $('#comment-form').submit(function () {
+              // создаем AJAX-вызов
+              $.ajax({
+                  data: $(this).serialize(), // получаем данные формы
+                  type: 'post', // GET или POST
+                  url: "{% url 'goods-polls:post_review' %}",
+                  // если успешно, то
+                  success: function (response) {
+                     let url = '{% url 'goods-polls:get_reviews' %}';
+                     let page = response['num_pages']
+                     let slug = response['slug']
+                     let params = 'slug='+ slug.toString() + '&page=' + page.toString();
+                     $('#comment-form').trigger('reset');
+                     ajaxSend(url, params, html, target);
+                  },
+                  // если ошибка, то
+                  error: function (response) {
+                      // предупредим об ошибке
+                      alert(response.responseJSON.errors);
+                      console.log(response.responseJSON.errors)
+                  }
+              });
+              return false;
           });
-          return false;
-      });
-  })
+      })
     </script>
 {% endblock %}

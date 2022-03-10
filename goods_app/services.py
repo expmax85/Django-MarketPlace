@@ -1,53 +1,74 @@
+import random
 from typing import List, Dict, Tuple, Any
 
-from django.db import reset_queries, connection, connections
 from django.http import HttpRequest
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet, Model
-from django.views.generic import DetailView
+from django.db.models import Avg, QuerySet
 
-from goods_app.models import ProductCategory, Product
-from goods_app.models import ProductComment
+from goods_app.models import ProductCategory, ProductComment, Product
 from stores_app.models import SellerProduct
+
+
+class CurrentProduct:
+
+    def __init__(self, **kwargs):
+        if 'slug' in kwargs:
+            self.product = Product.objects.get(slug=kwargs['slug'])
+        elif 'instance' in kwargs:
+            self.product = kwargs['product']
+        else:
+            raise ValueError
+
+    @property
+    def get_product(self):
+        return self.product
+
+    @property
+    def get_sellers(self) -> QuerySet:
+        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category') \
+            .filter(product=self.product) \
+            .order_by('price_after_discount')
+
+    @property
+    def get_best_seller(self) -> QuerySet:
+        return self.get_sellers.first()
+
+    @property
+    def get_specifications(self) -> QuerySet:
+        return self.product.specifications.all()
+
+    @property
+    def get_tags(self) -> QuerySet:
+        return self.product.tags.all()
+
+    @property
+    def get_reviews(self) -> QuerySet:
+        reviews_cache_key = 'reviews:{}'.format(self.product.id)
+        reviews = cache.get(reviews_cache_key)
+        if not reviews:
+            reviews = self.product.product_comments.all()
+            cache.set(reviews_cache_key, reviews, 60)
+        return reviews
+
+    def calculate_product_rating(self) -> None:
+        rating = ProductComment.objects.only('rating') \
+            .filter(product_id=self.product.id) \
+            .aggregate(Avg('rating'))['rating__avg']
+        if rating:
+            self.product.rating = round(float(rating), 0)
+            self.product.save(update_fields=['rating'])
 
 
 class ProductMixin:
 
-    def get_sellers(self, product):
-        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category')\
-                                    .filter(product=product)\
-                                    .order_by('price_after_discount')
+    @classmethod
+    def get_seller_products(cls, *kwargs) -> QuerySet:
+        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
 
-    def get_best_seller(self, product):
-        return self.get_sellers(product).first()
-
-    def get_specifications(self, product):
-        return product.specifications.all()
-
-    def calculate_product_rating(self,product) -> None:
-        rating = ProductComment.objects.only('rating')\
-                                       .filter(product_id=product.id)\
-                                       .aggregate(Avg('rating'))['rating__avg']
-        if rating:
-            product.rating = round(float(rating), 0)
-            product.save(update_fields=['rating'])
-
-    def get_reviews(self, product):
-        reviews_cache_key = 'reviews:{}'.format(product.id)
-        reviews = cache.get(reviews_cache_key)
-        if not reviews:
-            reviews = product.product_comments.all()
-            cache.set(reviews_cache_key, reviews, 120 * 60)
-        return product.product_comments.all()
-
-    def get_tags(self, product):
-        return product.tags.all()
-
-    def update_context(self, context, elements=[]):
-        for elem in elements:
-            context[str(elem)] = elem
-        return context
+    @classmethod
+    def get_special_offer(cls, products: QuerySet) -> QuerySet:
+        return random.choice(list(products))
 
 
 def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Paginator:
