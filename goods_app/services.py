@@ -16,7 +16,7 @@ class CurrentProduct:
         if 'slug' in kwargs:
             self.product = Product.objects.get(slug=kwargs['slug'])
         elif 'instance' in kwargs:
-            self.product = kwargs['product']
+            self.product = kwargs['instance']
         else:
             raise ValueError
 

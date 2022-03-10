@@ -77,7 +77,7 @@ class ProductComment(models.Model):
     author = models.CharField(verbose_name=_('author'), max_length=25, null=True)
     content = models.TextField(verbose_name=_('content'), max_length=255, null=True)
     added = models.DateTimeField(verbose_name=_('added'), auto_now_add=True, null=True)
-    rating = models.IntegerField(verbose_name=_('rating'), null=True, blank=True)
+    rating = models.IntegerField(verbose_name=_('rating'))
 
     def __str__(self):
         return f'Comments for {str(self.product)}'
