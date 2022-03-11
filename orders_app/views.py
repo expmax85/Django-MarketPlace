@@ -2,7 +2,6 @@ import json
 from typing import Dict
 
 import braintree
-from django.contrib.messages.storage import session
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.list import ListView

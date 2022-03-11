@@ -10,6 +10,9 @@ from goods_app.models import ProductCategory, ProductComment, Product
 from stores_app.models import SellerProduct
 
 
+COUNT_REVIEWS_PER_PAGE = 3
+
+
 class CurrentProduct:
 
     def __init__(self, **kwargs):
@@ -31,7 +34,7 @@ class CurrentProduct:
             .order_by('price_after_discount')
 
     @property
-    def get_best_seller(self) -> QuerySet:
+    def get_best_offer(self) -> QuerySet:
         return self.get_sellers.first()
 
     @property
@@ -51,6 +54,27 @@ class CurrentProduct:
             cache.set(reviews_cache_key, reviews, 60)
         return reviews
 
+    def get_review_page(self, queryset: QuerySet, page: int) -> Dict:
+        reviews_count = queryset.count()
+        reviews = queryset.values('author', 'content', 'added')
+        paginator = Paginator(reviews, per_page=COUNT_REVIEWS_PER_PAGE)
+        page_obj = paginator.get_page(page)
+        json_dict = {
+            'comments': list(page_obj.object_list),
+            'has_previous': None if page_obj.has_previous() is False
+            else "previous",
+            'previous_page_number': page_obj.number - 1,
+            'num_pages': page_obj.paginator.num_pages,
+            'number': page_obj.number,
+            'has_next': None if page_obj.has_next() is False
+            else "next",
+            'next_page_number': page_obj.number + 1,
+            'empty_pages': None if page_obj.paginator.num_pages < 2
+            else "not_empty",
+            'reviews_count': reviews_count
+        }
+        return json_dict
+
     def calculate_product_rating(self) -> None:
         rating = ProductComment.objects.only('rating') \
             .filter(product_id=self.product.id) \
@@ -58,6 +82,15 @@ class CurrentProduct:
         if rating:
             self.product.rating = round(float(rating), 0)
             self.product.save(update_fields=['rating'])
+
+    def get_context_data(self, *args):
+        context = dict()
+        for arg in args:
+            try:
+                context[str(arg)] = getattr(self, ''.join(['get_', str(arg)]))
+            except AttributeError as err:
+                raise AttributeError(err)
+        return context
 
 
 class ProductMixin:

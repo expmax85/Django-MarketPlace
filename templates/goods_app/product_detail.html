@@ -89,7 +89,7 @@
                 <a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a>
                 <a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a>
                 <a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a>
-                <a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} (<span id="id_count_reviews">{{ reviews_count|default_if_none:"0" }}</span>)</span></a>
+                <a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} (<span class="count_reviews">{{ reviews_count|default_if_none:"0" }}</span>)</span></a>
             </div>
             <div class="Tabs-wrap">
               <div class="Tabs-block" id="description" style="display: none;">
@@ -179,13 +179,14 @@
               <div class="Tabs-block" id="reviews" style="">
               {% if comments %}
                 <header class="Section-header">
-                  <h3 class="Section-title"><span id="id_count_reviews">{{ reviews_count|default_if_none:"0" }}</span>{% trans 'Review(s)' %}
+                  <h3 class="Section-title"><span class="count_reviews">{{ reviews_count|default_if_none:"0" }}</span>{% trans 'Review(s)' %}
                   </h3>
                 </header>
               {% endif %}
               <form class="form" name="page-filter" action="{% url 'goods-polls:get_reviews' %}" method="get">
                 <div class="Comments comments-js">
-                    <div id="comments" class="Comments">
+                  <div id="comments" class="Comments">
+                    <input type="hidden" name="slug" value="{{ product.slug }}">
                   {% for comment in comments %}
                   <div class="Comment">
                     <div class="Comment-column Comment-column_pict">
@@ -205,15 +206,14 @@
                   </div>
                   {% endfor %}
                     </div>
-                  {% if comments.paginator.num_pages > 2%}
+                  {% if comments.paginator.num_pages > 1 %}
                     <button type="Submit" id="btn_page" class="btn btn_default btn_sm">
-                        <input type="hidden" name="slug" value="{{ product.slug }}">
                     <select id="id_page" name="page" multiple>
                         {% if comments.has_previous %}
                         <option class="btn btn_default btn_sm" value="1">1</option>
                         <option class="btn btn_default btn_sm" value="{{ comments.previous_page_number }}">&laquo; </option>
                         {% endif %}
-                        <option class="btn btn_default btn_sm" class="active" value="{{ comments.number }}">{{ comments.number }}</option>
+                        <option class="btn btn_default btn_sm active" value="{{ comments.number }}">{{ comments.number }}</option>
                         {% if comments.has_next %}
                         <option class="btn btn_default btn_sm" value="{{comments.next_page_number }}"> &raquo;</option>
                         <option class="btn btn_default btn_sm" value="{{ comments.paginator.num_pages }}"> &raquo;&raquo;</option>
@@ -243,7 +243,7 @@
                     <div class="form-group">
                       <div class="row" style="margin-left: 0;">
                         <div class="row-block">
-                          <input class="form-input" id="author" name="author" type="text" placeholder="Name">
+                          <input class="form-input" id="author" name="author" type="text" placeholder="Name" required>
                             {{ form.errors.author }}
                         </div>
                         <div class="row-block">
@@ -263,14 +263,14 @@
                               <input id="star2" name="rating" value="2" type="radio"><label for="star2">☆</label>
                               <input id="star1" name="rating" value="1" type="radio"><label for="star1">☆</label>
                           </div>
-                          {{ form.errors.rating }}
                       </div>
                     </div>
                   </form>
-                    {% else %}
-                    <div>{% trans 'Please' %} <a href="{% url 'profiles-polls:login' %}">{% trans 'sign-in' %}</a> {% trans 'or' %} <a
-                            href="{% url 'profiles-polls:register' %}">{% trans 'registering' %}</a> {% trans 'for leave the comments on the site.' %}</div>
-                    {% endif %}
+                  <div class="send-product-request" id="rating_error" style="color: red; text-align: right;">{{rating_error}}</div>
+                  {% else %}
+                  <div>{% trans 'Please' %} <a href="{% url 'profiles-polls:login' %}">{% trans 'sign-in' %}</a> {% trans 'or' %} <a
+                          href="{% url 'profiles-polls:register' %}">{% trans 'registering' %}</a> {% trans 'for leave the comments on the site.' %}</div>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -299,12 +299,19 @@
                   url: "{% url 'goods-polls:post_review' %}",
                   // если успешно, то
                   success: function (response) {
+                     let error = document.querySelector('#rating_error')
                      let url = '{% url 'goods-polls:get_reviews' %}';
                      let page = response['num_pages']
                      let slug = response['slug']
                      let params = 'slug='+ slug.toString() + '&page=' + page.toString();
-                     $('#comment-form').trigger('reset');
-                     ajaxSend(url, params, html, target);
+                     if (response['rating_error'] === undefined) {
+                      $('#comment-form').trigger('reset');
+                      error.innerHTML = "";
+                      ajaxSend(url, params, html, target);
+                      } else {
+                      error.innerHTML = response['rating_error'];
+                      }
+
                   },
                   // если ошибка, то
                   error: function (response) {

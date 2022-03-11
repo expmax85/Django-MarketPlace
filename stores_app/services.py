@@ -6,10 +6,11 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete
 
 from config.settings import MEDIA_ROOT
 from discounts_app.models import Discount
+from orders_app.models import Order
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product, ProductCategory
 
@@ -143,6 +144,14 @@ class StoreServiceMixin:
     @classmethod
     def get_discounts(cls) -> QuerySet:
         return Discount.objects.all()
+
+    @classmethod
+    def get_last_order(cls, user: User):
+        return Order.objects.filter(customer=user).last()
+
+    @classmethod
+    def get_all_orders(cls, user):
+        return Order.objects.filter(customer=user)
 
     @classmethod
     def remove_old_file(cls, file: str) -> None:

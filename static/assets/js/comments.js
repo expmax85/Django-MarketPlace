@@ -22,7 +22,7 @@ function render(data, render_data, target) {
     })
     let output = template.render(data);
     target.innerHTML = output;
-    let get = document.querySelectorAll('#id_count_reviews')
+    let get = document.querySelectorAll('.count_reviews')
     get.forEach(function (item){
         item.innerHTML = data['reviews_count'].toString()
     })
@@ -40,6 +40,7 @@ forms.addEventListener('click', function (e) {
 
 let html = '\
 <div class="Comments">\
+<input type="hidden" name="slug" value="{{ slug }}">\
 {{#comments}}\
 <div class="Comment">\
     <div class="Comment-column Comment-column_pict">\
@@ -59,7 +60,6 @@ let html = '\
 </div>\
 {{#empty_pages}}\
 <button type="Submit" id="btn_page" class="btn btn_default btn_sm">\
-    <input type="hidden" name="slug" value="{{ slug }}">\
 <select id="id_page" name="page" multiple>\
 {{#has_previous}}\
 <option class="btn btn_default btn_sm" value="1">1</option>\

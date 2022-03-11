@@ -1,6 +1,9 @@
 from typing import Dict, Callable, Union
+
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
@@ -40,42 +43,22 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        product = CurrentProduct(instance=self.get_object())
-        context['product'] = product.get_product
+        product = CurrentProduct(instance=context['product'])
         reviews = product.get_reviews
         context['reviews_count'] = reviews.count()
         context['comments'] = context_pagination(self.request, reviews, size_page=COUNT_REVIEWS_PER_PAGE)
         context['form'] = ReviewForm()
-        context['specifications'] = product.get_specifications
-        context['sellers'] = product.get_sellers
-        context['best_offer'] = product.get_best_seller
-        context['tags'] = product.get_tags
+        context = {**context, **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags')}
         return context
 
 
 def get_reviews(request) -> JsonResponse:
-    if request.method == "GET":
-        slug = request.GET.get('slug')
-        page = request.GET.get('page')
-        product = CurrentProduct(slug=slug)
-        reviews = product.get_reviews
-        reviews_count = reviews.count()
-        reviews = reviews.values('author', 'content', 'added')
-        paginator = Paginator(reviews, per_page=COUNT_REVIEWS_PER_PAGE)
-        page_obj = paginator.get_page(page)
-        empty_pages = None if page_obj.paginator.num_pages < 2 else "not_empty"
-        return JsonResponse({'comments': list(page_obj.object_list),
-                             'has_previous': None if page_obj.has_previous() is False
-                             else "previous",
-                             'previous_page_number': page_obj.number - 1,
-                             'num_pages': page_obj.paginator.num_pages,
-                             'number': page_obj.number,
-                             'has_next': None if page_obj.has_next() is False
-                             else "next",
-                             'next_page_number': page_obj.number + 1,
-                             'empty_pages': empty_pages,
-                             'slug': slug,
-                             'reviews_count': reviews_count}, safe=False)
+    slug = request.GET.get('slug')
+    page = request.GET.get('page')
+    product = CurrentProduct(slug=slug)
+    reviews = product.get_reviews
+    return JsonResponse({**product.get_review_page(reviews, page),
+                         'slug': slug}, safe=False)
 
 
 def post_review(request) -> Union[JsonResponse, Callable]:
@@ -87,10 +70,13 @@ def post_review(request) -> Union[JsonResponse, Callable]:
         product.calculate_product_rating()
         reviews = product.get_reviews
         paginator = Paginator(reviews, per_page=COUNT_REVIEWS_PER_PAGE)
-        num_pages = paginator.num_pages
-        return JsonResponse({'num_pages': num_pages,
+        return JsonResponse({'num_pages': paginator.num_pages,
                              'slug': slug}, safe=False)
-    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    elif form.errors.get('rating'):
+        rating_error = _('You should to indicate the product rating')
+        return JsonResponse({'num_pages': 0, 'rating_error': rating_error,
+                             'slug': slug}, safe=False)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 class CatalogByCategory(CatalogByCategoriesMixin, View):

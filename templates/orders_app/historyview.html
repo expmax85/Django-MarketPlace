@@ -34,16 +34,18 @@
                 <div class="Section-columnContent">
                    <div class="NavigateProfile">
                         <ul class="menu menu_vt">
-                            <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:private-room' %}">{% trans 'Account info' %}</a>
-                            </li>
-                            <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
-                            </li>
-                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchase history' %}</a>
-                            </li>
-                            <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Viewed products' %}</a>
-                            </li>
-                            <li class="menu-item"><a class="menu-link" href="#">{% trans 'Sellers room' %}</a>
-                            </li>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:private-room' %}">{% trans 'Account info' %}</a>
+                          </li>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
+                          </li>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
+                          </li>
+                          <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Views history' %}</a>
+                          </li>
+                          {% if perms.profiles_app.Sellers %}
+                          <li class="menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
+                          </li>
+                          {% endif %}
                         </ul>
                    </div>
                 </div>
