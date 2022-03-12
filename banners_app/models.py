@@ -1,13 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from discounts_app.models import Discount
+from discounts_app.models import ProductDiscount
 
 
 class Banner(models.Model):
     """
     Модель баннера
     """
-    discount = models.OneToOneField(Discount, on_delete=models.CASCADE,
+    discount = models.OneToOneField(ProductDiscount, on_delete=models.CASCADE,
                                     null=True,
                                     related_name='discount_banner',
                                     verbose_name=_('discount_banner'))

@@ -15,9 +15,12 @@ from stores_app.models import SellerProduct
 class ProductMixin:
 
     def get_sellers(self, product):
-        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category')\
-                                    .filter(product=product)\
-                                    .order_by('price_after_discount')
+        # return SellerProduct.objects.select_related('seller', 'product', 'product__category')\
+        #                             .filter(product=product)\
+        #                             .order_by('price_after_discount')
+
+        return SellerProduct.objects.select_related('seller', 'product', 'product__category') \
+                                                    .filter(product=product)
 
     def get_best_seller(self, product):
         return self.get_sellers(product).first()

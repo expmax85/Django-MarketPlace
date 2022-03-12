@@ -120,7 +120,7 @@
               <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
               </strong>
               <div class="Card-description">
-                <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>
+                <div class="Card-cost"><span class="Card-priceOld">${{ item.price }}</span><span class="Card-price">${{ item.price_after_discount }}</span>
                 </div>
                 <div class="Card-category">{{ item.product.category }}
                 </div>
