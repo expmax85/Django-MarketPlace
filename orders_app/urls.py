@@ -32,5 +32,6 @@ urlpatterns = [
     path('compare/remove/<str:product_name>/', RemoveFromCompare.as_view(), name='remove-from-compare'),
     # эндпоинты истории заказов
     path('history/', HistoryOrderView.as_view(), name='history-order'),
-    path('history/<int:order_id>', HistoryOrderDetail.as_view(), name='history-order-detail')
+    path('history/<int:order_id>', HistoryOrderDetail.as_view(), name='history-order-detail'),
+    path('add_viewed/', add_viewed, name='add_viewed')
 ]
