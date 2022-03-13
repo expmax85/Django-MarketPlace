@@ -24,7 +24,7 @@
 			
 			// Time left
 			left = Math.floor((options.timestamp - (new Date())) / 1000);
-			
+
 			if(left < 0){
 				left = 0;
 			}

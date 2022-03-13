@@ -1,6 +1,5 @@
 from typing import Dict, Callable, Union
 
-from django.contrib import messages
 from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -12,13 +11,15 @@ from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
 from goods_app.services import CatalogByCategoriesMixin, ProductMixin, \
-    context_pagination, CurrentProduct
+    context_pagination, CurrentProduct, random_product
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from stores_app.models import SellerProduct
 
 
 COUNT_REVIEWS_PER_PAGE = 3
+TIME_UPDATE = '00:00'
+DAYS_DURATION = 1
 
 
 class IndexView(ProductMixin, ListView):
@@ -32,6 +33,10 @@ class IndexView(ProductMixin, ListView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
         context['banners'] = banner()
+        random_product.set_days_duration(days_duration=DAYS_DURATION)
+        random_product.set_time_update(time_update=TIME_UPDATE)
+        context['special_product'] = random_product.update_product()
+        context['update_time'] = random_product.get_end_time
         return context
 
 

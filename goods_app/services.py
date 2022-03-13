@@ -1,6 +1,8 @@
 import random
+import datetime as dt
 from typing import List, Dict, Tuple, Any
 
+from django.apps import apps
 from django.http import HttpRequest
 from django.core.cache import cache
 from django.core.paginator import Paginator
@@ -11,6 +13,40 @@ from stores_app.models import SellerProduct
 
 
 COUNT_REVIEWS_PER_PAGE = 3
+
+
+class RandomProduct:
+
+    def __init__(self, model, time_update='00:00', days_duration=1, fallibility=1):
+        self.model = apps.get_model(model.split('.')[0], model.split('.')[1])
+        self.queryset = self.model.objects.all()
+        self.days_duration = days_duration
+        self.fallibility = dt.timedelta(days=fallibility)
+        self.product = random.choice(list(self.queryset))
+        today = dt.date.today()
+        date = " ".join([str(today.strftime("%d.%m.%Y")), time_update])
+        self.end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
+
+    def update_product(self):
+        if dt.datetime.now() >= self.end_time:
+            self.product = random.choice(list(self.queryset))
+            self.end_time += dt.timedelta(days=self.days_duration)
+        return self.product
+
+    def set_time_update(self, time_update):
+        today = dt.date.today()
+        date = " ".join([str(today.strftime("%d.%m.%Y")), time_update])
+        self.end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
+
+    def set_days_duration(self, days_duration):
+        self.days_duration = days_duration
+
+    @property
+    def get_end_time(self):
+        return str((self.end_time + self.fallibility).strftime("%d.%m.%Y %H:%M"))
+
+
+random_product = RandomProduct('stores_app.SellerProduct')
 
 
 class CurrentProduct:
