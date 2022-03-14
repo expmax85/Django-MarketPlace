@@ -117,8 +117,13 @@
           {% for item in products %}
           <div class="Card"><a class="Card-picture" href="#"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
             <div class="Card-content">
-              <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
-              </strong>
+{#              <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>#}
+{#              </strong>#}
+              <form method="get" action="{% url 'orders-polls:add_viewed' %}">
+                <input type="hidden" name="seller_product_id" value="{{ item.id }}">
+                <strong class="Card-title"><button class="Card-title_hidden_button" type="submit">{{ item.product.name }}</button>
+                </strong>
+              </form>
               <div class="Card-description">
                 <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>
                 </div>
