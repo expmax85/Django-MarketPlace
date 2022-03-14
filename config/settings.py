@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'settings_app',
     'taggit',
     'dynamic_preferences',
+    'django_extensions',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

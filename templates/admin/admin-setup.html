@@ -20,19 +20,34 @@
     <div class="fieldsets">
         <fieldset class="module">
             <div class="block-major">
+                 <header>
+                    <h2>{% trans 'Site settings'%}</h2>
+                </header>
                 <div class="form-row">
-                    <span>Shipping price: {{ global_preferences.general__shipping_price }}</span>
+                    <span>Regular shipping price: {{ global_preferences.general__regular_shipping }}</span>
                 </div>
+                <div class="form-row">
+                    <span>Express shipping price: {{ global_preferences.general__express_shipping }}</span>
+                </div>
+                <div class="form-row">
+                    <span>Comments size page: {{ global_preferences.general__review_size_page }}</span>
+                </div>
+                <div class="form-row">
+                    <span>Time update for limited deal: {{ global_preferences.general__time_update }}</span>
+                    <a class="btn btn_primary" href="{% url 'settings-polls:manual-change-product' %}">Manual update now</a>
+                </div>
+                <div class="form-row">
+                    <span>Frequency update limited deal: {{ global_preferences.general__days_duration }}</span>
+                    <a class="btn btn_primary" href="{% url 'settings-polls:manual-expire-change' %}">Manual continue limited deal expire</a>
+                </div>
+                <a class="btn btn_primary" href="{% url 'admin:dynamic_preferences_globalpreferencemodel_changelist' %}">Change settings</a>
             </div>
             <div>
                 <header>
                     <h2>{% trans 'Cache Control'%}</h2>
                 </header>
                 <div class="block-cache">
-                    <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'clear-cache' %}">{% trans 'Clear cache' %}</a>
-                </div>
-                                <div class="block-cache">
-                    <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'clear-cache' %}">{% trans 'Clear cache' %}</a>
+                    <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-all-cache' %}">{% trans 'Clear cache' %}</a>
                 </div>
             </div>
         </fieldset>

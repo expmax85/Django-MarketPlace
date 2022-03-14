@@ -69,7 +69,7 @@
           </header>
           <div class="Card"><a class="Card-picture" href="#"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
             <div class="Card-content">
-              <strong class="Card-title"><a href="#">{{ special_product.name }}</a>
+              <strong class="Card-title"><a href="#">{{ special_product.product.name }}</a>
               </strong>
               <div class="Card-description">
                 <div class="Card-cost"><span class="Card-priceOld">{{ special_product.price }}</span><span class="Card-price">{{ special_product.price_after_discount }}</span>

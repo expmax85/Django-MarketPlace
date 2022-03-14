@@ -10,31 +10,27 @@ from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
-from goods_app.services import CatalogByCategoriesMixin, ProductMixin, \
-    context_pagination, CurrentProduct, random_product
+from goods_app.services import CatalogByCategoriesMixin, \
+    context_pagination, CurrentProduct, get_seller_products, random_product
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
+from settings_app.config_project import OPTIONS
 from stores_app.models import SellerProduct
 
 
-COUNT_REVIEWS_PER_PAGE = 3
-TIME_UPDATE = '00:00'
-DAYS_DURATION = 1
-
-
-class IndexView(ProductMixin, ListView):
+class IndexView(ListView):
     model = SellerProduct
     template_name = 'index.html'
     context_object_name = 'products'
 
     def get_queryset(self):
-        return self.get_seller_products()
+        return get_seller_products()
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
         context['banners'] = banner()
-        random_product.set_days_duration(days_duration=DAYS_DURATION)
-        random_product.set_time_update(time_update=TIME_UPDATE)
+        random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
+        random_product.set_time_update(time_update=OPTIONS['general__time_update'])
         context['special_product'] = random_product.update_product()
         context['update_time'] = random_product.get_end_time
         return context
@@ -51,7 +47,8 @@ class ProductDetailView(DetailView):
         product = CurrentProduct(instance=context['product'])
         reviews = product.get_reviews
         context['reviews_count'] = reviews.count()
-        context['comments'] = context_pagination(self.request, reviews, size_page=COUNT_REVIEWS_PER_PAGE)
+        context['comments'] = context_pagination(self.request, reviews,
+                                                 size_page=OPTIONS['general__review_size_page'])
         context['form'] = ReviewForm()
         context = {**context, **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags')}
         return context
@@ -74,7 +71,7 @@ def post_review(request) -> Union[JsonResponse, Callable]:
         form.save()
         product.calculate_product_rating()
         reviews = product.get_reviews
-        paginator = Paginator(reviews, per_page=COUNT_REVIEWS_PER_PAGE)
+        paginator = Paginator(reviews, per_page=OPTIONS['general__review_size_page'])
         return JsonResponse({'num_pages': paginator.num_pages,
                              'slug': slug}, safe=False)
     elif form.errors.get('rating'):

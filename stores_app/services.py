@@ -11,15 +11,12 @@ from django.db.models.signals import post_delete
 from config.settings import MEDIA_ROOT
 from discounts_app.models import Discount
 from orders_app.models import Order
+from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product, ProductCategory
 
 
 User = get_user_model()
-
-# Set custom level messages for django.contrib.messages
-SUCCESS_DEL_PRODUCT = 100
-SUCCESS_DEL_STORE = 110
 
 
 class StoreServiceMixin:

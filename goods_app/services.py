@@ -2,56 +2,71 @@ import random
 import datetime as dt
 from typing import List, Dict, Tuple, Any
 
-from django.apps import apps
 from django.http import HttpRequest
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet
+from django.db.models import Avg, QuerySet, Model
 
 from goods_app.models import ProductCategory, ProductComment, Product
+from settings_app.config_project import OPTIONS
 from stores_app.models import SellerProduct
-
-
-COUNT_REVIEWS_PER_PAGE = 3
 
 
 class RandomProduct:
 
-    def __init__(self, model, time_update='00:00', days_duration=1, fallibility=1):
-        self.model = apps.get_model(model.split('.')[0], model.split('.')[1])
-        self.queryset = self.model.objects.all()
+    def __init__(self, queryset: QuerySet, time_update: dt.time = dt.time(hour=00, minute=45, second=00),
+                 days_duration: int = 1, fallibility: int = 0) -> None:
+        if not isinstance(queryset, QuerySet):
+            raise ValueError('RandomItem must receive Queryset')
+        self.queryset = queryset
         self.days_duration = days_duration
+        self.time_update = time_update
         self.fallibility = dt.timedelta(days=fallibility)
-        self.product = random.choice(list(self.queryset))
-        today = dt.date.today()
-        date = " ".join([str(today.strftime("%d.%m.%Y")), time_update])
+        self.product = get_limited_deal(list(self.queryset))
+        today = dt.date.today() + dt.timedelta(days=self.days_duration)
+        date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
         self.end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
 
-    def update_product(self):
+    def update_product(self) -> Model:
         if dt.datetime.now() >= self.end_time:
-            self.product = random.choice(list(self.queryset))
+            print('sdfsdf')
+            self.product = get_limited_deal(list(self.queryset))
+            today = dt.date.today() + dt.timedelta(days=self.days_duration)
+            date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
             self.end_time += dt.timedelta(days=self.days_duration)
         return self.product
 
-    def set_time_update(self, time_update):
-        today = dt.date.today()
-        date = " ".join([str(today.strftime("%d.%m.%Y")), time_update])
-        self.end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
+    def set_time_update(self, time_update: dt.time) -> None:
+        self.time_update = time_update
 
-    def set_days_duration(self, days_duration):
+    def set_days_duration(self, days_duration: int) -> None:
         self.days_duration = days_duration
 
     @property
-    def get_end_time(self):
+    def get_end_time(self) -> str:
         return str((self.end_time + self.fallibility).strftime("%d.%m.%Y %H:%M"))
 
+    def manual_update_product(self):
+        self.product = get_limited_deal(list(self.queryset))
 
-random_product = RandomProduct('stores_app.SellerProduct')
+    def add_limited_deal_expire_days(self, days):
+        self.end_time += dt.timedelta(days=days)
+
+
+def get_seller_products() -> QuerySet:
+    return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
+
+
+def get_limited_deal(list_products: List) -> Model:
+    return random.choice(list(list_products))
+
+
+random_product = RandomProduct(queryset=get_seller_products(), fallibility=1)
 
 
 class CurrentProduct:
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         if 'slug' in kwargs:
             self.product = Product.objects.get(slug=kwargs['slug'])
         elif 'instance' in kwargs:
@@ -60,7 +75,7 @@ class CurrentProduct:
             raise ValueError
 
     @property
-    def get_product(self):
+    def get_product(self) -> Product:
         return self.product
 
     @property
@@ -93,7 +108,7 @@ class CurrentProduct:
     def get_review_page(self, queryset: QuerySet, page: int) -> Dict:
         reviews_count = queryset.count()
         reviews = queryset.values('author', 'content', 'added')
-        paginator = Paginator(reviews, per_page=COUNT_REVIEWS_PER_PAGE)
+        paginator = Paginator(reviews, per_page=OPTIONS['general__review_size_page'])
         page_obj = paginator.get_page(page)
         json_dict = {
             'comments': list(page_obj.object_list),
@@ -119,7 +134,7 @@ class CurrentProduct:
             self.product.rating = round(float(rating), 0)
             self.product.save(update_fields=['rating'])
 
-    def get_context_data(self, *args):
+    def get_context_data(self, *args) -> Dict:
         context = dict()
         for arg in args:
             try:
@@ -127,17 +142,6 @@ class CurrentProduct:
             except AttributeError as err:
                 raise AttributeError(err)
         return context
-
-
-class ProductMixin:
-
-    @classmethod
-    def get_seller_products(cls, *kwargs) -> QuerySet:
-        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
-
-    @classmethod
-    def get_special_offer(cls, products: QuerySet) -> QuerySet:
-        return random.choice(list(products))
 
 
 def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Paginator:
