@@ -88,6 +88,6 @@ class SellerProduct(models.Model):
         return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
                                                                    'pk': self.id})
 
-    @property
-    def price_after_discount(self):
-        return DiscountsService.get_discounted_price(self)
+    # @property
+    # def price_after_discount(self):
+    #     return DiscountsService.get_discounted_price(self, class_name='ProductDiscount')

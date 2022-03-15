@@ -86,8 +86,8 @@ class ProductDiscount(Discount):
                                              verbose_name=_('seller_product'))
 
     class Meta:
-        verbose_name = _('product_discount')
-        verbose_name_plural = _('product_discounts')
+        verbose_name = _('product discount')
+        verbose_name_plural = _('product discounts')
         db_table = 'product_discounts'
 
 
@@ -102,8 +102,8 @@ class GroupDiscount(Discount):
                                          related_name=_('group_discounts'), verbose_name='products',)
 
     class Meta:
-        verbose_name = _('group_discount')
-        verbose_name_plural = _('group_discounts')
+        verbose_name = _('group discount')
+        verbose_name_plural = _('group discounts')
         db_table = 'group_discounts'
 
 
@@ -123,6 +123,6 @@ class CartDiscount(Discount):
                                                   verbose_name=_('total_sum_max_threshold'))
 
     class Meta:
-        verbose_name = _('cart_discount')
-        verbose_name_plural = _('cart_discounts')
+        verbose_name = _('cart discount')
+        verbose_name_plural = _('cart discounts')
         db_table = 'cart_discounts'

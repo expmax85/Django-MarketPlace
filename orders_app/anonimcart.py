@@ -20,7 +20,8 @@ class AnonymCart:
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 0,
                                      'price': str(product.price),
-                                     'discounted_price': str(product.price_after_discount)}
+                                     # 'discounted_price': str(product.price_after_discount)
+                                     }
         if update_quantity:
             self.cart[product_id]['quantity'] = quantity
         else:
@@ -77,12 +78,12 @@ class AnonymCart:
             for item in self.cart.values()
         )
 
-    def total_discounted_sum(self):
-        """Получение общей стоимости товаров в корзине со скидкой"""
-        return sum(
-            Decimal(item['discounted_price']) * item['quantity']
-            for item in self.cart.values()
-        )
+    # def total_discounted_sum(self):
+    #     """Получение общей стоимости товаров в корзине со скидкой"""
+    #     return sum(
+    #         Decimal(item['discounted_price']) * item['quantity']
+    #         for item in self.cart.values()
+    #     )
 
     def clear(self):
         """Очистка корзины"""

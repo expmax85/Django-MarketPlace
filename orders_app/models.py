@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import F, Sum, ForeignKey
+
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 from django.utils.translation import gettext_lazy as _
@@ -56,19 +57,22 @@ class Order(models.Model):
     @property
     def total_sum(self) -> Decimal:
         """Метод получения общей стоимости товаров в заказе"""
-        total = 0
+        total = Decimal(0.00)
         for product in self.order_products.all():
-            total += product.position_price * product.quantity
+            total += product.seller_product.price * product.quantity
         return total
 
-    @property
-    def total_discounted_sum(self) -> Decimal:
-        """Метод получения общей стоимости товаров в заказе со скидками"""
-        total = self.order_products.aggregate(
-            total=Sum(F('final_price') * F('quantity')))['total']
-        if not total:
-            total = 0
-        return total
+    # @property
+    # def total_discounted_sum(self) -> Decimal:
+    #     """Метод получения общей стоимости товаров в заказе со скидками"""
+    #     # total = self.order_products.aggregate(
+    #     #     total=Sum(F('final_price') * F('quantity')))['total']
+    #     # if not total:
+    #     #     total = 0
+    #     total = Decimal(0.00)
+    #     for product in self.order_products.all():
+    #         total += product.position_price * product.quantity
+    #     return total
 
     def __len__(self) -> int:
         """Метод получения количества товаров в заказе"""
@@ -89,14 +93,14 @@ class OrderProduct(models.Model):
         on_delete=models.CASCADE,
         related_name='order_products'
     )
-    final_price = models.DecimalField(max_digits=10, decimal_places=2,
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0,
                                       verbose_name=_('Guess discount price'))
     quantity = models.IntegerField(null=True, default=1,
                                    verbose_name=_('quantity'))
 
-    @property
-    def position_price(self):
-        """Метод получения цены товара со скидкой"""
-        # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
-        # Пока цена магазина. Название метода получения цкны со скидкой пока условное
-        return self.seller_product.price
+    # @property
+    # def position_price(self):
+    #     """Метод получения цены товара со скидкой"""
+    #     # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
+    #     # Пока цена магазина. Название метода получения цкны со скидкой пока условное
+    #     return self.seller_product.price_after_discount

@@ -8,11 +8,12 @@ from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.http import HttpRequest
-from orders_app.models import Order
+from orders_app.models import Order, OrderProduct
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.services import CartService
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
+from discounts_app.services import DiscountsService
 from django.utils.translation import gettext_lazy as _
 
 
@@ -30,17 +31,33 @@ class CartView(View):
     def get(request: HttpRequest):
         """ Данный метод пока только рендерит страницу корзины """
         cart = CartService(request)
+        discount_service = DiscountsService(cart)
+
+        discounted_prices = []
+        quantities = []
 
         items = cart.get_goods()
+        for item in items:
+            discounted_price = discount_service.get_discounted_price(item)
+
+            if isinstance(item, OrderProduct):
+                quantities.append(item.quantity)
+            else:
+                quantities.append(item['quantity'])
+
+            discounted_prices.append(discounted_price)
+
+        products = zip(items, discounted_prices)
 
         total = cart.get_quantity
         total_price = cart.get_total_sum
-        total_discounted_price = cart.get_total_discounted_sum
+        total_discounted_price = sum([quantities[i] * discounted_prices[i] for i in range(len(items))])
 
-        context = {'items': items,
+        context = {'items': products,
                    'total': total,
                    'total_price': total_price,
-                   'total_discounted_price': total_discounted_price}
+                   'total_discounted_price': total_discounted_price
+                   }
 
         return render(request, 'orders_app/cart.html', context=context)
 

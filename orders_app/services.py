@@ -55,7 +55,8 @@ class CartService:
                 OrderProduct.objects.create(order=self.cart,
                                             seller_product=product,
                                             quantity=1,
-                                            final_price=product.price_after_discount)
+                                            # final_price=product.price_after_discount
+                                            )
         else:
             self.cart.add(product)
 
@@ -122,7 +123,8 @@ class CartService:
                 cart_product = OrderProduct(order=self.cart,
                                             seller_product=product,
                                             quantity=quantity,
-                                            final_price=product.price_after_discount)
+                                            # final_price=product.price_after_discount
+                                            )
             cart_product.save()
             self.cart.save()
         else:
@@ -154,11 +156,11 @@ class CartService:
             return self.cart.total_sum
         return self.cart.total_sum()
 
-    def get_total_discounted_sum(self) -> Decimal:
-        """получить общую сумму заказа со скидками"""
-        if isinstance(self.cart, Order):
-            return self.cart.total_discounted_sum
-        return self.cart.total_discounted_sum()
+    # def get_total_discounted_sum(self) -> Decimal:
+    #     """получить общую сумму заказа со скидками"""
+    #     if isinstance(self.cart, Order):
+    #         return self.cart.total_discounted_sum
+    #     return self.cart.total_discounted_sum()
 
     def merge_carts(self, other):
         """Перенос анонимной корзины в корзину зарешистрированного"""

@@ -29,7 +29,7 @@
       <div class="wrap">
 {#        <form class="form Cart" action="#" method="post">#}
           {% if cart %}
-              {% for item in items %}
+              {% for item, discount in items %}
                   <form class="form Cart" action="{% url 'orders:cart_detail_post' product_id=item.seller_product.id %}" method="post">
                       <div class="Cart-product">
                         <div class="Cart-block Cart-block_row">
@@ -42,7 +42,9 @@
                           <div class="Cart-block Cart-block_price">
                             <div class="Cart-price Cart-price_old">{{ item.seller_product.price }}$
                             </div>
-                            <div class="Cart-price">{{ item.seller_product.price_after_discount }}$
+                            <div class="Cart-price">
+{#                                {{ item.seller_product.price_after_discount }}$#}
+                                {{ discount }}$
                             </div>
                           </div>
                         </div>
