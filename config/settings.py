@@ -187,6 +187,8 @@ AUTH_USER_MODEL = 'profiles_app.User'
 
 CART_SESSION_ID = 'cart'
 
+SESSION_ENGINE = 'config.session_backend'
+
 BRAINTREE_MERCHANT_ID = 'm3wfb5j4gbvcrh3b'  # ID продавца.
 BRAINTREE_PUBLIC_KEY = '93btdgpyybsjkvpf'  # Публичный ключ.
 BRAINTREE_PRIVATE_KEY = 'a9813a01dfac799dec1be1f6b2663878'  # Секретный ключ.

@@ -61,10 +61,9 @@ class ProductDetailView(ProductMixin, DetailView):
         context['comments'] = context_pagination(self.request, reviews)
         context['specifications'] = self.get_specifications(product)
         context['sellers'] = self.get_sellers(product)
-        context['tags'] =  self.get_tags(product)
+        context['tags'] = self.get_tags(product)
         context['form'] = form
         return render(request, 'goods_app/product_detail.html', context=context)
-
 
 class CatalogByCategory(CatalogByCategoriesMixin, View):
 

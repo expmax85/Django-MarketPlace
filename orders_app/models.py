@@ -100,3 +100,12 @@ class OrderProduct(models.Model):
         # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
         # Пока цена магазина. Название метода получения цкны со скидкой пока условное
         return self.seller_product.price
+
+
+class ViewedProduct(models.Model):
+    """ Модель просмотренного товара """
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='viewed', blank=True, null=True)
+    session = models.CharField(max_length=100, blank=True)
+    product = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
+    date = models.DateTimeField(auto_now=True)
