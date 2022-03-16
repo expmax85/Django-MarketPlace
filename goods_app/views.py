@@ -1,5 +1,7 @@
 from typing import Dict, Callable, Union
 
+from django.core.cache import cache
+from django.core.checks import caches
 from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -29,6 +31,7 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
         context['banners'] = banner()
+        print(caches)
         random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
         random_product.set_time_update(time_update=OPTIONS['general__time_update'])
         context['special_product'] = random_product.update_product()

@@ -29,11 +29,10 @@ class RandomProduct:
 
     def update_product(self) -> Model:
         if dt.datetime.now() >= self.end_time:
-            print('sdfsdf')
             self.product = get_limited_deal(list(self.queryset))
             today = dt.date.today() + dt.timedelta(days=self.days_duration)
             date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
-            self.end_time += dt.timedelta(days=self.days_duration)
+            self.end_time += dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
         return self.product
 
     def set_time_update(self, time_update: dt.time) -> None:
@@ -41,6 +40,9 @@ class RandomProduct:
 
     def set_days_duration(self, days_duration: int) -> None:
         self.days_duration = days_duration
+
+    def set_end_time(self, datetime: dt.datetime):
+        self.end_time = datetime
 
     @property
     def get_end_time(self) -> str:
@@ -54,7 +56,12 @@ class RandomProduct:
 
 
 def get_seller_products() -> QuerySet:
-    return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
+    products_cache_key = 'all_products:{}'.format('all_sp')
+    products = cache.get(products_cache_key)
+    if not products:
+        products = SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
+        cache.set(products_cache_key, products, 60 * 60)
+    return products
 
 
 def get_limited_deal(list_products: List) -> Model:
