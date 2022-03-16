@@ -2,6 +2,8 @@ import random
 import datetime as dt
 from typing import List, Dict, Tuple, Any
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import HttpRequest
 from django.core.cache import cache
 from django.core.paginator import Paginator
@@ -97,7 +99,12 @@ class CurrentProduct:
 
     @property
     def get_specifications(self) -> QuerySet:
-        return self.product.specifications.all()
+        specifications_cache_key = 'specifications:{}'.format(self.product.id)
+        specifications = cache.get(specifications_cache_key)
+        if not specifications:
+            specifications = self.product.specifications.all()
+            cache.set(specifications_cache_key, specifications, 24 * 60 * 60)
+        return specifications
 
     @property
     def get_tags(self) -> QuerySet:
@@ -109,7 +116,7 @@ class CurrentProduct:
         reviews = cache.get(reviews_cache_key)
         if not reviews:
             reviews = self.product.product_comments.all()
-            cache.set(reviews_cache_key, reviews, 60)
+            cache.set(reviews_cache_key, reviews, 24 * 60 * 60)
         return reviews
 
     def get_review_page(self, queryset: QuerySet, page: int) -> Dict:
@@ -149,6 +156,13 @@ class CurrentProduct:
             except AttributeError as err:
                 raise AttributeError(err)
         return context
+
+
+@receiver(post_save, sender=ProductComment)
+def comment_post_save_handler(sender, **kwargs):
+    if kwargs['created']:
+        product_id = kwargs['instance'].product_id
+        cache.delete('reviews:{}'.format(product_id))
 
 
 def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Paginator:

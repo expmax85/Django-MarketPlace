@@ -5,6 +5,7 @@ from typing import Dict
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_delete
 
@@ -143,11 +144,11 @@ class StoreServiceMixin:
         return Discount.objects.all()
 
     @classmethod
-    def get_last_order(cls, user: User):
+    def get_last_order(cls, user: User) -> QuerySet:
         return Order.objects.filter(customer=user).last()
 
     @classmethod
-    def get_all_orders(cls, user):
+    def get_all_orders(cls, user) -> QuerySet:
         return Order.objects.filter(customer=user)
 
     @classmethod
@@ -165,12 +166,10 @@ class StoreServiceMixin:
         product.save()
 
 
+@receiver(post_delete, sender=Seller)
 def delete_IconFile(**kwargs) -> None:
     """
     The signal for removing icon Seller, when the store is deleting
     """
     file = kwargs.get('instance')
     file.icon.delete(save=False)
-
-
-post_delete.connect(delete_IconFile, Seller)

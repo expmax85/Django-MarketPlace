@@ -2,13 +2,10 @@ import json
 from typing import Dict
 
 import braintree
-<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-=======
 from django.contrib.messages.storage import session
 from django.shortcuts import render, redirect, get_object_or_404, reverse
->>>>>>> develop
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
@@ -405,14 +402,5 @@ class HistoryOrderDetail(DetailView):
 
         pk = kwargs['order_id']
         order = self.model.objects.prefetch_related('order_products').get(id=pk)
-<<<<<<< HEAD
         return render(request, 'orders_app/oneorder.html', context={'order': order})
 
-
-def add_viewed(request):
-    sp = SellerProduct.objects.get(id=request.GET.get('seller_product_id'))
-    #Добавление селлерпродукта в бд просмотренных
-    return redirect(reverse('goods-polls:product-detail', kwargs={'slug': sp.product.slug}))
-=======
-        return render(request, 'orders_app/oneorder.html', context={'order': order})
->>>>>>> develop

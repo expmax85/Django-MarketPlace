@@ -55,5 +55,8 @@
     <div class="block-cache">
         <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-all-cache' %}">{% trans 'Clear cache' %}</a>
     </div>
+        <div class="block-cache">
+        <span class="label-cache-btn">Clear comments cache:</span><a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-review-cache' %}">{% trans 'Clear comments cache' %}</a>
+    </div>
 </fieldset>
 {% endblock %}

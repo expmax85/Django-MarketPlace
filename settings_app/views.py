@@ -8,6 +8,7 @@ from django.core.cache import cache
 from django.shortcuts import render, redirect
 from django.views import View
 
+from goods_app.models import Product
 from goods_app.services import random_product
 from settings_app.config_project import SUCCESS_OPTIONS_ACTIVATE, OPTIONS
 
@@ -59,5 +60,6 @@ def clear_products_cache(request):
 
 
 def clear_review_cache(request):
-    # cache.delete_many(['reviews:{id}' for])
-    pass
+    all_reviews_cache = Product.objects.all().values('id')
+    cache.delete_many([f'reviews:{item["id"]}' for item in list(all_reviews_cache)])
+    return redirect(request.META.get('HTTP_REFERER'))

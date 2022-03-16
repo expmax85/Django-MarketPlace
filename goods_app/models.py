@@ -1,4 +1,5 @@
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -134,13 +135,11 @@ class ProductRequest(Product):
         db_table = 'add_products'
 
 
-def delete_Instance(sender, **kwargs) -> None:
+@receiver(post_save, sender=ProductRequest)
+def delete_instance(sender, **kwargs) -> None:
     """
-    The signal for removing icon Seller, when the store is deleting
+    The signal for deleting decided ProductRequest instance
     """
     instance = kwargs.get('instance')
     if instance.is_published:
         instance.delete(keep_parents=True)
-
-
-post_save.connect(delete_Instance, ProductRequest)

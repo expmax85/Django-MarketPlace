@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.urls import path
 
-from settings_app.views import clear_all_cache, change_limited_deal, update_expire, set_expire
+from settings_app.views import clear_all_cache, change_limited_deal, update_expire, set_expire, clear_review_cache
 
 app_name = 'settings_app'
 urlpatterns = [
     path('clear-all-cache/', clear_all_cache, name='clear-all-cache'),
+    path('clear-review-cache/', clear_review_cache, name='clear-review-cache'),
     path('update-limited-deal/', change_limited_deal, name='manual-change-product'),
     path('update-expire/', update_expire, name='manual-expire-change'),
     path('set-end-time/', set_expire, name='set-end-time')
