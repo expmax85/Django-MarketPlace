@@ -71,9 +71,12 @@ class User(AbstractBaseUser, PermissionsMixin):
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:
                 old_self.avatar.delete(False)
-        if self.is_member('Content-manager'):
-            self.is_staff = True
-        return super(User, self).save(*args, **kwargs)
+        try:
+            if self.is_member('Content-manager'):
+                self.is_staff = True
+        except ValueError:
+            pass
+        super(User, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('user')
@@ -83,12 +86,3 @@ class User(AbstractBaseUser, PermissionsMixin):
             ('Sellers', 'can sell'),
             ('Content_manager', 'app management'),
         ]
-
-
-class ViewedProduct(models.Model):
-    """ Модель просмотренного товара """
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='viewed')
-    product = models.ForeignKey('goods_app.Product', on_delete=models.CASCADE, related_name='viewed_list')
-    shop = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
-    date = models.DateTimeField(auto_now=True)

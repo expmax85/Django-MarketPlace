@@ -33,5 +33,10 @@ urlpatterns = [
     # эндпоинты истории заказов
     path('history/', HistoryOrderView.as_view(), name='history-order'),
     path('history/<int:order_id>', HistoryOrderDetail.as_view(), name='history-order-detail'),
+<<<<<<< HEAD
+=======
+    #эндроинты истории просмотров
+    path('viewed_history', ViewedGoodsView.as_view(), name='history-view'),
+>>>>>>> develop
     path('add_viewed/', add_viewed, name='add_viewed')
 ]
