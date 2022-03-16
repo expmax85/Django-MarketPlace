@@ -4,6 +4,12 @@
 .Account-group {
   display: flex;
 }
+.Card-title_hidden_button{
+  border: 0;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
 @media screen and (max-width: 480px) {
   .Account-group {
     display: block;
