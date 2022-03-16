@@ -306,7 +306,10 @@ class CompareView(View):
     def get(self, request: HttpRequest):
         """ Данный метод рендерит страницу товаров для сравнения """
 
-        context = self.create_queryset(session_data=request.session['compared'])
+        try:
+            context = self.create_queryset(session_data=request.session['compared'])
+        except KeyError:
+            context = dict()
         return render(request, 'orders_app/compare.html', context)
 
     def create_queryset(self, session_data: json) -> Dict:
