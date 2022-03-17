@@ -84,6 +84,7 @@ class ProductDiscount(Discount):
                                verbose_name=_('seller'))
     seller_products = models.ManyToManyField(SellerProduct, related_name='product_discounts',
                                              verbose_name=_('seller_product'))
+    set_discount = models.BooleanField(default=False, verbose_name=_('set_discount'))
 
     class Meta:
         verbose_name = _('product discount')
