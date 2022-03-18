@@ -114,13 +114,21 @@
           </h2>
         </header>
         <div class="Cards">
-          {% for item in products %}
+          {% for item, price_after_discount, discount in products %}
           <div class="Card"><a class="Card-picture" href="#"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
             <div class="Card-content">
               <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
               </strong>
               <div class="Card-description">
-                <div class="Card-cost"><span class="Card-priceOld">${{ item.price }}</span><span class="Card-price">${{ item.price_after_discount }}</span>
+                <div class="Card-cost">
+                    <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ item.price }}{% endif %}</span>
+                    <span class="Card-price">
+                        {% if price_after_discount and not discount.set_discount %}
+                            ${{ price_after_discount|floatformat:0 }}
+                        {% else %}
+                            ${{ item.price }}
+                        {% endif %}
+                    </span>
                 </div>
                 <div class="Card-category">{{ item.product.category }}
                 </div>
@@ -131,8 +139,13 @@
                 </div>
               </div>
             </div>
-            <div class="Card-sale">-60%
-            </div>
+            {% if discount.type_of_discount == 'p' and not discount.set_discount %}
+                <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
+                </div>
+            {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
+                <div class="Card-sale" style="background-color: #d00d0d">{{ discount.amount|floatformat:0}}$
+                </div>
+            {% endif %}
           </div>
           {% endfor %}
         </div>

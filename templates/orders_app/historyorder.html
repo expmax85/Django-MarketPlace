@@ -92,10 +92,10 @@
                       </div>
                       
                       <div class="Order-infoContent">
-                        {% if order.in_ordered %}
-                        {% trans 'Not paid' %}
+                        {% if order.is_paid %}
+                        {% trans 'Paiid' %}
                         {% else %}
-                        {% trans 'Paid' %}
+                        {% trans 'Not paid' %}
                         {% endif %}
                       </div>
                       

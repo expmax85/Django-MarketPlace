@@ -131,6 +131,9 @@ class DiscountsService:
         return result_discounts
 
     def check_cart_discount(self, discount) -> bool:
+        """
+        Проверка применимости корзинной скидки для данной корзины
+        """
         cart_products = self.cart.get_goods()
         if cart_products.__class__.__name__ == 'QuerySet':
             ids = []
@@ -144,14 +147,16 @@ class DiscountsService:
             length = len(set(ids))
         if length > 1:
             return False
-
         if discount.min_quantity_threshold <= len(self.cart) <= discount.max_quantity_threshold:
             return True
-        if discount.total_sum_min_threshold < self.cart.get_total_sum() < discount.total_sum_max_threshold:
+        if discount.total_sum_min_threshold <= self.cart.get_total_sum() <= discount.total_sum_max_threshold:
             return True
         return False
 
     def check_set_discount(self, discount):
+        """
+        Проверка применимости наборной скидки для данного набора
+        """
         cart_products = self.cart.get_goods()
         if cart_products.__class__.__name__ == 'QuerySet':
             cart_products = [item.seller_product for item in cart_products]
@@ -162,9 +167,9 @@ class DiscountsService:
             return True
         return False
 
-    def get_discounted_price(self, product, class_name: str = 'CartDiscount', price: float = None) -> Decimal :
+    def get_discounted_price_in_cart(self, product, class_name: str = 'CartDiscount', price: float = None) -> Decimal :
         """
-        расчитать цену со скидкой
+        расчитать цену со скидкой, если товар в текущей корзине
         """
         prices = []
         product_discounts = self.get_priority_discounts_for_product(product)
@@ -177,16 +182,23 @@ class DiscountsService:
 
         if product_discounts:
             for discount in product_discounts:
-                if discount.__class__.__name__ == 'ProductDiscount':
-                    if discount.set_discount is True and discount.amount > 0:
+                if discount.__class__.__name__ == 'ProductDiscount' and \
+                        discount.set_discount is True:
+                    if discount.type_of_discount == 'f':
                         set_sum = sum([item.price for item in discount.seller_products.all()])
                         set_sum_with_discount = set_sum - Decimal(discount.amount)
                         price = Decimal(price * set_sum_with_discount / set_sum)
+                    elif discount.type_of_discount == 'p':
+                        price *= Decimal((100 - discount.percent) / 100)
+                    else:
+                        price = discount.fixed_price
 
-                elif discount.amount:
+                elif discount.type_of_discount == 'f':
                     price -= Decimal(discount.amount)
-                else:
+                elif discount.type_of_discount == 'p':
                     price *= Decimal((100 - discount.percent) / 100)
+                else:
+                    price = discount.fixed_price
 
                 prices.append(price)
         if prices:
@@ -196,3 +208,35 @@ class DiscountsService:
             price = 1
 
         return Decimal(round(price, 2))
+
+    @staticmethod
+    def get_discounted_price_for_seller_product(product):
+        price = product.price
+        discounts = product.product_discounts.filter(valid_from=None,
+                                                     valid_to=None,
+                                                     is_active=True).all() | \
+                    product.product_discounts.filter(valid_from__lte=date.today(),
+                                                     valid_to__gte=date.today(),
+                                                     is_active=True).all()
+
+        print(discounts)
+        if discounts:
+            discount = discounts[0]
+            if discount.type_of_discount == 'f':
+                price -= Decimal(discount.amount)
+            elif discount.type_of_discount == 'p':
+                price *= Decimal((100 - discount.percent) / 100)
+
+        if price < 1:
+            price = 1
+
+        return Decimal(round(price, 2))
+
+    def get_discounted_price(self, product):
+        """
+        расчитать цену со скидкой
+        """
+        if product in self.cart.get_goods():
+            return self.get_discounted_price_in_cart(product)
+        elif product.__class__.__name__ == 'SellerProduct':
+            return self.get_discounted_price_for_seller_product(product)

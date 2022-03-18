@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Dict, Callable
 from django.core.paginator import Paginator
 from django.db import connection, reset_queries
@@ -10,22 +11,51 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
+from discounts_app.services import DiscountsService
 from goods_app.services import CatalogByCategoriesMixin, ProductMixin
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from goods_app.services import context_pagination
+from orders_app.services import CartService
 from stores_app.models import SellerProduct
 
 
-class IndexView(ListView):
-    model = SellerProduct
-    template_name = 'index.html'
-    context_object_name = 'products'
+# class IndexView(ListView):
+#     model = SellerProduct
+#     template_name = 'index.html'
+#     context_object_name = 'products'
+#
+#     def get_context_data(self, **kwargs) -> Dict:
+#         context = super().get_context_data(**kwargs)
+#         context['banners'] = banner()
+#         return context
 
-    def get_context_data(self, **kwargs) -> Dict:
-        context = super().get_context_data(**kwargs)
-        context['banners'] = banner()
-        return context
+class IndexView(ListView):
+    def get(self, request, *args, **kwargs):
+        banners = banner()
+        products = SellerProduct.objects.all()
+        discounted_prices = []
+        discounts = []
+
+        for product in products:
+            price = product.price
+            discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
+            if not discount:
+                discounted_prices.append(None)
+                discounts.append(None)
+            else:
+                if discount.type_of_discount == 'f':
+                    price -= Decimal(discount.amount)
+                else:
+                    price *= Decimal((100 - discount.percent) / 100)
+
+                if price < 1:
+                    price = 1
+                discounted_prices.append(price)
+                discounts.append(discount)
+        products = zip(products, discounted_prices, discounts)
+        context = {'banners': banners, 'products': products}
+        return render(request, 'index.html', context=context)
 
 
 class ProductDetailView(ProductMixin, DetailView):

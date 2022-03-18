@@ -62,17 +62,22 @@ class Order(models.Model):
             total += product.seller_product.price * product.quantity
         return total
 
-    # @property
-    # def total_discounted_sum(self) -> Decimal:
-    #     """Метод получения общей стоимости товаров в заказе со скидками"""
-    #     # total = self.order_products.aggregate(
-    #     #     total=Sum(F('final_price') * F('quantity')))['total']
-    #     # if not total:
-    #     #     total = 0
-    #     total = Decimal(0.00)
-    #     for product in self.order_products.all():
-    #         total += product.position_price * product.quantity
-    #     return total
+    @property
+    def total_discounted_sum(self) -> Decimal:
+        """Метод получения общей стоимости товаров в заказе со скидками"""
+        total = Decimal(0.00)
+        for product in self.order_products.all():
+            total += product.final_price * product.quantity
+        return total
+
+    def final_total(self):
+        return self.total_discounted_sum
+
+    def __str__(self):
+        return f"{_('Order')} №{self.id}"
+
+    def name(self):
+        return self.__str__()
 
     def __len__(self) -> int:
         """Метод получения количества товаров в заказе"""
@@ -98,9 +103,8 @@ class OrderProduct(models.Model):
     quantity = models.IntegerField(null=True, default=1,
                                    verbose_name=_('quantity'))
 
-    # @property
-    # def position_price(self):
-    #     """Метод получения цены товара со скидкой"""
-    #     # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
-    #     # Пока цена магазина. Название метода получения цкны со скидкой пока условное
-    #     return self.seller_product.price_after_discount
+    def __str__(self):
+        return f"{_('OrderProduct')} №{self.id}"
+
+    def name(self):
+        return self.__str__()

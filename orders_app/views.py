@@ -41,14 +41,16 @@ class CartView(View):
             discounted_price = discount_service.get_discounted_price(item)
 
             if isinstance(item, OrderProduct):
+                item.final_price = discounted_price
+                item.save()
                 quantities.append(item.quantity)
             else:
+                item['final_price'] = discounted_price
                 quantities.append(item['quantity'])
 
             discounted_prices.append(discounted_price)
 
         products = zip(items, discounted_prices)
-
         total = cart.get_quantity
         total_price = cart.get_total_sum
         total_discounted_price = sum([quantities[i] * discounted_prices[i] for i in range(len(items))])

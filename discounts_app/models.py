@@ -27,6 +27,7 @@ from stores_app.models import Seller, SellerProduct
 TYPE_CHOICES = [
         ('p', _('Per cent')),
         ('f', _('Fixed amount')),
+        ('fp', _('Fixed price')),
     ]
 
 PRIORITY_CHOICES = [
@@ -44,7 +45,7 @@ class Discount(models.Model):
     slug = models.SlugField()
     description = models.TextField(verbose_name=_("description"), max_length=255,
                                    null=True, blank=True)
-    type_of_discount = models.CharField(max_length=1, choices=TYPE_CHOICES,
+    type_of_discount = models.CharField(max_length=2, choices=TYPE_CHOICES,
                                         default='p', verbose_name=_('discount type'))
     priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES,
                                 default='1', verbose_name=_('priority'))
@@ -56,6 +57,11 @@ class Discount(models.Model):
                                null=True, blank=True,
                                validators=[MinValueValidator(0.0)],
                                default=0)
+    fixed_price = models.FloatField(verbose_name=_("fixed_price"),
+                                    null=True, blank=True,
+                                    validators=[MinValueValidator(0.0)],
+                                    default=0)
+
     valid_from = models.DateTimeField(verbose_name=_("valid_from"), null=True, blank=True)
     valid_to = models.DateTimeField(verbose_name=_("valid_to"), null=True, blank=True)
     is_active = models.BooleanField(default=False)

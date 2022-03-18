@@ -104,7 +104,7 @@ class CartService:
         else:
             self.cart.remove(product)
 
-    def change_quantity(self, product, quantity: int, update_quantity=False) -> None:
+    def change_quantity(self, product, quantity: int, price: Decimal = 0, update_quantity = False) -> None:
         """
         изменить количество товара в корзине
 
@@ -123,7 +123,7 @@ class CartService:
                 cart_product = OrderProduct(order=self.cart,
                                             seller_product=product,
                                             quantity=quantity,
-                                            # final_price=product.price_after_discount
+                                            final_price=price
                                             )
             cart_product.save()
             self.cart.save()
@@ -165,12 +165,18 @@ class CartService:
     def merge_carts(self, other):
         """Перенос анонимной корзины в корзину зарешистрированного"""
         for item in other.get_goods():
-            self.change_quantity(item['seller_product'], item['quantity'])
+            print(f'This item = {item}')
+            self.change_quantity(item['seller_product'], item['quantity'],
+                                 # item['final_price']
+                                 )
         other.clear()
 
     def clear(self) -> None:
         """очистить корзину"""
         return self.cart.clear()
+
+    def save(self) -> None:
+        return self.save()
 
     def __len__(self):
         """получить общее количество товаров в корзине"""

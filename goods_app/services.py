@@ -20,7 +20,7 @@ class ProductMixin:
         #                             .order_by('price_after_discount')
 
         return SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                                    .filter(product=product)
+                                                    .filter(product=product).order_by('price')
 
     def get_best_seller(self, product):
         return self.get_sellers(product).first()
@@ -130,7 +130,9 @@ class CatalogByCategoriesMixin:
 
     @classmethod
     def sort_by_price(cls, some_list: List, direction: bool) -> List:
-        return sorted(some_list, key=lambda x: x.price_after_discount if x.price_after_discount else x.price,
+        # return sorted(some_list, key=lambda x: x.price_after_discount if x.price_after_discount else x.price,
+        #               reverse=direction)
+        return sorted(some_list, key=lambda x: x.price,
                       reverse=direction)
 
     @classmethod
@@ -140,7 +142,9 @@ class CatalogByCategoriesMixin:
     @classmethod
     def get_min_price(cls, some_list: List) -> int or float:
         try:
-            mini = min(x.price_after_discount if x.price_after_discount else x.price for x in some_list)
+            # mini = min(x.price_after_discount if x.price_after_discount else x.price for x in some_list)
+            mini = min(x.price for x in some_list)
+
         except ValueError:
             mini = 0
         return mini
@@ -148,7 +152,9 @@ class CatalogByCategoriesMixin:
     @classmethod
     def get_max_price(cls, some_list: List) -> int or float:
         try:
-            maxi = max(x.price_after_discount if x.price_after_discount else x.price for x in some_list)
+            # maxi = max(x.price_after_discount if x.price_after_discount else x.price for x in some_list)
+            maxi = max(x.price for x in some_list)
+
         except ValueError:
             maxi = 100
         return maxi
