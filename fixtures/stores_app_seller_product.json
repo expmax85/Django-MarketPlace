@@ -1,1 +1,145 @@
-[{"model": "stores_app.sellerproduct", "pk": 1, "fields": {"seller": 1, "product": 1, "discount": 3, "price": "100.00", "price_after_discount": "99.00", "quantity": 911}}, {"model": "stores_app.sellerproduct", "pk": 2, "fields": {"seller": 1, "product": 7, "discount": 3, "price": "11.00", "price_after_discount": "1.00", "quantity": 1}}, {"model": "stores_app.sellerproduct", "pk": 3, "fields": {"seller": 1, "product": 12, "discount": 6, "price": "13.00", "price_after_discount": "11.00", "quantity": 22}}, {"model": "stores_app.sellerproduct", "pk": 4, "fields": {"seller": 1, "product": 5, "discount": 3, "price": "3.00", "price_after_discount": "2.00", "quantity": 1}}, {"model": "stores_app.sellerproduct", "pk": 5, "fields": {"seller": 1, "product": 15, "discount": 7, "price": "55.00", "price_after_discount": "44.00", "quantity": 4}}, {"model": "stores_app.sellerproduct", "pk": 6, "fields": {"seller": 1, "product": 9, "discount": 4, "price": "44.00", "price_after_discount": "33.00", "quantity": 33}}, {"model": "stores_app.sellerproduct", "pk": 7, "fields": {"seller": 1, "product": 4, "discount": 3, "price": "66.00", "price_after_discount": "55.00", "quantity": 55}}, {"model": "stores_app.sellerproduct", "pk": 8, "fields": {"seller": 1, "product": 7, "discount": 7, "price": "4.00", "price_after_discount": "2.00", "quantity": 3333}}, {"model": "stores_app.sellerproduct", "pk": 9, "fields": {"seller": 1, "product": 2, "discount": 1, "price": "444.00", "price_after_discount": "333.00", "quantity": 44}}, {"model": "stores_app.sellerproduct", "pk": 10, "fields": {"seller": 1, "product": 13, "discount": 2, "price": "43.00", "price_after_discount": "34.00", "quantity": 44}}, {"model": "stores_app.sellerproduct", "pk": 11, "fields": {"seller": 1, "product": 8, "discount": 6, "price": "34.00", "price_after_discount": "4.00", "quantity": 343}}]
+[
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 1,
+    "fields": {
+      "seller": 1,
+      "product": 1,
+      "discount": 3,
+      "price": "100.00",
+      "price_after_discount": "99.00",
+      "quantity": 911,
+      "date_added": "2022-02-05 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 2,
+    "fields": {
+      "seller": 1,
+      "product": 7,
+      "discount": 3,
+      "price": "11.00",
+      "price_after_discount": "1.00",
+      "quantity": 1,
+      "date_added": "2022-02-06 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 3,
+    "fields": {
+      "seller": 1,
+      "product": 12,
+      "discount": 6,
+      "price": "13.00",
+      "price_after_discount": "11.00",
+      "quantity": 22,
+      "date_added": "2022-02-07 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 4,
+    "fields": {
+      "seller": 1,
+      "product": 5,
+      "discount": 3,
+      "price": "3.00",
+      "price_after_discount": "2.00",
+      "quantity": 1,
+      "date_added": "2022-02-08 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 5,
+    "fields": {
+      "seller": 1,
+      "product": 15,
+      "discount": 7,
+      "price": "55.00",
+      "price_after_discount": "44.00",
+      "quantity": 4,
+      "date_added": "2022-02-09 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 6,
+    "fields": {
+      "seller": 1,
+      "product": 9,
+      "discount": 4,
+      "price": "44.00",
+      "price_after_discount": "33.00",
+      "quantity": 33,
+      "date_added": "2022-02-14 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 7,
+    "fields": {
+      "seller": 1,
+      "product": 4,
+      "discount": 3,
+      "price": "66.00",
+      "price_after_discount": "55.00",
+      "quantity": 55,
+      "date_added": "2022-02-13 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 8,
+    "fields": {
+      "seller": 1,
+      "product": 7,
+      "discount": 7,
+      "price": "4.00",
+      "price_after_discount": "2.00",
+      "quantity": 3333,
+      "date_added": "2022-02-12 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 9,
+    "fields": {
+      "seller": 1,
+      "product": 2,
+      "discount": 1,
+      "price": "444.00",
+      "price_after_discount": "333.00",
+      "quantity": 44,
+      "date_added": "2022-02-11 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 10,
+    "fields": {
+      "seller": 1,
+      "product": 13,
+      "discount": 2,
+      "price": "43.00",
+      "price_after_discount": "34.00",
+      "quantity": 44,
+      "date_added": "2022-03-02 23:53:25.94"
+    }
+  },
+  {
+    "model": "stores_app.sellerproduct",
+    "pk": 11,
+    "fields": {
+      "seller": 1,
+      "product": 8,
+      "discount": 6,
+      "price": "34.00",
+      "price_after_discount": "4.00",
+      "quantity": 343,
+      "date_added": "2022-03-01 23:53:25.94"
+    }
+  }
+]
