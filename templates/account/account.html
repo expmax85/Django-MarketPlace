@@ -41,7 +41,7 @@
                 </li>
                 <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
                 </li>
-                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Purchases history' %}</a>
+                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                 </li>
                 <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Views history' %}</a>
                 </li>
@@ -72,33 +72,38 @@
               <div class="Order Order_anons">
                 <div class="Order-personal">
                   <div class="row">
-                    <div class="row-block"><a class="Order-title" href="#">Заказ&#32;<span class="Order-numberOrder">№200</span>&#32;от&#32;<span class="Order-dateOrder">21.07.2020</span></a>
-                      <div class="Account-editLink"><a href="#">История заказов</a>
+                    <div class="row-block"><a class="Order-title" href="#">{% trans 'Order' %}&#32;<span class="Order-numberOrder">№{{number_order}}</span>&#32;{% trans 'from' %}&#32;<span class="Order-dateOrder">{{last_order.ordered|date:"d.m.o"}}</span></a>
+                      <div class="Account-editLink"><a href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                       </div>
                     </div>
                     <div class="row-block">
                       <div class="Order-info Order-info_delivery">
-                        <div class="Order-infoType">Тип доставки:
+                        <div class="Order-infoType">{% trans 'Type of delivery' %}:
                         </div>
-                        <div class="Order-infoContent">Обычная доставка
+                        <div class="Order-infoContent">{{last_order.delivery}}
                         </div>
                       </div>
                       <div class="Order-info Order-info_pay">
-                        <div class="Order-infoType">Оплата:
+                        <div class="Order-infoType">{% trans 'Payment method' %}:
                         </div>
-                        <div class="Order-infoContent">Онлайн картой
+                        <div class="Order-infoContent">{{last_order.payment_method}}
                         </div>
                       </div>
                       <div class="Order-info">
-                        <div class="Order-infoType">Общая стоимость:
+                        <div class="Order-infoType">{% trans 'Full price' %}:
                         </div>
-                        <div class="Order-infoContent">200.99$
+                        <div class="Order-infoContent">{{last_order.total_sum}}
                         </div>
                       </div>
                       <div class="Order-info Order-info_status">
-                        <div class="Order-infoType">Статус:
+                        <div class="Order-infoType">{% trans 'Order Status' %}:
                         </div>
-                        <div class="Order-infoContent">Не оплачен
+                        <div class="Order-infoContent">
+                          {% if last_order.in_order %}
+                            {{ last_order.in_order }}
+                          {% else %}
+                            {{ last_order.paid }}
+                          {% endif %}
                         </div>
                       </div>
                     </div>

@@ -2,6 +2,8 @@ import json
 from typing import Dict
 
 import braintree
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.messages.storage import session
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
@@ -306,7 +308,10 @@ class CompareView(View):
     def get(self, request: HttpRequest):
         """ Данный метод рендерит страницу товаров для сравнения """
 
-        context = self.create_queryset(session_data=request.session['compared'])
+        try:
+            context = self.create_queryset(session_data=request.session['compared'])
+        except KeyError:
+            context = dict()
         return render(request, 'orders_app/compare.html', context)
 
     def create_queryset(self, session_data: json) -> Dict:
@@ -401,3 +406,4 @@ class HistoryOrderDetail(DetailView):
         pk = kwargs['order_id']
         order = self.model.objects.prefetch_related('order_products').get(id=pk)
         return render(request, 'orders_app/oneorder.html', context={'order': order})
+

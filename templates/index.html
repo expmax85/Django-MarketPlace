@@ -69,15 +69,15 @@
           </header>
           <div class="Card"><a class="Card-picture" href="#"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
             <div class="Card-content">
-              <strong class="Card-title"><a href="#">Corsair Carbide Series Arctic White Steel</a>
+              <strong class="Card-title"><a href="#">{{ special_product.product.name }}</a>
               </strong>
               <div class="Card-description">
-                <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>
+                <div class="Card-cost"><span class="Card-priceOld">{{ special_product.price }}</span><span class="Card-price">{{ special_product.price_after_discount }}</span>
                 </div>
-                <div class="Card-category">News / xbox
+                <div class="Card-category">{{ special_product.category }}
                 </div>
               </div>
-              <div class="CountDown" data-date="31.09.2020 03:59">
+              <div class="CountDown" data-date="{{ update_time }}">
                 <div class="CountDown-block">
                   <div class="CountDown-wrap">
                     <div class="CountDown-days">
@@ -115,15 +115,15 @@
         </header>
         <div class="Cards">
           {% for item in products %}
-          <div class="Card"><a class="Card-picture" href="#"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
+          
+          <div class="Card" type="submit">
+            <form method="get" action="{% url 'orders-polls:add_viewed' %}"></form>
+            <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
             <div class="Card-content">
-{#              <strong class="Card-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>#}
-{#              </strong>#}
-              <form method="get" action="{% url 'orders-polls:add_viewed' %}">
+                <button class="Card-title" type="submit">
+                  {{ item.product.name }}
+                </button>
                 <input type="hidden" name="seller_product_id" value="{{ item.id }}">
-                <strong class="Card-title"><button class="Card-title_hidden_button" type="submit">{{ item.product.name }}</button>
-                </strong>
-              </form>
               <div class="Card-description">
                 <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>
                 </div>
@@ -136,13 +136,13 @@
                 </div>
               </div>
             </div>
-            <div class="Card-sale">-60%
+            </form>
+            <div class="Card-sale">-{{ item.discount.percent|floatformat:"0" }}%
             </div>
           </div>
           {% endfor %}
         </div>
 </div>
-
     </div>
   </div>
   <div class="Section Section_dark">

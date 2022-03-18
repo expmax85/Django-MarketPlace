@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'settings_app',
     'taggit',
     'dynamic_preferences',
+    'django_extensions',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -112,7 +113,6 @@ DATABASES = {
         'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

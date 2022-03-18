@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin/', include('admin_tools.urls')),
     path('settings-admin/setup/', AdminView.as_view(), name='admin-setup'),
-    path('settings-admin/setupclear-cache/', clear_all_cache, name='clear-cache'),
+    path('setup-actions/', include('settings_app.urls', namespace='settings-polls')),
     path('', include('goods_app.urls', namespace='goods-polls')),
     path('users/', include('profiles_app.urls', namespace='profiles-polls')),
     path('accounts/', include('allauth.urls')),
