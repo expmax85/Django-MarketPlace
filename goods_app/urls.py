@@ -14,6 +14,6 @@ urlpatterns = [
          CatalogByCategory.as_view(),
          name="catalog_by_category_url"),
 
-    path('catalogs/<slug>/sotrby/<str:sort_type>/page/<int:page>/filter',
-         CatalogFilter.as_view(), name='catalog_filter_url'),
+    path('ajax/<slug>/sotrby/<str:sort_type>/page/<int:page>',
+         CardForAjax.as_view(), name='ajax')
 ]
