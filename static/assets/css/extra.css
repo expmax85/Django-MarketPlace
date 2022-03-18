@@ -4,6 +4,12 @@
 .Account-group {
   display: flex;
 }
+.Card-title_hidden_button{
+  border: 0;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
 @media screen and (max-width: 480px) {
   .Account-group {
     display: block;
@@ -746,6 +752,10 @@
   min-height: 226px;
   align-items: center;
   justify-content: center;
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
 }
 @media screen and (min-width: 990px) {
   .Card-picture:hover {
@@ -875,6 +885,10 @@
   width: 100%;
   padding-bottom: 8px;
   margin-bottom: 3px;
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
 }
 .Card-title a {
   color: #000;

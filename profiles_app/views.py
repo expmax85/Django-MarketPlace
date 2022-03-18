@@ -14,6 +14,7 @@ from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditFor
 from profiles_app.services import get_user_and_change_password, get_auth_user, reset_phone_format
 from django.utils.translation import gettext_lazy as _
 from orders_app.services import CartService
+from stores_app.services import StoreServiceMixin
 
 
 class UserLogin(LoginView):
@@ -98,14 +99,18 @@ class RestorePasswordView(View):
         return render(request, 'account/password_reset.html', context={'form': form})
 
 
-class AccountView(LoginRequiredMixin, View):
+class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
     """
     Информация об аккаунте
     """
     template_name = 'account/account.html'
 
     def get(self, request) -> Callable:
-        return render(request, 'account/account.html')
+        context = {
+            'last_order': self.get_last_order(user=request.user),
+            'number_order': self.get_all_orders(user=request.user).count(),
+        }
+        return render(request, 'account/account.html', context=context)
 
 
 class AccountEditView(LoginRequiredMixin, View):

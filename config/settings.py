@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'settings_app',
     'taggit',
     'dynamic_preferences',
+    'django_extensions',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -112,7 +113,6 @@ DATABASES = {
         'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -186,6 +186,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'profiles_app.User'
 
 CART_SESSION_ID = 'cart'
+
+SESSION_ENGINE = 'config.session_backend'
 
 BRAINTREE_MERCHANT_ID = 'm3wfb5j4gbvcrh3b'  # ID продавца.
 BRAINTREE_PUBLIC_KEY = '93btdgpyybsjkvpf'  # Публичный ключ.

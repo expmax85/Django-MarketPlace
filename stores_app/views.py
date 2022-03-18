@@ -11,16 +11,12 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from goods_app.models import Product
 from profiles_app.services import reset_phone_format
-from stores_app.forms import AddStoreForm, EditStoreForm, AddSellerProductForm, EditSellerProductForm, \
-    AddRequestNewProduct
+from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from stores_app.forms import AddStoreForm, EditStoreForm, \
+    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
 from stores_app.services import StoreServiceMixin
-
-
-CREATE_SP_ERROR = 150
-SEND_PRODUCTREQUEST = 160
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -112,7 +108,7 @@ class AddSellerProductView(StoreAppMixin, View):
             form.save(commit=False)
             created = self.create_seller_product(data=form.cleaned_data)
             if not created:
-                messages.add_message(request, CREATE_SP_ERROR, _('This product is already exist in those store!'))
+                messages.add_message(request, CREATE_PRODUCT_ERROR, _('This product is already exist in those store!'))
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
         return render(request, 'stores_app/new_product_in_store.html', {'form': form})
@@ -180,7 +176,7 @@ class RequestNewProduct(StoreAppMixin, View):
         if form.is_valid():
             product = form.save(commit=False)
             self.request_add_new_product(product=product, user=request.user)
-            messages.add_message(request, SEND_PRODUCTREQUEST,
+            messages.add_message(request, SEND_PRODUCT_REQUEST,
                                  _('Your request was sending. Wait the answer some before time to your email!'))
             return redirect(reverse('stores-polls:sellers-room'))
         categories = self.get_categories()
