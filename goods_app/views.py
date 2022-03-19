@@ -11,7 +11,7 @@ from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
 from goods_app.services import CatalogByCategoriesMixin, \
-    context_pagination, CurrentProduct, get_seller_products, random_product
+    context_pagination, CurrentProduct, get_seller_products
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from settings_app.config_project import OPTIONS
@@ -29,10 +29,10 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
         context['banners'] = banner()
-        random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
-        random_product.set_time_update(time_update=OPTIONS['general__time_update'])
-        context['special_product'] = random_product.update_product()
-        context['update_time'] = random_product.get_end_time
+        # random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
+        # random_product.set_time_update(time_update=OPTIONS['general__time_update'])
+        # context['special_product'] = random_product.update_product()
+        # context['update_time'] = random_product.get_end_time
         return context
 
 
