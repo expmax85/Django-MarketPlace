@@ -61,9 +61,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return str(self.email)
 
-    def is_member(self, group_name) -> bool:
-        if self.groups.filter(name=group_name):
-            return True
+    def is_member(self, group_name: str) -> bool:
+        try:
+            if self.groups.filter(name=group_name):
+                return True
+        except ValueError:
+            return False
         return False
 
     def save(self, *args, **kwargs):
@@ -71,7 +74,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:
                 old_self.avatar.delete(False)
-        super(User, self).save(*args, **kwargs)
         if self.is_member('Content-manager'):
             self.is_staff = True
         else:

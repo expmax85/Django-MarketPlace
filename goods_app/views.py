@@ -1,20 +1,24 @@
+from typing import Dict, Callable, Union
+
 from decimal import Decimal
 from typing import Dict, Callable
 from django.core.paginator import Paginator
-from django.db import connection, reset_queries
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
-from django.http import HttpRequest
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
+from goods_app.services import CatalogByCategoriesMixin, \
+    context_pagination, CurrentProduct, get_seller_products
 from discounts_app.services import DiscountsService
 from goods_app.services import CatalogByCategoriesMixin, ProductMixin
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
+from settings_app.config_project import OPTIONS
 from goods_app.services import context_pagination
 from orders_app.services import CartService
 from stores_app.models import SellerProduct
@@ -25,9 +29,16 @@ from stores_app.models import SellerProduct
 #     template_name = 'index.html'
 #     context_object_name = 'products'
 #
+#     def get_queryset(self):
+#         return get_seller_products()
+#
 #     def get_context_data(self, **kwargs) -> Dict:
 #         context = super().get_context_data(**kwargs)
 #         context['banners'] = banner()
+#         # random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
+#         # random_product.set_time_update(time_update=OPTIONS['general__time_update'])
+#         # context['special_product'] = random_product.update_product()
+#         # context['update_time'] = random_product.get_end_time
 #         return context
 
 class IndexView(ListView):
@@ -58,7 +69,7 @@ class IndexView(ListView):
         return render(request, 'index.html', context=context)
 
 
-class ProductDetailView(ProductMixin, DetailView):
+class ProductDetailView(DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
@@ -66,34 +77,41 @@ class ProductDetailView(ProductMixin, DetailView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-
-        reviews = self.get_reviews(product=context['product'])
-        context['reviews_count'] = reviews.count
-        context['comments'] = context_pagination(self.request, reviews)
+        product = CurrentProduct(instance=context['product'])
+        reviews = product.get_reviews
+        context['reviews_count'] = reviews.count()
+        context['comments'] = context_pagination(self.request, reviews,
+                                                 size_page=OPTIONS['general__review_size_page'])
         context['form'] = ReviewForm()
-        context['specifications'] = self.get_specifications(context['product'])
-        context['sellers'] = self.get_sellers(context['product'])
-        context['best_offer'] = self.get_best_seller(context['product'])
-        context['tags'] =  self.get_tags(context['product'])
+        context = {**context, **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags')}
         return context
 
-    def post(self, request: HttpRequest, slug: str) -> Callable:
-        form = ReviewForm(request.POST)
-        product = self.get_object()
-        if form.is_valid():
-            form.save()
-            self.calculate_product_rating(product)
-            return redirect(reverse('goods-polls:product-detail', kwargs={'slug': slug}))
-        context = dict()
-        context['product'] = product
-        reviews = self.get_reviews(product)
-        context['reviews_count'] = reviews.count
-        context['comments'] = context_pagination(self.request, reviews)
-        context['specifications'] = self.get_specifications(product)
-        context['sellers'] = self.get_sellers(product)
-        context['tags'] =  self.get_tags(product)
-        context['form'] = form
-        return render(request, 'goods_app/product_detail.html', context=context)
+
+def get_reviews(request) -> JsonResponse:
+    slug = request.GET.get('slug')
+    page = request.GET.get('page')
+    product = CurrentProduct(slug=slug)
+    reviews = product.get_reviews
+    return JsonResponse({**product.get_review_page(reviews, page),
+                         'slug': slug}, safe=False)
+
+
+def post_review(request) -> Union[JsonResponse, Callable]:
+    slug = request.POST.get('slug')
+    product = CurrentProduct(slug=slug)
+    form = ReviewForm(request.POST)
+    if form.is_valid():
+        form.save()
+        product.calculate_product_rating()
+        reviews = product.get_reviews
+        paginator = Paginator(reviews, per_page=OPTIONS['general__review_size_page'])
+        return JsonResponse({'num_pages': paginator.num_pages,
+                             'slug': slug}, safe=False)
+    elif form.errors.get('rating'):
+        rating_error = _('You should to indicate the product rating')
+        return JsonResponse({'num_pages': 0, 'rating_error': rating_error,
+                             'slug': slug}, safe=False)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 class CatalogByCategory(CatalogByCategoriesMixin, View):

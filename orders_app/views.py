@@ -2,19 +2,35 @@ import json
 from typing import Dict
 
 import braintree
-from django.contrib.messages.storage import session
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.contrib.messages.storage import session
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
-from django.http import HttpRequest
-from orders_app.models import Order, OrderProduct
+from django.http import HttpRequest, HttpResponse
+from orders_app.models import Order, ViewedProduct, OrderProduct
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.services import CartService
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService
 from django.utils.translation import gettext_lazy as _
+from profiles_app.models import User
+
+
+def add_viewed(request):
+    """ Добавление в список просмотренных товаров """
+
+    seller_product = SellerProduct.objects.get(id=request.GET.get('seller_product_id'))
+    if request.user.is_anonymous:
+        ViewedProduct.objects.get_or_create(session=request.session.session_key,
+                                            product=seller_product)
+    else:
+        ViewedProduct.objects.get_or_create(user=request.user,
+                                            product=seller_product)
+    return redirect(reverse('goods-polls:product-detail', kwargs={'slug': seller_product.product.slug}))
 
 
 def cart_clear(request):
@@ -288,10 +304,21 @@ def payment_canceled(request):
 class ViewedGoodsView(ListView):
     """ Представление просмотренных товаров """
 
-    def get(self, request: HttpRequest, **kwargs):
-        """ Данный метод пока только рендерит страницу просмотренных товаров """
+    model = User
+    context_object_name = 'goods'
+    template_name = 'orders_app/historyview.html'
 
-        return render(request, 'orders_app/historyview.html')
+    def get_queryset(self):
+        """ Получить просмотренные товары """
+
+        if self.request.user.is_authenticated:
+            products_in_session = ViewedProduct.objects.filter(session=self.request.session.session_key).all()
+            for obj in products_in_session:
+                ViewedProduct.objects.get_or_create(user=self.request.user,
+                                                    product=obj.product)
+        queryset = ViewedProduct.objects.filter(user=self.request.user).order_by('-date')[:20]
+
+        return queryset
 
 
 class CompareView(View):
@@ -300,7 +327,10 @@ class CompareView(View):
     def get(self, request: HttpRequest):
         """ Данный метод рендерит страницу товаров для сравнения """
 
-        context = self.create_queryset(session_data=request.session['compared'])
+        try:
+            context = self.create_queryset(session_data=request.session['compared'])
+        except KeyError:
+            context = dict()
         return render(request, 'orders_app/compare.html', context)
 
     def create_queryset(self, session_data: json) -> Dict:
