@@ -1,0 +1,112 @@
+[
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 1,
+  "fields": {
+    "seller": 1,
+    "product": 1,
+    "price": "1000.00",
+    "quantity": 911
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 2,
+  "fields": {
+    "seller": 1,
+    "product": 7,
+    "price": "650.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 3,
+  "fields": {
+    "seller": 2,
+    "product": 1,
+    "price": "980.00",
+    "quantity": 22
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 4,
+  "fields": {
+    "seller": 1,
+    "product": 5,
+    "price": "550.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 5,
+  "fields": {
+    "seller": 2,
+    "product": 8,
+    "price": "670.00",
+    "quantity": 4
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 6,
+  "fields": {
+    "seller": 1,
+    "product": 9,
+    "price": "630.00",
+    "quantity": 33
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 7,
+  "fields": {
+    "seller": 1,
+    "product": 4,
+    "price": "720.00",
+    "quantity": 55
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 8,
+  "fields": {
+    "seller": 2,
+    "product": 7,
+    "price": "630.00",
+    "quantity": 3333
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 9,
+  "fields": {
+    "seller": 1,
+    "product": 2,
+    "price": "744.00",
+    "quantity": 44
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 10,
+  "fields": {
+    "seller": 2,
+    "product": 2,
+    "price": "730.00",
+    "quantity": 44
+  }
+},
+{
+  "model": "stores_app.sellerproduct",
+  "pk": 11,
+  "fields": {
+    "seller": 1,
+    "product": 8,
+    "price": "634.00",
+    "quantity": 343
+  }
+}
+]

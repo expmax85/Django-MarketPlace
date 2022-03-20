@@ -1,0 +1,21 @@
+[
+{
+  "model": "discounts_app.groupdiscount",
+  "pk": 1,
+  "fields": {
+    "name": "Rvideo for PineApple set",
+    "slug": "rvideo-for-pineapple-set",
+    "description": "",
+    "type_of_discount": "p",
+    "priority": "2",
+    "percent": 15.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": true,
+    "seller": 1,
+    "product_category": 10
+  }
+}
+]

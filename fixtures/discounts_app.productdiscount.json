@@ -1,0 +1,91 @@
+[
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 1,
+  "fields": {
+    "name": "Discount for Truckbook",
+    "slug": "discount-for-truckbook",
+    "description": "Get your TruckBook 1000 with 5% discount",
+    "type_of_discount": "p",
+    "priority": "3",
+    "percent": 50.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-03-01T22:46:39Z",
+    "valid_to": "2022-03-31T22:46:40Z",
+    "is_active": true,
+    "seller": 1,
+    "set_discount": false,
+    "seller_products": [
+      1
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 2,
+  "fields": {
+    "name": "Discount for TruckBook 2",
+    "slug": "discount-for-truckbook-2",
+    "description": "Another discount to compare",
+    "type_of_discount": "p",
+    "priority": "2",
+    "percent": 0.0,
+    "amount": 150.0,
+    "fixed_price": 0.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": false,
+    "seller": 1,
+    "set_discount": false,
+    "seller_products": [
+      1
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 3,
+  "fields": {
+    "name": "Discount for Juaihei B200",
+    "slug": "discount-for-juaihei-b200",
+    "description": "Incredibly 50%",
+    "type_of_discount": "f",
+    "priority": "2",
+    "percent": 50.0,
+    "amount": 200.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-03-06T20:07:11Z",
+    "valid_to": "2022-03-30T00:00:00Z",
+    "is_active": true,
+    "seller": 1,
+    "set_discount": false,
+    "seller_products": [
+      11
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 4,
+  "fields": {
+    "name": "Special RVideo Set",
+    "slug": "special-rvideo-set",
+    "description": "Special price for",
+    "type_of_discount": "f",
+    "priority": "3",
+    "percent": 90.0,
+    "amount": 1000.0,
+    "fixed_price": 100.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": true,
+    "seller": 1,
+    "set_discount": true,
+    "seller_products": [
+      2,
+      11
+    ]
+  }
+}
+]
