@@ -61,7 +61,9 @@ def get_seller_products() -> QuerySet:
     products_cache_key = 'all_products:{}'.format('all_sp')
     products = cache.get(products_cache_key)
     if not products:
-        products = SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
+        products = SellerProduct.objects.select_related('seller', 'product',
+                                                        # 'discount',
+                                                        'product__category').all()
         cache.set(products_cache_key, products, 60 * 60)
     return products
 

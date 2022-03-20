@@ -10,12 +10,16 @@ from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.http import HttpRequest, HttpResponse
-from orders_app.models import Order, ViewedProduct, OrderProduct
+from orders_app.models import (
+    Order,
+    ViewedProduct,
+    OrderProduct
+)
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.services import CartService
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
-from discounts_app.services import DiscountsService
+from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
 from django.utils.translation import gettext_lazy as _
 from profiles_app.models import User
 
@@ -177,7 +181,7 @@ class OrderStepTwo(View):
         user = request.user
         initial = {'city': user.city,
                    'address': user.address,
-                   'delivery': 'exp',
+                   'delivery': 'reg',
                    'payment': 'cash'}
         form = self.form_class(initial=initial)
         return render(request, self.template_name, {'form': form})
@@ -329,6 +333,7 @@ class CompareView(View):
 
         try:
             context = self.create_queryset(session_data=request.session['compared'])
+            print(context)
         except KeyError:
             context = dict()
         return render(request, 'orders_app/compare.html', context)
@@ -337,6 +342,7 @@ class CompareView(View):
         """ Здесь формируется queryset для сравнения товаров """
 
         compared = json.loads(session_data)
+        print(compared)
         specifications = {key: list() for spec in compared.values() for key in spec[3].keys()}
         incoming_specifications = [value[3] for value in compared.values()]
         for item in incoming_specifications:
@@ -382,7 +388,15 @@ class AddToCompare(View):
         specifications = ({spec.current_specification.name: spec.value for spec in
                            product.product.specifications.all()})
         image = product.product.image.url if product.product.image else None
-        compared[product.product.name] = [product.price, product.price_after_discount,
+        price_after_discount = product.price
+
+        for item in get_discounted_prices_for_seller_products([product]):
+            product = item[0]
+            if item[1]:
+                price_after_discount = item[1]
+
+        compared[product.product.name] = [product.price,
+                                          price_after_discount,
                                           product.product.rating, specifications,
                                           image, int(product.id)]
         request.session['compared'] = json.dumps(compared, cls=DecimalEncoder)

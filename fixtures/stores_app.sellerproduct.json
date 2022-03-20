@@ -6,7 +6,8 @@
     "seller": 1,
     "product": 1,
     "price": "1000.00",
-    "quantity": 911
+    "quantity": 911,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -16,7 +17,8 @@
     "seller": 1,
     "product": 7,
     "price": "650.00",
-    "quantity": 1
+    "quantity": 1,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -26,7 +28,8 @@
     "seller": 2,
     "product": 1,
     "price": "980.00",
-    "quantity": 22
+    "quantity": 22,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -36,7 +39,8 @@
     "seller": 1,
     "product": 5,
     "price": "550.00",
-    "quantity": 1
+    "quantity": 1,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -46,7 +50,8 @@
     "seller": 2,
     "product": 8,
     "price": "670.00",
-    "quantity": 4
+    "quantity": 4,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -56,7 +61,8 @@
     "seller": 1,
     "product": 9,
     "price": "630.00",
-    "quantity": 33
+    "quantity": 33,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -66,7 +72,8 @@
     "seller": 1,
     "product": 4,
     "price": "720.00",
-    "quantity": 55
+    "quantity": 55,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -76,7 +83,8 @@
     "seller": 2,
     "product": 7,
     "price": "630.00",
-    "quantity": 3333
+    "quantity": 3333,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -86,7 +94,8 @@
     "seller": 1,
     "product": 2,
     "price": "744.00",
-    "quantity": 44
+    "quantity": 44,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -96,7 +105,8 @@
     "seller": 2,
     "product": 2,
     "price": "730.00",
-    "quantity": 44
+    "quantity": 44,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 },
 {
@@ -106,7 +116,8 @@
     "seller": 1,
     "product": 8,
     "price": "634.00",
-    "quantity": 343
+    "quantity": 343,
+    "date_added": "2022-02-05 23:53:25.94"
   }
 }
 ]

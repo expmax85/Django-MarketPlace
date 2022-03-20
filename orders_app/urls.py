@@ -7,7 +7,6 @@ urlpatterns = [
     # эндпоинты корзины
     path('cart/', CartView.as_view(), name='cart_detail'),
     path('cart/<product_id>', CartView.as_view(), name='cart_detail_post'),
-
     path('add/<int:product_id>/', CartAdd.as_view(), name='cart_add'),
     path('decrease/<int:product_id>/', CartDecreaseQuantity.as_view(), name='cart_decrease'),
     path('increase/<int:product_id>/', CartIncreaseQuantity.as_view(), name='cart_increase'),

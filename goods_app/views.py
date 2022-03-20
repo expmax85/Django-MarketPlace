@@ -12,10 +12,8 @@ from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
-from goods_app.services import CatalogByCategoriesMixin, \
-    context_pagination, CurrentProduct, get_seller_products
-from discounts_app.services import DiscountsService
-from goods_app.services import CatalogByCategoriesMixin, ProductMixin
+from goods_app.services import CatalogByCategoriesMixin, context_pagination, CurrentProduct, get_seller_products
+from discounts_app.services import get_discounted_prices_for_seller_products
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from settings_app.config_project import OPTIONS
@@ -24,49 +22,71 @@ from orders_app.services import CartService
 from stores_app.models import SellerProduct
 
 
-# class IndexView(ListView):
-#     model = SellerProduct
-#     template_name = 'index.html'
-#     context_object_name = 'products'
-#
-#     def get_queryset(self):
-#         return get_seller_products()
-#
-#     def get_context_data(self, **kwargs) -> Dict:
-#         context = super().get_context_data(**kwargs)
-#         context['banners'] = banner()
-#         # random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
-#         # random_product.set_time_update(time_update=OPTIONS['general__time_update'])
-#         # context['special_product'] = random_product.update_product()
-#         # context['update_time'] = random_product.get_end_time
-#         return context
-
 class IndexView(ListView):
-    def get(self, request, *args, **kwargs):
-        banners = banner()
-        products = SellerProduct.objects.all()
-        discounted_prices = []
-        discounts = []
+    model = SellerProduct
+    template_name = 'index.html'
+    context_object_name = 'products'
 
-        for product in products:
-            price = product.price
-            discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
-            if not discount:
-                discounted_prices.append(None)
-                discounts.append(None)
-            else:
-                if discount.type_of_discount == 'f':
-                    price -= Decimal(discount.amount)
-                else:
-                    price *= Decimal((100 - discount.percent) / 100)
+    def get_queryset(self):
+        products = get_seller_products()
+        return get_discounted_prices_for_seller_products(products)
+        # discounted_prices = []
+        # discounts = []
+        #
+        # for product in products:
+        #     price = product.price
+        #     discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
+        #     if not discount:
+        #         discounted_prices.append(None)
+        #         discounts.append(None)
+        #     else:
+        #         if discount.type_of_discount == 'f':
+        #             price -= Decimal(discount.amount)
+        #         else:
+        #             price *= Decimal((100 - discount.percent) / 100)
+        #
+        #         if price < 1:
+        #             price = 1
+        #         discounted_prices.append(price)
+        #         discounts.append(discount)
+        # products = zip(products, discounted_prices, discounts)
+        # return products
 
-                if price < 1:
-                    price = 1
-                discounted_prices.append(price)
-                discounts.append(discount)
-        products = zip(products, discounted_prices, discounts)
-        context = {'banners': banners, 'products': products}
-        return render(request, 'index.html', context=context)
+    def get_context_data(self, **kwargs) -> Dict:
+        context = super().get_context_data(**kwargs)
+        context['banners'] = banner()
+        # random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
+        # random_product.set_time_update(time_update=OPTIONS['general__time_update'])
+        # context['special_product'] = random_product.update_product()
+        # context['update_time'] = random_product.get_end_time
+        return context
+
+# class IndexView(ListView):
+#     def get(self, request, *args, **kwargs):
+#         banners = banner()
+#         products = SellerProduct.objects.all()
+#         discounted_prices = []
+#         discounts = []
+#
+#         for product in products:
+#             price = product.price
+#             discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
+#             if not discount:
+#                 discounted_prices.append(None)
+#                 discounts.append(None)
+#             else:
+#                 if discount.type_of_discount == 'f':
+#                     price -= Decimal(discount.amount)
+#                 else:
+#                     price *= Decimal((100 - discount.percent) / 100)
+#
+#                 if price < 1:
+#                     price = 1
+#                 discounted_prices.append(price)
+#                 discounts.append(discount)
+#         products = zip(products, discounted_prices, discounts)
+#         context = {'banners': banners, 'products': products}
+#         return render(request, 'index.html', context=context)
 
 
 class ProductDetailView(DetailView):
