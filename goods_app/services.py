@@ -70,7 +70,7 @@ def get_limited_deal(list_products: List) -> Model:
     return random.choice(list(list_products))
 
 
-random_product = RandomProduct(queryset=get_seller_products(), fallibility=1)
+# random_product = RandomProduct(queryset=get_seller_products(), fallibility=1)
 
 
 class CurrentProduct:
