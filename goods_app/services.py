@@ -16,26 +16,16 @@ from stores_app.models import SellerProduct
 
 class RandomProduct:
 
-    def __init__(self, queryset: QuerySet, time_update: dt.time = dt.time(hour=00, minute=45, second=00),
+    def __init__(self, queryset: QuerySet = None, time_update: dt.time = dt.time(hour=00, minute=45, second=00),
                  days_duration: int = 1, fallibility: int = 0) -> None:
-        if not isinstance(queryset, QuerySet):
-            raise ValueError('RandomItem must receive Queryset')
         self.queryset = queryset
         self.days_duration = days_duration
         self.time_update = time_update
         self.fallibility = dt.timedelta(days=fallibility)
-        self.product = get_limited_deal(list(self.queryset))
-        today = dt.date.today() + dt.timedelta(days=self.days_duration)
-        date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
+        self.product = None
+        base_day = dt.date.today() - dt.timedelta(days=1)
+        date = " ".join([str(base_day.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
         self.end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
-
-    def update_product(self) -> Model:
-        if dt.datetime.now() >= self.end_time:
-            self.product = get_limited_deal(list(self.queryset))
-            today = dt.date.today() + dt.timedelta(days=self.days_duration)
-            date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
-            self.end_time += dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
-        return self.product
 
     def set_time_update(self, time_update: dt.time) -> None:
         self.time_update = time_update
@@ -43,34 +33,59 @@ class RandomProduct:
     def set_days_duration(self, days_duration: int) -> None:
         self.days_duration = days_duration
 
-    def set_end_time(self, datetime: dt.datetime):
+    def set_end_time(self, datetime: dt.datetime) -> None:
         self.end_time = datetime
 
-    @property
+    def add_limited_deal_expire_days(self, days: int) -> None:
+        self.end_time += dt.timedelta(days=days)
+
     def get_end_time(self) -> str:
         return str((self.end_time + self.fallibility).strftime("%d.%m.%Y %H:%M"))
 
-    def manual_update_product(self):
-        self.product = get_limited_deal(list(self.queryset))
+    def update_product(self, queryset=None, manual=False) -> Model:
+        if manual:
+            if self.queryset:
+                self.product = get_limited_deal(self.queryset)
+            else:
+                self.product = get_limited_deal(queryset)
+            return self.product
 
-    def add_limited_deal_expire_days(self, days):
-        self.end_time += dt.timedelta(days=days)
+        if dt.datetime.now() >= self.end_time:
+            if self.queryset:
+                self.product = get_limited_deal(self.queryset)
+            else:
+                self.product = get_limited_deal(queryset)
+            today = dt.date.today() + dt.timedelta(days=self.days_duration)
+            date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.time_update)[:-3]])
+            self.end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
+        return self.product
 
 
-def get_seller_products() -> QuerySet:
-    products_cache_key = 'all_products:{}'.format('all_sp')
+def get_all_products(order_by: str) -> QuerySet:
+    products_cache_key = 'products:{}'.format('all_sp')
     products = cache.get(products_cache_key)
     if not products:
-        products = SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category').all()
+        products = SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category')\
+                                        .all().order_by(order_by)
         cache.set(products_cache_key, products, 60 * 60)
     return products
 
 
-def get_limited_deal(list_products: List) -> Model:
-    return random.choice(list(list_products))
+def get_limited_products(count: int) -> QuerySet:
+    products_cache_key = 'limited:{}'.format('all')
+    products = cache.get(products_cache_key)
+    if not products:
+        products = SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category')\
+                                        .filter(product__limited=True)[:count]
+        cache.set(products_cache_key, products, 60 * 60)
+    return products
 
 
-# random_product = RandomProduct(queryset=get_seller_products(), fallibility=1)
+def get_limited_deal(products: QuerySet) -> Model:
+    return random.choice(list(products))
+
+
+random_product = RandomProduct(fallibility=1)
 
 
 class CurrentProduct:
@@ -89,9 +104,14 @@ class CurrentProduct:
 
     @property
     def get_sellers(self) -> QuerySet:
-        return SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category') \
-            .filter(product=self.product) \
-            .order_by('price_after_discount')
+        sellers_cache_key = 'sellers:{}'.format(self.product.id)
+        sellers = cache.get(sellers_cache_key)
+        if not sellers:
+            sellers = SellerProduct.objects.select_related('seller', 'product', 'discount', 'product__category') \
+                                   .filter(product=self.product) \
+                                   .order_by('price_after_discount')
+            cache.set(sellers_cache_key, sellers, 24 * 60 * 60)
+        return sellers
 
     @property
     def get_best_offer(self) -> QuerySet:
@@ -108,7 +128,12 @@ class CurrentProduct:
 
     @property
     def get_tags(self) -> QuerySet:
-        return self.product.tags.all()
+        tags_cache_key = 'tags:{}'.format(self.product.id)
+        tags = cache.get(tags_cache_key)
+        if not tags:
+            tags = self.product.tags.all()
+            cache.set(tags_cache_key, tags, 24 * 60 * 60)
+        return tags
 
     @property
     def get_reviews(self) -> QuerySet:

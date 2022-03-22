@@ -1,6 +1,5 @@
 from decimal import Decimal
-from typing import List, Optional, Union
-from django.http import HttpRequest
+from typing import Union
 from django.shortcuts import get_object_or_404
 from orders_app.models import Order, OrderProduct
 from orders_app.anonimcart import AnonymCart

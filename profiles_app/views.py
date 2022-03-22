@@ -109,6 +109,7 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
         context = {
             'last_order': self.get_last_order(user=request.user),
             'number_order': self.get_all_orders(user=request.user).count(),
+            'viewed_products': list(self.get_viewed_products(user=request.user))[-3:]
         }
         return render(request, 'account/account.html', context=context)
 

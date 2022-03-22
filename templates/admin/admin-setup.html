@@ -4,8 +4,8 @@
 {% block title %}{% trans 'Site settings' %}{% endblock %}
 
 {% block extrastyle %}{{ block.super }}
-    <link rel="stylesheet" href="{% static 'assets/css/basic.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/admin.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets\css\basic.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets\css\admin.css' %}">
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -17,46 +17,88 @@
 {% endblock %}
 
 {% block content %}
-<fieldset class="module">
+<div class="module">
      <header>
         <h2>{% trans 'Site settings'%}</h2>
     </header>
-    <div class="form-row">
-        <span>Regular shipping price: {{ global_preferences.general__regular_shipping }}</span>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Regular shipping price:</p> <span>{{ global_preferences.general__regular_shipping }}</span>
     </div>
-    <div class="form-row">
-        <span>Express shipping price: {{ global_preferences.general__express_shipping }}</span>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Express shipping price: </p><span>{{ global_preferences.general__express_shipping }}</span>
     </div>
-    <div class="form-row">
-        <span>Comments size page: {{ global_preferences.general__review_size_page }}</span>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Comments size page:</p><span> {{ global_preferences.general__review_size_page }}</span>
     </div>
-    <div class="form-row">
-        <span>Time update for limited deal: {{ global_preferences.general__time_update }}</span>
-        <a class="btn btn_primary" href="{% url 'settings-polls:manual-change-product' %}">Manual update now</a>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Count popular products:</p> <span>{{ global_preferences.general__count_popular_products }}</span>
     </div>
-    <div class="form-row">
-        <span>Frequency update limited deal: {{ global_preferences.general__days_duration }}</span>
-        <a class="btn btn_primary" href="{% url 'settings-polls:manual-expire-change' %}">Manual continue limited deal expire</a>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Sort index popular products:</p> <span>{{ global_preferences.general__sort_index }}</span>
     </div>
-    <div class="form-row">
-        <span>Set manual expire time for limited deal:</span>
-        <form action="{% url 'settings-polls:set-end-time' %}" method="get">
-            <label for="id_date">Date:</label>
-            <input type="date" id="id_date" name="date" required>
-            <label for="id_time">Time:</label>
-            <input type="time" id="id_time" name="time" required>
-            <button type="submit">Apply</button>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Count limited products:</p> <span>{{ global_preferences.general__count_limited_products }}</span>
+    </div>
+    <div style="text-align: center;">
+    <a class="btn btn_primary" href="{% url 'admin:dynamic_preferences_globalpreferencemodel_changelist' %}" style="margin: 30px 50px; color: white; font-size; 12px;">Change settings</a>
+    </div>
+     <header>
+        <h2>{% trans 'Limited products control'%}</h2>
+    </header>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Time update for limited deal:</p>
+        <span style="display: inline-block; width: 100px;">{{ global_preferences.general__time_update }}</span>
+        <a class="btn btn_primary" href="{% url 'settings-polls:manual-change-product' %}" style="font-size:12px; color: white;">Manual update now</a>
+    </div>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Frequency update limited deal:</p>
+        <span style="display: inline-block; width: 100px;"> {{ global_preferences.general__days_duration }}</span>
+        <a class="btn btn_primary" href="{% url 'settings-polls:manual-expire-change' %}" style="font-size:12px; color: white;">Manual continue expired</a>
+    </div>
+    <div class="form-row" style="padding: 10px;">
+        <span style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">Set manual expire time for limited deal:</span>
+        <form action="{% url 'settings-polls:set-end-time' %}" method="get" style="display:flex;">
+            <div style="margin: 0 20px;">
+                <label for="id_date">Date:</label>
+                <input type="date" id="id_date" name="date" required>
+            </div>
+            <div style="margin: 0 20px;">
+                <label for="id_time">Time:</label>
+                <input type="time" id="id_time" name="time" required>
+            </div>
+            <button type="submit" class="btn btn_primary" style="font-size:12px; color: white;">Apply</button>
         </form>
     </div>
-    <a class="btn btn_primary" href="{% url 'admin:dynamic_preferences_globalpreferencemodel_changelist' %}">Change settings</a>
     <header>
         <h2>{% trans 'Cache Control'%}</h2>
     </header>
     <div class="block-cache">
-        <span class="label-cache-btn">Clear all site-cache:</span><a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-all-cache' %}">{% trans 'Clear cache' %}</a>
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear all site-cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-all-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
-        <div class="block-cache">
-        <span class="label-cache-btn">Clear comments cache:</span><a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-review-cache' %}">{% trans 'Clear comments cache' %}</a>
+    <div class="block-cache">
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear comments cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-review-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
-</fieldset>
+    <div class="block-cache">
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear main products cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-products-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+    </div>
+    <div class="block-cache">
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear banner cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-banner-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+    </div>
+    <div class="block-cache">
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear all products cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-detail-products-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+    </div>
+    <div class="block-cache">
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear limited products cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-limited-products-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+    </div>
+    <div class="block-cache">
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">Clear users cache:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-users-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+    </div>
+</div>
 {% endblock %}

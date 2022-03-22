@@ -1,0 +1,7 @@
+categories:all
+products:all_sp
+tags:{id}
+specifications:{id}
+sellers:{id}
+reviews:{id}
+key = make_template_fragment_key('banners_block')

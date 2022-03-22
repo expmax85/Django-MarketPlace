@@ -16,7 +16,7 @@ from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUE
 from stores_app.forms import AddStoreForm, EditStoreForm, \
     AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
-from stores_app.services import StoreServiceMixin
+from stores_app.services import StoreServiceMixin, create_note
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -184,3 +184,8 @@ class RequestNewProduct(StoreAppMixin, View):
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
                                                                                    'categories': categories,
                                                                                    'stores': stores})
+
+
+def request_for_seller(request):
+    create_note(user=request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))

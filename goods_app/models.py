@@ -52,10 +52,12 @@ class Product(models.Model):
     slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name='product slug')
     image = models.ImageField(null=True, blank=True, verbose_name='product image')
     description = models.TextField(max_length=255, null=True, verbose_name='product description')
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='average price')
+    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
+                                        verbose_name='average price')
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
     is_published = models.BooleanField(verbose_name='is published', null=True, blank=True, default=True)
     tags = TaggableManager(blank=True)
+    limited = models.BooleanField(default=False, verbose_name=_('limited edition'))
 
     def __str__(self):
         return self.name

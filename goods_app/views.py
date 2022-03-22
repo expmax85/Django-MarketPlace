@@ -11,7 +11,7 @@ from django.views.generic import DetailView, ListView
 
 from banners_app.services import banner
 from goods_app.services import CatalogByCategoriesMixin, \
-    context_pagination, CurrentProduct, get_seller_products
+    context_pagination, CurrentProduct, get_all_products, get_limited_products, random_product
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
 from settings_app.config_project import OPTIONS
@@ -24,15 +24,20 @@ class IndexView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return get_seller_products()
+        return get_all_products(order_by=OPTIONS['general__sort_index'])[:OPTIONS['general__count_popular_products']]
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['banners'] = banner()
-        # random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
-        # random_product.set_time_update(time_update=OPTIONS['general__time_update'])
-        # context['special_product'] = random_product.update_product()
-        # context['update_time'] = random_product.get_end_time
+        random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
+        random_product.set_time_update(time_update=OPTIONS['general__time_update'])
+        limited_products = get_limited_products(count=OPTIONS['general__count_limited_products'])
+        context = {
+            'banners': banner(),
+            'limited_products': limited_products,
+            'special_product': random_product.update_product(queryset=limited_products),
+            'update_time': random_product.get_end_time(),
+            **context
+        }
         return context
 
 
@@ -46,11 +51,14 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = CurrentProduct(instance=context['product'])
         reviews = product.get_reviews
-        context['reviews_count'] = reviews.count()
-        context['comments'] = context_pagination(self.request, reviews,
-                                                 size_page=OPTIONS['general__review_size_page'])
-        context['form'] = ReviewForm()
-        context = {**context, **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags')}
+        context = {
+            'reviews_count': reviews.count(),
+            'comments': context_pagination(self.request, reviews,
+                                           size_page=OPTIONS['general__review_size_page']),
+            'form': ReviewForm(),
+            **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags'),
+            **context
+        }
         return context
 
 

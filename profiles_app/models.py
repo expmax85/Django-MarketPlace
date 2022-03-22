@@ -88,3 +88,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             ('Sellers', 'can sell'),
             ('Content_manager', 'app management'),
         ]
+
+
+class UserRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    seller = models.BooleanField(default=False)

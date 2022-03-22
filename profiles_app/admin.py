@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from profiles_app.adminforms import GroupAdminForm, UserChangeForm, UserCreationForm
+from profiles_app.models import UserRequest
 
 
 User = get_user_model()
@@ -45,3 +46,19 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
+
+
+@admin.register(UserRequest)
+class UserRequestAdmin(admin.ModelAdmin):
+    list_display = ('user', 'seller')
+
+    actions = ['make_sellers']
+
+    def make_sellers(self, request, queryset):
+        users = queryset.values('user_id')
+        list_users = [item['user_id'] for item in list(users)]
+        sellers = Group.objects.get(name='Sellers')
+        all = User.objects.filter(id__in=list_users)
+        for user in all:
+            user.groups.add(sellers.id)
+        queryset.delete()
