@@ -30,27 +30,6 @@ class IndexView(ListView):
     def get_queryset(self):
         products = get_seller_products()
         return get_discounted_prices_for_seller_products(products)
-        # discounted_prices = []
-        # discounts = []
-        #
-        # for product in products:
-        #     price = product.price
-        #     discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
-        #     if not discount:
-        #         discounted_prices.append(None)
-        #         discounts.append(None)
-        #     else:
-        #         if discount.type_of_discount == 'f':
-        #             price -= Decimal(discount.amount)
-        #         else:
-        #             price *= Decimal((100 - discount.percent) / 100)
-        #
-        #         if price < 1:
-        #             price = 1
-        #         discounted_prices.append(price)
-        #         discounts.append(discount)
-        # products = zip(products, discounted_prices, discounts)
-        # return products
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
@@ -60,33 +39,6 @@ class IndexView(ListView):
         # context['special_product'] = random_product.update_product()
         # context['update_time'] = random_product.get_end_time
         return context
-
-# class IndexView(ListView):
-#     def get(self, request, *args, **kwargs):
-#         banners = banner()
-#         products = SellerProduct.objects.all()
-#         discounted_prices = []
-#         discounts = []
-#
-#         for product in products:
-#             price = product.price
-#             discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
-#             if not discount:
-#                 discounted_prices.append(None)
-#                 discounts.append(None)
-#             else:
-#                 if discount.type_of_discount == 'f':
-#                     price -= Decimal(discount.amount)
-#                 else:
-#                     price *= Decimal((100 - discount.percent) / 100)
-#
-#                 if price < 1:
-#                     price = 1
-#                 discounted_prices.append(price)
-#                 discounts.append(discount)
-#         products = zip(products, discounted_prices, discounts)
-#         context = {'banners': banners, 'products': products}
-#         return render(request, 'index.html', context=context)
 
 
 class ProductDetailView(DetailView):

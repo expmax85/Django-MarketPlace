@@ -187,41 +187,17 @@ class DiscountsService:
 
         return Decimal(round(price, 2))
 
-    # @staticmethod
-    # def get_discounted_price_for_seller_product(product):
-    #     price = product.price
-    #     discounts = product.product_discounts.filter(valid_from=None,
-    #                                                  valid_to=None,
-    #                                                  is_active=True).all() | \
-    #                 product.product_discounts.filter(valid_from__lte=date.today(),
-    #                                                  valid_to__gte=date.today(),
-    #                                                  is_active=True).all()
-    #
-    #     if discounts:
-    #         discount = discounts[0]
-    #         if discount.type_of_discount == 'f':
-    #             price -= Decimal(discount.amount)
-    #         elif discount.type_of_discount == 'p':
-    #             price *= Decimal((100 - discount.percent) / 100)
-    #
-    #     if price < 1:
-    #         price = 1
-    #
-    #     return Decimal(round(price, 2))
-
     def get_discounted_price(self, product):
         """
         расчитать цену со скидкой
         """
-        # if product in self.cart.get_goods():
         return self.get_discounted_price_in_cart(product)
-        # elif product.__class__.__name__ == 'SellerProduct':
-        #     return self.get_discounted_price_for_seller_product(product)
 
 
 def implement_discount(price, discount):
     if discount.__class__.__name__ == 'ProductDiscount' and \
             discount.set_discount is True:
+
         if discount.type_of_discount == 'f':
             set_sum = sum([item.price for item in discount.seller_products.all()])
             set_sum_with_discount = set_sum - Decimal(discount.amount)
@@ -238,7 +214,7 @@ def implement_discount(price, discount):
     else:
         price = discount.fixed_price
 
-    return price
+    return Decimal(price)
 
 
 def get_discounted_prices_for_seller_products(products):
@@ -248,6 +224,7 @@ def get_discounted_prices_for_seller_products(products):
     for product in products:
         price = product.price
         discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
+
         if not discount:
             discounted_prices.append(None)
             discounts.append(None)
@@ -256,7 +233,7 @@ def get_discounted_prices_for_seller_products(products):
 
             if price < 1:
                 price = 1
-            discounted_prices.append(price)
+            discounted_prices.append(Decimal(price))
             discounts.append(discount)
     products = zip(products, discounted_prices, discounts)
     return products

@@ -2,25 +2,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import CheckConstraint, Q
 from django.utils.translation import gettext_lazy as _
-
-
-# class DiscountCategory(models.Model):
-#     """
-#     Discount category model
-#     """
-#     name = models.CharField(verbose_name=_("title discount category"),
-#                             max_length=25, null=True)
-#     slug = models.SlugField(unique=True)
-#     description = models.TextField(verbose_name=_("description"),
-#                                    max_length=255, null=True)
-#
-#     class Meta:
-#         verbose_name = _('discount category')
-#         verbose_name_plural = _('discount categories')
-#         db_table = 'category_discount'
-#
-#     def __str__(self):
-#         return self.name
 from goods_app.models import ProductCategory
 from stores_app.models import Seller, SellerProduct
 

@@ -1,6 +1,6 @@
 import json
 from decimal import Decimal
-from typing import Dict
+from typing import Dict, Optional, Any
 
 import braintree
 from django.shortcuts import render, redirect, get_object_or_404
@@ -106,24 +106,7 @@ class CartAdd(View):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
         cart.add_to_cart(product, quantity=1, update_quantity=False)
-        # cart.add_to_cart(product_id)
         return redirect(request.META.get('HTTP_REFERER'))
-
-
-# class CartIncreaseQuantity(View):
-#     """Увеличение позиции в корзине"""
-#     def get(self, request: HttpRequest, product_id: int):
-#         cart = CartService(request)
-#         cart.increase_in_cart(product_id)
-#         return redirect(request.META.get('HTTP_REFERER'))
-#
-#
-# class CartDecreaseQuantity(View):
-#     """Уменьшение позиции в корзине"""
-#     def get(self, request: HttpRequest, product_id: int):
-#         cart = CartService(request)
-#         cart.decrease_in_cart(product_id)
-#         return redirect(request.META.get('HTTP_REFERER'))
 
 class CartRemove(View):
     """Удаделение позиции из корзины"""
@@ -256,7 +239,7 @@ class PaymentWithCardView(View):
     """
     template_name = 'orders_app/payment_card.html'
 
-    def get(self, request: HttpRequest, order_id):
+    def get(self, request: HttpRequest, order_id: int):
         order = get_object_or_404(Order, id=order_id)
         client_token = braintree.ClientToken.generate()
         context = {'order': order, 'client_token': client_token}
@@ -290,10 +273,12 @@ class PaymentWithAccountView(View):
     """
     template_name = 'orders_app/payment_account.html'
 
-    def get(self, request: HttpRequest, order_id):
+    def get(self, request: HttpRequest, order_id: int, **kwargs):
         order = get_object_or_404(Order, id=order_id)
         client_token = braintree.ClientToken.generate()
-        context = {'order': order, 'client_token': client_token}
+        context = {'order': order, 'client_token': client_token,
+                   # 'code': code
+                   }
         return render(request, self.template_name, context=context)
 
 
