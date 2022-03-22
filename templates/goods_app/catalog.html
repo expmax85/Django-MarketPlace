@@ -166,6 +166,14 @@
                             {% trans 'Name' %}
                         </a>
 
+                        <!-- =========================================  SORT BY newness ===================================================-->
+
+                        <a class="Sort-sortBy" data-name="newness"
+                           data-sort="newness_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           href="#" onclick="return false;">
+                            {% trans 'Newness' %}
+                        </a>
+
                     </div>
                 </div>
 

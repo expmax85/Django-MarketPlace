@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet, Model
+from django.db.models import Avg, QuerySet, Model, Count
 
 from goods_app.models import ProductCategory, ProductComment, Product
 from settings_app.config_project import OPTIONS
@@ -224,6 +224,14 @@ class CatalogByCategoriesMixin:
             next_state = 'pop_inc'
             some_list = []
 
+        if sort_type == 'newness_inc':
+            next_state = 'newness_dec'
+            some_list = cls.sort_by_newness(some_list, False)
+
+        if sort_type == 'newness_dec':
+            next_state = 'newness_inc'
+            some_list = cls.sort_by_newness(some_list, True)
+
         return some_list, next_state
 
     @classmethod
@@ -329,6 +337,16 @@ class CatalogByCategoriesMixin:
         :return: отсортированный по количеству комментариев список
         """
         return sorted(some_list, key=lambda x: len(x.product.product_comments.all()), reverse=direction)
+
+    @classmethod
+    def sort_by_newness(cls, some_list: List, direction: bool) -> List:
+        """
+        метод сортировки товаров в магазинах по новизне
+        :param some_list: исходный список товаров
+        :param direction: направление сорировки; true - по возрастанию, false - по убыванию
+        :return: отсортированный по новизне список
+        """
+        return sorted(some_list, key=lambda x: x.date_added, reverse=direction)
 
     @classmethod
     def get_min_price(cls, some_list: List) -> int or float:
