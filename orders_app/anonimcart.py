@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.conf import settings
 from stores_app.models import SellerProduct
+from orders_app.check_stock import check_stock
 
 
 class AnonymCart:
@@ -21,18 +22,19 @@ class AnonymCart:
             self.cart[product_id] = {'quantity': 0,
                                      'price': str(product.price)}
         if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
+            delta = quantity - self.cart[product_id]['quantity']
+            if check_stock(product, delta):
+                self.cart[product_id]['quantity'] = quantity
+                self.save()
+                return True
+            return False
         else:
-            self.cart[product_id]['quantity'] += quantity
-        self.save()
-
-    def update_product_quantity(self, product_id: str, quantity: int, update_quantity: bool = False) -> None:
-        # Обновление количества товара в корзине
-        if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
-        else:
-            self.cart[product_id]['quantity'] += quantity
-        self.save()
+            delta = quantity
+            if check_stock(product, delta):
+                self.cart[product_id]['quantity'] += quantity
+                self.save()
+                return True
+            return False
 
     def save(self):
         # Отметка сессии как измененной
@@ -42,7 +44,6 @@ class AnonymCart:
         """Удаление товара из корзины."""
         product_id = str(product.id)
         if product_id in self.cart:
-            print('Removing anyway')
             product.quantity += self.cart[product_id]['quantity']
             product.save()
             del self.cart[product_id]
