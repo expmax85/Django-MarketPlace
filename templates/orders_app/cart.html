@@ -62,26 +62,26 @@
                           <div class="Cart-block Cart-block_amount" style="padding-left: 5px;">
                             <div class="Cart-amount">
                               <div class="Amount">
-{#                                <button class="Amount-remove" type="submit">#}
-{#                                </button>#}
-                                <div class="Cart-block Cart-block_delete"><a class="Cart-delete blue" href="{% url 'orders:cart_decrease' item.seller_product.id %}">➖</a>
-                                </div>
+                                <button class="Amount-remove" type="submit">
+                                </button>
+{#                                <div class="Cart-block-remove Cart-block_delete"><a class="Cart-delete blue" href="{% url 'orders:cart_decrease' item.seller_product.id %}">➖</a>#}
+{#                                </div>#}
                                 <input class="Amount-input form-input" name="amount" type="text" min="1" value="{{ item.quantity }}"/>
-                                <div class="Cart-block Cart-block_delete"><a class="Cart-delete blue" href="{% url 'orders:cart_increase' item.seller_product.id %}">➕</a>
-                                </div>
-{#                                <button class="Amount-add" type="submit">#}
-{#                                </button>#}
+{#                                <div class="Cart-block-add Cart-block_delete"><a class="Cart-delete blue" href="{% url 'orders:cart_increase' item.seller_product.id %}">➕</a>#}
+{#                                </div>#}
+                                <button class="Amount-add" type="submit">
+                                </button>
                               </div>
                             </div>
                           </div>
-
+                          <div class="Cart-block Cart-block_delete"><input class="Cart-delete" type="submit" value="update"></div>
                           <div class="Cart-block Cart-block_delete"><a class="Cart-delete" href="{% url 'orders:cart_remove' item.seller_product.id %}"><img src="{% static 'assets/img/icons/card/delete.svg' %}" alt="delete.svg"/></a>
                           </div>
 
                         </div>
                       </div>
                       {% csrf_token %}
-                      <input type="submit" value="update" style="visibility: hidden">
+
                   </form>
               {% endfor %}
           {% else %}
@@ -112,11 +112,11 @@
 {% block footer %}
 {% include 'elems/footer.html' %}
 {% endblock %}
-{% block scripts %}
-  <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
-  <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
-  <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
-  <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
-  <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
-  <script src="{% static 'assets/js/scripts.js' %}"></script>
-{% endblock %}
+{#{% block scripts %}#}
+{#  <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>#}
+{#  <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>#}
+{#  <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>#}
+{#  <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>#}
+{#  <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>#}
+{#  <script src="{% static 'assets/js/scripts.js' %}"></script>#}
+{#{% endblock %}#}

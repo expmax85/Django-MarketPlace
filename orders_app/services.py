@@ -1,5 +1,7 @@
 from decimal import Decimal
 from typing import List, Optional, Union
+
+from django.db.transaction import atomic
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from orders_app.models import Order, OrderProduct
@@ -31,7 +33,7 @@ class CartService:
         else:
             self.cart = AnonymCart(request)
 
-    def add_to_cart(self, product_id: int, update_quantity=False) -> None:
+    def add_to_cart(self, product_id: int, quantity: int = 1, update_quantity=False) -> None:
         """
         добавить товар в корзину
 
@@ -39,56 +41,35 @@ class CartService:
         quantity: желаемое количество товаров
         """
         product = get_object_or_404(SellerProduct, id=product_id)
-        if isinstance(self.cart, Order):
+        if isinstance(self.cart, Order) :
             cart_products = self.cart.order_products.select_related('seller_product')
 
-            for cart_product in cart_products:
-                if product.id == cart_product.seller_product.id:
-                    if update_quantity:
+            for cart_product in cart_products :
+                if product.id == cart_product.seller_product.id :
+                    if update_quantity :
                         cart_product.quantity = 1
-                    else:
+                    else :
                         cart_product.quantity += 1
                     cart_product.save()
                     self.cart.save()
                     break
-            else:
+            else :
                 OrderProduct.objects.create(order=self.cart,
                                             seller_product=product,
                                             quantity=1,
                                             # final_price=product.price_after_discount
                                             )
-        else:
+        else :
             self.cart.add(product)
 
-    def increase_in_cart(self, product_id: int) -> None:
-        """
-        увеличить количество товара в корзине
-        product_id
-        """
-        product = get_object_or_404(SellerProduct, id=product_id)
-        if isinstance(self.cart, Order):
-            cart_product = get_object_or_404(OrderProduct, order=self.cart, seller_product=product)
-            cart_product.quantity += 1
-            cart_product.save()
-            self.cart.save()
-        else:
-            self.cart.increase(product)
-
-    def decrease_in_cart(self, product_id: int) -> None:
-        """
-        уменьшить количество товара в корзине
-        product_id
-        """
-        product = get_object_or_404(SellerProduct, id=product_id)
-        if isinstance(self.cart, Order):
-            cart_product = get_object_or_404(OrderProduct, order=self.cart, seller_product=product)
-            quantity = cart_product.quantity
-            if quantity > 1:
-                cart_product.quantity -= 1
-                cart_product.save()
-                self.cart.save()
-        else:
-            self.cart.decrease(product)
+    # def update_product_quantity(self, cart_product: OrderProduct, quantity: int, update_quantity: bool = False) -> None:
+    #     # Обновление количества товара в корзине
+    #     if update_quantity:
+    #         cart_product.quantity = quantity
+    #     else:
+    #         cart_product.quantity += quantity
+    #     cart_product.save()
+    #     self.cart.save()
 
     def remove_from_cart(self, product_id: int) -> None:
         """
@@ -99,12 +80,14 @@ class CartService:
         product = get_object_or_404(SellerProduct, id=product_id)
         if isinstance(self.cart, Order):
             cart_product = get_object_or_404(OrderProduct, order=self.cart, seller_product=product)
+            # product.quantity += cart_product.quantity
+            # product.save()
             cart_product.delete()
             self.cart.save()
         else:
             self.cart.remove(product)
 
-    def change_quantity(self, product, quantity: int, price: Decimal = 0, update_quantity = False) -> None:
+    def change_quantity(self, product, quantity: int, price: Decimal = 0, update_quantity=False) -> None :
         """
         изменить количество товара в корзине
 
@@ -117,7 +100,7 @@ class CartService:
                 cart_product = cart_products[0]
                 if update_quantity:
                     cart_product.quantity = quantity
-                else:
+                else :
                     cart_product.quantity += quantity
             except IndexError:
                 cart_product = OrderProduct(order=self.cart,
@@ -156,19 +139,10 @@ class CartService:
             return self.cart.total_sum
         return self.cart.total_sum()
 
-    # def get_total_discounted_sum(self) -> Decimal:
-    #     """получить общую сумму заказа со скидками"""
-    #     if isinstance(self.cart, Order):
-    #         return self.cart.total_discounted_sum
-    #     return self.cart.total_discounted_sum()
-
     def merge_carts(self, other):
         """Перенос анонимной корзины в корзину зарешистрированного"""
         for item in other.get_goods():
-            print(f'This item = {item}')
-            self.change_quantity(item['seller_product'], item['quantity'],
-                                 # item['final_price']
-                                 )
+            self.change_quantity(item['seller_product'], item['quantity'],)
         other.clear()
 
     def clear(self) -> None:
@@ -176,6 +150,7 @@ class CartService:
         return self.cart.clear()
 
     def save(self) -> None:
+        """Сохранить корзину (любую сущность)"""
         return self.save()
 
     def __len__(self):

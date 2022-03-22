@@ -147,7 +147,7 @@
                 <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
                 </div>
             {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
-                <div class="Card-sale" style="background-color: #d00d0d">{{ discount.amount|floatformat:0}}$
+                <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
                 </div>
             {% endif %}
           </div>

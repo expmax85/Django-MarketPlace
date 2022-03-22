@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 from typing import Dict
 
 import braintree
@@ -92,7 +93,7 @@ class CartView(View):
         if quantity < 1:
             quantity = 1
         if int(product_id) == product.id:
-            cart.change_quantity(product, quantity, True)
+            cart.change_quantity(product, quantity, update_quantity=True)
         else:
             cart.update_product(product, quantity, product_id)
 
@@ -107,21 +108,20 @@ class CartAdd(View):
         return redirect(request.META.get('HTTP_REFERER'))
 
 
-class CartIncreaseQuantity(View):
-    """Увеличение позиции в корзине"""
-    def get(self, request: HttpRequest, product_id: int):
-        cart = CartService(request)
-        cart.increase_in_cart(product_id)
-        return redirect(request.META.get('HTTP_REFERER'))
-
-
-class CartDecreaseQuantity(View):
-    """Уменьшение позиции в корзине"""
-    def get(self, request: HttpRequest, product_id: int):
-        cart = CartService(request)
-        cart.decrease_in_cart(product_id)
-        return redirect(request.META.get('HTTP_REFERER'))
-
+# class CartIncreaseQuantity(View):
+#     """Увеличение позиции в корзине"""
+#     def get(self, request: HttpRequest, product_id: int):
+#         cart = CartService(request)
+#         cart.increase_in_cart(product_id)
+#         return redirect(request.META.get('HTTP_REFERER'))
+#
+#
+# class CartDecreaseQuantity(View):
+#     """Уменьшение позиции в корзине"""
+#     def get(self, request: HttpRequest, product_id: int):
+#         cart = CartService(request)
+#         cart.decrease_in_cart(product_id)
+#         return redirect(request.META.get('HTTP_REFERER'))
 
 class CartRemove(View):
     """Удаделение позиции из корзины"""

@@ -8,8 +8,8 @@ urlpatterns = [
     path('cart/', CartView.as_view(), name='cart_detail'),
     path('cart/<product_id>', CartView.as_view(), name='cart_detail_post'),
     path('add/<int:product_id>/', CartAdd.as_view(), name='cart_add'),
-    path('decrease/<int:product_id>/', CartDecreaseQuantity.as_view(), name='cart_decrease'),
-    path('increase/<int:product_id>/', CartIncreaseQuantity.as_view(), name='cart_increase'),
+    # path('decrease/<int:product_id>/', CartDecreaseQuantity.as_view(), name='cart_decrease'),
+    # path('increase/<int:product_id>/', CartIncreaseQuantity.as_view(), name='cart_increase'),
     path('remove/<int:product_id>/', CartRemove.as_view(), name='cart_remove'),
     path('clear/', cart_clear, name='cart_clear'),
     # эндпоинты оформления заказа
