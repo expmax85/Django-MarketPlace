@@ -33,34 +33,34 @@ class CartService:
         else:
             self.cart = AnonymCart(request)
 
-    def add_to_cart(self, product_id: int, quantity: int = 1, update_quantity=False) -> None:
-        """
-        добавить товар в корзину
-
-        product: инстанс модели товара
-        quantity: желаемое количество товаров
-        """
-        product = get_object_or_404(SellerProduct, id=product_id)
-        if isinstance(self.cart, Order) :
-            cart_products = self.cart.order_products.select_related('seller_product')
-
-            for cart_product in cart_products :
-                if product.id == cart_product.seller_product.id :
-                    if update_quantity :
-                        cart_product.quantity = 1
-                    else :
-                        cart_product.quantity += 1
-                    cart_product.save()
-                    self.cart.save()
-                    break
-            else :
-                OrderProduct.objects.create(order=self.cart,
-                                            seller_product=product,
-                                            quantity=1,
-                                            # final_price=product.price_after_discount
-                                            )
-        else :
-            self.cart.add(product)
+    # def add_to_cart(self, product_id: int, quantity: int = 1, update_quantity=False) -> None:
+    #     """
+    #     добавить товар в корзину
+    #
+    #     product: инстанс модели товара
+    #     quantity: желаемое количество товаров
+    #     """
+    #     product = get_object_or_404(SellerProduct, id=product_id)
+    #     if isinstance(self.cart, Order):
+    #         cart_products = self.cart.order_products.select_related('seller_product')
+    #
+    #         for cart_product in cart_products:
+    #             if product.id == cart_product.seller_product.id:
+    #                 if update_quantity:
+    #                     cart_product.quantity = 1
+    #                 else:
+    #                     cart_product.quantity += 1
+    #                 cart_product.save()
+    #                 self.cart.save()
+    #                 break
+    #         else:
+    #             OrderProduct.objects.create(order=self.cart,
+    #                                         seller_product=product,
+    #                                         quantity=1,
+    #                                         # final_price=product.price_after_discount
+    #                                         )
+    #     else:
+    #         self.cart.add(product)
 
     # def update_product_quantity(self, cart_product: OrderProduct, quantity: int, update_quantity: bool = False) -> None:
     #     # Обновление количества товара в корзине
@@ -87,27 +87,37 @@ class CartService:
         else:
             self.cart.remove(product)
 
-    def change_quantity(self, product, quantity: int, price: Decimal = 0, update_quantity=False) -> None :
+    def add_to_cart(self, product, quantity: int, price: Decimal = 0, update_quantity=False) -> None:
         """
         изменить количество товара в корзине
 
         quantity: новое количество
         """
         if isinstance(self.cart, Order):
-            # TODO Доработать
-            try:
-                cart_products = OrderProduct.objects.filter(order=self.cart, seller_product=product).all()
-                cart_product = cart_products[0]
-                if update_quantity:
-                    cart_product.quantity = quantity
-                else :
-                    cart_product.quantity += quantity
-            except IndexError:
+            cart_product = OrderProduct.objects.filter(order=self.cart, seller_product=product).first()
+            if not cart_product:
                 cart_product = OrderProduct(order=self.cart,
                                             seller_product=product,
-                                            quantity=quantity,
-                                            final_price=price
-                                            )
+                                            quantity=0,
+                                            final_price=price)
+
+            if update_quantity:
+                cart_product.quantity = quantity
+            else:
+                cart_product.quantity += quantity
+            # try:
+            #     cart_products = OrderProduct.objects.filter(order=self.cart, seller_product=product).all()
+            #     cart_product = cart_products[0]
+            #     if update_quantity:
+            #         cart_product.quantity = quantity
+            #     else:
+            #         cart_product.quantity += quantity
+            # except IndexError:
+            #     cart_product = OrderProduct(order=self.cart,
+            #                                 seller_product=product,
+            #                                 quantity=quantity,
+            #                                 final_price=price
+            #                                 )
             cart_product.save()
             self.cart.save()
         else:
@@ -120,7 +130,7 @@ class CartService:
         quantity: новое количество
         """
 
-        self.change_quantity(product, quantity)
+        self.add_to_cart(product, quantity)
         self.remove_from_cart(product_id)
 
     def get_goods(self) -> Union[OrderProduct, AnonymCart]:
@@ -142,7 +152,7 @@ class CartService:
     def merge_carts(self, other):
         """Перенос анонимной корзины в корзину зарешистрированного"""
         for item in other.get_goods():
-            self.change_quantity(item['seller_product'], item['quantity'],)
+            self.add_to_cart(item['seller_product'], item['quantity'],)
         other.clear()
 
     def clear(self) -> None:

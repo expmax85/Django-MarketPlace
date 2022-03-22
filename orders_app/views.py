@@ -93,7 +93,7 @@ class CartView(View):
         if quantity < 1:
             quantity = 1
         if int(product_id) == product.id:
-            cart.change_quantity(product, quantity, update_quantity=True)
+            cart.add_to_cart(product, quantity, update_quantity=True)
         else:
             cart.update_product(product, quantity, product_id)
 
@@ -104,7 +104,9 @@ class CartAdd(View):
     """Добавление позиций в корзине"""
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
-        cart.add_to_cart(product_id)
+        product = get_object_or_404(SellerProduct, id=str(product_id))
+        cart.add_to_cart(product, quantity=1, update_quantity=False)
+        # cart.add_to_cart(product_id)
         return redirect(request.META.get('HTTP_REFERER'))
 
 
