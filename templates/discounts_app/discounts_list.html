@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+{% trans 'Catalog' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                    <h1 class="Middle-title">{% trans 'Catalog Megano' %}
+                </h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="{% url 'goods-polls:index_url' %}">{% trans 'home' %}</a>
+                    </li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'blog' %}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="Section">
+      <div class="wrap">
+        <div class="Cards Cards_blog">
+          {% for discount in discounts %}
+              <div class="Card"><a class="Card-picture" href="#"><img src="../static/assets/img/content/sale/product.png" alt="product.png"/></a>
+                {% if discount.valid_from %}
+                    <div class="Card-date">
+                      <strong class="Card-date-number">{{ discount.valid_from.day }}
+                      </strong><span class="Card-date-month">{{ discount.valid_from|date:"M" }}</span>
+                    </div>
+                {% endif %}
+                {% if discount.valid_from %}
+                    <div class="Card-date Card-date_to">
+                      <strong class="Card-date-number">{{ discount.valid_to.day }}
+                      </strong><span class="Card-date-month">{{ discount.valid_to|date:"M" }}</span>
+                    </div>
+                {% endif %}
+                <div class="Card-pin">
+                </div>
+                <div class="Card-content">
+                  <strong class="Card-title"><a href="#">{{ discount.name }}</a>
+                  </strong>
+                  <div class="Card-description">
+                      {{ discount.description }}
+                  </div>
+                </div>
+              </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="Pagination">
+        <div class="Pagination-ins"><a class="Pagination-element Pagination-element_prev" href="#"><img src="../static/assets/img/icons/prevPagination.svg" alt="prevPagination.svg"/></a><a class="Pagination-element Pagination-element_current" href="#"><span class="Pagination-text">1</span></a><a class="Pagination-element" href="#"><span class="Pagination-text">2</span></a><a class="Pagination-element" href="#"><span class="Pagination-text">3</span></a><a class="Pagination-element Pagination-element_prev" href="#"><img src="../static/assets/img/icons/nextPagination.svg" alt="nextPagination.svg"/></a>
+        </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}

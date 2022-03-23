@@ -253,7 +253,7 @@ class PaymentWithCardView(View):
         nonce = request.POST.get('payment_method_nonce', None)
         # Создание и сохранение транзакции.
         result = braintree.Transaction.sale({
-            'amount': '{:.2f}'.format(order.final_total()),
+            'amount': '{:.2f}'.format(order.final_total),
             'payment_method_nonce': nonce,
             'options': {
                 'submit_for_settlement': True

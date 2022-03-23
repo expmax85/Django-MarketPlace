@@ -1,6 +1,9 @@
+from typing import Callable
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import CheckConstraint, Q
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from goods_app.models import ProductCategory
 from stores_app.models import Seller, SellerProduct
@@ -49,6 +52,10 @@ class Discount(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self) -> Callable:
+        return reverse('discounts-polls:discount-detail', kwargs={'slug': self.slug,
+                                                                  'pk': self.id})
 
     class Meta:
         abstract = True
