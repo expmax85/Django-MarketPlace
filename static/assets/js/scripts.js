@@ -890,3 +890,254 @@ Categories().init();
 
 
 })(jQuery);
+
+
+// ============================= try async to sort items in catalog =======================================
+
+function adjustSortBtn (data, sortType) {
+    document.querySelectorAll('.Sort-sortBy').forEach(btn => {
+            document.querySelector('.Sort-title').dataset.sort_title = sortType
+            if (btn.dataset.sort === data.current_state) {
+                if (btn.classList.contains('Sort-sortBy_dec') && !btn.classList.contains('Sort-sortBy_inc')) {
+                    btn.classList.remove('Sort-sortBy_dec')
+                    btn.classList.add('Sort-sortBy_inc')
+                    btn.dataset.sort = data.next_state
+                    return
+                }
+                if (btn.classList.contains('Sort-sortBy_inc') && !btn.classList.contains('Sort-sortBy_dec')) {
+                    btn.classList.remove('Sort-sortBy_inc')
+                    btn.classList.add('Sort-sortBy_dec')
+                    btn.dataset.sort = data.next_state
+                    return
+                }
+                if (!btn.classList.contains('Sort-sortBy_inc') && !btn.classList.contains('Sort-sortBy_dec')) {
+                    btn.classList.add('Sort-sortBy_inc')
+                    btn.dataset.sort = data.next_state
+                }
+
+            } else {
+                btn.classList.remove('Sort-sortBy_dec')
+                btn.classList.remove('Sort-sortBy_inc')
+                btn.dataset.sort = btn.dataset.name + '_inc'
+            }
+
+            document.querySelectorAll('.Pagination-element').forEach(function (pageBtn) {
+                pageBtn.dataset.sort = sortType
+            });
+        }
+    );
+}
+
+function createURL(sortType, page, slug) {
+
+    let url = `/ajax/${slug}/sotrby/${sortType}/page/${page}`;
+
+    const filter_status = document.getElementById('submit_btn').dataset.active;
+    const tag_status = document.getElementById('tag_status').dataset.tag_active;
+    const tag_name = document.getElementById('tag_status').dataset.tag_name;
+
+    const form = document.forms.filterForm;
+
+    if (filter_status == 1 && tag_status == 0) {
+
+        let price = form.elements.price.value;
+        let title = form.elements.title.value;
+        let select = form.elements.select.value;
+        if (select == "select") {
+            select = '';
+        }
+        let in_stock = form.elements.in_stock.value;
+        let ch_box_2 = form.elements.ch_box_2.value;
+        url = url + `?price=${price}&title=${title}&select=${select}&in_stock=${in_stock}&ch_box_2=${ch_box_2}`
+    }
+    if (filter_status == 1 && tag_status == 1) {
+
+        let price = form.elements.price.value;
+        let title = form.elements.title.value;
+        let select = form.elements.select.value;
+        if (select == "select") {
+            select = '';
+        }
+        let in_stock = form.elements.in_stock.value;
+        let ch_box_2 = form.elements.ch_box_2.value;
+        url = url + `?price=${price}&title=${title}&select=${select}&in_stock=${in_stock}&ch_box_2=${ch_box_2}&tag=${tag_name}`
+    }
+    if (filter_status == 0 && tag_status == 1) {
+        url = url + `?tag=${tag_name}`
+    }
+    if (filter_status == 0 && tag_status == 0) {
+        url = `/ajax/${slug}/sotrby/${sortType}/page/${page}`;
+    }
+
+    return url
+}
+
+function sortFoo() {
+    document.querySelectorAll('.Sort-sortBy').forEach(function (sortBtn) {
+        sortBtn.addEventListener('click', async (event) => {
+
+            const sortType = event.currentTarget.dataset.sort;
+            const page = event.currentTarget.dataset.page;
+            const slug = event.currentTarget.dataset.slug;
+
+            let url = createURL(sortType, page, slug)
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            $('#cards_with_pagination').replaceWith($(data.html));
+
+            adjustSortBtn(data, sortType)
+            paginationFoo()
+        })
+    });
+}
+
+
+// ============================= async pagination in catalog =======================================
+
+function paginationFoo() {
+    document.querySelectorAll('.Pagination-element').forEach(function (pageBtn) {
+        pageBtn.addEventListener('click', async (event) => {
+
+
+            const page = event.currentTarget.dataset.page;
+            const slug = event.currentTarget.dataset.slug;
+            const sortType = event.currentTarget.dataset.sort;
+
+
+            let url = createURL(sortType, page, slug)
+
+            const responsePages = await fetch(url);
+            const data = await responsePages.json();
+            $('#cards_with_pagination').replaceWith($(data.html))
+
+            document.getElementById('prevPage').dataset.page = data.prev_page;
+            document.getElementById('nextPage').dataset.page = data.next_page;
+            document.querySelectorAll('.Pagination-element').forEach(btn => {
+                if (btn.dataset.name === page) {
+                    btn.classList.add('Pagination-element_current')
+                } else {
+                    btn.classList.remove('Pagination-element_current')
+                }
+            })
+
+            paginationFoo()
+        })
+    });
+}
+
+
+// ============================= queryset with filters =======================================
+
+function filterFoo() {
+    document.getElementById('submit_btn').addEventListener('click', async (filterBtn) => {
+
+        document.getElementById('submit_btn').dataset.active = 1;
+
+        const filterDataset = document.getElementById('submit_btn').dataset
+        const sortType = filterDataset.sort;
+        const slug = filterDataset.slug;
+        const page = 1
+
+        let url = createURL(sortType, page, slug)
+        console.log('filter')
+        console.log(url)
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        $('#cards_with_pagination').replaceWith($(data.html));
+
+        paginationFoo()
+    });
+
+}
+
+// ============================================ queryset with tag ========================================
+
+function adjustTagBtn(currentBtn) {
+    document.querySelectorAll('.tag_btn').forEach(function (tagBtn) {
+        if (tagBtn.classList.contains('xz')) {
+            tagBtn.classList.remove('xz')
+        }
+    })
+    currentBtn.classList.add('xz')
+}
+
+
+function tagFoo() {
+    document.querySelectorAll('.tag_btn').forEach(function (tagBtn) {
+        tagBtn.addEventListener('click', async (event) => {
+
+            const currentBtn = event.currentTarget
+
+            const tagDataset = event.currentTarget.dataset;
+            tagDataset.in_use = 1;
+            document.getElementById('tag_status').dataset.tag_name = tagDataset.tag
+            document.getElementById('tag_status').dataset.tag_active = 1
+
+            const sortType = document.querySelector('.Sort-title').dataset.sort_title;
+            const slug = tagDataset.slug;
+            const page = 1;
+
+            let url = createURL(sortType, page, slug)
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            adjustTagBtn(currentBtn)
+
+            $('#cards_with_pagination').replaceWith($(data.html));
+
+            paginationFoo()
+        })
+    });
+}
+
+// ============================================= check boxes in filter changes =================================================
+
+function checkBoxFoo() {
+    document.querySelectorAll('.che').forEach(function (box) {
+        box.addEventListener('click', function (event) {
+            const checkbox = event.currentTarget
+            if (checkbox.checked) {
+                checkbox.value = '1';
+            } else {
+                checkbox.value = '0';
+            }
+        })
+    });
+}
+
+
+// ===================================  main function wich starts all needed for catalog ==============================
+
+function main() {
+    document.addEventListener('DOMContentLoaded', function () {
+        if (document.querySelectorAll('.che').length > 0) {
+            checkBoxFoo()
+        }
+
+        if (document.querySelectorAll('.Sort-sortBy').length > 0) {
+            sortFoo()
+        }
+
+        if (document.querySelectorAll('.Pagination-element').length > 0) {
+            paginationFoo()
+        }
+
+        if (document.querySelectorAll('.tag_btn').length > 0) {
+            tagFoo()
+        }
+
+        if (document.querySelectorAll('#submit_btn').length > 0) {
+            filterFoo()
+            document.querySelectorAll('.CategoriesButton-link').forEach(function (categoryBtn) {
+                document.getElementById('submit_btn').dataset.active = 0
+            });
+        }
+    });
+}
+
+main()
