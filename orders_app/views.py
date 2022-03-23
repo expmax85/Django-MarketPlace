@@ -1,3 +1,4 @@
+import datetime
 import json
 from decimal import Decimal
 from typing import Dict, Optional, Any
@@ -108,6 +109,7 @@ class CartAdd(View):
         cart.add_to_cart(product, quantity=1, update_quantity=False)
         return redirect(request.META.get('HTTP_REFERER'))
 
+
 class CartRemove(View):
     """Удаделение позиции из корзины"""
     def get(self, request: HttpRequest, product_id: int):
@@ -204,6 +206,7 @@ class OrderStepThree(View):
             payment_method = form.cleaned_data['payment_method']
             order.payment_method = payment_method
             order.in_order = True
+            order.ordered = datetime.datetime.today()
             order.save()
             return redirect('orders:order_step_four')
 
@@ -250,7 +253,7 @@ class PaymentWithCardView(View):
         nonce = request.POST.get('payment_method_nonce', None)
         # Создание и сохранение транзакции.
         result = braintree.Transaction.sale({
-            'amount': '{:.2f}'.format(order.total_discounted_sum),
+            'amount': '{:.2f}'.format(order.final_total()),
             'payment_method_nonce': nonce,
             'options': {
                 'submit_for_settlement': True
@@ -273,13 +276,21 @@ class PaymentWithAccountView(View):
     """
     template_name = 'orders_app/payment_account.html'
 
-    def get(self, request: HttpRequest, order_id: int, **kwargs):
+    def get(self, request: HttpRequest, order_id: int):
         order = get_object_or_404(Order, id=order_id)
-        client_token = braintree.ClientToken.generate()
-        context = {'order': order, 'client_token': client_token,
-                   # 'code': code
-                   }
+        context = {'order': order}
         return render(request, self.template_name, context=context)
+
+    def post(self, request: HttpRequest, order_id: int):
+        order = get_object_or_404(Order, id=order_id)
+        account = ''.join(request.POST.get('numero1').split(' '))
+        if int(account) % 2 == 0 and account[-1] != '0':
+            order.paid = True
+            order.braintree_id = account
+            order.save()
+            return redirect('orders:payment_done')
+        else:
+            return redirect('orders:payment_canceled')
 
 
 def payment_done(request):

@@ -67,7 +67,7 @@ class Order(models.Model):
         total = Decimal(0.00)
         for product in self.order_products.all():
             total += product.final_price * product.quantity
-        return total
+        return Decimal(total)
 
     def final_total(self):
         return self.total_discounted_sum
