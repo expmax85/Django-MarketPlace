@@ -28,89 +28,93 @@
 
     <div class="Section">
       <div class="wrap">
-        <div class="Cart-total">
-            <div class="Cart-block Cart-block_total">
-              <strong class="Cart-title">{% trans 'Order Nr:' %}
-              </strong>
-              <span class="Cart-price">{{ order.id }}</span>
+        {% if not order.paid %}
+            <div class="Cart-total">
+                <div class="Cart-block Cart-block_total">
+                  <strong class="Cart-title">{% trans 'Order Nr:' %}
+                  </strong>
+                  <span class="Cart-price">{{ order.id }}</span>
+                </div>
             </div>
-        </div>
-        <div class="Cart-total">
-            <div class="Cart-block Cart-block_total">
-                <strong class="Cart-title">{% trans 'Total:' %}
-                </strong>
-                <span class="Cart-price">{{ order.total_discounted_sum }}$</span>
-          </div>
-        </div>
-        <form id="payment" class="form Payment" action="" method="post">
-          <div class="Payment-card">
-            <div class="form-group">
-              <label class="form-label">Card Number</label>
-              <div id="card-number" class="form-input Payment-bill" style="height: 50px;"></div>
-
-              <label class="form-label">CVV</label>
-              <div id="cvv" class="form-input Payment-bill" style="height: 50px;"></div>
-
-              <label class="form-label">Expiration Date</label>
-              <div id="expiration-date" class="form-input Payment-bill" style="height: 50px;"></div>
-              <input type="hidden" id="nonce" name="payment_method_nonce" value="">
-              {% csrf_token %}
-
+            <div class="Cart-total">
+                <div class="Cart-block Cart-block_total">
+                    <strong class="Cart-title">{% trans 'Total:' %}
+                    </strong>
+                    <span class="Cart-price">{{ order.final_total }}$</span>
+              </div>
             </div>
-          </div>
-          <div class="Payment-pay">
-              <button class="btn btn_primary" type="submit">{% trans 'Pay now' %}</button>
-          </div>
-        </form>
-        <!—Подключаем клиента Braintree. -->
-        <script src="https://js.braintreegateway.com/web/3.29.0/js/client.min.js"></script>
-        <!—Подключаем компонент Hosted Fields. -->
-        <script src="https://js.braintreegateway.com/web/3.29.0/js/hosted-fields.min.js"></script>
-        <script>
-            var form = document.querySelector('#payment');
-            var submit = document.querySelector('input[type="submit"]');
+            <form id="payment" class="form Payment" action="" method="post">
+              <div class="Payment-card">
+                <div class="form-group">
+                  <label class="form-label">Card Number</label>
+                  <div id="card-number" class="form-input Payment-bill" style="height: 50px;"></div>
 
-            braintree.client.create({
-                authorization: '{{ client_token }}'
-            }, function (clientErr, clientInstance) {
-                if (clientErr) {
-                    console.error(clientErr);
-                    return;
-                }
+                  <label class="form-label">CVV</label>
+                  <div id="cvv" class="form-input Payment-bill" style="height: 50px;"></div>
 
-            braintree.hostedFields.create({
-                client: clientInstance,
-                styles: {
-                    'input': {'font-size': '13px'},
-                    'input.invalid': {'color': 'red'},
-                    'input.valid': {'color': 'green'}
-                },
-                fields: {
-                    number: {selector: '#card-number'},
-                    cvv: {selector: '#cvv'},
-                    expirationDate: {selector: '#expiration-date'}
-                }
-            }, function (hostedFieldsErr, hostedFieldsInstance) {
-                if (hostedFieldsErr) {
-                    console.error(hostedFieldsErr);
-                    return;
-                }
-                submit.removeAttribute('disabled');
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault();
-                    hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
-                        if (tokenizeErr) {
-                            console.error(tokenizeErr);
-                            return;
-                        }
-                        // Задаем значение поля для отправки токена на сервер.
-                        document.getElementById('nonce').value = payload.nonce;
-                        // Отправляем форму на сервер.
-                        document.getElementById('payment').submit();
-                    });
-                }, false);
-            });});
-        </script>
+                  <label class="form-label">Expiration Date</label>
+                  <div id="expiration-date" class="form-input Payment-bill" style="height: 50px;"></div>
+                  <input type="hidden" id="nonce" name="payment_method_nonce" value="">
+                  {% csrf_token %}
+
+                </div>
+              </div>
+              <div class="Payment-pay">
+                  <button class="btn btn_primary" type="submit">{% trans 'Pay now' %}</button>
+              </div>
+            </form>
+            <!—Подключаем клиента Braintree. -->
+            <script src="https://js.braintreegateway.com/web/3.29.0/js/client.min.js"></script>
+            <!—Подключаем компонент Hosted Fields. -->
+            <script src="https://js.braintreegateway.com/web/3.29.0/js/hosted-fields.min.js"></script>
+            <script>
+                var form = document.querySelector('#payment');
+                var submit = document.querySelector('input[type="submit"]');
+
+                braintree.client.create({
+                    authorization: '{{ client_token }}'
+                }, function (clientErr, clientInstance) {
+                    if (clientErr) {
+                        console.error(clientErr);
+                        return;
+                    }
+
+                braintree.hostedFields.create({
+                    client: clientInstance,
+                    styles: {
+                        'input': {'font-size': '13px'},
+                        'input.invalid': {'color': 'red'},
+                        'input.valid': {'color': 'green'}
+                    },
+                    fields: {
+                        number: {selector: '#card-number'},
+                        cvv: {selector: '#cvv'},
+                        expirationDate: {selector: '#expiration-date'}
+                    }
+                }, function (hostedFieldsErr, hostedFieldsInstance) {
+                    if (hostedFieldsErr) {
+                        console.error(hostedFieldsErr);
+                        return;
+                    }
+                    submit.removeAttribute('disabled');
+                    form.addEventListener('submit', function (event) {
+                        event.preventDefault();
+                        hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+                            if (tokenizeErr) {
+                                console.error(tokenizeErr);
+                                return;
+                            }
+                            // Задаем значение поля для отправки токена на сервер.
+                            document.getElementById('nonce').value = payload.nonce;
+                            // Отправляем форму на сервер.
+                            document.getElementById('payment').submit();
+                        });
+                    }, false);
+                });});
+            </script>
+          {% else %}
+            <p class="form-label">{% trans 'This order has been already paid' %}</p>
+          {% endif %}
       </div>
     </div>
 

@@ -18,13 +18,13 @@
                 </div>
                 <div class="CategoriesButton-content">
 
-                    {% load mptt_tags %}
+<!--                    {% load mptt_tags %}-->
                     {% get_tree_dict as dict %}
 
                     {% for key, value in dict.items %}
 
                     <div class="CategoriesButton-link">
-                        <a href="{% url 'goods-polls:catalog_by_category_url' key.slug 'name_inc' 1 %}">
+                        <a href="{% url 'goods-polls:catalog_by_category_url' key.slug %}">
                             <div class="CategoriesButton-icon">
                                 <img src="{% static 'assets/img/icons/departments/1.svg' %}" alt="1.svg"/>
                             </div>
@@ -38,7 +38,7 @@
 
 
                             <a class="CategoriesButton-link"
-                               href="{% url 'goods-polls:catalog_by_category_url' elem.slug 'name_inc' 1 %}">
+                               href="{% url 'goods-polls:catalog_by_category_url' elem.slug %}">
                                 <div class="CategoriesButton-icon">
                                     <img src="{% static 'assets/img/icons/departments/1.svg' %}" alt="1.svg"/>
                                 </div>

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+
+import django.middleware.locale
 from braintree import Configuration, Environment
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,6 +55,7 @@ INSTALLED_APPS = [
     'settings_app',
     'taggit',
     'dynamic_preferences',
+    'django_extensions',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -65,6 +68,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -113,7 +117,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -160,6 +163,13 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+LANGUAGES = [
+    ('ru', 'Русский'),
+    ('en', 'English'),
+]
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale'),]
+
 USE_TZ = True
 
 
@@ -186,6 +196,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'profiles_app.User'
 
 CART_SESSION_ID = 'cart'
+
+SESSION_ENGINE = 'config.session_backend'
 
 BRAINTREE_MERCHANT_ID = 'm3wfb5j4gbvcrh3b'  # ID продавца.
 BRAINTREE_PUBLIC_KEY = '93btdgpyybsjkvpf'  # Публичный ключ.

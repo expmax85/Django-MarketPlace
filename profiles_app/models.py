@@ -61,9 +61,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return str(self.email)
 
-    def is_member(self, group_name) -> bool:
-        if self.groups.filter(name=group_name):
-            return True
+    def is_member(self, group_name: str) -> bool:
+        try:
+            if self.groups.filter(name=group_name):
+                return True
+        except ValueError:
+            return False
         return False
 
     def save(self, *args, **kwargs):
@@ -73,6 +76,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                 old_self.avatar.delete(False)
         if self.is_member('Content-manager'):
             self.is_staff = True
+        else:
+            self.is_staff = False
         return super(User, self).save(*args, **kwargs)
 
     class Meta:
@@ -85,10 +90,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         ]
 
 
-class ViewedProduct(models.Model):
-    """ Модель просмотренного товара """
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='viewed')
-    product = models.ForeignKey('goods_app.Product', on_delete=models.CASCADE, related_name='viewed_list')
-    shop = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
-    date = models.DateTimeField(auto_now=True)
+# class ViewedProduct(models.Model):
+#     """ Модель просмотренного товара """
+#
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='viewed')
+#     product = models.ForeignKey('goods_app.Product', on_delete=models.CASCADE, related_name='viewed_list')
+#     shop = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
+#     date = models.DateTimeField(auto_now=True)

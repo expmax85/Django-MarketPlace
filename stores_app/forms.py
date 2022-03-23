@@ -31,7 +31,7 @@ class EditSellerProductForm(forms.ModelForm):
 
     class Meta:
         model = SellerProduct
-        fields = ['discount', 'price', 'price_after_discount', 'quantity']
+        fields = ['price', 'quantity']
         exclude = ['seller', 'product', ]
 
 

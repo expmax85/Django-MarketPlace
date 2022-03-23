@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.conf import settings
 from stores_app.models import SellerProduct
+from orders_app.check_stock import check_stock
 
 
 class AnonymCart:
@@ -19,38 +20,34 @@ class AnonymCart:
         product_id = str(product.id)
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 0,
-                                     'price': str(product.price),
-                                     'discounted_price': str(product.price_after_discount)}
+                                     'price': str(product.price)}
         if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
+            delta = quantity - self.cart[product_id]['quantity']
+            if check_stock(product, delta):
+                self.cart[product_id]['quantity'] = quantity
+                self.save()
+                return True
+            return False
         else:
-            self.cart[product_id]['quantity'] += quantity
-        self.save()
-
-    def increase(self, product):
-        """Увеличение количества товара в корзине на 1"""
-        product_id = str(product.id)
-        if product_id in self.cart:
-            self.cart[product_id]['quantity'] += 1
-        self.save()
-
-    def decrease(self, product):
-        """Умньшение количества товара в корзине на 1"""
-        product_id = str(product.id)
-        if product_id in self.cart and self.cart[product_id]['quantity'] > 1:
-            self.cart[product_id]['quantity'] -= 1
-        self.save()
+            delta = quantity
+            if check_stock(product, delta):
+                self.cart[product_id]['quantity'] += quantity
+                self.save()
+                return True
+            return False
 
     def save(self):
         # Отметка сессии как измененной
         self.session.modified = True
 
-    def remove(self, product):
+    def remove(self, product: SellerProduct):
         """Удаление товара из корзины."""
         product_id = str(product.id)
         if product_id in self.cart:
+            product.quantity += self.cart[product_id]['quantity']
+            product.save()
             del self.cart[product_id]
-        self.save()
+            self.save()
 
     def __iter__(self):
         """Проходим по товарам корзины и получаем соответствующие объекты Product"""
@@ -74,13 +71,6 @@ class AnonymCart:
         """Получение общей стоимости товаров в корзине"""
         return sum(
             Decimal(item['price']) * item['quantity']
-            for item in self.cart.values()
-        )
-
-    def total_discounted_sum(self):
-        """Получение общей стоимости товаров в корзине со скидкой"""
-        return sum(
-            Decimal(item['discounted_price']) * item['quantity']
             for item in self.cart.values()
         )
 

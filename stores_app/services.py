@@ -5,20 +5,19 @@ from typing import Dict
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete
 
 from config.settings import MEDIA_ROOT
 from discounts_app.models import Discount
+from orders_app.models import Order
+from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product, ProductCategory
 
 
 User = get_user_model()
-
-# Set custom level messages for django.contrib.messages
-SUCCESS_DEL_PRODUCT = 100
-SUCCESS_DEL_STORE = 110
 
 
 class StoreServiceMixin:
@@ -31,7 +30,7 @@ class StoreServiceMixin:
     remove_store(request) - remove Seller instance with id=request.id=request
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
- ?? get_products(query params) - get products
+    get_products(query params) - get products
  ?? get_categories() - get all categories
  ?? get_discounts() - get all discounts
  ?? get_price_with_discount(price, discount) - Get the price with discount, if it had
@@ -145,6 +144,14 @@ class StoreServiceMixin:
         return Discount.objects.all()
 
     @classmethod
+    def get_last_order(cls, user: User) -> QuerySet:
+        return Order.objects.filter(customer=user).last()
+
+    @classmethod
+    def get_all_orders(cls, user) -> QuerySet:
+        return Order.objects.filter(customer=user)
+
+    @classmethod
     def remove_old_file(cls, file: str) -> None:
         """
         Method for remove old file, when update the store-logo for example
@@ -159,12 +166,10 @@ class StoreServiceMixin:
         product.save()
 
 
+@receiver(post_delete, sender=Seller)
 def delete_IconFile(**kwargs) -> None:
     """
     The signal for removing icon Seller, when the store is deleting
     """
     file = kwargs.get('instance')
     file.icon.delete(save=False)
-
-
-post_delete.connect(delete_IconFile, Seller)

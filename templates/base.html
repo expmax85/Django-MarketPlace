@@ -37,9 +37,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/basic.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/extra.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/additional.css' %}">
-    <script src="{% static 'assets/plg/CountDown/countdown.js' %}"></script>
+    <script src="{% static 'assets/plg/CountDown/jquery.countdown.js' %}"></script>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hogan.js/3.0.2/hogan.js"></script>
@@ -63,14 +62,13 @@
         {% block footer %}
         {% endblock %}
     </footer>
-
-    <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
-    <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
-    <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
-    <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
-    <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
-    <script src="{% static 'assets/js/scripts.js' %}"></script>
     {% block scripts %}
+        <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
+        <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
+        <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
+        <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
+        <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
+        <script src="{% static 'assets/js/scripts.js' %}"></script>
     {% endblock %}
 
 </body>

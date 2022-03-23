@@ -56,19 +56,27 @@ class Order(models.Model):
     @property
     def total_sum(self) -> Decimal:
         """Метод получения общей стоимости товаров в заказе"""
-        total = 0
+        total = Decimal(0.00)
         for product in self.order_products.all():
-            total += product.position_price * product.quantity
+            total += product.seller_product.price * product.quantity
         return total
 
     @property
     def total_discounted_sum(self) -> Decimal:
         """Метод получения общей стоимости товаров в заказе со скидками"""
-        total = self.order_products.aggregate(
-            total=Sum(F('final_price') * F('quantity')))['total']
-        if not total:
-            total = 0
+        total = Decimal(0.00)
+        for product in self.order_products.all():
+            total += product.final_price * product.quantity
         return total
+
+    def final_total(self):
+        return self.total_discounted_sum
+
+    def __str__(self):
+        return f"{_('Order')} №{self.id}"
+
+    def name(self):
+        return self.__str__()
 
     def __len__(self) -> int:
         """Метод получения количества товаров в заказе"""
@@ -89,14 +97,24 @@ class OrderProduct(models.Model):
         on_delete=models.CASCADE,
         related_name='order_products'
     )
-    final_price = models.DecimalField(max_digits=10, decimal_places=2,
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0,
                                       verbose_name=_('Guess discount price'))
     quantity = models.IntegerField(null=True, default=1,
                                    verbose_name=_('quantity'))
 
-    @property
-    def position_price(self):
-        """Метод получения цены товара со скидкой"""
-        # final_price = get_discounted_price(self)   Получение цены со скидкой из сервиса скидок.
-        # Пока цена магазина. Название метода получения цкны со скидкой пока условное
-        return self.seller_product.price
+    def __str__(self):
+        return f"{_('OrderProduct')} №{self.id}"
+
+    def name(self):
+        return self.__str__()
+
+
+class ViewedProduct(models.Model):
+    """ Модель просмотренного товара """
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='viewed', blank=True, null=True)
+    session = models.CharField(max_length=100, blank=True)
+    product = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
+    date = models.DateTimeField(auto_now=True)
+
+

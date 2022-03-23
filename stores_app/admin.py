@@ -16,9 +16,9 @@ class SellerAdmin(admin.ModelAdmin):
 
 @admin.register(SellerProduct)
 class SellerProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'seller', 'price', 'discount', 'price_after_discount', 'quantity')
-    list_filter = ('product', 'seller', 'price', 'discount', 'price_after_discount', 'quantity')
-    search_fields = ('product', 'seller', 'price', 'discount', 'price_after_discount', 'quantity')
+    list_display = ('id', 'product', 'seller', 'price', 'quantity')
+    list_filter = ('product', 'seller', 'price', 'quantity')
+    search_fields = ('product', 'seller', 'price', 'quantity')
 
 
 @admin.register(ProductRequest)

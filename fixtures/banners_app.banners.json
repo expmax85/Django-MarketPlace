@@ -1,0 +1,12 @@
+[
+{
+  "model": "banners_app.banner",
+  "pk": 1,
+  "fields": {
+    "discount": 1,
+    "title": "TruckBook 1000",
+    "description": "Get it now with 5% discount",
+    "image": "static/assets/img/content/home/banners/django.jpg"
+  }
+}
+]

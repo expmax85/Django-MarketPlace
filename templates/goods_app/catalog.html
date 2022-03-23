@@ -35,7 +35,10 @@
                         </strong>
                     </header>
                     <div class="Section-columnContent">
-                        <form class="form" action="{% url 'goods-polls:catalog_filter_url' category.slug sort_type 1 %}" method="post">
+                        <form class="form"
+                              action=""
+                              method="get"
+                              name="filterForm">
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="range Section-columnRange">
@@ -53,30 +56,38 @@
                             </div>
                             <div class="form-group">
                                 <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
-                                <select class="form-select" name="select">
+                                <select class="form-select" name="select" id="select">
                                     <option value="seller" selected="selected" disabled="disabled">{% trans 'Seller:' %}
                                     </option>
-                                    <option value="kkk">Kkkk</option>
-                                    <option value="sdfsdf">sdfsdf</option>
+
+                                    {% for seller in sellers %}
+                                    <option value="{{seller}}">{{ seller }}</option>
+                                    {% endfor %}
+
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label class="toggle">
-                                    <input type="checkbox" name="ch_box_1"/>
+                                    <input class="che" type="checkbox" name="in_stock" value="0"/>
                                     <span class="toggle-box"></span>
                                     <span class="toggle-text">{% trans 'Only items in stock:' %}</span>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label class="toggle">
-                                    <input type="checkbox" name="ch_box_2"/>
+                                    <input class="che" type="checkbox" name="ch_box_2" value="0"/>
                                     <span class="toggle-box"></span>
                                     <span class="toggle-text">{% trans 'With free shipping:' %}</span>
                                 </label>
                             </div>
                             <div class="form-group">
                                 <div class="buttons">
-                                    <button class="btn btn_square btn_dark btn_narrow" type="submit">
+                                    <button class="filter-btn btn btn_square btn_dark btn_narrow" type="submit"
+                                            onclick="return false;"
+                                            data-slug={{ category.slug }}
+                                            data-sort={{ sort_type }}
+                                            data-active=0
+                                            id="submit_btn">
                                         {% trans 'Filter' %}
                                     </button>
                                 </div>
@@ -86,110 +97,93 @@
                 </div>
                 <div class="Section-columnSection">
                     <header class="Section-header">
-                        <strong class="Section-title">{% trans 'Popular tags' %}
+                        <strong
+                                class="Section-title"
+                                id="tag_status"
+                                data-tag_name=""
+                                data-tag_active=0>
+                            {% trans 'Popular tags' %}
                         </strong>
                     </header>
                     <div class="Section-columnContent">
-                        <div class="buttons"><a class="btn btn_default btn_sm" href="#">{% trans 'Video' %}</a><a
-                                class="btn btn_default btn_sm" href="#">{% trans 'Development' %}</a><a
-                                class="btn btn_default btn_sm" href="#">{% trans 'Gaming' %}</a><a
-                                class="btn btn_default btn_sm" href="#">{% trans 'Asus' %}</a><a
-                                class="btn btn_default btn_sm" href="#">{% trans 'Development' %}</a><a
-                                class="btn btn_default btn_sm" href="#">{% trans 'Video' %}</a>
+                        <div class="buttons">
+
+                            {% for tag in tags %}
+                            <a class="btn btn_default btn_sm tag_btn" href="#"
+                               onclick="return false;"
+                               data-slug={{ category.slug }}
+                               data-sort={{ sort_type }}
+                               data-in_use=0
+                               data-tag={{ tag.name }}>
+                                {{ tag.name }}
+                            </a>
+                            {% endfor %}
+
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="Section-content">
+
+                <!--    ==================================================   SORTS  ================================================-->
+
                 <div class="Sort">
-                    <div class="Sort-title">{% trans 'Sort by:' %}
+                    <div class="Sort-title" data-sort_title="price_inc">
+                        {% trans 'Sort by:' %}
                     </div>
                     <div class="Sort-variants">
-                        <a class="Sort-sortBy Sort-sortBy_dec" href="#">{% trans 'Popularity'%}</a>
-                        <a class="Sort-sortBy" href="{% url 'goods-polls:catalog_by_category_url' category.slug 'price_inc' 1 %}">
+
+                        <!--=========================================  SORT BY Popularity ==================================================-->
+
+                        <a class="Sort-sortBy" data-name="pop"
+                           data-sort="pop_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           href="#" onclick="return false;">
+                            {% trans 'Popularity' %}
+                        </a>
+
+                        <!--    =========================================  SORT BY PRICE ====================================================-->
+
+                        <a class="Sort-sortBy Sort-sortBy_inc" data-name="price"
+                           data-sort="price_dec" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           href="#" onclick="return false;">
                             {% trans 'Price' %}
                         </a>
-                        <a class="Sort-sortBy" href="{% url 'goods-polls:catalog_by_category_url' category.slug 'comment_inc' 1 %}">
+
+                        <!-- =========================================  SORT BY COMMENTS ====================================================-->
+
+                        <a class="Sort-sortBy" data-name="comment"
+                           data-sort="comment_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           href="#" onclick="return false;">
                             {% trans 'Comments' %}
                         </a>
-                        <a class="Sort-sortBy" href="{% url 'goods-polls:catalog_by_category_url' category.slug 'name_dec' 1 %}">
+
+                        <!-- =========================================  SORT BY name =====================================================-->
+
+                        <a class="Sort-sortBy" data-name="name"
+                           data-sort="name_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           href="#" onclick="return false;">
                             {% trans 'Name' %}
                         </a>
-                    </div>
-                </div>
-                <div class="Cards">
 
+                        <!-- =========================================  SORT BY newness ===================================================-->
 
-                    {% for elem in page_obj %}
-                    <div class="Card"><a class="Card-picture" href="#">
-                        <img src={% static "assets/img/content/home/card.jpg" %} alt="card.jpg"/></a>
-                        <div class="Card-content">
-                            <strong class="Card-title"><a href="product.html">{{ elem.product }}</a>
-                            </strong>
-                            <div class="Card-description">
-                                <div class="Card-cost"><span class="Card-priceOld">{{ elem.price }}</span><span
-                                        class="Card-price">{{ elem.price_after_discount }}</span>
-                                </div>
-                                <div class="Card-category">{{category}}
-                                </div>
-                                <div class="Card-hover">
-                                    <a class="Card-btn" href="#">
-                                        <img src={% static "assets/img/icons/card/bookmark.svg" %} alt="bookmark.svg"/>
-                                    </a>
-                                    <a class="Card-btn" href="{% url 'orders:cart_add' elem.id %}">
-                                        <img src={% static "assets/img/icons/card/cart.svg" %} alt="cart.svg"/>
-                                    </a>
-                                    <a class="Card-btn" href="#">
-                                        <img src={% static "assets/img/icons/card/change.svg" %} alt="change.svg"/>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="Card-sale">-60%
-                        </div>
-                    </div>
-                    {% endfor %}
-
-                </div>
-                <div class="Pagination">
-                    <div class="Pagination-ins">
-
-                        {% if page_obj.paginator.page.has_previous %}
-                        <a class="Pagination-element Pagination-element_prev"
-                           href="{% url 'goods-polls:catalog_by_category_url' category.slug sort_type page_obj.paginator.page.previous_page_number %}">
-                            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
+                        <a class="Sort-sortBy" data-name="newness"
+                           data-sort="newness_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           href="#" onclick="return false;">
+                            {% trans 'Newness' %}
                         </a>
-                        {% else %}
-                        <a class="Pagination-element Pagination-element_prev" href="1">
-                            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
-                        </a>
-                        {% endif %}
-
-                        {% for page in page_obj.paginator.page_range %}
-                        {% if page_obj.paginator.number == page %}
-                        <a class="Pagination-element Pagination-element_current" href="{{ page }}">
-                            <span class="Pagination-text">{{ page }}</span></a>
-                        {% else %}
-                        <a class="Pagination-element" href="{{ page }}">
-                            <span class="Pagination-text">{{ page }}</span></a>
-                        {% endif %}
-                        {% endfor %}
-
-
-                        {% if page_obj.paginator.page.has_next %}
-                        <a class="Pagination-element Pagination-element_next"
-                           href="{% url 'goods-polls:catalog_by_category_url' category.slug sort_type page_obj.paginator.page.next_page_number %}">
-                            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
-                        </a>
-                        {% else %}
-                        <a class="Pagination-element Pagination-element_prev" href="{{ page_obj.paginator.num_pages }}">
-                            <img src={% static "assets/img/icons/nextPagination.svg" %} alt="prev"/>
-                        </a>
-                        {% endif %}
-
 
                     </div>
                 </div>
+
+
+                <!-- ============================================  CARDS INCLUDE ====================================================-->
+
+
+                {% include 'elems/good_card.html' %}
+
+
             </div>
         </div>
     </div>
