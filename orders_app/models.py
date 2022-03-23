@@ -6,6 +6,7 @@ from django.db.models import F, Sum, ForeignKey
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 from django.utils.translation import gettext_lazy as _
+from settings_app.dynamic_preferences_registry import global_preferences_registry
 
 
 class Order(models.Model):
@@ -69,8 +70,22 @@ class Order(models.Model):
             total += product.final_price * product.quantity
         return Decimal(total)
 
+    @property
+    def delivery_cost(self):
+        global_preferences = global_preferences_registry.manager()
+        first_product = self.order_products.first()
+        if self.delivery == 'reg':
+            if first_product and self.total_discounted_sum > 2000:
+                first_product_id = first_product.id
+                if self.order_products.filter(id=first_product_id).count() == len(self):
+                    return 0
+            return global_preferences.get('general__regular_shipping', no_cache=True)
+        else:
+            return global_preferences.get('general__express_shipping', no_cache=True)
+
+    @property
     def final_total(self):
-        return self.total_discounted_sum
+        return self.total_discounted_sum + self.delivery_cost
 
     def __str__(self):
         return f"{_('Order')} №{self.id}"
