@@ -3,6 +3,7 @@ from typing import Dict, Callable, Union
 from decimal import Decimal
 from typing import Dict, Callable
 from django.core.paginator import Paginator
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -87,11 +88,22 @@ def post_review(request) -> Union[JsonResponse, Callable]:
 
 
 class CatalogByCategory(CatalogByCategoriesMixin, View):
+    """
+    класс-контроллер для отображения каталога-списка всех товаров в магазинах по определенной категории
+    """
 
-    def get(self, request, slug, sort_type, page):
+    def get(self, request, slug, page=1, sort_type='price_inc'):
+        """
+        метод для гет-запроса контроллера для отображения каталога товаров определенной категории
+        :param request: искомый запрос
+        :param slug: слаг необходимой категории товаров
+        :param page: номер страницы пагинации для отображения
+        :param sort_type: тип сортировки и её направление
+        :return: рендер страницы каталога товаров определенной категории
+        """
         # get data and sort this data
-        row_items_for_catalog, category = self.get_data_without_filters(slug)
-        items_for_catalog = self.simple_sort(row_items_for_catalog, sort_type)
+        row_items_for_catalog, category, sellers, tags = self.get_data_without_filters(slug)
+        items_for_catalog, *_ = self.simple_sort(row_items_for_catalog, sort_type)
 
         # paginator
         paginator = Paginator(items_for_catalog, 8)
@@ -102,53 +114,90 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
         mini = self.get_min_price(items_for_catalog)
         midi = maxi / 2
 
+        # next and previous buttons values
+        next_page = str(page_obj.next_page_number() if page_obj.has_next() else page_obj.paginator.num_pages)
+        prev_page = str(page_obj.previous_page_number() if page_obj.has_previous() else 1)
+        pages_list = list(range(1, paginator.num_pages + 1)) if paginator.num_pages > 1 else [1, ]
+
         return render(
             request,
             'goods_app/catalog.html',
             context={
                 'category': category,
+                'sellers': sellers,
                 'page_obj': page_obj,
                 'sort_type': sort_type,
                 'mini': mini,
                 'maxi': maxi,
                 'midi': midi,
+                'next_page': next_page,
+                'prev_page': prev_page,
+                'pages_list': pages_list,
+                'tags': tags,
             })
 
 
-class CatalogFilter(CatalogByCategoriesMixin, View):
+class CardForAjax(CatalogByCategoriesMixin, View):
+    """
+    класс-контроллер для отображения набора товаров в каталоге с учетом необходимых фильтров, сортировки и пагинации
+    без обновления изначальной страницы каталога
+    """
 
-    @method_decorator(csrf_protect)
-    def post(self, request, slug, sort_type, page):
-        # took data from filter-form
-        filter_data = self.get_data_from_form(request)
+    def get(self, request, slug, sort_type, page):
+        """
+        метод для гет-запроса контроллера для отображения  набора товаров в каталоге
+        с учетом необходимых фильтров, сортировки и пагинации без обновления изначальной страницы каталога
+        :param request: искомый запрос клиента
+        :param slug: слаг необходимой категории товаров
+        :param sort_type: тип сортировки и её направление
+        :param page: номер страницы пагинации для отображения
+        :return: json с ключами:
+                html - текст разметки необходимых карточек товаров с учетов входных условий
+                current_state - вид и направление текущей использованной сортировки
+                next_state - тип и направление сортировки для повторного запроса
+                next_page - значение следующей доступной страницы пагинации
+                prev_page - значение предыдущей доступной страницы пагинации
+                pages_list - список доступных номеров страниц пагинации при данных входных условиях
+        """
+        if not request.GET.get('price') and \
+                not request.GET.get('title') and \
+                not request.GET.get('select') and \
+                not request.GET.get('in_stock') and \
+                not request.GET.get('ch_box_2') and \
+                not request.GET.get('tag'):
+            # get data
+            row_items_for_catalog, category, *_ = self.get_data_without_filters(slug)
 
-        # get filtered data and sort this data
-        row_items_for_catalog, category = self.get_data_with_filters(slug, filter_data)
-        items_for_catalog = self.simple_sort(row_items_for_catalog, sort_type)
+        else:
+            # get data and filter settings
+            filter_data = self.get_data_from_form(request)
+            row_items_for_catalog, category, sellers = self.get_data_with_filters(slug, filter_data)
+
+        items_for_catalog, next_state = self.simple_sort(row_items_for_catalog, sort_type)
 
         # paginator
         paginator = Paginator(items_for_catalog, 8)
+        pages_list = list(range(1, paginator.num_pages + 1)) if paginator.num_pages > 1 else [1, ]
         page_obj = paginator.get_page(page)
 
-        # custom levels for range input
-        if not request.POST.get('price'):
-            mini = self.get_min_price(items_for_catalog)
-            maxi = self.get_max_price(items_for_catalog)
-            midi = maxi // 2
-        else:
-            price_range = request.POST.get('price').split(';')
-            mini = int(price_range[0])
-            maxi = int(price_range[1])
-            midi = maxi
+        # next and previous buttons values
+        next_page = str(page_obj.next_page_number() if page_obj.has_next() else page_obj.paginator.num_pages)
+        prev_page = str(page_obj.previous_page_number() if page_obj.has_previous() else 1)
 
-        return render(
-            request,
-            'goods_app/catalog.html',
-            context={
-                'category': category,
-                'page_obj': page_obj,
-                'sort_type': sort_type,
-                'mini': mini,
-                'maxi': maxi,
-                'midi': midi,
-            })
+        context = {
+            'pages_list': pages_list,
+            'category': category,
+            'page_obj': page_obj,
+            'sort_type': sort_type,
+            'next_page': next_page,
+            'prev_page': prev_page,
+        }
+
+        return JsonResponse({
+            'html': render_to_string('elems/good_card.html', context=context),
+            'current_state': sort_type,
+            'next_state': next_state,
+            'next_page': next_page,
+            'prev_page': prev_page,
+            'pages_list': pages_list,
+        })
