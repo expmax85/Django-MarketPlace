@@ -25,4 +25,3 @@ class PreferenceAdmin(GlobalPreferenceAdmin):
 
 
 admin.site.register(GlobalPreferenceModel, PreferenceAdmin)
-

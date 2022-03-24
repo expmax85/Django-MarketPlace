@@ -11,12 +11,13 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from profiles_app.services import reset_phone_format
 from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from stores_app.services import StoreServiceMixin
+from goods_app.services.catalog import get_categories
+from profiles_app.services import reset_phone_format
 from stores_app.forms import AddStoreForm, EditStoreForm, \
     AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
-from stores_app.services import StoreServiceMixin
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -34,7 +35,6 @@ class SellersRoomView(StoreAppMixin, ListView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['categories'] = self.get_categories()
         context['seller_products'] = self.get_seller_products(user=self.request.user)
         return context
 
@@ -95,9 +95,8 @@ class AddSellerProductView(StoreAppMixin, View):
 
     def get(self, request) -> Callable:
         context = dict()
-        context['categories'] = self.get_categories()
+        context['categories'] = get_categories()
         context['products'] = self.get_products()
-        context['discounts'] = self.get_discounts()
         context['stores'] = self.get_user_stores(user=request.user)
         context['form'] = AddSellerProductForm()
         return render(request, 'stores_app/new_product_in_store.html', context=context)
@@ -135,11 +134,11 @@ class EditSelleProductView(StoreAppMixin, DetailView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data()
         context['form'] = EditSellerProductForm(instance=self.get_object())
-        context['discounts'] = self.get_discounts()
+        print(context['form'])
         return context
 
     def post(self, request, slug: str, pk: int) -> Callable:
-        form = EditSellerProductForm(request.POST, instance=self.get_object())
+        form = EditSellerProductForm(request.POST)
         if form.is_valid():
             form.save(commit=False)
             self.edit_seller_product(data=form.cleaned_data, instance=self.get_object())
@@ -164,7 +163,7 @@ def remove_SellerProduct(request) -> Callable:
 class RequestNewProduct(StoreAppMixin, View):
 
     def get(self, request):
-        categories = self.get_categories()
+        categories = get_categories()
         stores = self.get_user_stores(user=request.user)
         form = AddRequestNewProduct()
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
@@ -179,7 +178,7 @@ class RequestNewProduct(StoreAppMixin, View):
             messages.add_message(request, SEND_PRODUCT_REQUEST,
                                  _('Your request was sending. Wait the answer some before time to your email!'))
             return redirect(reverse('stores-polls:sellers-room'))
-        categories = self.get_categories()
+        categories = get_categories()
         stores = self.get_user_stores(user=request.user)
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
                                                                                    'categories': categories,

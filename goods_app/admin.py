@@ -9,7 +9,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     list_filter = ('name',)
     search_fields = ('name',)
-    prepopulated_fields = {'slug': ('name',),}
+    prepopulated_fields = {'slug': ('name',), }
 
 
 class SpecificationsAdmin(admin.TabularInline):
@@ -18,8 +18,8 @@ class SpecificationsAdmin(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'category', 'is_published')
-    list_filter = ('category', 'is_published', 'tags')
+    list_display = ('name', 'code', 'category', 'is_published', 'limited')
+    list_filter = ('category', 'is_published', 'tags', 'limited')
     search_fields = ('name', 'code', 'category')
     prepopulated_fields = {'slug': ('name', 'code'),
                            'tags': ('category', )}

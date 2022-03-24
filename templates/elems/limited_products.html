@@ -1,0 +1,116 @@
+{% load static %}
+{% load i18n %}
+
+  <div class="Section Section_column Section_columnRight">
+    <div class="wrap">
+      <div class="Section-column">
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image"><img src="{% static 'assets/img/icons/advantages/shipping.svg' %}" alt="shipping.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Shipping & Returns' %}
+              </strong>
+              <p class="media-text">{% trans 'World wide shipping' %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image"><img src="{% static 'assets/img/icons/advantages/moneyBack.svg' %}" alt="moneyBack.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Money Back' %}
+              </strong>
+              <p class="media-text">{% trans 'Guaranted payments' %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image"><img src="{% static 'assets/img/icons/advantages/support.svg' %}" alt="support.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Support Policy' %}
+              </strong>
+              <p class="media-text">{% trans 'Fast support team' %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image"><img src="{% static 'assets/img/icons/advantages/quality.svg' %}" alt="quality.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Quality Guarantee' %}
+              </strong>
+              <p class="media-text">{% trans 'Best guaranted items' %}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="Section-content">
+        <div class="Slider Slider_carousel">
+          <header class="Section-header Section-header_close">
+            <h2 class="Section-title">{% trans 'Limited edition' %}
+            </h2>
+            <div class="Section-control">
+              <div class="Slider-navigate">
+              </div>
+            </div>
+          </header>
+          <div class="Slider-box Cards">
+            {% for limited_item, price_after_discount, discount in limited_products %}
+            {% if limited_item.id != special_product.id %}
+            <div class="Slider-item">
+              <div class="Slider-content">
+               <div class="Card" type="submit">
+                <form method="get" action="{% url 'orders-polls:add_viewed' %}">
+                  <input type="hidden" name="seller_product_id" value="{{ special_product.id }}">
+                  <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+                  <div class="Card-content">
+                    <button class="Card-title" type="submit">
+                      {{ special_product.product.name }}
+                    </button>
+                    <div class="Card-description">
+                        <div class="Card-cost">
+                            <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ limited_item.price }}{% endif %}</span>
+                            <span class="Card-price">
+                                {% if price_after_discount and not discount.set_discount %}
+                                    ${{ price_after_discount|floatformat:0 }}
+                                {% else %}
+                                    ${{ limited_item.price }}
+                                {% endif %}
+                            </span>
+                        </div>
+                      <div class="Card-category">{{ limited_item.product.category.name }}
+                      </div>
+                      <div class="Card-hover">
+                        <a class="Card-btn" href="{{ limited_item.product.get_absolute_url }}"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:cart_add' limited_item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' limited_item.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                  {% if discount.type_of_discount == 'p' and not discount.set_discount %}
+                    <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
+                    </div>
+                  {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
+                    <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

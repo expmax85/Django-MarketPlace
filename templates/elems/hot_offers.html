@@ -1,0 +1,63 @@
+{% load static %}
+{% load i18n %}
+
+  <div class="Section Section_dark">
+    <div class="wrap">
+      <div class="Section-content">
+        <div class="Slider Slider_carousel">
+          <header class="Section-header">
+            <h2 class="Section-title">{% trans 'Hot Offers' %}
+            </h2>
+            <div class="Section-control">
+              <div class="Slider-navigate">
+              </div>
+            </div>
+          </header>
+          <div class="Slider-box Cards Cards_hz">
+            {% for offer, price_after_discount, discount in hot_offers %}
+            <div class="Slider-item">
+              <div class="Slider-content">
+                <div class="Card">
+                    <form method="get" style="display:flex;" action="{% url 'orders-polls:add_viewed' %}">
+                  <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
+                  <button class="Card-picture" role="link" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+                  <div class="Card-content">
+                    <strong class="Card-title"><a href="#">{{ offer.product.name }}</a>
+                    </strong>
+                    <div class="Card-description">
+                        <div class="Card-cost">
+                            <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ offer.price }}{% endif %}</span>
+                            <span class="Card-price">
+                                {% if price_after_discount and not discount.set_discount %}
+                                    ${{ price_after_discount|floatformat:0 }}
+                                {% else %}
+                                    ${{ offer.price }}
+                                {% endif %}
+                            </span>
+                        </div>
+                      <div class="Card-category">{{ offer.product.category.name }}
+                      </div>
+                      <div class="Card-hover">
+                        <a class="Card-btn" href="{{ offer.product.get_absolute_url }}"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:cart_add' offer.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' offer.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                  {% if discount.type_of_discount == 'p' and not discount.set_discount %}
+                    <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
+                    </div>
+                  {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
+                    <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

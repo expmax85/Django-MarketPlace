@@ -2,6 +2,7 @@ from typing import Callable
 
 from django.contrib.auth import login
 from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView, LoginView
 from django.core.exceptions import ImproperlyConfigured
@@ -12,7 +13,6 @@ from django.views import View
 
 from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
 from profiles_app.services import get_user_and_change_password, get_auth_user, reset_phone_format
-from django.utils.translation import gettext_lazy as _
 from orders_app.services import CartService
 from stores_app.services import StoreServiceMixin
 
@@ -109,6 +109,7 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
         context = {
             'last_order': self.get_last_order(user=request.user),
             'number_order': self.get_all_orders(user=request.user).count(),
+            'viewed_products': list(self.get_viewed_products(user=request.user))[-3:]
         }
         return render(request, 'account/account.html', context=context)
 

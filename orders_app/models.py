@@ -116,5 +116,3 @@ class ViewedProduct(models.Model):
     session = models.CharField(max_length=100, blank=True)
     product = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
     date = models.DateTimeField(auto_now=True)
-
-

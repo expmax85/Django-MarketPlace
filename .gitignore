@@ -137,4 +137,3 @@ dmypy.json
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
-/for_tests.py
