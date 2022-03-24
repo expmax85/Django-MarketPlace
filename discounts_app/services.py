@@ -1,5 +1,4 @@
 from datetime import date
-from typing import List
 from decimal import Decimal
 
 
@@ -162,13 +161,12 @@ class DiscountsService:
             return True
         return False
 
-    def get_discounted_price_in_cart(self, product) -> Decimal :
+    def get_discounted_price_in_cart(self, product) -> Decimal:
         """
         Расчитать цену со скидкой, если товар в текущей корзине
         """
         prices = []
         product_discounts = self.get_priority_discounts_for_product(product)
-
         if product.__class__.__name__ == 'OrderProduct':
             price = product.seller_product.price
         else:
@@ -176,8 +174,8 @@ class DiscountsService:
 
         if product_discounts:
             for discount in product_discounts:
-                price = implement_discount(price, discount)
-                prices.append(price)
+                discounted_price = implement_discount(price, discount)
+                prices.append(discounted_price)
 
         if prices:
             price = max(prices)
@@ -205,25 +203,31 @@ def implement_discount(price, discount):
         elif discount.type_of_discount == 'p':
             price *= Decimal((100 - discount.percent) / 100)
         else:
-            price = discount.fixed_price
+            price = Decimal(discount.fixed_price)
 
     elif discount.type_of_discount == 'f':
         price -= Decimal(discount.amount)
     elif discount.type_of_discount == 'p':
         price *= Decimal((100 - discount.percent) / 100)
     else:
-        price = discount.fixed_price
+        price = Decimal(discount.fixed_price)
 
-    return Decimal(price)
+    return Decimal(round(price, 2))
 
 
-def get_discounted_prices_for_seller_products(products):
+def get_discounted_prices_for_seller_products(products, default_discount=None):
     discounted_prices = []
     discounts = []
-
     for product in products:
         price = product.price
-        discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
+        if default_discount is None:
+            discount = product.product_discounts.filter(
+                is_active=True,
+                type_of_discount__in=('f', 'p'),
+                # set_discount=False
+            ).order_by('-priority').first()
+        else:
+            discount = default_discount
 
         if not discount:
             discounted_prices.append(None)

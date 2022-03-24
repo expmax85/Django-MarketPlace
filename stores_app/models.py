@@ -64,13 +64,7 @@ class SellerProduct(models.Model):
                                 related_name='seller_products',
                                 verbose_name=_('product')
                                 )
-    # discount = models.ForeignKey(Discount,
-    #                              on_delete=models.CASCADE,
-    #                              related_name='seller_products',
-    #                              verbose_name=_('discount')
-    #                              )
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price'))
-    # price_after_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price_after_discount'))
     quantity = models.IntegerField(verbose_name=_('quantity'))
     date_added = models.DateTimeField(verbose_name=_('date added'), auto_now_add=True)
 
@@ -88,7 +82,3 @@ class SellerProduct(models.Model):
     def get_absolute_url(self) -> Callable:
         return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
                                                                    'pk': self.id})
-
-    # @property
-    # def price_after_discount(self):
-    #     return DiscountsService.get_discounted_price(self, class_name='ProductDiscount')

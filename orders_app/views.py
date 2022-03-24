@@ -24,6 +24,8 @@ from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
 from django.utils.translation import gettext_lazy as _
 from profiles_app.models import User
+# from settings_app.config_project import OPTIONS
+from settings_app.dynamic_preferences_registry import global_preferences_registry
 
 
 def add_viewed(request):
@@ -184,6 +186,21 @@ class OrderStepTwo(View):
             order.delivery = delivery
             order.city = city
             order.address = address
+
+            first_product = order.order_products.first()
+            if first_product:
+                global_preferences = global_preferences_registry.manager()
+
+                if order.delivery == 'reg':
+                    first_product_seller = first_product.seller_product.seller
+                    same_store_products = order.order_products.filter(seller_product__seller=first_product_seller).count()
+                    if same_store_products != len(order) or order.total_discounted_sum < 2000:
+                        order.delivery_cost = global_preferences['general__regular_shipping']
+                        # order.delivery_cost = REG
+                else:
+                    order.delivery_cost = global_preferences['general__express_shipping']
+                    # order.delivery_cost = EXP
+
             order.save()
 
             return redirect('orders:order_step_three')
@@ -331,7 +348,6 @@ class CompareView(View):
 
         try:
             context = self.create_queryset(session_data=request.session['compared'])
-            print(context)
         except KeyError:
             context = dict()
         return render(request, 'orders_app/compare.html', context)
@@ -340,7 +356,6 @@ class CompareView(View):
         """ Здесь формируется queryset для сравнения товаров """
 
         compared = json.loads(session_data)
-        print(compared)
         specifications = {key: list() for spec in compared.values() for key in spec[3].keys()}
         incoming_specifications = [value[3] for value in compared.values()]
         for item in incoming_specifications:

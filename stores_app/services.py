@@ -99,8 +99,6 @@ class StoreServiceMixin:
         if discount.percent:
             return price * Decimal(1 - discount.percent / 100)
         elif discount.amount:
-            print(discount.amount)
-            print(price - Decimal(discount.amount))
             return price - Decimal(discount.amount)
         else:
             return price

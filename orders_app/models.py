@@ -1,12 +1,11 @@
 from decimal import Decimal
-
+from settings_app.config_project import OPTIONS
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import F, Sum, ForeignKey
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 from django.utils.translation import gettext_lazy as _
-from settings_app.dynamic_preferences_registry import global_preferences_registry
 
 
 class Order(models.Model):
@@ -26,33 +25,35 @@ class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE,
                                  null=True,
                                  related_name='orders',
-                                 verbose_name=_('customer'))
-    fio = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('name and lastname'))
+                                 verbose_name=_('Customer'))
+    fio = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name and lastname'))
 
     phone_valid = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message=' '.join([str(_('Phone number must be entered in the format:')), '+999999999',
                                                    str(_('Up to 15 digits allowed.'))]))
     phone = models.CharField(max_length=16, validators=[phone_valid],
-                             null=True, blank=True, verbose_name=_('phone number'))
+                             null=True, blank=True, verbose_name=_('Phone number'))
 
-    email = models.EmailField(null=True, blank=True, verbose_name=_('email'))
+    email = models.EmailField(null=True, blank=True, verbose_name=_('Email'))
 
     delivery = models.CharField(max_length=3,
-                                choices=DELIVERY_CHOICES, default='reg', verbose_name=_('delivery'))
+                                choices=DELIVERY_CHOICES, default='reg', verbose_name=_('Delivery'))
 
     payment_method = models.CharField(max_length=4,
                                       choices=PAYMENT_CHOICES,
                                       default='card',
-                                      verbose_name=_('payment method'))
+                                      verbose_name=_('Payment method'))
 
-    city = models.CharField(max_length=25, null=True, blank=True, verbose_name=_('city'))
-    address = models.TextField(max_length=255, null=True, blank=True, verbose_name=_('address'))
+    city = models.CharField(max_length=25, null=True, blank=True, verbose_name=_('City'))
+    address = models.TextField(max_length=255, null=True, blank=True, verbose_name=_('Address'))
 
     in_order = models.BooleanField(default=False, verbose_name=_('In order'))
     paid = models.BooleanField(default=False, verbose_name=_('Order is payed'))
 
     ordered = models.DateTimeField(null=True, blank=True, verbose_name=_('Order placement date'))
-    braintree_id = models.CharField(max_length=150, blank=True)
+    braintree_id = models.CharField(max_length=150, blank=True, verbose_name=_('Transaction id'))
+
+    delivery_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name=_('Delivery cost'))
 
     @property
     def total_sum(self) -> Decimal:
@@ -69,19 +70,6 @@ class Order(models.Model):
         for product in self.order_products.all():
             total += product.final_price * product.quantity
         return Decimal(total)
-
-    @property
-    def delivery_cost(self):
-        global_preferences = global_preferences_registry.manager()
-        first_product = self.order_products.first()
-        if self.delivery == 'reg':
-            if first_product and self.total_discounted_sum > 2000:
-                first_product_id = first_product.id
-                if self.order_products.filter(id=first_product_id).count() == len(self):
-                    return 0
-            return global_preferences.get('general__regular_shipping', no_cache=True)
-        else:
-            return global_preferences.get('general__express_shipping', no_cache=True)
 
     @property
     def final_total(self):

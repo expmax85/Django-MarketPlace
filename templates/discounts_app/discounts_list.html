@@ -30,14 +30,21 @@
       <div class="wrap">
         <div class="Cards Cards_blog">
           {% for discount in discounts %}
-              <div class="Card"><a class="Card-picture" href="#"><img src="../static/assets/img/content/sale/product.png" alt="product.png"/></a>
+              <div class="Card">
+                  <a class="Card-picture" href="{% url 'discounts-polls:discount-detail' discount.slug discount.id %}">
+                      {% if discount.img %}
+                        <img src="{{ discount.img }}" alt="product.png"/>
+                      {% else %}
+                        <img src="../static/assets/img/content/sale/product.png" alt="product.png"/>
+                      {% endif %}
+                  </a>
                 {% if discount.valid_from %}
                     <div class="Card-date">
                       <strong class="Card-date-number">{{ discount.valid_from.day }}
                       </strong><span class="Card-date-month">{{ discount.valid_from|date:"M" }}</span>
                     </div>
                 {% endif %}
-                {% if discount.valid_from %}
+                {% if discount.valid_to %}
                     <div class="Card-date Card-date_to">
                       <strong class="Card-date-number">{{ discount.valid_to.day }}
                       </strong><span class="Card-date-month">{{ discount.valid_to|date:"M" }}</span>
