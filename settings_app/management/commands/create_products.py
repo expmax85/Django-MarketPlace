@@ -7,7 +7,7 @@ from goods_app.models import Product
 
 class Command(BaseCommand):
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         last = SellerProduct.objects.last()
         sellers = list(Seller.objects.values_list('id', flat=True))
         products = list(Product.objects.values_list('id', flat=True))

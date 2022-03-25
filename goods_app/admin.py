@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductCategory, Product, ProductComment, Specifications, SpecificationsNames
@@ -28,10 +30,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     actions = ['mark_published', 'mark_unpublished']
 
-    def mark_published(self, request, queryset):
+    def mark_published(self, request: HttpRequest, queryset: QuerySet) -> None:
         queryset.update(is_published=True)
 
-    def mark_unpublished(self, request, queryset):
+    def mark_unpublished(self, request: HttpRequest, queryset: QuerySet) -> None:
         queryset.update(is_published=False)
 
     mark_published.short_description = _('Publish')

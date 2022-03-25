@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
@@ -66,7 +66,7 @@ class ProductDetailView(DetailView):
         return context
 
 
-def get_reviews(request) -> JsonResponse:
+def get_reviews(request: HttpRequest) -> JsonResponse:
     slug = request.GET.get('slug')
     page = request.GET.get('page')
     product = CurrentProduct(slug=slug)
@@ -75,7 +75,7 @@ def get_reviews(request) -> JsonResponse:
                          'slug': slug}, safe=False)
 
 
-def post_review(request) -> Union[JsonResponse, Callable]:
+def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)

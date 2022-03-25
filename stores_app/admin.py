@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductRequest
@@ -31,7 +33,7 @@ class ProductRequestAdmin(admin.ModelAdmin):
 
     actions = ['mark_published']
 
-    def mark_published(self, request, queryset):
+    def mark_published(self, request: HttpRequest, queryset: QuerySet) -> None:
         for item in queryset:
             item.is_published = True
             item.save(update_fields=['is_published'])

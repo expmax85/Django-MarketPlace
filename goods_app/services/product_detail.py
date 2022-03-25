@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Avg, QuerySet
+from django.http import HttpRequest
 
 from goods_app.models import ProductComment, Product
 from stores_app.models import SellerProduct
@@ -107,13 +108,13 @@ class CurrentProduct:
 
 
 @receiver(post_save, sender=ProductComment)
-def comment_post_save_handler(sender, **kwargs):
+def comment_post_save_handler(sender, **kwargs) -> None:
     if kwargs['created']:
         product_id = kwargs['instance'].product_id
         cache.delete('reviews:{}'.format(product_id))
 
 
-def context_pagination(request, queryset: QuerySet, size_page: int = 3) -> Paginator:
+def context_pagination(request: HttpRequest, queryset: QuerySet, size_page: int = 3) -> Paginator:
     """
     Функция для создания пагинации
     :return: Paginator

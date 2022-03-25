@@ -22,8 +22,8 @@
                   <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
                   <button class="Card-picture" role="link" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
                   <div class="Card-content">
-                    <strong class="Card-title"><a href="#">{{ offer.product.name }}</a>
-                    </strong>
+                    <button class="Card-title" type="submit">{{ offer.product.name }}
+                    </button>
                     <div class="Card-description">
                         <div class="Card-cost">
                             <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ offer.price }}{% endif %}</span>
@@ -38,7 +38,7 @@
                       <div class="Card-category">{{ offer.product.category.name }}
                       </div>
                       <div class="Card-hover">
-                        <a class="Card-btn" href="{{ offer.product.get_absolute_url }}"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
+                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
                         <a class="Card-btn" href="{% url 'orders-polls:cart_add' offer.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
                         <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' offer.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
                       </div>

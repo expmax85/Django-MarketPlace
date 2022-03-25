@@ -9,7 +9,7 @@ To activate your index dashboard add the following to your settings.py::
 And to activate the app index dashboard::
     ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'python_django_team5.dashboard.CustomAppIndexDashboard'
 """
-
+from typing import Any
 
 from django.utils.translation import gettext_lazy as _
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
@@ -19,10 +19,10 @@ class CustomPagesModule(modules.DashboardModule):
     title = _('Settings')
     template = 'admin/admin-setup-dashboard.html'
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return False
 
-    def init_with_context(self, context):
+    def init_with_context(self, context: Any) -> None:
         if self._initialized:
             return
         self._initialized = True
@@ -32,7 +32,7 @@ class CustomIndexDashboard(Dashboard):
     """
     Custom index dashboard.
     """
-    def init_with_context(self, context):
+    def init_with_context(self, context: Any) -> None:
         # append an app list module for "Applications"
         self.children.append(modules.Group(
             display="tabs",
@@ -66,7 +66,7 @@ class CustomAppIndexDashboard(AppIndexDashboard):
     """
     title = ''
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         AppIndexDashboard.__init__(self, *args, **kwargs)
 
         # append a model list module and a recent actions module
@@ -80,7 +80,7 @@ class CustomAppIndexDashboard(AppIndexDashboard):
 
         ]
 
-    def init_with_context(self, context):
+    def init_with_context(self, context: Any) -> None:
         """
         Use this method if you need to access the request context.
         """

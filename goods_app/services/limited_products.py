@@ -1,6 +1,6 @@
 import random
 import datetime as dt
-from typing import Union, List
+from typing import Union, List, Iterable
 
 from django.core.cache import cache
 from django.db.models import QuerySet, Model, Count, Min, Prefetch
@@ -50,7 +50,7 @@ class RandomProduct:
     def add_limited_deal_expire_days(self, days: int) -> None:
         self.__end_time += dt.timedelta(days=days)
 
-    def update_product(self, queryset=None, manual=False) -> Model:
+    def update_product(self, queryset: QuerySet = None, manual: bool = False) -> Model:
         if manual:
             self.__product = get_limited_deal(queryset)
             return self.__product
@@ -92,7 +92,7 @@ def get_limited_products(count: int) -> QuerySet:
     return products
 
 
-def get_hot_offers(count: int=9):
+def get_hot_offers(count: int = 9) -> QuerySet:
     products_cache_key = 'hot_offers:{}'.format('all')
     queryset = cache.get(products_cache_key)
     if not queryset:

@@ -1,6 +1,7 @@
-from typing import Callable
+from typing import Callable, Dict
 
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.urls import reverse
@@ -68,7 +69,7 @@ class SellerProduct(models.Model):
     def __str__(self) -> str:
         return f'{self.product} in {self.seller}'
 
-    def serialize(self):
+    def serialize(self) -> Dict:
         return self.__dict__
 
     class Meta:
@@ -81,5 +82,5 @@ class SellerProduct(models.Model):
                                                                    'pk': self.id})
 
     @property
-    def get_discount(self):
+    def get_discount(self) -> QuerySet:
         return self.product_discounts.all()

@@ -1,4 +1,7 @@
+from typing import Any
+
 from django.contrib import admin
+from django.http import HttpRequest
 from dynamic_preferences.admin import GlobalPreferenceAdmin
 from dynamic_preferences.models import GlobalPreferenceModel
 
@@ -17,10 +20,10 @@ class PreferenceAdmin(GlobalPreferenceAdmin):
 
     actions = None
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request: HttpRequest) -> bool:
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, request: HttpRequest, obj: Any = None) -> bool:
         return False
 
 

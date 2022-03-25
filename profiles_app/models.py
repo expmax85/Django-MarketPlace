@@ -1,3 +1,5 @@
+from typing import Callable
+
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -8,7 +10,7 @@ from django.contrib.auth.base_user import BaseUserManager
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, **extra_fields) -> 'User':
+    def create_user(self, email: str, password: str, **extra_fields) -> 'User':
         """
         Create and save new user with email and password
         """
@@ -20,7 +22,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password) -> 'User':
+    def create_superuser(self, email: str, password: str) -> 'User':
         """
         Create superuser method
         """
@@ -69,7 +71,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return False
         return False
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> Callable:
         if self.pk is not None:
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:

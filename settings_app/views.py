@@ -1,6 +1,8 @@
 import datetime
+from typing import Callable
 
 from django.contrib import messages
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -21,19 +23,19 @@ User = get_user_model()
 class AdminView(PermissionRequiredMixin, View):
     permission_required = ('profiles_app.Content_manager', )
 
-    def get(self, request):
+    def get(self, request: HttpRequest) -> Callable:
         return render(request, 'admin/admin-setup.html',)
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_all_cache(request):
+def clear_all_cache(request: HttpRequest) -> Callable:
     cache.clear()
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Content_manager')
-def change_limited_deal(request):
+def change_limited_deal(request: HttpRequest) -> Callable:
     limited_products = get_limited_products(count=OPTIONS['general__count_limited_products'])
     random_product.update_product(queryset=limited_products, manual=True)
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('The Limited product has changed successfully.'))
@@ -41,14 +43,14 @@ def change_limited_deal(request):
 
 
 @permission_required('profiles_app.Content_manager')
-def update_expire(request):
+def update_expire(request: HttpRequest) -> Callable:
     random_product.add_limited_deal_expire_days(days=OPTIONS['general__days_duration'])
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('The Limited product days duration has changed.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Content_manager')
-def set_expire(request):
+def set_expire(request: HttpRequest) -> Callable:
     new_value = " ".join([request.GET.get('date'), request.GET.get('time')])
     dt = datetime.datetime.strptime(new_value, "%Y-%m-%d %H:%M")
     if dt > datetime.datetime.now():
@@ -60,14 +62,14 @@ def set_expire(request):
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_products_cache(request):
+def clear_products_cache(request: HttpRequest) -> Callable:
     cache.delete_many(['products:all_sp', 'categories:all_sp'])
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_review_cache(request):
+def clear_review_cache(request: HttpRequest) -> Callable:
     all_reviews_cache = Product.objects.all().values('id')
     cache.delete_many([f'reviews:{item["id"]}' for item in list(all_reviews_cache)])
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
@@ -75,7 +77,7 @@ def clear_review_cache(request):
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_detail_products_cache(request):
+def clear_detail_products_cache(request: HttpRequest) -> Callable:
     list_products_id = list(Product.objects.all().values('id'))
     cache.delete_many([f'tags:{item["id"]}' for item in list_products_id])
     cache.delete_many([f'sellers:{item["id"]}' for item in list_products_id])
@@ -85,7 +87,7 @@ def clear_detail_products_cache(request):
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_banner_cache(request):
+def clear_banner_cache(request: HttpRequest) -> Callable:
     key = make_template_fragment_key('banners_block')
     cache.delete(key)
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
@@ -93,14 +95,14 @@ def clear_banner_cache(request):
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_index_products_cache(request):
+def clear_index_products_cache(request: HttpRequest) -> Callable:
     cache.delete_many(['limited:all', 'hot_offers:all', ])
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_users_cache(request):
+def clear_users_cache(request: HttpRequest) -> Callable:
     list_users_id = list(User.objects.all().values('id'))
     cache.delete_many([f'owner:{item["id"]}' for item in list_users_id])
     cache.delete_many([f'stores:{item["id"]}' for item in list_users_id])

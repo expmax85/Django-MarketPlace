@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.dispatch import receiver
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_delete
 from django.core.cache import cache
@@ -56,7 +57,7 @@ class StoreServiceMixin:
         return stores
 
     @classmethod
-    def remove_store(cls, request) -> None:
+    def remove_store(cls, request: HttpRequest) -> None:
         """
         Remove store
         """
@@ -103,7 +104,7 @@ class StoreServiceMixin:
         return products
 
     @classmethod
-    def remove_seller_product(cls, request) -> None:
+    def remove_seller_product(cls, request: HttpRequest) -> None:
         """
         Remove store
         """
@@ -122,7 +123,7 @@ class StoreServiceMixin:
             return Product.objects.select_related('category').all()
 
     @classmethod
-    def get_viewed_products(cls, user) -> QuerySet:
+    def get_viewed_products(cls, user: User) -> QuerySet:
         viewed_cache_key = 'viewed:{}'.format(user.id)
         viewed = cache.get(viewed_cache_key)
         if not viewed:
@@ -141,7 +142,7 @@ class StoreServiceMixin:
         return order
 
     @classmethod
-    def get_all_orders(cls, user) -> QuerySet:
+    def get_all_orders(cls, user: User) -> QuerySet:
         orders_cache_key = 'user_orders:{}'.format(user.id)
         orders = cache.get(orders_cache_key)
         if not orders:
@@ -159,7 +160,7 @@ class StoreServiceMixin:
             os.remove(path)
 
     @classmethod
-    def request_add_new_product(cls, product, user):
+    def request_add_new_product(cls, product: Product, user: User) -> None:
         product.is_published = False
         product.user = user
         product.save()

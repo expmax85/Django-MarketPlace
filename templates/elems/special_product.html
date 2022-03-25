@@ -11,8 +11,8 @@
         <form method="get" action="{% url 'orders-polls:add_viewed' %}">
           <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
         <div class="Card-content">
-          <strong class="Card-title"><a href="#">{{ special_product.product.name }}</a>
-          </strong>
+          <button class="Card-title" type="submit">{{ special_product.product.name }}
+          </button>
           <div class="Card-description">
             <div class="Card-cost">
                 <span class="Card-priceOld">{% if special_discount_price and not special_discount.set_discount %}${{ special_product.price }}{% endif %}</span>
