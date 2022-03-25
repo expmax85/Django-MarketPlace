@@ -184,7 +184,6 @@ class HistoryViewedTest(TestCase):
                                          price_after_discount=90,
                                          quantity=10)
 
-
     def test_viewed(self):
         """ Добавление в просмотренные """
 

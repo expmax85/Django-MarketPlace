@@ -15,10 +15,9 @@ Including another URLconf
 """
 from django.urls import path
 
-from settings_app.views import change_limited_deal, update_expire, set_expire, \
-                               clear_all_cache, clear_review_cache, clear_products_cache, \
-                               clear_banner_cache, clear_detail_products_cache, \
-                               clear_index_products_cache, clear_users_cache
+from settings_app.views import change_limited_deal, update_expire, set_expire, clear_all_cache, \
+    clear_review_cache, clear_products_cache, clear_banner_cache, clear_detail_products_cache, \
+    clear_index_products_cache, clear_users_cache
 
 app_name = 'settings_app'
 urlpatterns = [

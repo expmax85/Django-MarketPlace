@@ -101,11 +101,11 @@ class RandomProduct:
                 'update_time': self.end_time
             }
         return {
-                'special_product': False,
-                'special_discount_price': False,
-                'special_discount': None,
-                'update_time': None
-            }
+            'special_product': False,
+            'special_discount_price': False,
+            'special_discount': None,
+            'update_time': None
+        }
 
 
 def get_limited_products(count: int) -> QuerySet:

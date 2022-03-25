@@ -40,9 +40,9 @@ class CustomMenu(Menu):
                 _('Settings'),
                 models=('dynamic_preferences.*', ),
                 children=[
-                     items.MenuItem(_('Settings'),
-                                    url=reverse('admin-setup')),
-                 ]
+                    items.MenuItem(_('Settings'),
+                                   url=reverse('admin-setup')),
+                ]
             ),
         ]
 
