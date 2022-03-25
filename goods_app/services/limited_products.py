@@ -1,6 +1,6 @@
 import random
 import datetime as dt
-from typing import Union, List, Iterable
+from typing import Union, List, Dict
 
 from django.core.cache import cache
 from django.db.models import QuerySet, Model, Count, Min, Prefetch
@@ -12,8 +12,25 @@ from goods_app.services.catalog import get_categories
 
 
 class RandomProduct:
+    """
+    Class for controlling to update limited deal on main page. Takes 3 attributes:
+    days_duration - number of days when product will update. Default=1
+    time_update - time for product will update. Default its midnight.
+    fallibility - its fallibility for js-code errors with countdown timer. Default=0
 
-    def __init__(self, time_update: dt.time = dt.time(hour=00, minute=45, second=00),
+    Properties and setters:
+    time_update,
+    days_duration,
+    end_time
+
+    Allowed methods:
+    update_product(queryset, manual),
+    add_limited_deal_expire_days(days),
+    get_context_data()
+
+    """
+
+    def __init__(self, time_update: dt.time = dt.time(hour=00, minute=00, second=00),
                  days_duration: int = 1, fallibility: int = 0) -> None:
         self.__days_duration = days_duration
         self.__time_update = time_update
@@ -41,6 +58,9 @@ class RandomProduct:
 
     @property
     def end_time(self) -> str:
+        """
+        This method returns the time for the next product update as a string to pass this to javascript
+        """
         return str((self.__end_time + self.__fallibility).strftime("%d.%m.%Y %H:%M"))
 
     @end_time.setter
@@ -48,9 +68,16 @@ class RandomProduct:
         self.__end_time = datetime
 
     def add_limited_deal_expire_days(self, days: int) -> None:
+        """
+        Method for manually extending the next update time
+        """
         self.__end_time += dt.timedelta(days=days)
 
     def update_product(self, queryset: QuerySet = None, manual: bool = False) -> Model:
+        """
+        Method for updating product if time is out. After updating, If manual is true, product updating
+        is immediately without end time changes. Returns product
+        """
         if manual:
             self.__product = get_limited_deal(queryset)
             return self.__product
@@ -62,7 +89,10 @@ class RandomProduct:
             self.__end_time = dt.datetime.strptime(date, "%d.%m.%Y %H:%M")
         return self.__product
 
-    def get_context_data(self):
+    def get_context_data(self) -> Dict:
+        """
+        Method for fast making the context data
+        """
         if self.__product and self.__product != 'initial':
             return {
                 'special_product': self.__product[0],
@@ -79,6 +109,10 @@ class RandomProduct:
 
 
 def get_limited_products(count: int) -> QuerySet:
+    """
+    Function to get products for limited products block. Returns zip-iterator by count length with corteges
+    (instance model, price with discount, type of discount)
+    """
     products_cache_key = 'limited:{}'.format('all')
     queryset = cache.get(products_cache_key)
     if not queryset:
@@ -93,6 +127,10 @@ def get_limited_products(count: int) -> QuerySet:
 
 
 def get_hot_offers(count: int = 9) -> QuerySet:
+    """
+    Function to get products for hot offers block. Returns zip-iterator by count length with corteges
+    (instance model, price with discount, type of discount)
+    """
     products_cache_key = 'hot_offers:{}'.format('all')
     queryset = cache.get(products_cache_key)
     if not queryset:
@@ -113,6 +151,10 @@ def get_hot_offers(count: int = 9) -> QuerySet:
 
 
 def get_limited_deal(products: QuerySet) -> Union[Model, bool]:
+    """
+    Get one random product from products queryset. Return False if it does not exist. Return
+    False if products is empty
+    """
     try:
         return random.choice(list(products))
     except IndexError:
@@ -123,6 +165,10 @@ random_product = RandomProduct(fallibility=1)
 
 
 def get_all_products(order_by: str, count: int) -> QuerySet:
+    """
+    Function to get all products. Returns zip-iterator by count length with corteges:
+    (instance model, price with discount, type of discount) and with sort by order_by param
+    """
     products_cache_key = 'products:{}'.format('all_sp')
     queryset = cache.get(products_cache_key)
     if not queryset:
@@ -137,6 +183,10 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
 
 
 def get_random_categories() -> Union[List, bool]:
+    """
+    Function to get 3 random categories, if it has at least 1 product. And the annotate for each category with
+    minimal price from this category products. Returns QuerySet with 3 random elements or False if Queryset is empty
+    """
     categories = get_categories()
     random_categories = categories.annotate(count=Count('products__seller_products'),
                                             from_price=Min('products__seller_products__price'))\

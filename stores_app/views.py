@@ -25,7 +25,9 @@ class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMix
 
 
 class SellersRoomView(StoreAppMixin, ListView):
-    """   Page for view seller room for Sellers-group   """
+    """
+    Page for view seller room for Sellers-group
+    """
     model = Seller
     template_name = 'stores_app/sellers_room.html'
     context_object_name = 'stores'
@@ -40,7 +42,9 @@ class SellersRoomView(StoreAppMixin, ListView):
 
 
 class AddNewStoreView(StoreAppMixin, View):
-    """   Page for creating new store   """
+    """
+    Page for creating new store
+    """
 
     def get(self, request: HttpRequest) -> Callable:
         form = AddStoreForm()
@@ -56,7 +60,9 @@ class AddNewStoreView(StoreAppMixin, View):
 
 
 class EditStoreView(StoreAppMixin, DetailView):
-    """   Page for view and edit detail store   """
+    """
+    Page for view and edit detail store
+    """
     context_object_name = 'store'
     template_name = 'stores_app/edit-store.html'
     model = Seller
@@ -77,7 +83,9 @@ class EditStoreView(StoreAppMixin, DetailView):
 
 
 class StoreDetailView(StoreServiceMixin, DetailView):
-    """   Page for Store Detail   """
+    """
+    Page for Store Detail
+    """
     permission_required = None
     context_object_name = 'store'
     template_name = 'stores_app/store_detail.html'
@@ -91,7 +99,9 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 
 
 class AddSellerProductView(StoreAppMixin, View):
-    """   Page for adding new seller product   """
+    """
+    Page for adding new seller product
+    """
 
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
@@ -114,6 +124,9 @@ class AddSellerProductView(StoreAppMixin, View):
 
 
 class CategoryFilter(StoreServiceMixin, ListView):
+    """
+    View for category changes and updating products queryset
+    """
 
     def get_queryset(self) -> QuerySet:
         category_id = self.request.GET.get('category_id')
@@ -125,7 +138,9 @@ class CategoryFilter(StoreServiceMixin, ListView):
 
 
 class EditSelleProductView(StoreAppMixin, DetailView):
-    """    Page for editing SellerProduct instance    """
+    """
+    Page for editing SellerProduct instance
+    """
     context_object_name = 'item'
     template_name = 'stores_app/edit-seller-product.html'
     model = SellerProduct
@@ -148,6 +163,9 @@ class EditSelleProductView(StoreAppMixin, DetailView):
 
 @permission_required('profiles_app.Sellers')
 def remove_Store(request: HttpRequest) -> Callable:
+    """
+    Remove store in seller room
+    """
     if request.method == 'GET':
         StoreServiceMixin.remove_store(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
@@ -155,12 +173,18 @@ def remove_Store(request: HttpRequest) -> Callable:
 
 @permission_required('profiles_app.Sellers')
 def remove_SellerProduct(request: HttpRequest) -> Callable:
+    """
+    Remove product in seller room
+    """
     if request.method == 'GET':
         StoreServiceMixin.remove_seller_product(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class RequestNewProduct(StoreAppMixin, View):
+    """
+    View for create the request for adding new product
+    """
 
     def get(self, request: HttpRequest) -> Callable:
         categories = get_categories()

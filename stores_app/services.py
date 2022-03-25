@@ -22,7 +22,7 @@ User = get_user_model()
 
 class StoreServiceMixin:
     """
-    Mixin with functions for queries by project models Seller and SellerProduct
+    Mixin with functions for queries by models Seller and SellerProduct
 
     All available methods:
     get_store(slug) - get Seller instance with slug=slug
@@ -115,6 +115,9 @@ class StoreServiceMixin:
 
     @classmethod
     def get_products(cls, **kwargs) -> QuerySet:
+        """
+        Get Products by category, Seller instance or get all Products
+        """
         if 'category_id' in kwargs.keys():
             return Product.objects.select_related('category').filter(category=kwargs.get('category_id'))
         elif 'instance' in kwargs.keys():
@@ -124,6 +127,9 @@ class StoreServiceMixin:
 
     @classmethod
     def get_viewed_products(cls, user: User) -> QuerySet:
+        """
+        Get viewed SellerProducts by user
+        """
         viewed_cache_key = 'viewed:{}'.format(user.id)
         viewed = cache.get(viewed_cache_key)
         if not viewed:
@@ -134,6 +140,9 @@ class StoreServiceMixin:
 
     @classmethod
     def get_last_order(cls, user: User) -> QuerySet:
+        """
+        Get last user Order
+        """
         last_order_cache_key = 'user_last_order:{}'.format(user.id)
         order = cache.get(last_order_cache_key)
         if not order:
@@ -143,6 +152,9 @@ class StoreServiceMixin:
 
     @classmethod
     def get_all_orders(cls, user: User) -> QuerySet:
+        """
+        Get all user Orders
+        """
         orders_cache_key = 'user_orders:{}'.format(user.id)
         orders = cache.get(orders_cache_key)
         if not orders:
@@ -161,6 +173,9 @@ class StoreServiceMixin:
 
     @classmethod
     def request_add_new_product(cls, product: Product, user: User) -> None:
+        """
+        Create ProductRequest instance
+        """
         product.is_published = False
         product.user = user
         product.save()

@@ -83,4 +83,7 @@ class SellerProduct(models.Model):
 
     @property
     def get_discount(self) -> QuerySet:
+        """
+        Get all related ProductDiscounts
+        """
         return self.product_discounts.all()

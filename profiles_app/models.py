@@ -34,7 +34,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Custom user model"""
+    """
+    Custom user model
+    """
     email = models.EmailField(verbose_name=_('email'), unique=True)
     username = models.CharField(verbose_name=_('username'), max_length=30, blank=True, null=True, default="")
     first_name = models.CharField(verbose_name=_('name'), max_length=30, blank=True, default="")
@@ -64,6 +66,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             return str(self.email)
 
     def is_member(self, group_name: str) -> bool:
+        """
+        Method for checking membership in a group
+        """
         try:
             if self.groups.filter(name=group_name):
                 return True
@@ -72,6 +77,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         return False
 
     def save(self, *args, **kwargs) -> Callable:
+        """
+        Method overridden to remove old files and add permissions
+        """
         if self.pk is not None:
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:

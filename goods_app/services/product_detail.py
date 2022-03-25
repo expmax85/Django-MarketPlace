@@ -13,6 +13,19 @@ from settings_app.config_project import OPTIONS
 
 
 class CurrentProduct:
+    """
+    A class for working with a Product instance. You can get a product by its slug or directly instance
+
+    Allowed methods:
+    get_product,
+    get_sellers,
+    get_best_offer,
+    get_specifications,
+    get_tags,
+    get_reviews,
+    get_review_page(queryset, page),
+    calculate_product_rating()
+    """
 
     def __init__(self, **kwargs) -> None:
         if 'slug' in kwargs:
@@ -28,6 +41,9 @@ class CurrentProduct:
 
     @property
     def get_sellers(self) -> QuerySet:
+        """
+        Method to get all sellers, who have this product. Returns ordering queryset by price
+        """
         sellers_cache_key = 'sellers:{}'.format(self.product.id)
         sellers = cache.get(sellers_cache_key)
         if not sellers:
@@ -39,10 +55,16 @@ class CurrentProduct:
 
     @property
     def get_best_offer(self) -> QuerySet:
+        """
+        Method for getting best seller
+        """
         return self.get_sellers.first()
 
     @property
     def get_specifications(self) -> QuerySet:
+        """
+        Method for getting all specifications product
+        """
         specifications_cache_key = 'specifications:{}'.format(self.product.id)
         specifications = cache.get(specifications_cache_key)
         if not specifications:
@@ -52,6 +74,9 @@ class CurrentProduct:
 
     @property
     def get_tags(self) -> QuerySet:
+        """
+        Method for getting all tags product
+        """
         tags_cache_key = 'tags:{}'.format(self.product.id)
         tags = cache.get(tags_cache_key)
         if not tags:
@@ -61,6 +86,9 @@ class CurrentProduct:
 
     @property
     def get_reviews(self) -> QuerySet:
+        """
+        Method for getting all reviews product
+        """
         reviews_cache_key = 'reviews:{}'.format(self.product.id)
         reviews = cache.get(reviews_cache_key)
         if not reviews:
@@ -69,6 +97,10 @@ class CurrentProduct:
         return reviews
 
     def get_review_page(self, queryset: QuerySet, page: int) -> Dict:
+        """
+        Method for getting reviews page to pass to javascript. Returns dict with queryset page reviews
+        and data for pagination
+        """
         reviews_count = queryset.count()
         reviews = queryset.values('author', 'content', 'added')
         paginator = Paginator(reviews, per_page=OPTIONS['general__review_size_page'])
@@ -90,6 +122,9 @@ class CurrentProduct:
         return json_dict
 
     def calculate_product_rating(self) -> None:
+        """
+        Method for calculating product rating, when the review added
+        """
         rating = ProductComment.objects.only('rating') \
             .filter(product_id=self.product.id) \
             .aggregate(Avg('rating'))['rating__avg']
@@ -98,6 +133,9 @@ class CurrentProduct:
             self.product.save(update_fields=['rating'])
 
     def get_context_data(self, *args) -> Dict:
+        """
+        Method for fast making the context data
+        """
         context = dict()
         for arg in args:
             try:
@@ -109,6 +147,9 @@ class CurrentProduct:
 
 @receiver(post_save, sender=ProductComment)
 def comment_post_save_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing reviews cache, when added new review
+    """
     if kwargs['created']:
         product_id = kwargs['instance'].product_id
         cache.delete('reviews:{}'.format(product_id))
@@ -116,8 +157,7 @@ def comment_post_save_handler(sender, **kwargs) -> None:
 
 def context_pagination(request: HttpRequest, queryset: QuerySet, size_page: int = 3) -> Paginator:
     """
-    Функция для создания пагинации
-    :return: Paginator
+    Function for creating pagination
     """
     paginator = Paginator(queryset, size_page)
     page_number = request.GET.get('page')

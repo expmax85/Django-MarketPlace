@@ -19,6 +19,9 @@ from stores_app.models import SellerProduct
 
 
 class IndexView(ListView):
+    """
+    Main page view
+    """
     model = SellerProduct
     template_name = 'index.html'
     context_object_name = 'products'
@@ -46,6 +49,9 @@ class IndexView(ListView):
 
 
 class ProductDetailView(DetailView):
+    """
+    Product detail view
+    """
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
@@ -67,6 +73,9 @@ class ProductDetailView(DetailView):
 
 
 def get_reviews(request: HttpRequest) -> JsonResponse:
+    """
+    View for getting reviews
+    """
     slug = request.GET.get('slug')
     page = request.GET.get('page')
     product = CurrentProduct(slug=slug)
@@ -76,6 +85,9 @@ def get_reviews(request: HttpRequest) -> JsonResponse:
 
 
 def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
+    """
+    View for adding review
+    """
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)

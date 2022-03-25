@@ -125,6 +125,9 @@ class Specifications(models.Model):
 
 
 class ProductRequest(Product):
+    """
+    Model for requesting to add new Product
+    """
     product_ptr = models.OneToOneField(Product, on_delete=models.DO_NOTHING, parent_link=True, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     store = models.CharField(verbose_name=_('store'), max_length=30)
