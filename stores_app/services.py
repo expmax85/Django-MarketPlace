@@ -12,6 +12,7 @@ from django.db.models.signals import post_delete
 from django.core.cache import cache
 
 from config.settings import MEDIA_ROOT
+from discounts_app.models import Discount
 from orders_app.models import Order, ViewedProduct
 from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT
 from stores_app.models import Seller, SellerProduct
@@ -42,9 +43,9 @@ class StoreServiceMixin:
     def get_store(cls, slug: str) -> QuerySet:
         """
         Get store with slug
+
         """
         return Seller.objects.select_related('owner').get(slug=slug)
-
     @classmethod
     def get_user_stores(cls, user: User) -> QuerySet:
         """
