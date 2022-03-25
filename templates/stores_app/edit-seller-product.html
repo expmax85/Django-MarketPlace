@@ -36,9 +36,9 @@
                           </li>
                           <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
                           </li>
-                          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchases history' %}</a>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                           </li>
-                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Viewed products' %}</a>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-view' %}">{% trans 'Viewed products' %}</a>
                           </li>
                           <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
                           </li>
@@ -69,39 +69,14 @@
                               <label class="form-label" for="id_quantity">{% trans 'Quantity' %}:
                               </label>
                               <input class="form-input" type="number" name="quantity" value="{{ item.quantity }}" required id="id_quantity">
-                          </div>
-                          <div class="form-group reset-margin">
-                              <label class="form-label" for="id_discount">{% trans 'Discount' %}:</label>
-                              <select class="form-input" name="discount" id="id_discount">
-                                  {% for discount in discounts %}
-                                      {%  if discount.id == item.discount.id %}
-                                           <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}" selected="">
-                                      {% else %}
-                                           <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}">
-                                      {% endif %}
-                                      {{ discount.name }} (
-                                          {% if discount.percent == None %}
-                                            {{discount.amount}}
-                                          {% else %}
-                                            {{ discount.percent }}%
-                                          {% endif %})
-                                  </option>
-                                  {% endfor %}
-                              </select>
-                              <span class="formerror">{{form.errors.item}}</span>
+                              <span class="formerror">{{form.errors.quantity}}</span>
                           </div>
                       </div>
                       <div class="row-block">
                           <div class="form-group require-field">
                               <label class="form-label" for="id_price">{% trans 'Price' %}:</label>
-                              <input class="form-input" id="id_price" name="price" type="number" value="{{ item.price }}" required step="100.00"
-                              oninput="PriceDiscount(this.value)">
-                              <span class="formerror">{{form.errors.quantity}}</span>
-                          </div>
-                          <div class="form-group reset-margin">
-                              <label class="form-label" for="id_price_after_discount" >{% trans 'Price with discount' %}:
-                              </label>
-                              <input class="form-input" type="number" name="price_after_discount" value="{{ item.price_after_discount }}" readonly id="id_price_after_discount" onchange="PriceDiscount(this.value)">
+                              {{ form.price }}
+                              <span class="formerror">{{form.errors.price}}</span>
                           </div>
                       </div>
                   </div>

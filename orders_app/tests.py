@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from goods_app.models import Product, SpecificationsNames, Specifications, ProductCategory
-from orders_app.models import Order, OrderProduct, ViewedProduct
+from orders_app.models import Order, OrderProduct
 from stores_app.models import SellerProduct, Seller
 from discounts_app.models import Discount, DiscountCategory
 from profiles_app.models import User
@@ -178,12 +178,11 @@ class HistoryViewedTest(TestCase):
             Product.objects.create(name=f'name{num}', category=self.category, rating=1)
         for num in range(1, 5):
             SellerProduct.objects.create(seller=self.seller,
-                                               product=Product.objects.get(id=num),
-                                               discount=self.discount,
-                                               price=100,
-                                               price_after_discount=90,
-                                               quantity=10)
-
+                                         product=Product.objects.get(id=num),
+                                         discount=self.discount,
+                                         price=100,
+                                         price_after_discount=90,
+                                         quantity=10)
 
     def test_viewed(self):
         """ Добавление в просмотренные """

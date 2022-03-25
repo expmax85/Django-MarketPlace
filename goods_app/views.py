@@ -1,48 +1,57 @@
-from typing import Dict, Callable, Union
-
-from decimal import Decimal
-from typing import Dict, Callable
+from typing import Dict, Callable, Union, Iterable
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.decorators.csrf import csrf_protect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
+from settings_app.config_project import OPTIONS
 from banners_app.services import banner
-from goods_app.services import CatalogByCategoriesMixin, context_pagination, CurrentProduct, get_seller_products
-from discounts_app.services import get_discounted_prices_for_seller_products
+from goods_app.services.limited_products import random_product, \
+    get_all_products, get_limited_products, get_random_categories, get_hot_offers
+from goods_app.services.catalog import CatalogByCategoriesMixin
+from goods_app.services.product_detail import CurrentProduct, context_pagination
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
-from settings_app.config_project import OPTIONS
-from goods_app.services import context_pagination
-from orders_app.services import CartService
 from stores_app.models import SellerProduct
 
 
 class IndexView(ListView):
+    """
+    Main page view
+    """
     model = SellerProduct
     template_name = 'index.html'
     context_object_name = 'products'
 
-    def get_queryset(self):
-        products = get_seller_products()
-        return get_discounted_prices_for_seller_products(products)
+    def get_queryset(self) -> Iterable:
+        products = get_all_products(order_by=OPTIONS['general__sort_index'],
+                                    count=OPTIONS['general__count_popular_products'])
+        return products
 
     def get_context_data(self, **kwargs) -> Dict:
-        context = super().get_context_data(**kwargs)
-        context['banners'] = banner()
-        # random_product.set_days_duration(days_duration=OPTIONS['general__days_duration'])
-        # random_product.set_time_update(time_update=OPTIONS['general__time_update'])
-        # context['special_product'] = random_product.update_product()
-        # context['update_time'] = random_product.get_end_time
+        limited_products = get_limited_products(count=OPTIONS['general__count_limited_products'])
+        random_product.days_duration = OPTIONS['general__days_duration']
+        random_product.time_update = OPTIONS['general__time_update']
+        random_product.update_product(queryset=limited_products)
+
+        context = {
+            'banners': banner(),
+            'limited_products': limited_products,
+            'hot_offers': get_hot_offers(),
+            'random_categories': get_random_categories(),
+            **random_product.get_context_data(),
+            **super().get_context_data(**kwargs)
+        }
         return context
 
 
 class ProductDetailView(DetailView):
+    """
+    Product detail view
+    """
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
@@ -52,15 +61,21 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = CurrentProduct(instance=context['product'])
         reviews = product.get_reviews
-        context['reviews_count'] = reviews.count()
-        context['comments'] = context_pagination(self.request, reviews,
-                                                 size_page=OPTIONS['general__review_size_page'])
-        context['form'] = ReviewForm()
-        context = {**context, **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags')}
+        context = {
+            'reviews_count': reviews.count(),
+            'comments': context_pagination(self.request, reviews,
+                                           size_page=OPTIONS['general__review_size_page']),
+            'form': ReviewForm(),
+            **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags'),
+            **context
+        }
         return context
 
 
-def get_reviews(request) -> JsonResponse:
+def get_reviews(request: HttpRequest) -> JsonResponse:
+    """
+    View for getting reviews
+    """
     slug = request.GET.get('slug')
     page = request.GET.get('page')
     product = CurrentProduct(slug=slug)
@@ -69,7 +84,10 @@ def get_reviews(request) -> JsonResponse:
                          'slug': slug}, safe=False)
 
 
-def post_review(request) -> Union[JsonResponse, Callable]:
+def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
+    """
+    View for adding review
+    """
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)

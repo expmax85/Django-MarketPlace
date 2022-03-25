@@ -4,11 +4,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 
-
 from stores_app.models import Seller
 
-User = get_user_model()
 
+User = get_user_model()
 
 
 class StoresTestCase(TestCase):

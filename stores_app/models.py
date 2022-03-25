@@ -1,15 +1,13 @@
-import json
-from typing import Callable
+from typing import Callable, Dict
 
 from django.contrib.auth import get_user_model
-from django.forms import model_to_dict
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.urls import reverse
 
 from goods_app.models import Product
-from discounts_app.services import DiscountsService
-# from discounts_app.models import Discount
+
 
 User = get_user_model()
 
@@ -64,20 +62,14 @@ class SellerProduct(models.Model):
                                 related_name='seller_products',
                                 verbose_name=_('product')
                                 )
-    # discount = models.ForeignKey(Discount,
-    #                              on_delete=models.CASCADE,
-    #                              related_name='seller_products',
-    #                              verbose_name=_('discount')
-    #                              )
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price'))
-    # price_after_discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('price_after_discount'))
     quantity = models.IntegerField(verbose_name=_('quantity'))
     date_added = models.DateTimeField(verbose_name=_('date added'), auto_now_add=True)
 
     def __str__(self) -> str:
         return f'{self.product} in {self.seller}'
 
-    def serialize(self):
+    def serialize(self) -> Dict:
         return self.__dict__
 
     class Meta:
@@ -89,6 +81,9 @@ class SellerProduct(models.Model):
         return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
                                                                    'pk': self.id})
 
-    # @property
-    # def price_after_discount(self):
-    #     return DiscountsService.get_discounted_price(self, class_name='ProductDiscount')
+    @property
+    def get_discount(self) -> QuerySet:
+        """
+        Get all related ProductDiscounts
+        """
+        return self.product_discounts.all()

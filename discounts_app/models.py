@@ -6,16 +6,16 @@ from goods_app.models import ProductCategory
 from stores_app.models import Seller, SellerProduct
 
 TYPE_CHOICES = [
-        ('p', _('Per cent')),
-        ('f', _('Fixed amount')),
-        ('fp', _('Fixed price')),
-    ]
+    ('p', _('Per cent')),
+    ('f', _('Fixed amount')),
+    ('fp', _('Fixed price')),
+]
 
 PRIORITY_CHOICES = [
-        ('1', _('Low')),
-        ('2', _('Medium')),
-        ('3', _('High')),
-    ]
+    ('1', _('Low')),
+    ('2', _('Medium')),
+    ('3', _('High')),
+]
 
 
 class Discount(models.Model):

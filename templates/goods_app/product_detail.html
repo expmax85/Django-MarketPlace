@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
- <div class="Section">
+    <div class="Section">
       <div class="wrap">
         <div class="Product">
           <div class="ProductCard">
@@ -286,6 +286,7 @@
 {% endblock %}
 
 {% block scripts %}
+    {{ block.super }}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{% static 'assets/js/comments.js' %}"></script>
     <script>

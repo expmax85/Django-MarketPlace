@@ -41,10 +41,10 @@ class ProfilesAppTestCase(TestCase):
                 "password1": "johndoe12",
                 "password2": "johndoe12",
                 "phone": "7(999)999-99-99"
-            }, follow=True
+            }
         )
-        self.assertEqual(response.status_code, 200)
-        users = get_user_model().objects.all()
+        self.assertEqual(response.status_code, 302)
+        users = User.objects.all()
         self.assertEqual(users.count(), 2)
 
     def test_unsuccess_register(self):
@@ -59,7 +59,7 @@ class ProfilesAppTestCase(TestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
-        users = get_user_model().objects.all()
+        users = User.objects.all()
         self.assertNotEqual(users.count(), 2)
 
     def test_login_user(self):
@@ -119,7 +119,7 @@ class ProfilesAppTestCase(TestCase):
                 "password1": "johndoe12",
                 "password2": "johndoe12",
                 "phone": "+7(999)999-99-99"
-            }, follow=True
+            }
         )
-        user = get_user_model().objects.get(email="john@example.com")
+        user = User.objects.get(email="john@example.com")
         self.assertTrue(user.phone == '9999999999')

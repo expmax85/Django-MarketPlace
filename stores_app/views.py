@@ -3,7 +3,7 @@ from typing import Callable, Dict
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.db.models import QuerySet
 from django.shortcuts import render, redirect
@@ -11,12 +11,13 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from profiles_app.services import reset_phone_format
 from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from stores_app.services import StoreServiceMixin
+from goods_app.services.catalog import get_categories
+from profiles_app.services import reset_phone_format
 from stores_app.forms import AddStoreForm, EditStoreForm, \
     AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
 from stores_app.models import Seller, SellerProduct
-from stores_app.services import StoreServiceMixin
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -24,7 +25,9 @@ class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMix
 
 
 class SellersRoomView(StoreAppMixin, ListView):
-    """   Page for view seller room for Sellers-group   """
+    """
+    Page for view seller room for Sellers-group
+    """
     model = Seller
     template_name = 'stores_app/sellers_room.html'
     context_object_name = 'stores'
@@ -34,19 +37,20 @@ class SellersRoomView(StoreAppMixin, ListView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['categories'] = self.get_categories()
         context['seller_products'] = self.get_seller_products(user=self.request.user)
         return context
 
 
 class AddNewStoreView(StoreAppMixin, View):
-    """   Page for creating new store   """
+    """
+    Page for creating new store
+    """
 
-    def get(self, request) -> Callable:
+    def get(self, request: HttpRequest) -> Callable:
         form = AddStoreForm()
         return render(request, 'stores_app/add_store.html', context={'form': form})
 
-    def post(self, request) -> Callable:
+    def post(self, request: HttpRequest) -> Callable:
         form = AddStoreForm(request.POST, request.FILES)
         if form.is_valid():
             store = form.save()
@@ -56,7 +60,9 @@ class AddNewStoreView(StoreAppMixin, View):
 
 
 class EditStoreView(StoreAppMixin, DetailView):
-    """   Page for view and edit detail store   """
+    """
+    Page for view and edit detail store
+    """
     context_object_name = 'store'
     template_name = 'stores_app/edit-store.html'
     model = Seller
@@ -67,7 +73,7 @@ class EditStoreView(StoreAppMixin, DetailView):
         context['form'] = EditStoreForm(instance=self.get_object())
         return context
 
-    def post(self, request, slug: str) -> Callable:
+    def post(self, request: HttpRequest, slug: str) -> Callable:
         form = EditStoreForm(request.POST, request.FILES, instance=self.get_object())
         if form.is_valid():
             store = form.save()
@@ -77,7 +83,9 @@ class EditStoreView(StoreAppMixin, DetailView):
 
 
 class StoreDetailView(StoreServiceMixin, DetailView):
-    """   Page for Store Detail   """
+    """
+    Page for Store Detail
+    """
     permission_required = None
     context_object_name = 'store'
     template_name = 'stores_app/store_detail.html'
@@ -91,18 +99,19 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 
 
 class AddSellerProductView(StoreAppMixin, View):
-    """   Page for adding new seller product   """
+    """
+    Page for adding new seller product
+    """
 
-    def get(self, request) -> Callable:
+    def get(self, request: HttpRequest) -> Callable:
         context = dict()
-        context['categories'] = self.get_categories()
+        context['categories'] = get_categories()
         context['products'] = self.get_products()
-        context['discounts'] = self.get_discounts()
         context['stores'] = self.get_user_stores(user=request.user)
         context['form'] = AddSellerProductForm()
         return render(request, 'stores_app/new_product_in_store.html', context=context)
 
-    def post(self, request) -> Callable:
+    def post(self, request: HttpRequest) -> Callable:
         form = AddSellerProductForm(request.POST)
         if form.is_valid():
             form.save(commit=False)
@@ -115,18 +124,23 @@ class AddSellerProductView(StoreAppMixin, View):
 
 
 class CategoryFilter(StoreServiceMixin, ListView):
+    """
+    View for category changes and updating products queryset
+    """
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         category_id = self.request.GET.get('category_id')
         return self.get_products(category_id=category_id).values("id", "name")
 
-    def get(self, request, *args, **kwargs) -> JsonResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
         return JsonResponse({'products': list(queryset)}, safe=False)
 
 
 class EditSelleProductView(StoreAppMixin, DetailView):
-    """    Page for editing SellerProduct instance    """
+    """
+    Page for editing SellerProduct instance
+    """
     context_object_name = 'item'
     template_name = 'stores_app/edit-seller-product.html'
     model = SellerProduct
@@ -135,11 +149,11 @@ class EditSelleProductView(StoreAppMixin, DetailView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data()
         context['form'] = EditSellerProductForm(instance=self.get_object())
-        context['discounts'] = self.get_discounts()
+        print(context['form'])
         return context
 
-    def post(self, request, slug: str, pk: int) -> Callable:
-        form = EditSellerProductForm(request.POST, instance=self.get_object())
+    def post(self, request: HttpRequest, slug: str, pk: int) -> Callable:
+        form = EditSellerProductForm(request.POST)
         if form.is_valid():
             form.save(commit=False)
             self.edit_seller_product(data=form.cleaned_data, instance=self.get_object())
@@ -148,30 +162,39 @@ class EditSelleProductView(StoreAppMixin, DetailView):
 
 
 @permission_required('profiles_app.Sellers')
-def remove_Store(request) -> Callable:
+def remove_Store(request: HttpRequest) -> Callable:
+    """
+    Remove store in seller room
+    """
     if request.method == 'GET':
         StoreServiceMixin.remove_store(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 @permission_required('profiles_app.Sellers')
-def remove_SellerProduct(request) -> Callable:
+def remove_SellerProduct(request: HttpRequest) -> Callable:
+    """
+    Remove product in seller room
+    """
     if request.method == 'GET':
         StoreServiceMixin.remove_seller_product(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class RequestNewProduct(StoreAppMixin, View):
+    """
+    View for create the request for adding new product
+    """
 
-    def get(self, request):
-        categories = self.get_categories()
+    def get(self, request: HttpRequest) -> Callable:
+        categories = get_categories()
         stores = self.get_user_stores(user=request.user)
         form = AddRequestNewProduct()
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
                                                                                    'categories': categories,
                                                                                    'stores': stores})
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> Callable:
         form = AddRequestNewProduct(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
@@ -179,7 +202,7 @@ class RequestNewProduct(StoreAppMixin, View):
             messages.add_message(request, SEND_PRODUCT_REQUEST,
                                  _('Your request was sending. Wait the answer some before time to your email!'))
             return redirect(reverse('stores-polls:sellers-room'))
-        categories = self.get_categories()
+        categories = get_categories()
         stores = self.get_user_stores(user=request.user)
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
                                                                                    'categories': categories,

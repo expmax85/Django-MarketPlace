@@ -43,7 +43,7 @@
                 </li>
                 <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                 </li>
-                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Views history' %}</a>
+                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-view' %}">{% trans 'Views history' %}</a>
                 </li>
                 {% if perms.profiles_app.Sellers %}
                 <li class="menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
@@ -63,8 +63,8 @@
               </figure>
             </div>
             <div class="Account-column">
-              <div class="Account-name">{{ request.user.last_name}} {{ request.user.first_name }}
-              </div><a class="Account-editLink" href="{%  url 'profiles-polls:account-edit' %}">{% trans 'Edit profile' %}</a>
+              <div class="Account-name">{{ request.user.last_name}} {{ request.user.first_name }}</div>
+              <a class="Account-editLink" href="{%  url 'profiles-polls:account-edit' %}">{% trans 'Edit profile' %}</a>
             </div>
           </div>
           <div class="Account-group">
@@ -73,31 +73,25 @@
                 <div class="Order-personal">
                   <div class="row">
                     <div class="row-block"><a class="Order-title" href="#">{% trans 'Order' %}&#32;<span class="Order-numberOrder">№{{number_order}}</span>&#32;{% trans 'from' %}&#32;<span class="Order-dateOrder">{{last_order.ordered|date:"d.m.o"}}</span></a>
-                      <div class="Account-editLink"><a href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
+                      <div class="Account-editLink">
+                          <a href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                       </div>
                     </div>
                     <div class="row-block">
                       <div class="Order-info Order-info_delivery">
-                        <div class="Order-infoType">{% trans 'Type of delivery' %}:
-                        </div>
-                        <div class="Order-infoContent">{{last_order.delivery}}
-                        </div>
+                        <div class="Order-infoType">{% trans 'Type of delivery' %}:</div>
+                        <div class="Order-infoContent">{{last_order.delivery}}</div>
                       </div>
                       <div class="Order-info Order-info_pay">
-                        <div class="Order-infoType">{% trans 'Payment method' %}:
-                        </div>
-                        <div class="Order-infoContent">{{last_order.payment_method}}
-                        </div>
+                        <div class="Order-infoType">{% trans 'Payment method' %}:</div>
+                        <div class="Order-infoContent">{{last_order.payment_method}}</div>
                       </div>
                       <div class="Order-info">
-                        <div class="Order-infoType">{% trans 'Full price' %}:
-                        </div>
-                        <div class="Order-infoContent">{{last_order.total_sum}}
-                        </div>
+                        <div class="Order-infoType">{% trans 'Full price' %}:</div>
+                        <div class="Order-infoContent">{{last_order.total_sum}}</div>
                       </div>
                       <div class="Order-info Order-info_status">
-                        <div class="Order-infoType">{% trans 'Order Status' %}:
-                        </div>
+                        <div class="Order-infoType">{% trans 'Order Status' %}: </div>
                         <div class="Order-infoContent">
                           {% if last_order.in_order %}
                             {{ last_order.in_order }}
@@ -112,6 +106,7 @@
               </div>
             </div>
           </div>
+          {% if viewed_products %}
           <div class="Account-group">
             <div class="Account-column Account-column_full">
               <header class="Section-header">
@@ -119,60 +114,38 @@
                 </h2>
               </header>
               <div class="Cards Cards_account">
-                <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                {% for item in viewed_products %}
+                <div class="Card">
+                  <a class="Card-picture" href="{{ item.product.product.get_absolute_url }}"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                   <div class="Card-content">
-                    <strong class="Card-title"><a href="#">Corsair Carbide Series Arctic White Steel</a>
+                    <strong class="Card-title"><a href="{{ item.product.product.get_absolute_url }}">{{ item.product.product.name}}</a>
                     </strong>
                     <div class="Card-description">
-                      <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>
+                      <div class="Card-cost">
+                          <span class="Card-priceOld">{{ item.product.price }}</span>
+                          <span class="Card-price">{{ item.product.price_after_discount }}</span>
                       </div>
-                      <div class="Card-category">Games / xbox
-                      </div>
-                      <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                      <div class="Card-category">{{ item.product.product.category.name }}</div>
+                      <div class="Card-hover">
+                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
+                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
                       </div>
                     </div>
                   </div>
-                  <div class="Card-sale">-60%
-                  </div>
+                  {% if item.product.discount.percent %}
+                  <div class="Card-sale">-{{ item.product.discount.percent|floatformat:"0" }}%</div>
+                  {% endif %}
                 </div>
-                <div class="Card hide_700"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
-                  <div class="Card-content">
-                    <strong class="Card-title"><a href="#">Barand New Phone Smart Business</a>
-                    </strong>
-                    <div class="Card-description">
-                      <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$85.00</span>
-                      </div>
-                      <div class="Card-category">Games / xbox
-                      </div>
-                      <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="Card-sale">-60%
-                  </div>
+                {% endfor %}
+                <div class="Account-editLink Account-editLink_view">
+                  <a href="{% url 'orders-polls:history-view' %}">{% trans 'Show all viewed products' %}</a>
                 </div>
-                <div class="Card hide_md"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
-                  <div class="Card-content">
-                    <strong class="Card-title"><a href="#">Mavic PRO Mini Drones Hobby RC Quadcopter</a>
-                    </strong>
-                    <div class="Card-description">
-                      <div class="Card-cost"><span class="Card-priceOld">$115.00</span><span class="Card-price">$185.00</span>
-                      </div>
-                      <div class="Card-category">Digital / xbox
-                      </div>
-                      <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="Card-sale">-60%
-                  </div>
-                </div>
-              </div>
-              <div class="Account-editLink Account-editLink_view"><a href="{% url 'orders-polls:viewed' %}">{% trans 'Show all viewed products' %}</a>
               </div>
             </div>
           </div>
         </div>
+        {% endif %}
       </div>
     </div>
   </div>

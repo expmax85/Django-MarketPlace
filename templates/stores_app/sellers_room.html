@@ -35,9 +35,9 @@
                                 </li>
                                 <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
                                 </li>
-                                <li class="menu-item"><a class="menu-link" href="#">{% trans 'Orders history' %}</a>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                                 </li>
-                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Views history' %}</a>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-view' %}">{% trans 'Views history' %}</a>
                                 </li>
                                 {% if perms.profiles_app.Sellers %}
                                 <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
@@ -115,7 +115,7 @@
                               <div class="Card">
                                   <a class="Card-picture" href="#"><img src="{{ MEDIA_ROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"/></a>
                                   <div class="Card-content">
-                                      <strong class="Card-title"><a href="#">{{ item.product.name }}</a>
+                                      <strong class="Card-title">{{ item.product.name }}
                                       </strong>
                                       <div class="Card-description">
                                           <div class="Card-cost">
@@ -147,17 +147,6 @@
 								  </form>
                               </div>
                               {% endfor %}
-<!--                            <form class="Card Add-product flex column-direction" id="id_add_product" action="{% url 'stores-polls:add-store-product' %}">-->
-<!--                                <div>-->
-<!--                                    <label class="form-label" style ="font-size: 20px;" for="id_category">{% trans 'Choose Category Product' %}:</label>-->
-<!--                                    <select class="form-area" name="category_id" required="" id="id_category">-->
-<!--                                        <option value="" selected="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-<!--                                        {% for category in categories %}-->
-<!--                                        <option value="{{ category.id }}">{{ category.name }}</option>-->
-<!--                                        {%  endfor %}-->
-<!--                                    </select>-->
-<!--                                    <span class="formerror">{{form.errors.seller}}</span>-->
-<!--                                </div>-->
                                 <a href="{% url 'stores-polls:add-store-product' %}" class="btn-reset seller-item Add-seller reset-margin">
                                     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                                viewBox="0 0 55 55" style="enable-background:new 0 0 55 55;" xml:space="preserve">

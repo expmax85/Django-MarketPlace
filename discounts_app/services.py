@@ -1,5 +1,4 @@
 from datetime import date
-from typing import List
 from decimal import Decimal
 
 
@@ -162,7 +161,7 @@ class DiscountsService:
             return True
         return False
 
-    def get_discounted_price_in_cart(self, product) -> Decimal :
+    def get_discounted_price_in_cart(self, product) -> Decimal:
         """
         Расчитать цену со скидкой, если товар в текущей корзине
         """
@@ -223,13 +222,13 @@ def get_discounted_prices_for_seller_products(products):
 
     for product in products:
         price = product.price
-        discount = product.product_discounts.filter(is_active=True, type_of_discount__in=('f', 'p')).first()
+        discount = list(product.get_discount)
 
         if not discount:
             discounted_prices.append(None)
             discounts.append(None)
         else:
-            price = implement_discount(price, discount)
+            price = implement_discount(price, discount[0])
 
             if price < 1:
                 price = 1

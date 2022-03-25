@@ -1,6 +1,5 @@
 from django.urls import path
-from goods_app.views import *
-
+from goods_app.views import IndexView, ProductDetailView, get_reviews, post_review, CatalogByCategory, CardForAjax
 
 app_name = 'goods'
 urlpatterns = [

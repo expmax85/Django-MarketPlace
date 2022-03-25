@@ -2,7 +2,6 @@ from decimal import Decimal
 
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import F, Sum, ForeignKey
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 from django.utils.translation import gettext_lazy as _
@@ -116,5 +115,3 @@ class ViewedProduct(models.Model):
     session = models.CharField(max_length=100, blank=True)
     product = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
     date = models.DateTimeField(auto_now=True)
-
-

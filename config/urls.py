@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from settings_app.views import AdminView, clear_all_cache
+from settings_app.views import AdminView
 
 urlpatterns = [
     path('i18n', include('django.conf.urls.i18n')),
