@@ -1,0 +1,60 @@
+{% load static %}
+{% load i18n %}
+
+  <div class="Section-column">
+    <div class="Section-columnSection Section-columnSection_mark">
+      <header class="Section-columnHeader">
+        <strong class="Section-columnTitle">{%  trans 'Limited Deals' %}
+        </strong>
+      </header>
+      <div class="Card">
+        <form method="get" action="{% url 'orders-polls:add_viewed' %}">
+          <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+        <div class="Card-content">
+          <button class="Card-title" type="submit">{{ special_product.product.name }}
+          </button>
+          <div class="Card-description">
+            <div class="Card-cost">
+                <span class="Card-priceOld">{% if special_discount_price and not special_discount.set_discount %}${{ special_product.price }}{% endif %}</span>
+                <span class="Card-price">
+                    {% if special_discount_price and not special_discount.set_discount %}
+                        ${{ special_discount_price|floatformat:0 }}
+                    {% else %}
+                        ${{ special_product.price }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="Card-category">{{ special_product.product.category }}
+            </div>
+          </div>
+          <div class="CountDown" data-date="{{ update_time }}">
+            <div class="CountDown-block">
+              <div class="CountDown-wrap">
+                <div class="CountDown-days">
+                </div><span class="CountDown-label">{% trans 'days' %}</span>
+              </div>
+            </div>
+            <div class="CountDown-block">
+              <div class="CountDown-wrap">
+                <div class="CountDown-hours">
+                </div><span class="CountDown-label">{% trans 'hours' %}</span>
+              </div>
+            </div>
+            <div class="CountDown-block">
+              <div class="CountDown-wrap">
+                <div class="CountDown-minutes">
+                </div><span class="CountDown-label">{% trans 'mins' %}</span>
+              </div>
+            </div>
+            <div class="CountDown-block">
+              <div class="CountDown-wrap">
+                <div class="CountDown-secs">
+                </div><span class="CountDown-label">{% trans 'secs' %}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -167,6 +167,7 @@ class DiscountsService:
         """
         prices = []
         product_discounts = self.get_priority_discounts_for_product(product)
+
         if product.__class__.__name__ == 'OrderProduct':
             price = product.seller_product.price
         else:
@@ -218,6 +219,7 @@ def implement_discount(price, discount):
 def get_discounted_prices_for_seller_products(products, default_discount=None):
     discounted_prices = []
     discounts = []
+
     for product in products:
         price = product.price
         if default_discount is None:
@@ -226,6 +228,7 @@ def get_discounted_prices_for_seller_products(products, default_discount=None):
                 type_of_discount__in=('f', 'p'),
                 # set_discount=False
             ).order_by('-priority').first()
+            # discount = list(product.get_discount)
         else:
             discount = default_discount
 
@@ -234,6 +237,7 @@ def get_discounted_prices_for_seller_products(products, default_discount=None):
             discounts.append(None)
         else:
             price = implement_discount(price, discount)
+            # price = implement_discount(price, discount[0])
 
             if price < 1:
                 price = 1

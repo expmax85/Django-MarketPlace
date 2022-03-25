@@ -1,31 +1,31 @@
-import datetime
 import json
-from decimal import Decimal
-from typing import Dict, Optional, Any
-
+from typing import Dict
 import braintree
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.contrib.messages.storage import session
+import datetime
+
+from django.contrib.auth import get_user_model
+from django.http import HttpRequest
+from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
-from django.http import HttpRequest, HttpResponse
 from orders_app.models import (
     Order,
     ViewedProduct,
     OrderProduct
 )
-from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
+
 from orders_app.services import CartService
+from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
 from django.utils.translation import gettext_lazy as _
-from profiles_app.models import User
 # from settings_app.config_project import OPTIONS
 from settings_app.dynamic_preferences_registry import global_preferences_registry
+
+User = get_user_model()
 
 
 def add_viewed(request):

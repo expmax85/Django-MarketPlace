@@ -1,6 +1,7 @@
 from django.urls import path
-from orders_app.views import *
-
+from orders_app.views import CartView, CartAdd, CartRemove, cart_clear, OrderStepOne, OrderStepTwo, OrderStepThree, \
+    OrderStepFour, PaymentView, PaymentWithCardView, PaymentWithAccountView, payment_done, payment_canceled, \
+    CompareView, AddToCompare, RemoveFromCompare, HistoryOrderView, HistoryOrderDetail, ViewedGoodsView, add_viewed
 
 app_name = 'orders'
 urlpatterns = [
@@ -24,8 +25,6 @@ urlpatterns = [
     # path('payment/generator', AccountGeneratorView.as_view(), name='payment_generator'),
     path('done/', payment_done, name='payment_done'),
     path('canceled/', payment_canceled, name='payment_canceled'),
-    # эндпоинты просмотренных товаров
-    path('viewed/', ViewedGoodsView.as_view(), name='viewed'),
     # эндпоинты товаров для сравнения
     path('compare/', CompareView.as_view(), name='compare'),
     path('compare/add/<int:product_id>/', AddToCompare.as_view(), name='add-to-compare'),
@@ -35,6 +34,6 @@ urlpatterns = [
     path('history/<int:order_id>', HistoryOrderDetail.as_view(), name='history-order-detail'),
 
     # эндроинты истории просмотров
-    path('viewed_history', ViewedGoodsView.as_view(), name='history-view'),
+    path('viewed_history/', ViewedGoodsView.as_view(), name='history-view'),
     path('add_viewed/', add_viewed, name='add_viewed')
 ]

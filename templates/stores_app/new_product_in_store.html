@@ -36,9 +36,9 @@
                           </li>
                           <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
                           </li>
-                          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Purchases history' %}</a>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                           </li>
-                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:viewed' %}">{% trans 'Viewed products' %}</a>
+                          <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-view' %}">{% trans 'Viewed products' %}</a>
                           </li>
                           <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
                           </li>
@@ -83,35 +83,12 @@
                               </label>
                               <input class="form-input" type="number" name="quantity" required id="id_quantity">
                           </div>
-                          <div class="form-group reset-margin">
-                              <label class="form-label" for="id_discount">{% trans 'Discount' %}:</label>
-                              <select class="form-input" name="discount" id="id_discount">
-                                  <option value="" selected="">---------</option>
-                                  {% for discount in discounts %}
-                                  <option id="{{ discount.id }}~{{ discount.percent }}~{{ discount.amount }}" value="{{ discount.id }}">
-                                      {{ discount.name }} (
-                                          {% if discount.percent == None %}
-                                            {{discount.amount}}
-                                          {% else %}
-                                            {{ discount.percent }}%
-                                          {% endif %})
-                                  </option>
-                                  {% endfor %}
-                              </select>
-                              <span class="formerror">{{form.errors.discount}}</span>
-                          </div>
                       </div>
                       <div class="row-block">
                           <div class="form-group require-field">
                               <label class="form-label" for="id_price">{% trans 'Price' %}:</label>
-                              <input class="form-input" id="id_price" name="price" type="number" required step="100.00"
-                              oninput="PriceDiscount(this.value)">
+                              <input class="form-input" id="id_price" name="price" type="number" required step="1.00">
                               <span class="formerror">{{form.errors.price}}</span>
-                          </div>
-                          <div class="form-group reset-margin">
-                              <label class="form-label" for="id_price_after_discount" >{% trans 'Price with discount' %}:
-                              </label>
-                              <input class="form-input" type="number" name="price_after_discount" id="id_price_after_discount" readonly onchange="PriceDiscount(this.value)">
                           </div>
                       </div>
                   </div>

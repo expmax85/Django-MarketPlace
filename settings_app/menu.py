@@ -5,6 +5,8 @@ the classes for the admin menu, you can customize this class as you want.
 To activate your custom menu add the following to your settings.py::
     ADMIN_TOOLS_MENU = 'python_django_team5.menu.CustomMenu'
 """
+from typing import Any
+
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -15,7 +17,7 @@ class CustomMenu(Menu):
     """
     Custom Menu for admin site.
     """
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         Menu.__init__(self, **kwargs)
         self.children += [
             items.MenuItem(_('Dashboard'), reverse('admin:index')),
@@ -34,16 +36,17 @@ class CustomMenu(Menu):
                         'profiles_app.*',
                         'taggit.*',),
             ),
-            items.AppList(_('Settings'),
-                          models=('dynamic_preferences.*', ),
-                          children=[
-                               items.MenuItem(_('Settings'),
-                                              url=reverse('admin-setup')),
-                           ]
+            items.AppList(
+                _('Settings'),
+                models=('dynamic_preferences.*', ),
+                children=[
+                    items.MenuItem(_('Settings'),
+                                   url=reverse('admin-setup')),
+                ]
             ),
         ]
 
-    def init_with_context(self, context):
+    def init_with_context(self, context: Any) -> None:
         """
         Use this method if you need to access the request context.
         """

@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter(name='filled_stars')
 def filled_stars(rating: int):
     """
@@ -10,6 +11,7 @@ def filled_stars(rating: int):
     """
 
     return range(int(rating))
+
 
 @register.filter(name='empty_stars')
 def empty_stars(rating: int):

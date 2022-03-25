@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **kwargs) -> None:
         site_model = apps.get_model('sites', 'Site')
         site = site_model.objects.get(id=1)
         site.domain = 'http://127.0.0.1:8000'

@@ -1,3 +1,5 @@
+from typing import Callable
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -26,7 +28,7 @@ class ProductCategory(MPTTModel):
     description = models.TextField(max_length=255, null=True, verbose_name=_('product_category_description'))
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -52,15 +54,17 @@ class Product(models.Model):
     slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name='product slug')
     image = models.ImageField(null=True, blank=True, verbose_name='product image')
     description = models.TextField(max_length=255, null=True, verbose_name='product description')
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='average price')
+    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
+                                        verbose_name='average price')
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
     is_published = models.BooleanField(verbose_name='is published', null=True, blank=True, default=True)
     tags = TaggableManager(blank=True)
+    limited = models.BooleanField(default=False, verbose_name=_('limited edition'))
 
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> Callable:
         return reverse('goods-polls:product-detail', kwargs={'slug': self.slug})
 
     class Meta:
@@ -80,7 +84,7 @@ class ProductComment(models.Model):
     added = models.DateTimeField(verbose_name=_('added'), auto_now_add=True, null=True)
     rating = models.IntegerField(verbose_name=_('rating'))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Comments for {str(self.product)}'
 
     class Meta:
@@ -94,7 +98,7 @@ class SpecificationsNames(models.Model):
 
     name = models.CharField(max_length=32, null=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -111,7 +115,7 @@ class Specifications(models.Model):
     current_specification = models.ForeignKey(SpecificationsNames, on_delete=models.CASCADE, blank=True, null=True,
                                               related_name='specifications')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
     class Meta:
@@ -121,12 +125,15 @@ class Specifications(models.Model):
 
 
 class ProductRequest(Product):
+    """
+    Model for requesting to add new Product
+    """
     product_ptr = models.OneToOneField(Product, on_delete=models.DO_NOTHING, parent_link=True, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     store = models.CharField(verbose_name=_('store'), max_length=30)
     notes = models.TextField(verbose_name=_('notes'), max_length=255, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:

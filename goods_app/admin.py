@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductCategory, Product, ProductComment, Specifications, SpecificationsNames
@@ -9,7 +11,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     list_filter = ('name',)
     search_fields = ('name',)
-    prepopulated_fields = {'slug': ('name',),}
+    prepopulated_fields = {'slug': ('name',), }
 
 
 class SpecificationsAdmin(admin.TabularInline):
@@ -18,8 +20,8 @@ class SpecificationsAdmin(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'category', 'is_published')
-    list_filter = ('category', 'is_published', 'tags')
+    list_display = ('name', 'code', 'category', 'is_published', 'limited')
+    list_filter = ('category', 'is_published', 'tags', 'limited')
     search_fields = ('name', 'code', 'category')
     prepopulated_fields = {'slug': ('name', 'code'),
                            'tags': ('category', )}
@@ -28,10 +30,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     actions = ['mark_published', 'mark_unpublished']
 
-    def mark_published(self, request, queryset):
+    def mark_published(self, request: HttpRequest, queryset: QuerySet) -> None:
         queryset.update(is_published=True)
 
-    def mark_unpublished(self, request, queryset):
+    def mark_unpublished(self, request: HttpRequest, queryset: QuerySet) -> None:
         queryset.update(is_published=False)
 
     mark_published.short_description = _('Publish')
@@ -51,5 +53,5 @@ class SpecificationAdmin(admin.ModelAdmin):
 
 
 @admin.register(SpecificationsNames)
-class SpecificationAdmin(admin.ModelAdmin):
+class SpecificationNamesAdmin(admin.ModelAdmin):
     list_display = ('name', )

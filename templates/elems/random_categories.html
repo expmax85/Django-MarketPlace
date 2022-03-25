@@ -1,0 +1,25 @@
+{% load static %}
+{% load i18n %}
+
+  <div class="Section">
+    <div class="wrap">
+      <div class="BannersHome">
+          {% for category in random_categories %}
+          <a class="BannersHomeBlock" href="{% url 'goods-polls:catalog_by_category_url' category.slug %}">
+            <div class="BannersHomeBlock-row">
+            <div class="BannersHomeBlock-block">
+              <strong class="BannersHomeBlock-title">{{ category.name }}
+              </strong>
+              <div class="BannersHomeBlock-content">{% trans 'from' %}&#32;<span class="BannersHomeBlock-price">${{ category.from_price }}</span>
+              </div>
+            </div>
+            <div class="BannersHomeBlock-block">
+              <div class="BannersHomeBlock-img"><img src="{% static 'assets/img/content/home/videoca.png' %}" alt="videoca.png"/>
+              </div>
+            </div>
+          </div>
+          </a>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
