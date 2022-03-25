@@ -1,6 +1,7 @@
 from django.urls import path
-from orders_app.views import *
-
+from orders_app.views import CartView, CartAdd, CartRemove, cart_clear, OrderStepOne, OrderStepTwo, OrderStepThree, \
+    OrderStepFour, PaymentView, PaymentWithCardView, PaymentWithAccountView, payment_done, payment_canceled, \
+    CompareView, AddToCompare, RemoveFromCompare, HistoryOrderView, HistoryOrderDetail, ViewedGoodsView, add_viewed
 
 app_name = 'orders'
 urlpatterns = [

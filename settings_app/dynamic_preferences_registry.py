@@ -78,7 +78,7 @@ class SortIndexProducts(ChoicePreference):
 
 
 @global_preferences_registry.register
-class CountLimitedProducts(IntegerPreference):
+class CountPopularProducts(IntegerPreference):
     section = general
     name = 'count_popular_products'
     default = 8

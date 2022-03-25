@@ -13,9 +13,9 @@ class Command(BaseCommand):
         products = list(Product.objects.values_list('id', flat=True))
         SellerProduct.objects.bulk_create([
                                 SellerProduct(product_id=random.choice(products),
-                                        seller_id=random.choice(sellers),
-                                        price=random.randrange(20, 500, 20),
-                                        quantity=random.randrange(1, 30, 1))
-                                    for _ in range(int(last.id) + 1, 100)
+                                              seller_id=random.choice(sellers),
+                                              price=random.randrange(20, 500, 20),
+                                              quantity=random.randrange(1, 30, 1))
+                                              for _ in range(int(last.id) + 1, 100)
                                     ])
         self.stdout.write(self.style.SUCCESS('Successfully added 100 products'))

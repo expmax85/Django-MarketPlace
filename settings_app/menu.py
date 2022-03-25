@@ -36,12 +36,13 @@ class CustomMenu(Menu):
                         'profiles_app.*',
                         'taggit.*',),
             ),
-            items.AppList(_('Settings'),
-                          models=('dynamic_preferences.*', ),
-                          children=[
-                               items.MenuItem(_('Settings'),
-                                              url=reverse('admin-setup')),
-                           ]
+            items.AppList(
+                _('Settings'),
+                models=('dynamic_preferences.*', ),
+                children=[
+                     items.MenuItem(_('Settings'),
+                                    url=reverse('admin-setup')),
+                 ]
             ),
         ]
 

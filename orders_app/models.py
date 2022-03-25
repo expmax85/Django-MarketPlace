@@ -2,7 +2,6 @@ from decimal import Decimal
 
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import F, Sum, ForeignKey
 from stores_app.models import SellerProduct
 from profiles_app.models import User
 from django.utils.translation import gettext_lazy as _

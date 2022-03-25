@@ -53,5 +53,5 @@ class SpecificationAdmin(admin.ModelAdmin):
 
 
 @admin.register(SpecificationsNames)
-class SpecificationAdmin(admin.ModelAdmin):
+class SpecificationNamesAdmin(admin.ModelAdmin):
     list_display = ('name', )

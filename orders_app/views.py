@@ -108,6 +108,7 @@ class CartAdd(View):
         cart.add_to_cart(product, quantity=1, update_quantity=False)
         return redirect(request.META.get('HTTP_REFERER'))
 
+
 class CartRemove(View):
     """Удаделение позиции из корзины"""
     def get(self, request: HttpRequest, product_id: int):

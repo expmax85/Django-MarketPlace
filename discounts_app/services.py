@@ -161,7 +161,7 @@ class DiscountsService:
             return True
         return False
 
-    def get_discounted_price_in_cart(self, product) -> Decimal :
+    def get_discounted_price_in_cart(self, product) -> Decimal:
         """
         Расчитать цену со скидкой, если товар в текущей корзине
         """
