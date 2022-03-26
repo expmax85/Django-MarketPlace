@@ -26,24 +26,18 @@ class IndexView(ListView):
     model = SellerProduct
     template_name = 'index.html'
     context_object_name = 'products'
-    global_preferences = global_preferences_registry.manager()
+    OPTIONS = global_preferences_registry.manager()
 
     def get_queryset(self) -> Iterable:
-        # products = get_all_products(order_by=OPTIONS['general__sort_index'],
-        #                             count=OPTIONS['general__count_popular_products'])
-        products = get_all_products(order_by=self.global_preferences['general__sort_index'],
-                                    count=self.global_preferences['general__count_popular_products'])
+        products = get_all_products(order_by=self.OPTIONS['general__sort_index'],
+                                    count=self.OPTIONS['general__count_popular_products'])
 
         return products
 
     def get_context_data(self, **kwargs) -> Dict:
-        # limited_products = get_limited_products(count=OPTIONS['general__count_limited_products'])
-        # random_product.days_duration = OPTIONS['general__days_duration']
-        # random_product.time_update = OPTIONS['general__time_update']
-
-        limited_products = get_limited_products(count=self.global_preferences['general__count_limited_products'])
-        random_product.days_duration = self.global_preferences['general__days_duration']
-        random_product.time_update = self.global_preferences['general__time_update']
+        limited_products = get_limited_products(count=self.OPTIONS['general__count_limited_products'])
+        random_product.days_duration = self.OPTIONS['general__days_duration']
+        random_product.time_update = self.OPTIONS['general__time_update']
 
         random_product.update_product(queryset=limited_products)
 
@@ -104,15 +98,14 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)
-    global_preferences = global_preferences_registry.manager()
+    OPTIONS = global_preferences_registry.manager()
 
     if form.is_valid():
         form.save()
         product.calculate_product_rating()
         reviews = product.get_reviews
         paginator = Paginator(reviews,
-                              # per_page=OPTIONS['general__review_size_page']
-                              per_page=global_preferences['general__review_size_page']
+                              per_page=OPTIONS['general__review_size_page']
                               )
         return JsonResponse({'num_pages': paginator.num_pages,
                              'slug': slug}, safe=False)

@@ -8,5 +8,45 @@
     "description": "Get it now with 5% discount",
     "image": "static/assets/img/content/home/banners/django.jpg"
   }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 2,
+  "fields": {
+    "discount": 2,
+    "title": "Our TruckBook is Cheaper!",
+    "description": "Be the first or get nothing. TruckBook into your soul!",
+    "image": "static/assets/img/content/home/banners/python_advanced.jpg"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 3,
+  "fields": {
+    "discount": 3,
+    "title": "Juahei B200",
+    "description": "Juahei Juahei get it now or go away!",
+    "image": "static/assets/img/content/home/banners/python_basic.jpg"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 4,
+  "fields": {
+    "discount": 4,
+    "title": "RVideo special set",
+    "description": "The very ultra mega special RVideo discount 1000$ of A100 and B200 set",
+    "image": "static/assets/img/content/home/banners/slider.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 5,
+  "fields": {
+    "discount": 5,
+    "title": "Stock elimination",
+    "description": "We are swiping our Juaiheis out. Till the end of april",
+    "image": "static/assets/img/content/home/banners/Site__brush.jpg"
+  }
 }
 ]

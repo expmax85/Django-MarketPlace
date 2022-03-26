@@ -65,9 +65,28 @@
       </div>
     </div>
     <div class="Pagination">
-        <div class="Pagination-ins"><a class="Pagination-element Pagination-element_prev" href="#"><img src="../static/assets/img/icons/prevPagination.svg" alt="prevPagination.svg"/></a><a class="Pagination-element Pagination-element_current" href="#"><span class="Pagination-text">1</span></a><a class="Pagination-element" href="#"><span class="Pagination-text">2</span></a><a class="Pagination-element" href="#"><span class="Pagination-text">3</span></a><a class="Pagination-element Pagination-element_prev" href="#"><img src="../static/assets/img/icons/nextPagination.svg" alt="nextPagination.svg"/></a>
+        <div class="Pagination-ins">
+            <a class="Pagination-element Pagination-element_prev" href="?page={% if discounts.has_previous %}{{ discounts.previous_page_number }}{% else %}{{ discounts.number }}{% endif %}">
+                <img src="../static/assets/img/icons/prevPagination.svg" alt="prevPagination.svg"/>
+            </a>
+            {% if discounts.has_previous %}
+                <a class="Pagination-element" href="?page={{ discounts.previous_page_number }}">
+                    <span class="Pagination-text">{{ discounts.previous_page_number }}</span>
+                </a>
+            {% endif %}
+            <a class="Pagination-element Pagination-element_current" href="#">
+                <span class="Pagination-text">{{ discounts.number }}</span>
+            </a>
+            {% if discounts.has_next %}
+                <a class="Pagination-element" href="?page={{ discounts.next_page_number }}">
+                    <span class="Pagination-text">{{ discounts.next_page_number }}</span>
+                </a>
+            {% endif %}
+            <a class="Pagination-element Pagination-element_prev" href="?page={% if discounts.has_next %}{{ discounts.next_page_number }}{% else %}{{ discounts.number }}{% endif %}">
+                <img src="../static/assets/img/icons/nextPagination.svg" alt="nextPagination.svg"/>
+            </a>
         </div>
-  </div>
+    </div>
 </div>
 {% endblock %}
 

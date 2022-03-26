@@ -1,32 +1,24 @@
 import datetime
 from typing import Dict, Callable
 from django.core.paginator import Paginator
-from django.template.loader import render_to_string
-from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
-from django.views import View
-from django.views.decorators.csrf import csrf_protect
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.db.models import QuerySet
+from django.http import JsonResponse, HttpRequest
+from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
-from banners_app.services import banner
 from discounts_app.models import *
 from discounts_app.services import get_discounted_prices_for_seller_products
-from stores_app.models import SellerProduct
+from goods_app.services.product_detail import context_pagination
+from django.core.paginator import Paginator
 
 
 class DiscountsListView(ListView):
-    template_name = 'discounts_app/discounts_list.html'
-    context_object_name = 'discounts'
 
-    def get_queryset(self):
-        discounts = []
-        discounts += ProductDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
-                                                    valid_to__gte=datetime.date.today())
-        # discounts += GroupDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
-        #                                           valid_to__gte=datetime.date.today())
-        return discounts
+    def get(self, request, *args, **kwargs):
+        discounts = ProductDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
+                                                   valid_to__gte=datetime.date.today())
+        discounts = context_pagination(request, discounts, 2)
+        return render(request, 'discounts_app/discounts_list.html', {'discounts': discounts})
 
 
 class DiscountDetailView(DetailView):

@@ -80,6 +80,7 @@ class SellerProduct(models.Model):
     def get_absolute_url(self) -> Callable:
         return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
                                                                    'pk': self.id})
+
     # Pay attention to discounts
     @property
     def get_discount(self) -> QuerySet:
