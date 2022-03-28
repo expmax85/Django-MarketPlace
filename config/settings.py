@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'goods_app',
     'banners_app',
+    'widget_tweaks',
     'profiles_app',
     'discounts_app',
     'stores_app',
@@ -170,7 +171,7 @@ LANGUAGES = [
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale'), ]
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

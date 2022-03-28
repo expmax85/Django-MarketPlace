@@ -167,7 +167,7 @@ class DiscountsService:
         """
         prices = []
         product_discounts = self.get_priority_discounts_for_product(product)
-
+        print(f'Discounts {product_discounts}')
         if product.__class__.__name__ == 'OrderProduct':
             price = product.seller_product.price
         else:
@@ -178,6 +178,7 @@ class DiscountsService:
                 discounted_price = implement_discount(price, discount)
                 prices.append(discounted_price)
 
+        print(f'Product - {product}, Prices - {prices}')
         if prices:
             price = max(prices)
 

@@ -109,7 +109,7 @@ class CartAdd(View):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
         cart.add_to_cart(product, quantity=1, update_quantity=False)
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class CartRemove(View):
@@ -117,7 +117,7 @@ class CartRemove(View):
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
         cart.remove_from_cart(product_id)
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class OrderStepOne(View):

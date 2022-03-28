@@ -38,15 +38,5 @@
     "description": "The very ultra mega special RVideo discount 1000$ of A100 and B200 set",
     "image": "static/assets/img/content/home/banners/slider.png"
   }
-},
-{
-  "model": "banners_app.banner",
-  "pk": 5,
-  "fields": {
-    "discount": 5,
-    "title": "Stock elimination",
-    "description": "We are swiping our Juaiheis out. Till the end of april",
-    "image": "static/assets/img/content/home/banners/Site__brush.jpg"
-  }
 }
 ]

@@ -12,12 +12,12 @@ from django.db.models.signals import post_delete
 from django.core.cache import cache
 
 from config.settings import MEDIA_ROOT
-from discounts_app.models import Discount
+from discounts_app.models import Discount, ProductDiscount, GroupDiscount, CartDiscount
 from orders_app.models import Order, ViewedProduct
-from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT
+from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT, SUCCESS_DEL_PRODUCT_DISCOUNT, \
+    SUCCESS_DEL_GROUP_DISCOUNT, SUCCESS_DEL_CART_DISCOUNT
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product
-
 
 User = get_user_model()
 
@@ -46,6 +46,7 @@ class StoreServiceMixin:
 
         """
         return Seller.objects.select_related('owner').get(slug=slug)
+
     @classmethod
     def get_user_stores(cls, user: User) -> QuerySet:
         """
@@ -113,7 +114,7 @@ class StoreServiceMixin:
         products = cache.get(owner_sp_ache_key)
         if not products:
             products = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
-                                    .filter(seller__owner=user)
+                .filter(seller__owner=user)
             cache.set(owner_sp_ache_key, products, 60 * 60)
         return products
 
@@ -193,6 +194,132 @@ class StoreServiceMixin:
         product.is_published = False
         product.user = user
         product.save()
+
+    @classmethod
+    def create_product_discount(cls, data: Dict) -> bool:
+        """
+        Create new ProductDiscount
+        """
+        seller_products = data['seller_products']
+        data.pop('seller_products', None)
+        discount = ProductDiscount(**data)
+        discount.save()
+        discount.seller_products.set(seller_products)
+        discount.save()
+        return True
+
+    @classmethod
+    def get_product_discounts(cls, user: User) -> QuerySet:
+        """
+        Get all product discounts, added by user
+        """
+        # owner_sd_ache_key = 'owner_sd:{}'.format(user.id)
+        # product_discounts = cache.get(owner_sd_ache_key)
+        # if not product_discounts:
+        product_discounts = ProductDiscount.objects.filter(seller__owner=user)
+            # cache.set(owner_sd_ache_key, product_discounts, 30)
+        return product_discounts
+
+    @classmethod
+    def edit_store_product_discount(cls, data: Dict, instance: ProductDiscount) -> None:
+        """
+        Edit SellerProduct instance
+        """
+        for attr, value in data.items():
+            if attr != 'seller_products':
+                setattr(instance, attr, value)
+        instance.seller_products.set(data['seller_products'])
+        instance.save()
+
+    @classmethod
+    def remove_store_product_discount(cls, request: HttpRequest) -> None:
+        """
+        Remove store
+        """
+        item = ProductDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
+        messages.add_message(request, SUCCESS_DEL_PRODUCT_DISCOUNT,
+                             _(f'Product discount {item.name} from the store {item.seller.name} was removed'))
+        item.delete()
+
+    @classmethod
+    def create_group_discount(cls, data: Dict) -> bool:
+        """
+        Create new ProductDiscount
+        """
+        discount = GroupDiscount(**data)
+        discount.save()
+        return True
+
+    @classmethod
+    def get_group_discounts(cls, user: User) -> QuerySet:
+        """
+        Get all product discounts, added by user
+        """
+        # owner_gd_ache_key = 'owner_sd:{}'.format(user.id)
+        # group_discounts = cache.get(owner_gd_ache_key)
+        # if not group_discounts:
+        group_discounts = GroupDiscount.objects.filter(seller__owner=user)
+            # cache.set(owner_gd_ache_key, group_discounts, 30)
+        return group_discounts
+
+    @classmethod
+    def edit_store_group_discount(cls, data: Dict, instance: GroupDiscount) -> None:
+        """
+        Edit SellerProduct instance
+        """
+        for attr, value in data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+    @classmethod
+    def remove_store_group_discount(cls, request: HttpRequest) -> None:
+        """
+        Remove store
+        """
+        item = GroupDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
+        messages.add_message(request, SUCCESS_DEL_GROUP_DISCOUNT,
+                             _(f'Group discount {item.name} from the store {item.seller.name} was removed'))
+        item.delete()
+
+    @classmethod
+    def create_cart_discount(cls, data: Dict) -> bool:
+        """
+        Create new ProductDiscount
+        """
+        discount = CartDiscount(**data)
+        discount.save()
+        return True
+
+    @classmethod
+    def get_cart_discounts(cls, user: User) -> QuerySet:
+        """
+        Get all product discounts, added by user
+        """
+        # owner_cd_ache_key = 'owner_sd:{}'.format(user.id)
+        # cart_discounts = cache.get(owner_cd_ache_key)
+        # if not cart_discounts:
+        cart_discounts = CartDiscount.objects.filter(seller__owner=user)
+            # cache.set(owner_cd_ache_key, cart_discounts, 30)
+        return cart_discounts
+
+    @classmethod
+    def edit_store_cart_discount(cls, data: Dict, instance: CartDiscount) -> None:
+        """
+        Edit SellerProduct instance
+        """
+        for attr, value in data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+    @classmethod
+    def remove_store_cart_discount(cls, request: HttpRequest) -> None:
+        """
+        Remove store
+        """
+        item = CartDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
+        messages.add_message(request, SUCCESS_DEL_CART_DISCOUNT,
+                             _(f'Cart discount {item.name} from the store {item.seller.name} was removed'))
+        item.delete()
 
 
 @receiver(post_delete, sender=Seller)
