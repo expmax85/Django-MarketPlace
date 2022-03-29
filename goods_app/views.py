@@ -2,17 +2,17 @@ from typing import Dict, Callable, Union, Iterable
 
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
+from django.http import JsonResponse, HttpRequest
+from django.shortcuts import render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.http import JsonResponse, HttpRequest
-from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
-from dynamic_preferences.registries import global_preferences_registry
 
+from goods_app.services.catalog import CatalogByCategoriesMixin
+from settings_app.dynamic_preferences_registry import global_preferences_registry
 from banners_app.services import banner
 from goods_app.services.limited_products import random_product, \
     get_all_products, get_limited_products, get_random_categories, get_hot_offers
-from goods_app.services.catalog import CatalogByCategoriesMixin
 from goods_app.services.product_detail import CurrentProduct, context_pagination
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
@@ -26,6 +26,7 @@ class IndexView(ListView):
     model = SellerProduct
     template_name = 'goods_app/index.html'
     context_object_name = 'products'
+    OPTIONS = global_preferences_registry.manager()
 
     def get_queryset(self) -> Iterable:
         OPTIONS = global_preferences_registry.manager().by_name()
@@ -59,6 +60,7 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
     slug_url_kwarg = 'slug'
+    global_preferences = global_preferences_registry.manager()
 
     def get_context_data(self, **kwargs) -> Dict:
         OPTIONS = global_preferences_registry.manager().by_name()
@@ -70,6 +72,7 @@ class ProductDetailView(DetailView):
             'reviews_count': reviews.count(),
             'comments': context_pagination(self.request, reviews,
                                            size_page=OPTIONS['review_size_page']),
+
             'form': ReviewForm(),
             'specifications': product.get_specifications,
             'sellers': product.get_sellers,
@@ -99,6 +102,7 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)
+
     if form.is_valid():
         form.save()
         product.calculate_product_rating()

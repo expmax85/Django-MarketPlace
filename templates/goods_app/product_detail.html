@@ -58,12 +58,12 @@
               </div>
                 <div class="ProductCard-cart">
                     {% if  best_offer.quantity > 0 and best_offer %}
-                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_add' best_offer.id %}" method="get">
+                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_detail_post' product_id=best_offer.id %}" method="get">
                         <div class="ProductCard-cartElement ProductCard-cartElement_amount">
                           <div class="Amount Amount_product">
                             <button class="Amount-remove" type="button">
                             </button>
-                            <input class="Amount-input form-input" name="quantity" type="text" value="1">
+                            <input class="Amount-input form-input" name="amount" type="text" value="1">
                             <button class="Amount-add" type="button">
                             </button>
                           </div>

@@ -1,6 +1,7 @@
 import json
 from typing import Dict
 import braintree
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
@@ -15,11 +16,12 @@ from orders_app.models import (
     OrderProduct
 )
 
-from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
 from orders_app.services import CartService
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
+from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
+from settings_app.dynamic_preferences_registry import global_preferences_registry
 from stores_app.services import StoreServiceMixin
 
 User = get_user_model()
@@ -110,12 +112,9 @@ class CartAdd(View):
     """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
-        quantity = request.GET.get('quantity')
-        if quantity is None:
-            quantity = 1
         product = get_object_or_404(SellerProduct, id=str(product_id))
-        cart.add_to_cart(product, quantity=int(quantity), update_quantity=False)
-        return redirect(request.META.get('HTTP_REFERER'))
+        cart.add_to_cart(product, quantity=1, update_quantity=False)
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class CartRemove(View):
@@ -125,7 +124,7 @@ class CartRemove(View):
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
         cart.remove_from_cart(product_id)
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class OrderStepOne(View):
@@ -198,6 +197,21 @@ class OrderStepTwo(View):
             order.delivery = delivery
             order.city = city
             order.address = address
+
+            first_product = order.order_products.first()
+            if first_product:
+                global_preferences = global_preferences_registry.manager()
+
+                if order.delivery == 'reg':
+                    first_product_seller = first_product.seller_product.seller
+                    same_store_products = order.order_products.filter(seller_product__seller=first_product_seller).count()
+                    if same_store_products != len(order) or order.total_discounted_sum < 2000:
+                        order.delivery_cost = global_preferences['general__regular_shipping']
+                        # order.delivery_cost = REG
+                else:
+                    order.delivery_cost = global_preferences['general__express_shipping']
+                    # order.delivery_cost = EXP
+
             order.save()
 
             return redirect('orders:order_step_three')
@@ -222,6 +236,7 @@ class OrderStepThree(View):
             payment_method = form.cleaned_data['payment_method']
             order.payment_method = payment_method
             order.in_order = True
+            order.ordered = datetime.datetime.today()
             order.save()
             return redirect('orders:order_step_four')
 
@@ -268,7 +283,7 @@ class PaymentWithCardView(View):
         nonce = request.POST.get('payment_method_nonce', None)
         # Создание и сохранение транзакции.
         result = braintree.Transaction.sale({
-            'amount': '{:.2f}'.format(order.total_discounted_sum),
+            'amount': '{:.2f}'.format(order.final_total),
             'payment_method_nonce': nonce,
             'options': {
                 'submit_for_settlement': True
@@ -291,13 +306,21 @@ class PaymentWithAccountView(View):
     """
     template_name = 'orders_app/payment_account.html'
 
-    def get(self, request: HttpRequest, order_id: int, **kwargs):
+    def get(self, request: HttpRequest, order_id: int):
         order = get_object_or_404(Order, id=order_id)
-        client_token = braintree.ClientToken.generate()
-        context = {'order': order, 'client_token': client_token,
-                   # 'code': code
-                   }
+        context = {'order': order}
         return render(request, self.template_name, context=context)
+
+    def post(self, request: HttpRequest, order_id: int):
+        order = get_object_or_404(Order, id=order_id)
+        account = ''.join(request.POST.get('numero1').split(' '))
+        if int(account) % 2 == 0 and account[-1] != '0':
+            order.paid = True
+            order.braintree_id = account
+            order.save()
+            return redirect('orders:payment_done')
+        else:
+            return redirect('orders:payment_canceled')
 
 
 def payment_done(request):
@@ -346,7 +369,6 @@ class CompareView(View):
 
         try:
             context = self.create_queryset(session_data=request.session['compared'])
-            print(context)
         except KeyError:
             context = dict()
         return render(request, 'orders_app/compare.html', context)
@@ -355,7 +377,6 @@ class CompareView(View):
         """ Здесь формируется queryset для сравнения товаров """
 
         compared = json.loads(session_data)
-        print(compared)
         specifications = {key: list() for spec in compared.values() for key in spec[3].keys()}
         incoming_specifications = [value[3] for value in compared.values()]
         for item in incoming_specifications:

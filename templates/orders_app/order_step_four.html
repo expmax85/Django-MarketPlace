@@ -151,9 +151,16 @@
                   {% endfor %}
                   <div class="Cart-total">
                     <div class="Cart-block Cart-block_total">
+                      <strong class="Cart-title">{% trans 'Delivery:' %}
+                      </strong>
+                        <span class="Cart-price">{{ order.delivery_cost }}$</span>
+                    </div>
+                  </div>
+                  <div class="Cart-total" style="border-color: transparent; padding-top: 0">
+                    <div class="Cart-block Cart-block_total">
                       <strong class="Cart-title">{% trans 'Total:' %}
                       </strong>
-                        <span class="Cart-price">{{ order.total_discounted_sum }}$</span>
+                        <span class="Cart-price">{{ order.final_total }}$</span>
                         <span class="Cart-price_old">{{ order.total_sum }}$</span>
                     </div>
                     <div class="Cart-block">

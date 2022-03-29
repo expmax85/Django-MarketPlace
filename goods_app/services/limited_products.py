@@ -174,8 +174,8 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
                                         .prefetch_related(Prefetch('product_discounts',
-                                            queryset=ProductDiscount.objects.filter(is_active=True,
-                                                                                    type_of_discount__in=('f', 'p'))))\
+                                                                   queryset=ProductDiscount.objects.filter(is_active=True,
+                                                                                                           type_of_discount__in=('f', 'p'))))\
                                         .all().order_by(order_by)[:count]
         cache.set(products_cache_key, queryset, 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)

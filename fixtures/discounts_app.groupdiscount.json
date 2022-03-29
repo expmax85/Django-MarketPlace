@@ -5,17 +5,36 @@
   "fields": {
     "name": "Rvideo for PineApple set",
     "slug": "rvideo-for-pineapple-set",
-    "description": "",
-    "type_of_discount": "p",
+    "description": "This is the category set in RVideo",
+    "type_of_discount": "f",
     "priority": "2",
     "percent": 15.0,
-    "amount": 0.0,
+    "amount": 200.0,
     "fixed_price": 0.0,
     "valid_from": null,
     "valid_to": null,
     "is_active": true,
     "seller": 1,
     "product_category": 10
+  }
+},
+{
+  "model": "discounts_app.groupdiscount",
+  "pk": 2,
+  "fields": {
+    "name": "Discount for Juaheis",
+    "slug": "discount-for-juaheis",
+    "description": "Juaihei category discount",
+    "type_of_discount": "p",
+    "priority": "1",
+    "percent": 20.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-03-01T00:00:00Z",
+    "valid_to": "2202-03-31T00:00:00Z",
+    "is_active": true,
+    "seller": 1,
+    "product_category": 12
   }
 }
 ]
