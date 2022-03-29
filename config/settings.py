@@ -94,6 +94,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'orders_app.context_processors.orders_context',
+                'stores_app.context_processors.stores_context',
             ],
             'loaders': [
                 'admin_tools.template_loaders.Loader',

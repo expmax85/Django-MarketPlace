@@ -10,12 +10,13 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
+from django.core.management import call_command
 
 from profiles_app.services import reset_phone_format
 from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
 from stores_app.forms import AddStoreForm, EditStoreForm, \
-    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
-from stores_app.models import Seller, SellerProduct
+    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct, ImportForm
+from stores_app.models import Seller, SellerProduct, ProductImportFile
 from stores_app.services import StoreServiceMixin
 
 
@@ -184,3 +185,19 @@ class RequestNewProduct(StoreAppMixin, View):
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
                                                                                    'categories': categories,
                                                                                    'stores': stores})
+
+
+class ImportView(View):
+    """ Представление страницы проведения импорта """
+
+    def get(self, request):
+        return render(request, 'stores_app/import.html', {})
+
+    def post(self, request):
+        form = ImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = ProductImportFile.objects.create(file=request.FILES['file'],
+                                                    user=request.user)
+            file.save()
+            call_command('products_import', request.FILES['file'], request.user.email, file.id)
+        return render(request, 'stores_app/import.html', {})

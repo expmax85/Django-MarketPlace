@@ -1,6 +1,7 @@
 from django.urls import path
 from stores_app.views import AddNewStoreView, AddSellerProductView, SellersRoomView, remove_Store, \
-    remove_SellerProduct, EditStoreView, StoreDetailView, EditSelleProductView, RequestNewProduct, CategoryFilter
+    remove_SellerProduct, EditStoreView, StoreDetailView, EditSelleProductView, RequestNewProduct, CategoryFilter,\
+    ImportView
 
 app_name = 'stores'
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('edit-store/<str:slug>/', EditStoreView.as_view(), name='edit-store'),
     path('store-detail/<str:slug>/', StoreDetailView.as_view(), name='store-detail'),
     path('<str:slug>/<int:pk>/', EditSelleProductView.as_view(), name='edit-seller-product'),
+    path('import/', ImportView.as_view(), name='import')
 ]

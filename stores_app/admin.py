@@ -1,9 +1,10 @@
 from django.contrib import admin
+from django.core.management import call_command
 from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductRequest
 from stores_app.forms import AddRequestNewProductAdminForm
-from stores_app.models import Seller, SellerProduct
+from stores_app.models import Seller, SellerProduct, ProductImportFile
 
 
 @admin.register(Seller)
@@ -37,3 +38,13 @@ class ProductRequestAdmin(admin.ModelAdmin):
             item.save(update_fields=['is_published'])
 
     mark_published.short_description = _('Publish')
+
+
+# @admin.register(ProductImportFile)
+# class ProductImportAdmin(admin.ModelAdmin):
+#     list_display = ('file', )
+#
+#     def save_model(self, request, obj, form, change):
+#
+#         super(ProductImportAdmin, self).save_model(request, obj, form, change)
+#         call_command('products_import', obj.file)

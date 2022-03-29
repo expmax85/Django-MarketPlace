@@ -89,6 +89,12 @@ class SellerProduct(models.Model):
         return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
                                                                    'pk': self.id})
 
-    # @property
-    # def price_after_discount(self):
-    #     return DiscountsService.get_discounted_price(self, class_name='ProductDiscount')
+class ProductImportFile(models.Model):
+    """ Модель файла импорта товаров """
+
+    file = models.FileField(upload_to='import/products')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='import_files')
+    errors = models.IntegerField(default=0)
+    warnings = models.IntegerField(default=0)
+    log_info = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now=True)
