@@ -24,6 +24,7 @@ from discounts_app.services import DiscountsService, get_discounted_prices_for_s
 from django.utils.translation import gettext_lazy as _
 # from settings_app.config_project import OPTIONS
 from settings_app.dynamic_preferences_registry import global_preferences_registry
+from payments_app.services import process_payment
 
 User = get_user_model()
 
@@ -289,7 +290,7 @@ class PaymentWithCardView(View):
 
 class PaymentWithAccountView(View):
     """
-    Представление оплаты банковской картой
+    Представление оплаты рандомным счетом
     """
     template_name = 'orders_app/payment_account.html'
 
@@ -299,12 +300,9 @@ class PaymentWithAccountView(View):
         return render(request, self.template_name, context=context)
 
     def post(self, request: HttpRequest, order_id: int):
-        order = get_object_or_404(Order, id=order_id)
         account = ''.join(request.POST.get('numero1').split(' '))
-        if int(account) % 2 == 0 and account[-1] != '0':
-            order.paid = True
-            order.braintree_id = account
-            order.save()
+        result = process_payment(order_id, account)
+        if result:
             return redirect('orders:payment_done')
         else:
             return redirect('orders:payment_canceled')
