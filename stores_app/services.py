@@ -61,7 +61,7 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        store = Seller.objects.only('name').get(id=request.GET.get('id'))
+        store = Seller.objects.get(id=request.GET.get('id'))
         messages.add_message(request, SUCCESS_DEL_STORE,
                              _(f'The {store.name} was removed'))
         store.delete()
@@ -89,18 +89,6 @@ class StoreServiceMixin:
         instance.price = data['price']
         instance.quantity = data['quantity']
         instance.save()
-
-    @classmethod
-    def get_price_with_discount(cls, price: Decimal, discount: Discount) -> Decimal:
-        """
-        Get the price with discount, if it had
-        """
-        if discount.percent:
-            return price * Decimal(1 - discount.percent / 100)
-        elif discount.amount:
-            return price - Decimal(discount.amount)
-        else:
-            return price
 
     @classmethod
     def get_seller_products(cls, user: User) -> QuerySet:
