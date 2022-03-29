@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format
@@ -26,7 +26,7 @@ class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMix
 
 class SellersRoomView(StoreAppMixin, ListView):
     """
-    Page for view seller room for Sellers-group
+    Страница раздела для продавцов на странице информации об аккаунте
     """
     model = Seller
     template_name = 'stores_app/sellers_room.html'
@@ -43,7 +43,7 @@ class SellersRoomView(StoreAppMixin, ListView):
 
 class AddNewStoreView(StoreAppMixin, View):
     """
-    Page for creating new store
+    Страница создания магазина
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -61,7 +61,7 @@ class AddNewStoreView(StoreAppMixin, View):
 
 class EditStoreView(StoreAppMixin, DetailView):
     """
-    Page for view and edit detail store
+    Редактирование информации о магазине
     """
     context_object_name = 'store'
     template_name = 'stores_app/edit-store.html'
@@ -84,7 +84,7 @@ class EditStoreView(StoreAppMixin, DetailView):
 
 class StoreDetailView(StoreServiceMixin, DetailView):
     """
-    Page for Store Detail
+    Детальная страница магазина
     """
     permission_required = None
     context_object_name = 'store'
@@ -100,7 +100,7 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 
 class AddSellerProductView(StoreAppMixin, View):
     """
-    Page for adding new seller product
+    Страница добавления нового продука продавца
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -125,7 +125,7 @@ class AddSellerProductView(StoreAppMixin, View):
 
 class CategoryFilter(StoreServiceMixin, ListView):
     """
-    View for category changes and updating products queryset
+    Представление для выборки продуктов по категориям при создании продукта продавца
     """
 
     def get_queryset(self) -> QuerySet:
@@ -139,7 +139,7 @@ class CategoryFilter(StoreServiceMixin, ListView):
 
 class EditSelleProductView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования продукта продавца
     """
     context_object_name = 'item'
     template_name = 'stores_app/edit-seller-product.html'
@@ -164,26 +164,24 @@ class EditSelleProductView(StoreAppMixin, DetailView):
 @permission_required('profiles_app.Sellers')
 def remove_Store(request: HttpRequest) -> Callable:
     """
-    Remove store in seller room
+    Удаление магазина продавца
     """
-    if request.method == 'GET':
-        StoreServiceMixin.remove_store(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    StoreServiceMixin.remove_store(request)
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_SellerProduct(request: HttpRequest) -> Callable:
     """
-    Remove product in seller room
+    Удаление продукта продавца
     """
-    if request.method == 'GET':
-        StoreServiceMixin.remove_seller_product(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    StoreServiceMixin.remove_seller_product(request)
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class RequestNewProduct(StoreAppMixin, View):
     """
-    View for create the request for adding new product
+    Страница для запроса создания нового продукта
     """
 
     def get(self, request: HttpRequest) -> Callable:

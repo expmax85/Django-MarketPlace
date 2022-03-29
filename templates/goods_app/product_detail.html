@@ -29,11 +29,6 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <div class="ProductCard-photo">
-                  {%  if best_offer.discount.percent %}
-                <div class="ProductCard-sale">-{{ best_offer.discount.percent }}%</div>
-                  {% elif best_offer.discount.amount %}
-                <div class="ProductCard-sale custom_align-center">Hot price</div>
-                  {% endif %}
                 <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
               </div>
               <div class="ProductCard-picts"><a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png"><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png"></a><a class="ProductCard-pict" href="assets/img/content/home/slider.png"><img src="assets/img/content/home/slider.png" alt="slider.png"></a><a class="ProductCard-pict" href="assets/img/content/home/videoca.png"><img src="assets/img/content/home/videoca.png" alt="videoca.png"></a>
@@ -44,41 +39,51 @@
                 <h2 class="ProductCard-title">{{ product.name }}</h2>
                 <div class="ProductCard-info">
                   <div class="ProductCard-cost">
-                    <div class="ProductCard-price">{{ best_offer.price_after_discount }}
+                      {% if avg_price == avg_price_after_discount %}
+                    <div class="ProductCard-price">{{ avg_price }}
                     </div>
-                    <div class="ProductCard-priceOld">{{ best_offer.price }}
+                      {% else %}
+                    <div class="ProductCard-price">{{ avg_price_after_discount }}
                     </div>
+                    <div class="ProductCard-priceOld">{{ avg_price }}
+                    </div>
+                      {% endif %}
                   </div>
                   <div class="ProductCard-compare"><a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
                   </div>
                 </div>
               </div>
               <div class="ProductCard-text">
-                <ul>
-                    <li>Seller: {{ best_offer.seller }}</li>
-                    <li>{{ product.description }}</li>
-                </ul>
+                    {{ product.description }}
               </div>
-              <div class="ProductCard-cart">
-                <div class="ProductCard-cartElement ProductCard-cartElement_amount">
-                  <div class="Amount Amount_product">
-                    <button class="Amount-remove" type="button">
-                    </button>
-                    <input class="Amount-input form-input" name="amount" type="text" value="1">
-                    <button class="Amount-add" type="button">
-                    </button>
-                  </div>
+                <div class="ProductCard-cart">
+                    {% if  best_offer.quantity > 0 and best_offer %}
+                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_add' best_offer.id %}" method="get">
+                        <div class="ProductCard-cartElement ProductCard-cartElement_amount">
+                          <div class="Amount Amount_product">
+                            <button class="Amount-remove" type="button">
+                            </button>
+                            <input class="Amount-input form-input" name="quantity" type="text" value="1">
+                            <button class="Amount-add" type="button">
+                            </button>
+                          </div>
+                        </div>
+                        <div class="ProductCard-cartElement">
+                            <button type="submit" class="btn btn_primary">
+                                <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span>
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                        <div class="ProductCard-cartElement" style="margin-left: 70%; font-size:20px; font-weight:bold; color: red;">{% trans 'Not in stock' %}</div>
+                    {% endif %}
                 </div>
-
-                <div class="ProductCard-cartElement"><a class="btn btn_primary" href="{% url 'orders-polls:cart_add' best_offer.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span></a>
-                </div>
-              </div>
               <div class="ProductCard-footer">
                 <div class="ProductCard-tags">
                   <strong class="ProductCard-tagsTitle">{% trans 'Tags' %}:
                   </strong>
                     {% for tag in tags %}
-                    <a href="#">{{ tag }}</a>
+                    <a href="{% url 'goods-polls:catalog_by_category_url' tag.name %}">{{ tag }}</a>
                     {% endfor %}
                 </div>
               </div>
@@ -97,7 +102,7 @@
                 </h2>
                 <p>Lorem ipsum dolor sit amet, consectetuer
                   <strong>adipiscing
-                  </strong> elit doli. Aenean commodo ligula eget dolor. Aenean massa. <a href="#">Cumtipsu</a> sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem.
+                  </strong> elit doli. Aenean commodo ligula eget dolor. Aenean massa. Cumtipsu sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem.
                 </p><img class="pict pict_right" src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
                 <ul>
                   <li>Lorem ipsum dolor sit amet, consectetuer
@@ -136,7 +141,7 @@
               </div>
               <div class="Tabs-block" id="sellers" style="display: none;">
                 <div class="Categories Categories_product">
-                {% for item in sellers %}
+                {% for item, price_after_discount, discount in sellers %}
                   <div class="Categories-row">
                     <div class="Categories-block Categories-block_info">
                       <div class="Categories-info">
@@ -147,11 +152,21 @@
                     <div class="Categories-splitProps">
                     </div>
                     <div class="Categories-block Categories-price">
-                      <strong>{{ item.price_after_discount }}
+                      <strong>
+                          {% if price_after_discount and not discount.set_discount %}
+                              ${{ price_after_discount|floatformat:0 }}
+                          {% else %}
+                              ${{ item.price }}
+                          {% endif %}
                       </strong>
                     </div>
-                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Buy' %}</span></a>
+                  {% if item.quantity > 0 %}
+                    <div class="Categories-block Categories-button">
+                        <a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add to cart' %}</span></a>
                     </div>
+                  {% else %}
+                      <div class="Categories-block Categories-button" style="justify-content: right; font-size:20px; font-weight:bold; color: red;">Not in stock</div>
+                  {% endif %}
                   </div>
                 {% endfor %}
                 </div>

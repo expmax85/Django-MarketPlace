@@ -10,9 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_delete
 from django.core.cache import cache
 
-from config.settings import MEDIA_ROOT
+from config.settings import MEDIA_ROOT, SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT
 from orders_app.models import Order, ViewedProduct
-from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product
 
@@ -27,14 +26,13 @@ class StoreServiceMixin:
     All available methods:
     get_store(slug) - get Seller instance with slug=slug
     get_user_stores(user) - get all Seller models by owner=user
-    remove_store(request) - remove Seller instance with id=request.id=request
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
     get_products(query params) - get products
     get_seller_products(user) - get SellerProducts query by Sellers owner=user
     get_viewed_products(user) - get all viewed SellerProduct instances
     remove_seller_product(request) - Remove SellerProduct instance with id=request.id
-    remove_old_file(file) - Method for remove file on path=MEDIA_ROOT + file
+    remove_store(request) - remove Seller instance with id=request.id=request
     """
 
     @classmethod
@@ -61,7 +59,7 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        store = Seller.objects.get(id=request.GET.get('id'))
+        store = Seller.objects.only('name').get(id=request.GET.get('id'))
         messages.add_message(request, SUCCESS_DEL_STORE,
                              _(f'The {store.name} was removed'))
         store.delete()
@@ -134,7 +132,8 @@ class StoreServiceMixin:
         viewed = cache.get(viewed_cache_key)
         if not viewed:
             viewed = ViewedProduct.objects.select_related('product__product', 'product__product__category')\
-                                          .filter(user=user)
+                                          .filter(user=user)\
+                                          .order_by('-date')
             cache.set(viewed_cache_key, viewed, 60 * 60)
         return viewed
 
@@ -161,15 +160,6 @@ class StoreServiceMixin:
             orders = Order.objects.filter(customer=user)
             cache.set(orders_cache_key, orders, 60 * 60)
         return orders
-
-    @classmethod
-    def remove_old_file(cls, file: str) -> None:
-        """
-        Method for remove old file, when update the store-logo for example
-        """
-        path = os.path.normpath(os.path.join(MEDIA_ROOT, str(file)))
-        if os.path.exists(path):
-            os.remove(path)
 
     @classmethod
     def request_add_new_product(cls, product: Product, user: User) -> None:

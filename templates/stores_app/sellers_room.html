@@ -55,7 +55,7 @@
                     </header>
                         {% if messages %}
                             {% for message in messages %}
-                            {% if message.level == 160 %}
+                            {% if message.level == SEND_PRODUCT_REQUEST %}
                             <div class="send-product-request">{{message}}</div>
                             {% endif %}
                             {%endfor %}
@@ -98,7 +98,7 @@
                         </a>
                         {% if messages %}
                             {% for message in messages %}
-                            {% if message.level == 110 %}
+                            {% if message.level == SUCCESS_DEL_STORE %}
                             <div class="Profile-success">{{message}}</div>
                             {% endif %}
                             {%endfor %}
@@ -162,7 +162,7 @@
                         </div>
                        {% if messages %}
                             {% for message in messages %}
-                            {% if message.level == 100 %}
+                            {% if message.level == SUCCESS_DEL_PRODUCT %}
                             <div class="delete-product-success">{{message}}</div>
                             {% endif %}
                             {%endfor %}

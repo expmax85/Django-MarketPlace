@@ -105,7 +105,7 @@
           </div>
           {% if messages %}
             {% for message in messages %}
-                {% if message.level == 150 %}
+                {% if message.level == CREATE_PRODUCT_ERROR %}
                 <div style="position: absolute; color: red; top:500px;">{{message}}</div>
                 {% endif %}
             {%endfor %}

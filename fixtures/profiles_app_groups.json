@@ -12,7 +12,8 @@
     "pk": 2,
     "fields": {
       "name": "Content-manager",
-      "permissions": [66]
+      "permissions": [
+      ]
     }
   }
 ]

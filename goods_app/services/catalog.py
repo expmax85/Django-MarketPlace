@@ -4,7 +4,7 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from django.db.models import Count, QuerySet
 
-from goods_app.models import ProductCategory
+from goods_app.models import ProductCategory, Product
 from stores_app.models import SellerProduct
 
 

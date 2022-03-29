@@ -1,15 +1,17 @@
-from typing import Dict
+from typing import Dict, List
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet
+from django.db.models import Avg, QuerySet, Prefetch
 from django.http import HttpRequest
+from dynamic_preferences.registries import global_preferences_registry
 
+from discounts_app.models import ProductDiscount
+from discounts_app.services import get_discounted_prices_for_seller_products
 from goods_app.models import ProductComment, Product
 from stores_app.models import SellerProduct
-from settings_app.config_project import OPTIONS
 
 
 class CurrentProduct:
@@ -19,7 +21,7 @@ class CurrentProduct:
     Allowed methods:
     get_product,
     get_sellers,
-    get_best_offer,
+    get_calculate_prices(),
     get_specifications,
     get_tags,
     get_reviews,
@@ -40,25 +42,60 @@ class CurrentProduct:
         return self.product
 
     @property
-    def get_sellers(self) -> QuerySet:
+    def get_sellers(self) -> List:
         """
         Method to get all sellers, who have this product. Returns ordering queryset by price
         """
         sellers_cache_key = 'sellers:{}'.format(self.product.id)
-        sellers = cache.get(sellers_cache_key)
-        if not sellers:
-            sellers = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                   .filter(product=self.product) \
-                                   .order_by('price')
-            cache.set(sellers_cache_key, sellers, 24 * 60 * 60)
+        queryset = cache.get(sellers_cache_key)
+        if not queryset:
+            queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
+                                            .prefetch_related(Prefetch('product_discounts',
+                                             queryset=ProductDiscount.objects.filter(is_active=True,
+                                                                                     type_of_discount__in=('f', 'p'))))\
+                                            .filter(product=self.product)
+            cache.set(sellers_cache_key, queryset, 24 * 60 * 60)
+        sellers = get_discounted_prices_for_seller_products(queryset)
+        sellers = sorted(list(sellers), key=lambda x: x[1] if x[1] else x[0].price)
         return sellers
 
-    @property
-    def get_best_offer(self) -> QuerySet:
+    def get_calculate_prices(self) -> Dict:
         """
-        Method for getting best seller
+        Method for getting best seller and average prices
         """
-        return self.get_sellers.first()
+        all_sellers = sorted(self.get_sellers, key=lambda x: x[0].quantity, reverse=True)
+        if all_sellers:
+            list_price = [x[0].price for x in all_sellers]
+            avg_price = round((sum(list_price) / len(list_price)), 2)
+            list_price_after_discount = [x[1] if x[1] else x[0].price for x in all_sellers]
+            avg_price_after_discount = round((sum(list_price_after_discount) / len(list_price_after_discount)), 2)
+        else:
+            return {
+                'best_offer': False,
+                'avg_price': "",
+                'avg_price_after_discount': "not determine"
+            }
+
+        try:
+            temp = [item[0].quantity for item in all_sellers]
+            index = temp.index(0)
+            all_sellers = all_sellers[:index]
+        except ValueError:
+            pass
+
+        try:
+            best_seller = min(all_sellers, key=lambda x: x[1] if x[1] else x[0].price)
+        except ValueError:
+            return {
+                    'best_offer': False,
+                    'avg_price': avg_price,
+                    'avg_price_after_discount': avg_price_after_discount
+                }
+        return {
+            'best_offer': best_seller[0],
+            'avg_price': avg_price,
+            'avg_price_after_discount': avg_price_after_discount,
+        }
 
     @property
     def get_specifications(self) -> QuerySet:
@@ -103,7 +140,8 @@ class CurrentProduct:
         """
         reviews_count = queryset.count()
         reviews = queryset.values('author', 'content', 'added')
-        paginator = Paginator(reviews, per_page=OPTIONS['general__review_size_page'])
+        OPTIONS = global_preferences_registry.manager().by_name()
+        paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])
         page_obj = paginator.get_page(page)
         json_dict = {
             'comments': list(page_obj.object_list),
@@ -131,18 +169,6 @@ class CurrentProduct:
         if rating:
             self.product.rating = round(float(rating), 0)
             self.product.save(update_fields=['rating'])
-
-    def get_context_data(self, *args) -> Dict:
-        """
-        Method for fast making the context data
-        """
-        context = dict()
-        for arg in args:
-            try:
-                context[str(arg)] = getattr(self, ''.join(['get_', str(arg)]))
-            except AttributeError as err:
-                raise AttributeError(err)
-        return context
 
 
 @receiver(post_save, sender=ProductComment)
