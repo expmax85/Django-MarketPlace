@@ -947,8 +947,8 @@ function createURL(sortType, page, slug) {
             select = '';
         }
         let in_stock = form.elements.in_stock.value;
-        let ch_box_2 = form.elements.ch_box_2.value;
-        url = url + `?price=${price}&title=${title}&select=${select}&in_stock=${in_stock}&ch_box_2=${ch_box_2}`
+        let is_hot = form.elements.is_hot.value;
+        url = url + `?price=${price}&title=${title}&select=${select}&in_stock=${in_stock}&is_hot=${is_hot}`
     }
     if (filter_status == 1 && tag_status == 1) {
 
@@ -959,8 +959,8 @@ function createURL(sortType, page, slug) {
             select = '';
         }
         let in_stock = form.elements.in_stock.value;
-        let ch_box_2 = form.elements.ch_box_2.value;
-        url = url + `?price=${price}&title=${title}&select=${select}&in_stock=${in_stock}&ch_box_2=${ch_box_2}&tag=${tag_name}`
+        let is_hot = form.elements.is_hot.value;
+        url = url + `?price=${price}&title=${title}&select=${select}&in_stock=${in_stock}&is_hot=${is_hot}&tag=${tag_name}`
     }
     if (filter_status == 0 && tag_status == 1) {
         url = url + `?tag=${tag_name}`

@@ -20,7 +20,7 @@ class SpecificationsAdmin(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'category', 'is_published', 'limited')
+    list_display = ('id', 'name', 'code', 'category', 'is_published', 'limited')
     list_filter = ('category', 'is_published', 'tags', 'limited')
     search_fields = ('name', 'code', 'category')
     prepopulated_fields = {'slug': ('name', 'code'),
