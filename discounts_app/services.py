@@ -167,7 +167,6 @@ class DiscountsService:
         """
         prices = []
         product_discounts = self.get_priority_discounts_for_product(product)
-        print(f'Discounts {product_discounts}')
         if product.__class__.__name__ == 'OrderProduct':
             price = product.seller_product.price
         else:
@@ -175,10 +174,13 @@ class DiscountsService:
 
         if product_discounts:
             for discount in product_discounts:
-                discounted_price = implement_discount(price, discount)
+                if discount.__class__.__name__ == 'CartDiscount':
+                    cart_sum = self.cart.get_total_sum()
+                    discounted_price = implement_discount(price, discount, cart_sum)
+                else:
+                    discounted_price = implement_discount(price, discount)
                 prices.append(discounted_price)
 
-        print(f'Product - {product}, Prices - {prices}')
         if prices:
             price = max(prices)
 
@@ -194,12 +196,15 @@ class DiscountsService:
         return self.get_discounted_price_in_cart(product)
 
 
-def implement_discount(price, discount):
+def implement_discount(price, discount, cart_sum=None):
     if discount.__class__.__name__ == 'ProductDiscount' and \
-            discount.set_discount is True:
+            discount.set_discount is True or cart_sum:
 
         if discount.type_of_discount == 'f':
-            set_sum = sum([item.price for item in discount.seller_products.all()])
+            if cart_sum:
+                set_sum = cart_sum
+            else:
+                set_sum = sum([item.price for item in discount.seller_products.all()])
             set_sum_with_discount = set_sum - Decimal(discount.amount)
             price = Decimal(price * set_sum_with_discount / set_sum)
         elif discount.type_of_discount == 'p':

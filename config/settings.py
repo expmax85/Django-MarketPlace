@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'goods_app',
     'banners_app',
-    'widget_tweaks',
     'profiles_app',
     'discounts_app',
     'stores_app',

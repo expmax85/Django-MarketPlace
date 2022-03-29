@@ -20,11 +20,10 @@ class AddGroupDiscountForm(forms.ModelForm):
     class Meta:
         model = GroupDiscount
         fields = '__all__'
-
-    widgets = {
-        'valid_from': widgets.AdminDateWidget,
-        'valid_to': widgets.AdminDateWidget
-    }
+        widgets = {
+            'valid_from': widgets.AdminDateWidget,
+            'valid_to': widgets.AdminDateWidget
+        }
 
 
 class AddCartDiscountForm(forms.ModelForm):
@@ -32,8 +31,7 @@ class AddCartDiscountForm(forms.ModelForm):
     class Meta:
         model = CartDiscount
         fields = '__all__'
-
-    widgets = {
-        'valid_from': widgets.AdminDateWidget,
-        'valid_to': widgets.AdminDateWidget
-    }
+        widgets = {
+            'valid_from': widgets.AdminDateWidget,
+            'valid_to': widgets.AdminDateWidget
+        }
