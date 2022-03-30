@@ -1,8 +1,9 @@
 from django import forms
-from django.forms import CheckboxInput
+from django.forms import CheckboxInput, FileInput
 
 from goods_app.models import ProductRequest
-from stores_app.models import Seller, SellerProduct
+from stores_app.models import Seller, SellerProduct, ProductImportFile
+from django.utils.translation import gettext_lazy as _
 
 
 class AddStoreForm(forms.ModelForm):
@@ -49,3 +50,13 @@ class AddRequestNewProductAdminForm(forms.ModelForm):
     class Meta:
         model = ProductRequest
         exclude = ['rating', 'average_price', 'tags']
+
+
+class ImportForm(forms.ModelForm):
+    file = forms.FileField(label=_('Your json file'), required=True, widget=FileInput(attrs={'class': 'import_row',
+                                                                                             'accept': '.json',
+                                                                                             }))
+
+    class Meta:
+        model = ProductImportFile
+        fields = ['file', ]
