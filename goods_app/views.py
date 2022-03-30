@@ -136,6 +136,8 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
         row_items_for_catalog, category, sellers, tags = self.get_data_without_filters(slug)
         items_for_catalog, *_ = self.simple_sort(row_items_for_catalog, sort_type)
 
+        # print(items_for_catalog)
+
         # paginator
         paginator = Paginator(items_for_catalog, 8)
         page_obj = paginator.get_page(page)
@@ -143,7 +145,7 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
         # custom levels for range input
         maxi = self.get_max_price(items_for_catalog)
         mini = self.get_min_price(items_for_catalog)
-        midi = maxi / 2
+        midi = round((maxi + mini) / 2, 2)
 
         # next and previous buttons values
         next_page = str(page_obj.next_page_number() if page_obj.has_next() else page_obj.paginator.num_pages)
@@ -193,7 +195,7 @@ class CardForAjax(CatalogByCategoriesMixin, View):
                 not request.GET.get('title') and \
                 not request.GET.get('select') and \
                 not request.GET.get('in_stock') and \
-                not request.GET.get('ch_box_2') and \
+                not request.GET.get('is_hot') and \
                 not request.GET.get('tag'):
             # get data
             row_items_for_catalog, category, *_ = self.get_data_without_filters(slug)

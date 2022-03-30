@@ -6,6 +6,7 @@ from django.db.models import Count, QuerySet
 
 from goods_app.models import ProductCategory, Product
 from stores_app.models import SellerProduct
+from discounts_app.services import get_discounted_prices_for_seller_products
 
 
 class CatalogByCategoriesMixin:
@@ -69,6 +70,32 @@ class CatalogByCategoriesMixin:
         return some_list, next_state
 
     @classmethod
+    def get_products_set_with_subcategories(cls, some_category: Any) -> List:
+        """метод возвращает список всех товаров для каталога с учётом подкатегорий"""
+        all_categories = some_category.get_children() if some_category.get_children() else [some_category]
+
+        res = list()
+        for elem in all_categories:
+            res.extend(elem.products.all())
+        return res
+
+    @classmethod
+    def add_sale_prices_in_goods_if_needed(cls, some_goods: List) -> List:
+        """метод расчитывает и добавляет к товару стоимость с учётом скидки, при её наличии"""
+        goods_with_sale = get_discounted_prices_for_seller_products(some_goods)
+
+        for elem in goods_with_sale:
+            if elem[1] is not None:
+                elem[0].price_after_discount = round(elem[1], 2)
+                elem[0].total = round(elem[1], 2)
+                elem[0].sale = '1'
+            else:
+                elem[0].total = elem[0].price
+                elem[0].sale = '0'
+
+        return goods_with_sale
+
+    @classmethod
     def get_data_without_filters(cls, slug: str) -> Tuple[List, Any, set, List]:
         """
         метод для получения всех необходимых данных для отрисовки каталога при условии отсутствия фильтров
@@ -87,7 +114,7 @@ class CatalogByCategoriesMixin:
             'products__tags',
         ).get(slug=slug)
 
-        products_set = category.products.all()
+        products_set = cls.get_products_set_with_subcategories(category)
 
         sellers = []
         items_for_catalog = []
@@ -100,6 +127,9 @@ class CatalogByCategoriesMixin:
                 sellers.append(el.seller)
 
         tags = tags[:6]
+
+        cls.add_sale_prices_in_goods_if_needed(items_for_catalog)
+
         return items_for_catalog, category, set(sellers), tags
 
     @classmethod
@@ -120,26 +150,43 @@ class CatalogByCategoriesMixin:
             'products__tags',
         ).get(slug=slug)
 
-        products_set = category.products.all()
-
+        products_set = cls.get_products_set_with_subcategories(category)
         sellers = []
 
         for elem in products_set:
             for el in elem.seller_products.all():
                 sellers.append(el.seller)
 
-        items_for_catalog = SellerProduct.objects.select_related('product', 'seller', 'discount') \
+        items_for_catalog = SellerProduct.objects.select_related('product', 'seller', ) \
             .prefetch_related('product__category', 'product__tags') \
             .filter(
             seller__name__icontains=filter_data['f_select'],
-            product__tags__name__icontains=filter_data['tag'],
+            # product__tags__name__icontains=filter_data['tag'],
             product__name__icontains=filter_data['f_title'],
             product__category__name__icontains=category,
-            price_after_discount__range=(int(filter_data['f_price'][0]), int(filter_data['f_price'][1])),
-            quantity__gte=filter_data['in_stock']
+            quantity__gte=filter_data['in_stock'],
+            product__limited=filter_data['is_hot']
         ).annotate(Count('product__product_comments'))
 
+        if filter_data['f_price'][0] and filter_data['f_price'][1]:
+            mini_price = int(filter_data['f_price'][0], 0)
+            maxi_price = int(filter_data['f_price'][1], 0)
+            final_goods_set = cls.filtering_by_price(mini_price, maxi_price, items_for_catalog)
+            return final_goods_set, category, set(sellers)
+
         return items_for_catalog, category, set(sellers)
+
+    @classmethod
+    def filtering_by_price(cls, mini: int, maxi: int, some_goods_list: List) -> List:
+        """метод фильтрации списка товаров по минимальной и максимальной стоимостям"""
+        cls.add_sale_prices_in_goods_if_needed(some_goods_list)
+        result_goods = []
+
+        for elem in some_goods_list:
+            if mini <= elem.total <= maxi:
+                result_goods.append(elem)
+
+        return result_goods
 
     @classmethod
     def sort_by_name(cls, some_list: List, direction: bool) -> List:
@@ -155,7 +202,7 @@ class CatalogByCategoriesMixin:
     def sort_by_price(cls, some_list: List, direction: bool) -> List:
         # return sorted(some_list, key=lambda x: x.price_after_discount if x.price_after_discount else x.price,
         #               reverse=direction)
-        return sorted(some_list, key=lambda x: x.price,
+        return sorted(some_list, key=lambda x: x.total,
                       reverse=direction)
 
     @classmethod
@@ -186,8 +233,7 @@ class CatalogByCategoriesMixin:
         :return: минимальная стоимость товара из представленного списка товаров
         """
         try:
-            # mini = min(x.price_after_discount if x.price_after_discount else x.price for x in some_list)
-            mini = min(x.price for x in some_list)
+            mini = min([x.total for x in some_list])
 
         except ValueError:
             mini = 0
@@ -201,8 +247,7 @@ class CatalogByCategoriesMixin:
         :return: максимальная стоимость товара из представленного списка товаров
         """
         try:
-            # maxi = max(x.price_after_discount if x.price_after_discount else x.price for x in some_list)
-            maxi = max(x.price for x in some_list)
+            maxi = max([x.total for x in some_list])
 
         except ValueError:
             maxi = 100
@@ -218,11 +263,11 @@ class CatalogByCategoriesMixin:
         filter_data = {
             'f_price': request.GET.get('price').split(';') if request.GET.get('price') else ['0', '1000000'],
             'f_title': request.GET.get('title') if request.GET.get('title') else '',
-            'f_select': request.GET.get('select') if request.GET.get('select') and request.GET.get(
+            'f_select': request.GET.get('select') if request.GET.get('select', None) and request.GET.get(
                 'select') != 'seller' else '',
             'in_stock': 1 if request.GET.get('in_stock') and request.GET.get('in_stock') == '1' else 0,
-            'ch_box_2': request.GET.get('ch_box_2') if request.GET.get('ch_box_2') else None,
-            'tag': request.GET.get('tag') if request.GET.get('tag') else '',
+            'is_hot': True if request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == 1 else False,
+            'tag': request.GET.get('tag') if request.GET.get('tag', None) else '',
         }
 
         return filter_data
