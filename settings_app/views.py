@@ -80,11 +80,16 @@ def set_expire(request: HttpRequest) -> Callable:
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_products_cache(request: HttpRequest) -> Callable:
+def clear_catalog_cache(request: HttpRequest) -> Callable:
     """
     Очистка кэша продуктов и категорий каталога
     """
-    cache.delete_many(['products:all_sp', 'categories:all_sp'])
+    cache.delete_many(['products:all',
+                       'categories:all',
+                       'limited:all',
+                       'hot_offers:all',
+                       'stores:all',
+                       'random_categories:all'])
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
@@ -116,7 +121,7 @@ def clear_detail_products_cache(request: HttpRequest) -> Callable:
 @permission_required('profiles_app.Content_manager')
 def clear_banner_cache(request: HttpRequest) -> Callable:
     """
-    Очисмтка кеша баннеров
+    Очистка кеша баннеров
     """
     key = make_template_fragment_key('banners_block')
     cache.delete(key)
@@ -125,11 +130,13 @@ def clear_banner_cache(request: HttpRequest) -> Callable:
 
 
 @permission_required('profiles_app.Content_manager')
-def clear_index_products_cache(request: HttpRequest) -> Callable:
-    """
-    Очистка кеша товаров из "Ограниченного тиража" и "Горячих предложений"
-    """
-    cache.delete_many(['limited:all', 'hot_offers:all', ])
+def clear_sellers_cache(request: HttpRequest) -> Callable:
+    list_users_id = list(User.objects.all().values('id'))
+    cache.delete_many([f'owner_sp:{item["id"]}' for item in list_users_id])
+    cache.delete_many([f'stores:{item["id"]}' for item in list_users_id])
+    cache.delete_many([f'owner_product_discounts:{item["id"]}' for item in list_users_id])
+    cache.delete_many([f'owner_group_discounts:{item["id"]}' for item in list_users_id])
+    cache.delete_many([f'owner_card_discounts:{item["id"]}' for item in list_users_id])
     messages.add_message(request, SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
@@ -140,8 +147,6 @@ def clear_users_cache(request: HttpRequest) -> Callable:
     Очистка кеша пользователей
     """
     list_users_id = list(User.objects.all().values('id'))
-    cache.delete_many([f'owner:{item["id"]}' for item in list_users_id])
-    cache.delete_many([f'stores:{item["id"]}' for item in list_users_id])
     cache.delete_many([f'user_orders:{item["id"]}' for item in list_users_id])
     cache.delete_many([f'user_last_order:{item["id"]}' for item in list_users_id])
     cache.delete_many([f'viewed:{item["id"]}' for item in list_users_id])

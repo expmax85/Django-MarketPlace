@@ -11,16 +11,15 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
 
-from discounts_app.models import ProductDiscount, GroupDiscount
 from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from discounts_app.models import ProductDiscount, GroupDiscount
+from stores_app.models import Seller, SellerProduct
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format
 from stores_app.forms import AddStoreForm, EditStoreForm, \
     AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
-
 from discounts_app.forms import AddProductDiscountForm, AddGroupDiscountForm, AddCartDiscountForm
-from stores_app.models import Seller, SellerProduct
 from django.forms import ModelChoiceField
 
 
@@ -87,6 +86,16 @@ class EditStoreView(StoreAppMixin, DetailView):
             reset_phone_format(store)
             return redirect(reverse('stores-polls:sellers-room'))
         return redirect(reverse('stores-polls:edit-store', kwargs={'slug': slug}))
+
+
+class StoresListView(StoreServiceMixin, ListView):
+    model = Seller
+    template_name = 'stores_app/stores_list.html'
+    slug_url_kwarg = 'slug'
+    paginate_by = 6
+
+    def get_queryset(self):
+        return self.get_all_stores()
 
 
 class StoreDetailView(StoreServiceMixin, DetailView):
@@ -268,7 +277,8 @@ class AddProductDiscountView(StoreAppMixin, View):
             form.save(commit=False)
             created = self.create_product_discount(data=form.cleaned_data)
             if not created:
-                # messages.add_message(request, CREATE_PRODUCT_ERROR, _('This product is already exist in those store!'))
+                # messages.add_message(request, CREATE_PRODUCT_ERROR,
+                # _('This product is already exist in those store!'))
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
 

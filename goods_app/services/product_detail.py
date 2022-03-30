@@ -1,8 +1,5 @@
 from typing import Dict, List
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Avg, QuerySet, Prefetch
 from django.http import HttpRequest
@@ -10,8 +7,9 @@ from dynamic_preferences.registries import global_preferences_registry
 
 from discounts_app.models import ProductDiscount
 from discounts_app.services import get_discounted_prices_for_seller_products
-from goods_app.models import ProductComment, Product
+from goods_app.models import Product
 from stores_app.models import SellerProduct
+from goods_app.signals import *
 
 
 class CurrentProduct:
@@ -133,7 +131,8 @@ class CurrentProduct:
             cache.set(reviews_cache_key, reviews, 24 * 60 * 60)
         return reviews
 
-    def get_review_page(self, queryset: QuerySet, page: int) -> Dict:
+    @classmethod
+    def get_review_page(cls, queryset: QuerySet, page: int) -> Dict:
         """
         Method for getting reviews page to pass to javascript. Returns dict with queryset page reviews
         and data for pagination
@@ -169,16 +168,6 @@ class CurrentProduct:
         if rating:
             self.product.rating = round(float(rating), 0)
             self.product.save(update_fields=['rating'])
-
-
-@receiver(post_save, sender=ProductComment)
-def comment_post_save_handler(sender, **kwargs) -> None:
-    """
-    Signal for clearing reviews cache, when added new review
-    """
-    if kwargs['created']:
-        product_id = kwargs['instance'].product_id
-        cache.delete('reviews:{}'.format(product_id))
 
 
 def context_pagination(request: HttpRequest, queryset: QuerySet, size_page: int = 3) -> Paginator:

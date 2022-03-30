@@ -26,7 +26,6 @@ class IndexView(ListView):
     model = SellerProduct
     template_name = 'goods_app/index.html'
     context_object_name = 'products'
-    OPTIONS = global_preferences_registry.manager()
 
     def get_queryset(self) -> Iterable:
         OPTIONS = global_preferences_registry.manager().by_name()
@@ -44,7 +43,7 @@ class IndexView(ListView):
         context = {
             'banners': banner(),
             'limited_products': limited_products,
-            'hot_offers': get_hot_offers(),
+            'hot_offers': get_hot_offers(count=OPTIONS['count_hot_offers']),
             'random_categories': get_random_categories(),
             **random_product.get_context_data(),
             **super().get_context_data(**kwargs)
@@ -60,7 +59,6 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
     slug_url_kwarg = 'slug'
-    global_preferences = global_preferences_registry.manager()
 
     def get_context_data(self, **kwargs) -> Dict:
         OPTIONS = global_preferences_registry.manager().by_name()
