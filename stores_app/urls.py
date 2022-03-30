@@ -1,6 +1,9 @@
 from django.urls import path
 from stores_app.views import *
 
+from stores_app.views import AddNewStoreView, AddSellerProductView, SellersRoomView, remove_Store, \
+    remove_SellerProduct, EditStoreView, StoreDetailView, EditSelleProductView, RequestNewProduct, CategoryFilter,\
+    ImportView
 
 app_name = 'stores'
 urlpatterns = [
@@ -33,4 +36,5 @@ urlpatterns = [
     path('edit-store-cart-discount/<str:slug>/<int:pk>/',
          EditCartDiscountView.as_view(),
          name='edit-store-cart-discount'),
+    path('import/', ImportView.as_view(), name='import')
 ]

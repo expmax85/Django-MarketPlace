@@ -10,11 +10,17 @@
                 <strong class="Card-title"><a href="product.html">{{ elem.product }}</a>
                 </strong>
                 <div class="Card-description">
-                    <div class="Card-cost"><span class="Card-priceOld">{{ elem.price }}</span><span
-                            class="Card-price">{{ elem.price_after_discount }}</span>
+                    <div class="Card-cost">
+
+                        {% if elem.price_after_discount %}
+                        <span class="Card-priceOld">{{ elem.price }}</span>
+                        <span class="Card-price">{{ elem.price_after_discount }}</span>
+                        {% else %}
+                        <span class="Card-price">{{ elem.price }}</span>
+                        {% endif %}
+
                     </div>
-                    <div class="Card-category">{{elem.product.category}}
-                    </div>
+                    <div class="Card-category">{{category}}</div>
                     <div class="Card-hover">
                         <a class="Card-btn" href="#">
                             <img src={% static "assets/img/icons/card/bookmark.svg" %} alt="bookmark.svg"/>
@@ -28,8 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="Card-sale">-60%
-            </div>
+            <div class="Card-sale">-60%</div>
         </div>
         {% endfor %}
 

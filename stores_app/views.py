@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
+from django.core.management import call_command
 
 from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
 from discounts_app.models import ProductDiscount, GroupDiscount
@@ -18,9 +19,11 @@ from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format
 from stores_app.forms import AddStoreForm, EditStoreForm, \
-    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
+    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct, ImportForm
 from discounts_app.forms import AddProductDiscountForm, AddGroupDiscountForm, AddCartDiscountForm
 from django.forms import ModelChoiceField
+from stores_app.models import Seller, SellerProduct, ProductImportFile
+
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -419,3 +422,19 @@ class EditCartDiscountView(StoreAppMixin, DetailView):
             self.edit_store_cart_discount(data=form.cleaned_data, instance=self.get_object())
             return redirect(reverse('stores-polls:sellers-room'))
         return redirect(reverse('stores-polls:edit-store-cart-discount', kwargs={'slug': slug, 'pk': pk}))
+
+
+class ImportView(View):
+    """ Представление страницы проведения импорта """
+
+    def get(self, request):
+        return render(request, 'stores_app/import.html', {})
+
+    def post(self, request):
+        form = ImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = ProductImportFile.objects.create(file=request.FILES['file'],
+                                                    user=request.user)
+            file.save()
+            call_command('products_import', request.FILES['file'], request.user.email, file.id)
+        return render(request, 'stores_app/import.html', {})
