@@ -24,6 +24,8 @@ urlpatterns = [
     path('i18n', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path('admin/', include('admin_tools.urls')),
+    path('api_auth/', include('rest_framework.urls')),
+    path('api/', include('payments_app.urls')),
     path('settings-admin/setup/', AdminView.as_view(), name='admin-setup'),
     path('setup-actions/', include('settings_app.urls', namespace='settings-polls')),
     path('', include('goods_app.urls', namespace='goods-polls')),
