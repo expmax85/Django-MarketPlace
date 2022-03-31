@@ -9,7 +9,8 @@ def filled_stars(rating: int):
     Кастомный фильтр, который позволяет итерироваться
     по значению рейтинга в шаблоне (товары для сравнения)
     """
-
+    if not rating:
+        rating = 0
     return range(int(rating))
 
 
@@ -19,5 +20,6 @@ def empty_stars(rating: int):
     Кастомный фильтр, который позволяет итерироваться
     по значению 5-рейтинг в шаблоне (товары для сравнения)
     """
-
+    if not rating:
+        rating = 0
     return range(int(5 - rating))
