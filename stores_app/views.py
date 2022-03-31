@@ -424,7 +424,7 @@ class EditCartDiscountView(StoreAppMixin, DetailView):
         return redirect(reverse('stores-polls:edit-store-cart-discount', kwargs={'slug': slug, 'pk': pk}))
 
 
-class ImportView(View):
+class ImportView(StoreAppMixin, View):
     """ Представление страницы проведения импорта """
 
     def get(self, request):
