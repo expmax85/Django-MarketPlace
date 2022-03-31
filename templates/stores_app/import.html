@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load split_log %}
+{% load find_errors %}
+{% block title %}
+   {% trans 'Import' %}
+{% endblock %}
+{%block header %}
+   {% include 'elems/header.html' %}
+{% endblock %}
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                <h1 class="Middle-title">{% trans 'Import' %}</h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="/">{% trans 'Sellers room' %}</a></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Import' %}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft">
+        <div class="wrap">
+           
+            <div class="Section-content">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ import_form.as_p }}
+                    <button type="submit">
+                        {% trans 'Send' %}
+                    </button>
+                </form>
+                <div class="imports">
+                    <h3 class="imports__title">{% trans 'My imports:' %}</h3>
+                    {% for import in imports %}
+                     <div class="imports__import">
+                         <div class="import__header">
+                            {{ import.file }}
+                            <div class="header__stats">
+                                <span class="stats_err">Errors: {{ import.errors }}</span>
+                                <span class="stats_warb">Warnings: {{ import.warnings }}</span>
+                            </div>
+                        </div>
+                        <div class="import__content">
+                         {% for i in import.log_info|split_log %}
+                            <p
+                             {% if i|find_errors == 'Error' %}
+                                class="import__string_error"
+                             {% elif i|find_errors == 'Warning' %}
+                                class="import__string_warning"
+                             {% else %}
+                                class="import__string_success"
+                             {% endif %}>
+                             {{ i }}
+                            </p>
+                         {% endfor %}
+                        </div>
+                         
+                     </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+{% endblock %}
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'assets/js/openImportLog.js' %}"></script>
+{% endblock %}

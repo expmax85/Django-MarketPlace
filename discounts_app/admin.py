@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from discounts_app.models import (
     ProductDiscount,
     GroupDiscount,

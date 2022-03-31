@@ -45,7 +45,7 @@ class Command(BaseCommand):
                     management.call_command('loaddata', os.path.normpath(
                                             os.path.join(FOLDER_FIXTURES, item)))
                     fixtures_list.remove(item)
-                except IntegrityError:
+                except Exception:
                     self.stdout.write(self.style.WARNING(
                         f'IntegrityError when loading {item}'
                     ))

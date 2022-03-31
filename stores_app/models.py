@@ -81,9 +81,21 @@ class SellerProduct(models.Model):
         return reverse('stores-polls:edit-seller-product', kwargs={'slug': self.seller.slug,
                                                                    'pk': self.id})
 
+    # Pay attention to discounts
     @property
     def get_discount(self) -> QuerySet:
         """
         Get all related ProductDiscounts
         """
         return self.product_discounts.all()
+
+
+class ProductImportFile(models.Model):
+    """ Модель файла импорта товаров """
+
+    file = models.FileField(upload_to='import/products')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='import_files')
+    errors = models.IntegerField(default=0)
+    warnings = models.IntegerField(default=0)
+    log_info = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now=True)

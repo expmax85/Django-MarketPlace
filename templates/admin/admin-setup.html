@@ -31,16 +31,22 @@
         <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Comments size page' %}:</p><span> {{ global_preferences.general__review_size_page }}</span>
     </div>
     <div class="form-row" style="padding: 10px;">
-        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Count popular products' %}:</p> <span>{{ global_preferences.general__count_popular_products }}</span>
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Sort index popular products' %}:</p> <span>{{ global_preferences.general__sort_index }}</span>
     </div>
     <div class="form-row" style="padding: 10px;">
-        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Sort index popular products' %}:</p> <span>{{ global_preferences.general__sort_index }}</span>
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Count popular products' %}:</p> <span>{{ global_preferences.general__count_popular_products }}</span>
     </div>
     <div class="form-row" style="padding: 10px;">
         <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Count limited products' %}:</p> <span>{{ global_preferences.general__count_limited_products }}</span>
     </div>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Count hot offers' %}:</p> <span>{{ global_preferences.general__count_hot_offers }}</span>
+    </div>
+        <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Banners time expire' %}:</p> <span>{{ global_preferences.general__banners_time_expire }}</span>
+    </div>
     <div style="text-align: center;">
-    <a class="btn btn_primary" href="{% url 'admin:dynamic_preferences_globalpreferencemodel_changelist' %}" style="margin: 30px 50px; color: white; font-size: 12px;">{% trans 'Change settings' %}</a>
+        <a class="btn btn_primary" href="{% url 'admin:dynamic_preferences_globalpreferencemodel_changelist' %}" style="margin: 30px 50px; color: white; font-size: 12px;">{% trans 'Change settings' %}</a>
     </div>
      <header>
         <h2>{% trans 'Limited products control'%}</h2>
@@ -81,20 +87,20 @@
         <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-review-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
     <div class="block-cache">
-        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear main products cache' %}:</span>
-        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-products-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear catalogs cache' %}:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-catalog-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
     <div class="block-cache">
         <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear banner cache' %}:</span>
         <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-banner-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
     <div class="block-cache">
-        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear all products cache' %}:</span>
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear products cache' %}:</span>
         <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-detail-products-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
     <div class="block-cache">
-        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear main page products cache' %}:</span>
-        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-index-products-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
+        <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear sellers cache' %}:</span>
+        <a class="btn btn_primary clear-cache" href="{% url 'settings-polls:clear-sellers-cache' %}" style="font-size:12px; color: white;">{% trans 'Clear cache' %}</a>
     </div>
     <div class="block-cache">
         <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear main page products cache' %}:</span>

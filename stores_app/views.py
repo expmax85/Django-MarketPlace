@@ -10,14 +10,20 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView
+from django.core.management import call_command
 
-from settings_app.config_project import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from discounts_app.models import ProductDiscount, GroupDiscount
+from stores_app.models import Seller, SellerProduct
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format
 from stores_app.forms import AddStoreForm, EditStoreForm, \
-    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct
-from stores_app.models import Seller, SellerProduct
+    AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct, ImportForm
+from discounts_app.forms import AddProductDiscountForm, AddGroupDiscountForm, AddCartDiscountForm
+from django.forms import ModelChoiceField
+from stores_app.models import Seller, SellerProduct, ProductImportFile
+
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -26,7 +32,7 @@ class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMix
 
 class SellersRoomView(StoreAppMixin, ListView):
     """
-    Page for view seller room for Sellers-group
+    Страница раздела для продавцов на странице информации об аккаунте
     """
     model = Seller
     template_name = 'stores_app/sellers_room.html'
@@ -38,12 +44,15 @@ class SellersRoomView(StoreAppMixin, ListView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
         context['seller_products'] = self.get_seller_products(user=self.request.user)
+        context['product_discounts'] = self.get_product_discounts(user=self.request.user)
+        context['group_discounts'] = self.get_group_discounts(user=self.request.user)
+        context['cart_discounts'] = self.get_cart_discounts(user=self.request.user)
         return context
 
 
 class AddNewStoreView(StoreAppMixin, View):
     """
-    Page for creating new store
+    Страница создания магазина
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -61,7 +70,7 @@ class AddNewStoreView(StoreAppMixin, View):
 
 class EditStoreView(StoreAppMixin, DetailView):
     """
-    Page for view and edit detail store
+    Редактирование информации о магазине
     """
     context_object_name = 'store'
     template_name = 'stores_app/edit-store.html'
@@ -82,9 +91,19 @@ class EditStoreView(StoreAppMixin, DetailView):
         return redirect(reverse('stores-polls:edit-store', kwargs={'slug': slug}))
 
 
+class StoresListView(StoreServiceMixin, ListView):
+    model = Seller
+    template_name = 'stores_app/stores_list.html'
+    slug_url_kwarg = 'slug'
+    paginate_by = 6
+
+    def get_queryset(self):
+        return self.get_all_stores()
+
+
 class StoreDetailView(StoreServiceMixin, DetailView):
     """
-    Page for Store Detail
+    Детальная страница магазина
     """
     permission_required = None
     context_object_name = 'store'
@@ -100,7 +119,7 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 
 class AddSellerProductView(StoreAppMixin, View):
     """
-    Page for adding new seller product
+    Страница добавления нового продука продавца
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -125,7 +144,7 @@ class AddSellerProductView(StoreAppMixin, View):
 
 class CategoryFilter(StoreServiceMixin, ListView):
     """
-    View for category changes and updating products queryset
+    Представление для выборки продуктов по категориям при создании продукта продавца
     """
 
     def get_queryset(self) -> QuerySet:
@@ -139,7 +158,7 @@ class CategoryFilter(StoreServiceMixin, ListView):
 
 class EditSelleProductView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования продукта продавца
     """
     context_object_name = 'item'
     template_name = 'stores_app/edit-seller-product.html'
@@ -149,7 +168,6 @@ class EditSelleProductView(StoreAppMixin, DetailView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data()
         context['form'] = EditSellerProductForm(instance=self.get_object())
-        print(context['form'])
         return context
 
     def post(self, request: HttpRequest, slug: str, pk: int) -> Callable:
@@ -164,26 +182,54 @@ class EditSelleProductView(StoreAppMixin, DetailView):
 @permission_required('profiles_app.Sellers')
 def remove_Store(request: HttpRequest) -> Callable:
     """
-    Remove store in seller room
+    Удаление магазина продавца
     """
-    if request.method == 'GET':
-        StoreServiceMixin.remove_store(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    StoreServiceMixin.remove_store(request)
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_SellerProduct(request: HttpRequest) -> Callable:
     """
-    Remove product in seller room
+    Удаление продукта продавца
+    """
+    StoreServiceMixin.remove_seller_product(request)
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+@permission_required('profiles_app.Sellers')
+def remove_ProductDiscount(request: HttpRequest) -> Callable:
+    """
+    Remove product discount in seller room
     """
     if request.method == 'GET':
-        StoreServiceMixin.remove_seller_product(request)
+        StoreServiceMixin.remove_store_product_discount(request)
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+@permission_required('profiles_app.Sellers')
+def remove_GroupDiscount(request: HttpRequest) -> Callable:
+    """
+    Remove product discount in seller room
+    """
+    if request.method == 'GET':
+        StoreServiceMixin.remove_store_group_discount(request)
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+@permission_required('profiles_app.Sellers')
+def remove_CartDiscount(request: HttpRequest) -> Callable:
+    """
+    Remove product discount in seller room
+    """
+    if request.method == 'GET':
+        StoreServiceMixin.remove_store_cart_discount(request)
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 class RequestNewProduct(StoreAppMixin, View):
     """
-    View for create the request for adding new product
+    Страница для запроса создания нового продукта
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -207,3 +253,188 @@ class RequestNewProduct(StoreAppMixin, View):
         return render(request, 'stores_app/request-add-new-product.html', context={'form': form,
                                                                                    'categories': categories,
                                                                                    'stores': stores})
+
+
+class AddProductDiscountView(StoreAppMixin, View):
+    """
+    Page for adding new product discount
+    """
+
+    def get(self, request: HttpRequest) -> Callable:
+        context = dict()
+        context['categories'] = get_categories()
+        context['products'] = self.get_products()
+        context['stores'] = self.get_user_stores(user=request.user)
+        form = AddProductDiscountForm()
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+        # form.fields['seller_products'] = ModelChoiceField(SellerProduct.objects.
+        #                                                   filter(seller__in=Seller.objects.filter(owner=request.user)))
+
+        context['form'] = form
+        return render(request, 'stores_app/product_discount_in_store.html', context=context)
+
+    def post(self, request: HttpRequest) -> Callable:
+        form = AddProductDiscountForm(request.POST)
+
+        if form.is_valid():
+            form.save(commit=False)
+            created = self.create_product_discount(data=form.cleaned_data)
+            if not created:
+                # messages.add_message(request, CREATE_PRODUCT_ERROR,
+                # _('This product is already exist in those store!'))
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            return redirect(reverse('stores-polls:sellers-room'))
+
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+        form.fields['seller_products'] = ModelChoiceField(SellerProduct.objects.
+                                                          filter(seller__in=Seller.objects.filter(owner=request.user)))
+        return render(request, 'stores_app/product_discount_in_store.html', {'form': form})
+
+
+class EditProductDiscountView(StoreAppMixin, DetailView):
+    """
+    Page for editing SellerProduct instance
+    """
+    context_object_name = 'item'
+    template_name = 'stores_app/product_discount_in_store.html'
+    model = ProductDiscount
+    slug_url_kwarg = 'slug'
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> Callable:
+        instance = self.get_object()
+        form = AddProductDiscountForm(instance=instance)
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+        # form.fields['seller_products'] = ModelChoiceField(SellerProduct.objects.
+        #                                                   filter(seller__in=Seller.objects.filter(owner=request.user)))
+        context = {'form': form}
+        return render(request, 'stores_app/product_discount_in_store.html', context=context)
+
+    def post(self, request: HttpRequest, slug: str, pk: int) -> Callable:
+        form = AddProductDiscountForm(request.POST)
+        if form.is_valid():
+            form.save(commit=False)
+            self.edit_store_product_discount(data=form.cleaned_data, instance=self.get_object())
+            return redirect(reverse('stores-polls:sellers-room'))
+        return redirect(reverse('stores-polls:edit-store-product-discount', kwargs={'slug': slug, 'pk': pk}))
+
+
+class AddGroupDiscountView(StoreAppMixin, View):
+    """
+    Page for adding new product discount
+    """
+
+    def get(self, request: HttpRequest) -> Callable:
+        context = dict()
+        context['categories'] = get_categories()
+        # context['products'] = self.get_products()
+        context['stores'] = self.get_user_stores(user=request.user)
+        form = AddGroupDiscountForm()
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+
+        context['form'] = form
+        return render(request, 'stores_app/product_discount_in_store.html', context=context)
+
+    def post(self, request: HttpRequest) -> Callable:
+        form = AddGroupDiscountForm(request.POST)
+
+        if form.is_valid():
+            form.save(commit=False)
+            created = self.create_group_discount(data=form.cleaned_data)
+            if not created:
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            return redirect(reverse('stores-polls:sellers-room'))
+
+        return render(request, 'stores_app/product_discount_in_store.html', {'form': form})
+
+
+class EditGroupDiscountView(StoreAppMixin, DetailView):
+    """
+    Page for editing SellerProduct instance
+    """
+    context_object_name = 'item'
+    template_name = 'stores_app/product_discount_in_store.html'
+    model = GroupDiscount
+    slug_url_kwarg = 'slug'
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> Callable:
+        instance = self.get_object()
+        form = AddGroupDiscountForm(instance=instance)
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+        context = {'form': form}
+        return render(request, 'stores_app/product_discount_in_store.html', context=context)
+
+    def post(self, request: HttpRequest, slug: str, pk: int) -> Callable:
+        form = AddGroupDiscountForm(request.POST)
+        if form.is_valid():
+            form.save(commit=False)
+            self.edit_store_group_discount(data=form.cleaned_data, instance=self.get_object())
+            return redirect(reverse('stores-polls:sellers-room'))
+        return redirect(reverse('stores-polls:edit-store-group-discount', kwargs={'slug': slug, 'pk': pk}))
+
+
+class AddCartDiscountView(StoreAppMixin, View):
+    """
+    Page for adding new product discount
+    """
+
+    def get(self, request: HttpRequest) -> Callable:
+        context = dict()
+        context['stores'] = self.get_user_stores(user=request.user)
+        form = AddCartDiscountForm()
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+
+        context['form'] = form
+        return render(request, 'stores_app/product_discount_in_store.html', context=context)
+
+    def post(self, request: HttpRequest) -> Callable:
+        form = AddCartDiscountForm(request.POST)
+
+        if form.is_valid():
+            form.save(commit=False)
+            created = self.create_cart_discount(data=form.cleaned_data)
+            if not created:
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            return redirect(reverse('stores-polls:sellers-room'))
+
+        return render(request, 'stores_app/product_discount_in_store.html', {'form': form})
+
+
+class EditCartDiscountView(StoreAppMixin, DetailView):
+    """
+    Page for editing SellerProduct instance
+    """
+    context_object_name = 'item'
+    template_name = 'stores_app/product_discount_in_store.html'
+    model = GroupDiscount
+    slug_url_kwarg = 'slug'
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> Callable:
+        instance = self.get_object()
+        form = AddCartDiscountForm(instance=instance)
+        form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
+        context = {'form': form}
+        return render(request, 'stores_app/product_discount_in_store.html', context=context)
+
+    def post(self, request: HttpRequest, slug: str, pk: int) -> Callable:
+        form = AddCartDiscountForm(request.POST)
+        if form.is_valid():
+            form.save(commit=False)
+            self.edit_store_cart_discount(data=form.cleaned_data, instance=self.get_object())
+            return redirect(reverse('stores-polls:sellers-room'))
+        return redirect(reverse('stores-polls:edit-store-cart-discount', kwargs={'slug': slug, 'pk': pk}))
+
+
+class ImportView(StoreAppMixin, View):
+    """ Представление страницы проведения импорта """
+
+    def get(self, request):
+        return render(request, 'stores_app/import.html', {})
+
+    def post(self, request):
+        form = ImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = ProductImportFile.objects.create(file=request.FILES['file'],
+                                                    user=request.user)
+            file.save()
+            call_command('products_import', request.FILES['file'], request.user.email, file.id)
+        return render(request, 'stores_app/import.html', {})

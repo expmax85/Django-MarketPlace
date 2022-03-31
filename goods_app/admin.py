@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from goods_app.models import ProductCategory, Product, ProductComment, Specifications, SpecificationsNames
 
 
+
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')

@@ -2,12 +2,13 @@ from typing import Any
 
 from django.contrib import admin
 from django.http import HttpRequest
+from django.utils.translation import gettext_lazy as _
 from dynamic_preferences.admin import GlobalPreferenceAdmin
 from dynamic_preferences.models import GlobalPreferenceModel
 
 
 admin.AdminSite.site_title = 'MEGANO'
-admin.AdminSite.index_title = 'Administration'
+admin.AdminSite.index_title = _('Administration')
 admin.site.unregister(GlobalPreferenceModel)
 
 

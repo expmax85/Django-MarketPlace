@@ -39,16 +39,6 @@
       </nav>
     </div>
   </div>
-  <!--+div.menuModal#navigate
-  //    +menu([
-  //        ['Главная','index.html'],
-  //        ['Портфолио','index.html'],
-  //        ['Мои проекты','index.html'],
-  //        ['Контакты','index.html']
-  //    ], page === 'article'? 'Портфолио': 'Главная')._main
-
-  block
-  -->
 </div>
 <div class="wrap">
   <div class="row Header-rowMain">
@@ -59,15 +49,17 @@
         <ul class="menu menu_main">
           <li class="menu-item"><a class="menu-link" href="/">{% trans 'Home' %}</a>
           </li>
-          <li class="menu-item"><span class="menu-label menu-label_danger">New</span><a class="menu-link" href="#">{% trans 'Shop' %}</a>
+          <li class="menu-item">
+<!--            <span class="menu-label menu-label_danger">New</span>-->
+            <a class="menu-link" href="{% url 'stores-polls:stores-list' %}">{% trans 'Shops' %}</a>
           </li>
-          <li class="menu-item"><a class="menu-link" href="#">{% trans 'Blog' %}</a>
+          <li class="menu-item"><a class="menu-link" href="{% url 'discounts-polls:discounts-list' %}">{% trans 'Promotions' %}</a>
           </li>
-          <li class="menu-item"><span class="menu-label menu-label_success">{% trans 'Hot' %}</span><a class="menu-link" href="#">{% trans 'Gallery' %}</a>
-          </li>
+<!--          <li class="menu-item"><span class="menu-label menu-label_success">{% trans 'Hot' %}</span><a class="menu-link" href="#">{% trans 'Gallery' %}</a>-->
+<!--          </li>-->
           <li class="menu-item"><a class="menu-link" href="#">{% trans 'Contacts' %}</a>
           </li>
-          <li class="menu-item"><a class="menu-link" href="">{% trans 'Purshase' %}</a>
+          <li class="menu-item"><a class="menu-link" href="">{% trans 'Purchase' %}</a>
           </li>
         </ul>
       </div>

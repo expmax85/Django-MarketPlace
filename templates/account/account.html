@@ -72,7 +72,7 @@
               <div class="Order Order_anons">
                 <div class="Order-personal">
                   <div class="row">
-                    <div class="row-block"><a class="Order-title" href="#">{% trans 'Order' %}&#32;<span class="Order-numberOrder">№{{number_order}}</span>&#32;{% trans 'from' %}&#32;<span class="Order-dateOrder">{{last_order.ordered|date:"d.m.o"}}</span></a>
+                    <div class="row-block"><a class="Order-title" href="{% url 'orders-polls:history-order-detail' last_order.id %}">{% trans 'Order' %}&#32;<span class="Order-numberOrder">№{{last_order.id}}</span>&#32;{% trans 'from' %}&#32;<span class="Order-dateOrder">{{last_order.ordered|date:"d.m.o"}}</span></a>
                       <div class="Account-editLink">
                           <a href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                       </div>
@@ -80,24 +80,38 @@
                     <div class="row-block">
                       <div class="Order-info Order-info_delivery">
                         <div class="Order-infoType">{% trans 'Type of delivery' %}:</div>
-                        <div class="Order-infoContent">{{last_order.delivery}}</div>
+                        <div class="Order-infoContent">
+                            {% if last_order.delivery == 'reg' %}
+                              {% trans 'Regular delivery' %}
+                            {% else %}
+                                {% trans 'Express delivery' %}
+                            {% endif %}
+                        </div>
                       </div>
                       <div class="Order-info Order-info_pay">
                         <div class="Order-infoType">{% trans 'Payment method' %}:</div>
-                        <div class="Order-infoContent">{{last_order.payment_method}}</div>
+                        <div class="Order-infoContent">
+                            {% if last_order.payment_method == 'card' %}
+                              {% trans 'Card' %}
+                            {% else %}
+                                {% trans 'Cash' %}
+                            {% endif %}
+                        </div>
                       </div>
-                      <div class="Order-info">
-                        <div class="Order-infoType">{% trans 'Full price' %}:</div>
-                        <div class="Order-infoContent">{{last_order.total_sum}}</div>
+                    <div class="Order-info">
+                      <div class="Order-infoType">{% trans 'Price' %}:
                       </div>
+                      <div class="Order-infoContent"><span class="Order-price">{{ last_order.total_discounted_sum }}$</span><span class="Order-price_old">{{ last_order.total_sum }}$</span>
+                      </div>
+                    </div>
                       <div class="Order-info Order-info_status">
                         <div class="Order-infoType">{% trans 'Order Status' %}: </div>
                         <div class="Order-infoContent">
-                          {% if last_order.in_order %}
-                            {{ last_order.in_order }}
-                          {% else %}
-                            {{ last_order.paid }}
-                          {% endif %}
+                        {% if last_order.paid %}
+                            {% trans 'Paid' %}
+                        {% else %}
+                            {% trans 'Not paid' %}
+                        {% endif %}
                         </div>
                       </div>
                     </div>
