@@ -1,5 +1,4 @@
 from decimal import Decimal
-from settings_app.config_project import OPTIONS
 from django.core.validators import RegexValidator
 from django.db import models
 from stores_app.models import SellerProduct

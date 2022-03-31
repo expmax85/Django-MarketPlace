@@ -1,20 +1,15 @@
-import os
-from decimal import Decimal
 from typing import Dict
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
-from django.dispatch import receiver
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_delete
 from django.core.cache import cache
 
-from config.settings import MEDIA_ROOT
-from discounts_app.models import Discount, ProductDiscount, GroupDiscount, CartDiscount
+from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
 from orders_app.models import Order, ViewedProduct
-from settings_app.config_project import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT, SUCCESS_DEL_PRODUCT_DISCOUNT, \
+from config.settings import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT, SUCCESS_DEL_PRODUCT_DISCOUNT, \
     SUCCESS_DEL_GROUP_DISCOUNT, SUCCESS_DEL_CART_DISCOUNT
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product
@@ -29,14 +24,13 @@ class StoreServiceMixin:
     All available methods:
     get_store(slug) - get Seller instance with slug=slug
     get_user_stores(user) - get all Seller models by owner=user
-    remove_store(request) - remove Seller instance with id=request.id=request
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
     get_products(query params) - get products
     get_seller_products(user) - get SellerProducts query by Sellers owner=user
     get_viewed_products(user) - get all viewed SellerProduct instances
     remove_seller_product(request) - Remove SellerProduct instance with id=request.id
-    remove_old_file(file) - Method for remove file on path=MEDIA_ROOT + file
+    remove_store(request) - remove Seller instance with id=request.id=request
     """
 
     @classmethod
@@ -48,6 +42,18 @@ class StoreServiceMixin:
         return Seller.objects.select_related('owner').get(slug=slug)
 
     @classmethod
+    def get_all_stores(cls):
+        """
+        Get all stores
+        """
+        stores_cache_key = 'stores:all'
+        stores = cache.get(stores_cache_key)
+        if not stores:
+            stores = Seller.objects.all()
+            cache.set(stores_cache_key, stores, 24 * 60 * 60)
+        return stores
+
+    @classmethod
     def get_user_stores(cls, user: User) -> QuerySet:
         """
         Get all stores by user
@@ -56,7 +62,7 @@ class StoreServiceMixin:
         stores = cache.get(stores_cache_key)
         if not stores:
             stores = Seller.objects.filter(owner=user)
-            cache.set(stores_cache_key, stores, 60 * 60)
+            cache.set(stores_cache_key, stores, 24 * 60 * 60)
         return stores
 
     @classmethod
@@ -64,7 +70,7 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        store = Seller.objects.get(id=request.GET.get('id'))
+        store = Seller.objects.get(slug=request.GET.get('id'))
         messages.add_message(request, SUCCESS_DEL_STORE,
                              _(f'The {store.name} was removed'))
         store.delete()
@@ -94,18 +100,6 @@ class StoreServiceMixin:
         instance.save()
 
     @classmethod
-    def get_price_with_discount(cls, price: Decimal, discount: Discount) -> Decimal:
-        """
-        Get the price with discount, if it had
-        """
-        if discount.percent:
-            return price * Decimal(1 - discount.percent / 100)
-        elif discount.amount:
-            return price - Decimal(discount.amount)
-        else:
-            return price
-
-    @classmethod
     def get_seller_products(cls, user: User) -> QuerySet:
         """
         Get all products, added by user
@@ -115,7 +109,7 @@ class StoreServiceMixin:
         if not products:
             products = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
                 .filter(seller__owner=user)
-            cache.set(owner_sp_ache_key, products, 60 * 60)
+            cache.set(owner_sp_ache_key, products, 24 * 60 * 60)
         return products
 
     @classmethod
@@ -149,8 +143,9 @@ class StoreServiceMixin:
         viewed = cache.get(viewed_cache_key)
         if not viewed:
             viewed = ViewedProduct.objects.select_related('product__product', 'product__product__category')\
-                                          .filter(user=user)
-            cache.set(viewed_cache_key, viewed, 60 * 60)
+                                          .filter(user=user)\
+                                          .order_by('-date')
+            cache.set(viewed_cache_key, viewed, 24 * 60 * 60)
         return viewed
 
     @classmethod
@@ -162,7 +157,7 @@ class StoreServiceMixin:
         order = cache.get(last_order_cache_key)
         if not order:
             order = cls.get_all_orders(user=user).last()
-            cache.set(last_order_cache_key, order, 60 * 60)
+            cache.set(last_order_cache_key, order, 24 * 60 * 60)
         return order
 
     @classmethod
@@ -174,17 +169,8 @@ class StoreServiceMixin:
         orders = cache.get(orders_cache_key)
         if not orders:
             orders = Order.objects.filter(customer=user)
-            cache.set(orders_cache_key, orders, 60 * 60)
+            cache.set(orders_cache_key, orders, 24 * 60 * 60)
         return orders
-
-    @classmethod
-    def remove_old_file(cls, file: str) -> None:
-        """
-        Method for remove old file, when update the store-logo for example
-        """
-        path = os.path.normpath(os.path.join(MEDIA_ROOT, str(file)))
-        if os.path.exists(path):
-            os.remove(path)
 
     @classmethod
     def request_add_new_product(cls, product: Product, user: User) -> None:
@@ -213,11 +199,11 @@ class StoreServiceMixin:
         """
         Get all product discounts, added by user
         """
-        # owner_sd_ache_key = 'owner_sd:{}'.format(user.id)
-        # product_discounts = cache.get(owner_sd_ache_key)
-        # if not product_discounts:
-        product_discounts = ProductDiscount.objects.filter(seller__owner=user)
-            # cache.set(owner_sd_ache_key, product_discounts, 30)
+        owner_sd_cache_key = 'owner_product_discounts:{}'.format(user.id)
+        product_discounts = cache.get(owner_sd_cache_key)
+        if not product_discounts:
+            product_discounts = ProductDiscount.objects.filter(seller__owner=user)
+            cache.set(owner_sd_cache_key, product_discounts, 24 * 60 * 60)
         return product_discounts
 
     @classmethod
@@ -255,11 +241,11 @@ class StoreServiceMixin:
         """
         Get all product discounts, added by user
         """
-        # owner_gd_ache_key = 'owner_sd:{}'.format(user.id)
-        # group_discounts = cache.get(owner_gd_ache_key)
-        # if not group_discounts:
-        group_discounts = GroupDiscount.objects.filter(seller__owner=user)
-            # cache.set(owner_gd_ache_key, group_discounts, 30)
+        owner_gd_cache_key = 'owner_group_discounts:{}'.format(user.id)
+        group_discounts = cache.get(owner_gd_cache_key)
+        if not group_discounts:
+            group_discounts = GroupDiscount.objects.filter(seller__owner=user)
+            cache.set(owner_gd_cache_key, group_discounts, 24 * 60 * 60)
         return group_discounts
 
     @classmethod
@@ -295,11 +281,11 @@ class StoreServiceMixin:
         """
         Get all product discounts, added by user
         """
-        # owner_cd_ache_key = 'owner_sd:{}'.format(user.id)
-        # cart_discounts = cache.get(owner_cd_ache_key)
-        # if not cart_discounts:
-        cart_discounts = CartDiscount.objects.filter(seller__owner=user)
-            # cache.set(owner_cd_ache_key, cart_discounts, 30)
+        owner_cd_ache_key = 'owner_card_discounts:{}'.format(user.id)
+        cart_discounts = cache.get(owner_cd_ache_key)
+        if not cart_discounts:
+            cart_discounts = CartDiscount.objects.filter(seller__owner=user)
+            cache.set(owner_cd_ache_key, cart_discounts, 60 * 60)
         return cart_discounts
 
     @classmethod
@@ -320,12 +306,3 @@ class StoreServiceMixin:
         messages.add_message(request, SUCCESS_DEL_CART_DISCOUNT,
                              _(f'Cart discount {item.name} from the store {item.seller.name} was removed'))
         item.delete()
-
-
-@receiver(post_delete, sender=Seller)
-def delete_IconFile(**kwargs) -> None:
-    """
-    The signal for removing icon Seller, when the store is deleting
-    """
-    file = kwargs.get('instance')
-    file.icon.delete(save=False)

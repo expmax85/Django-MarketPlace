@@ -277,9 +277,9 @@ def get_categories() -> QuerySet:
     """
     Get all categories
     """
-    categories_cache_key = 'categories:{}'.format('all')
+    categories_cache_key = 'categories:all'
     categories = cache.get(categories_cache_key)
     if not categories:
         categories = ProductCategory.objects.select_related('parent').all()
-        cache.set(categories_cache_key, categories, 60 * 60)
+        cache.set(categories_cache_key, categories, 24 * 60 * 60)
     return categories

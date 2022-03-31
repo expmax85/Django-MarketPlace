@@ -1,5 +1,4 @@
 from django import forms
-from stores_app.models import SellerProduct
 from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
 from django.contrib.admin import widgets
 

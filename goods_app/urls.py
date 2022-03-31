@@ -7,7 +7,6 @@ urlpatterns = [
     path('product-detail/<str:slug>/', ProductDetailView.as_view(), name='product-detail'),
     path('get_reviews/', get_reviews, name='get_reviews'),
     path('post_review/', post_review, name='post_review'),
-    path('limited_deal/', post_review, name='limited-deal'),
 
     path('catalogs/<slug>/',
          CatalogByCategory.as_view(),

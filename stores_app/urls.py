@@ -1,9 +1,9 @@
 from django.urls import path
-# from stores_app.views import AddNewStoreView, AddSellerProductView, SellersRoomView, remove_Store, \
-#     remove_SellerProduct, EditStoreView, StoreDetailView, EditSelleProductView, RequestNewProduct, CategoryFilter, \
-#     AddProductDiscountView, EditProductDiscountView, remove_ProductDiscount
 from stores_app.views import *
 
+from stores_app.views import AddNewStoreView, AddSellerProductView, SellersRoomView, remove_Store, \
+    remove_SellerProduct, EditStoreView, StoreDetailView, EditSelleProductView, RequestNewProduct, CategoryFilter,\
+    ImportView
 
 app_name = 'stores'
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path('delete-store/', remove_Store, name='delete-store'),
     path('delete-seller-product/', remove_SellerProduct, name='delete-seller-product'),
     path('edit-store/<str:slug>/', EditStoreView.as_view(), name='edit-store'),
+    path('stores-list/', StoresListView.as_view(), name='stores-list'),
     path('store-detail/<str:slug>/', StoreDetailView.as_view(), name='store-detail'),
     path('<str:slug>/<int:pk>/', EditSelleProductView.as_view(), name='edit-seller-product'),
     # discount endpoints
@@ -35,4 +36,5 @@ urlpatterns = [
     path('edit-store-cart-discount/<str:slug>/<int:pk>/',
          EditCartDiscountView.as_view(),
          name='edit-store-cart-discount'),
+    path('import/', ImportView.as_view(), name='import')
 ]

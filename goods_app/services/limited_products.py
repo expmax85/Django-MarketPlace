@@ -80,9 +80,7 @@ class RandomProduct:
         """
         if manual:
             self.__product = get_limited_deal(queryset)
-            return self.__product
-
-        if dt.datetime.now() >= self.__end_time or self.__product == 'initial':
+        elif dt.datetime.now() >= self.__end_time or self.__product == 'initial':
             self.__product = get_limited_deal(queryset)
             today = dt.date.today() + dt.timedelta(days=self.__days_duration)
             date = " ".join([str(today.strftime("%d.%m.%Y")), str(self.__time_update)[:-3]])
@@ -113,15 +111,15 @@ def get_limited_products(count: int) -> QuerySet:
     Function to get products for limited products block. Returns zip-iterator by count length with corteges
     (instance model, price with discount, type of discount)
     """
-    products_cache_key = 'limited:{}'.format('all')
+    products_cache_key = 'limited:all'
     queryset = cache.get(products_cache_key)
     if not queryset:
-        queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
+        queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
                                         .prefetch_related(Prefetch('product_discounts',
-                                            queryset=ProductDiscount.objects.filter(is_active=True,
-                                                                                    type_of_discount__in=('f', 'p'))))\
+                                                queryset=ProductDiscount.objects.prefetch_related('seller_products')
+                                                                                .all()))\
                                         .filter(product__limited=True)[:count]
-        cache.set(products_cache_key, queryset, 60 * 60)
+        cache.set(products_cache_key, queryset, 24 * 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
     return products
 
@@ -131,17 +129,16 @@ def get_hot_offers(count: int = 9) -> QuerySet:
     Function to get products for hot offers block. Returns zip-iterator by count length with corteges
     (instance model, price with discount, type of discount)
     """
-    products_cache_key = 'hot_offers:{}'.format('all')
+    products_cache_key = 'hot_offers:all'
     queryset = cache.get(products_cache_key)
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
                                         .prefetch_related(Prefetch('product_discounts',
-                                            queryset=ProductDiscount.objects.prefetch_related('seller_products')
-                                                                            .filter(is_active=True,
-                                                                                    type_of_discount__in=('f', 'p'))))\
+                                                queryset=ProductDiscount.objects.prefetch_related('seller_products')
+                                                                                .all()))\
                                         .annotate(count=Count('product_discounts'))\
                                         .filter(count__gt=0)
-        if len(list(queryset)) < count:
+        if len(list(queryset)) > count:
             queryset = random.choices(population=queryset, k=len(list(queryset)))
         else:
             queryset = random.choices(population=queryset, k=count)
@@ -169,13 +166,13 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
     Function to get all products. Returns zip-iterator by count length with corteges:
     (instance model, price with discount, type of discount) and with sort by order_by param
     """
-    products_cache_key = 'products:{}'.format('all_sp')
+    products_cache_key = 'products:all'
     queryset = cache.get(products_cache_key)
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
                                         .prefetch_related(Prefetch('product_discounts',
-                                                                   queryset=ProductDiscount.objects.filter(is_active=True,
-                                                                                                           type_of_discount__in=('f', 'p'))))\
+                                                queryset=ProductDiscount.objects.prefetch_related('seller_products')
+                                                                                .all()))\
                                         .all().order_by(order_by)[:count]
         cache.set(products_cache_key, queryset, 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
@@ -188,11 +185,15 @@ def get_random_categories() -> Union[List, bool]:
     minimal price from this category products. Returns QuerySet with 3 random elements or False if Queryset is empty
     """
     categories = get_categories()
-    random_categories = categories.annotate(count=Count('products__seller_products'),
-                                            from_price=Min('products__seller_products__price'))\
-                                  .exclude(count=0)
+    random_ctg_cache_key = 'random_categories:all'
+    queryset = cache.get(random_ctg_cache_key)
+    if not queryset:
+        queryset = categories.annotate(count=Count('products__seller_products'),
+                                       from_price=Min('products__seller_products__price'))\
+                              .exclude(count=0)
+        cache.set(random_ctg_cache_key, queryset, 60 * 60)
     try:
-        random_categories = random.choices(population=list(random_categories), k=3)
+        random_categories = random.choices(population=list(queryset), k=3)
     except IndexError:
         return False
     return random_categories

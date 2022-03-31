@@ -20,7 +20,7 @@ from stores_app.services import StoreServiceMixin
 
 class UserLogin(LoginView):
     """
-    Login user
+    Аутентификация пользователей
     """
     template_name = 'account/login.html'
     success_url = '/'
@@ -45,7 +45,7 @@ class UserLogin(LoginView):
 
 class UserLogout(LogoutView):
     """
-    Logout user
+    Выход с сайта
     """
     template_name = 'account/logout.html'
     next_page = '/users/login'
@@ -53,7 +53,7 @@ class UserLogout(LogoutView):
 
 class RegisterView(View):
     """
-    Registration new user view
+    Регистрация нового пользователя
     """
     def get(self, request: HttpRequest) -> Callable:
         form = RegisterForm()
@@ -78,7 +78,7 @@ class RegisterView(View):
 
 class RestorePasswordView(View):
     """
-    Restore password view
+    Представление восстановления пароля
     """
     def get(self, request: HttpRequest) -> Callable:
         form = RestorePasswordForm()
@@ -102,14 +102,13 @@ class RestorePasswordView(View):
 
 class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
     """
-    Account info view
+    Страница информации об аккаунте
     """
     template_name = 'account/account.html'
 
     def get(self, request: HttpRequest) -> Callable:
         context = {
             'last_order': self.get_last_order(user=request.user),
-            'number_order': self.get_all_orders(user=request.user).count(),
             'viewed_products': list(self.get_viewed_products(user=request.user))[-3:]
         }
         return render(request, 'account/account.html', context=context)
@@ -117,7 +116,7 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
 
 class AccountEditView(LoginRequiredMixin, View):
     """
-    Edit account info view
+    Страница редактирования информации об аккаунте
     """
     def get(self, request: HttpRequest) -> Callable:
         form = AccountEditForm()

@@ -1,18 +1,18 @@
 from typing import Dict, Callable, Union, Iterable
+
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
+from django.http import JsonResponse, HttpRequest
+from django.shortcuts import render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.http import JsonResponse, HttpRequest
-from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
-# from settings_app.config_project import OPTIONS
+from goods_app.services.catalog import CatalogByCategoriesMixin
 from settings_app.dynamic_preferences_registry import global_preferences_registry
 from banners_app.services import banner
 from goods_app.services.limited_products import random_product, \
     get_all_products, get_limited_products, get_random_categories, get_hot_offers
-from goods_app.services.catalog import CatalogByCategoriesMixin
 from goods_app.services.product_detail import CurrentProduct, context_pagination
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
@@ -21,30 +21,29 @@ from stores_app.models import SellerProduct
 
 class IndexView(ListView):
     """
-    Main page view
+    Главная страница
     """
     model = SellerProduct
-    template_name = 'index.html'
+    template_name = 'goods_app/index.html'
     context_object_name = 'products'
-    OPTIONS = global_preferences_registry.manager()
 
     def get_queryset(self) -> Iterable:
-        products = get_all_products(order_by=self.OPTIONS['general__sort_index'],
-                                    count=self.OPTIONS['general__count_popular_products'])
-
+        OPTIONS = global_preferences_registry.manager().by_name()
+        products = get_all_products(order_by=OPTIONS['sort_index'],
+                                    count=OPTIONS['count_popular_products'])
         return products
 
     def get_context_data(self, **kwargs) -> Dict:
-        limited_products = get_limited_products(count=self.OPTIONS['general__count_limited_products'])
-        random_product.days_duration = self.OPTIONS['general__days_duration']
-        random_product.time_update = self.OPTIONS['general__time_update']
-
+        OPTIONS = global_preferences_registry.manager().by_name()
+        limited_products = get_limited_products(count=OPTIONS['count_limited_products'])
+        random_product.days_duration = OPTIONS['days_duration']
+        random_product.time_update = OPTIONS['time_update']
         random_product.update_product(queryset=limited_products)
 
         context = {
             'banners': banner(),
             'limited_products': limited_products,
-            'hot_offers': get_hot_offers(),
+            'hot_offers': get_hot_offers(count=OPTIONS['count_hot_offers']),
             'random_categories': get_random_categories(),
             **random_product.get_context_data(),
             **super().get_context_data(**kwargs)
@@ -54,26 +53,29 @@ class IndexView(ListView):
 
 class ProductDetailView(DetailView):
     """
-    Product detail view
+    Детальная страница продукта
     """
     model = Product
     context_object_name = 'product'
     template_name = 'goods_app/product_detail.html'
     slug_url_kwarg = 'slug'
-    global_preferences = global_preferences_registry.manager()
 
     def get_context_data(self, **kwargs) -> Dict:
+        OPTIONS = global_preferences_registry.manager().by_name()
         context = super().get_context_data(**kwargs)
         product = CurrentProduct(instance=context['product'])
         reviews = product.get_reviews
+
         context = {
             'reviews_count': reviews.count(),
             'comments': context_pagination(self.request, reviews,
-                                           # size_page=OPTIONS['general__review_size_page']
-                                           size_page=self.global_preferences['general__review_size_page']
-                                           ),
+                                           size_page=OPTIONS['review_size_page']),
+
             'form': ReviewForm(),
-            **product.get_context_data('specifications', 'sellers', 'best_offer', 'tags'),
+            'specifications': product.get_specifications,
+            'sellers': product.get_sellers,
+            'tags': product.get_tags,
+            **product.get_calculate_prices(),
             **context
         }
         return context
@@ -81,7 +83,7 @@ class ProductDetailView(DetailView):
 
 def get_reviews(request: HttpRequest) -> JsonResponse:
     """
-    View for getting reviews
+    Представление для получения всех отзывов о товаре
     """
     slug = request.GET.get('slug')
     page = request.GET.get('page')
@@ -93,20 +95,18 @@ def get_reviews(request: HttpRequest) -> JsonResponse:
 
 def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     """
-    View for adding review
+    Представление для добавления отзыва о товаре
     """
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)
-    OPTIONS = global_preferences_registry.manager()
 
     if form.is_valid():
         form.save()
         product.calculate_product_rating()
         reviews = product.get_reviews
-        paginator = Paginator(reviews,
-                              per_page=OPTIONS['general__review_size_page']
-                              )
+        OPTIONS = global_preferences_registry.manager().by_name()
+        paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])
         return JsonResponse({'num_pages': paginator.num_pages,
                              'slug': slug}, safe=False)
     elif form.errors.get('rating'):
@@ -118,7 +118,7 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
 
 class CatalogByCategory(CatalogByCategoriesMixin, View):
     """
-    класс-контроллер для отображения каталога-списка всех товаров в магазинах по определенной категории
+    Класс-контроллер для отображения каталога-списка всех товаров в магазинах по определенной категории
     """
 
     def get(self, request, slug, page=1, sort_type='price_inc'):
@@ -170,8 +170,7 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
 
 class CardForAjax(CatalogByCategoriesMixin, View):
     """
-    класс-контроллер для отображения набора товаров в каталоге с учетом необходимых фильтров, сортировки и пагинации
-    без обновления изначальной страницы каталога
+    Класс-контроллер для отображения набора товаров в каталоге с учетом необходимых фильтров, сортировки и пагинации
     """
 
     def get(self, request, slug, sort_type, page):

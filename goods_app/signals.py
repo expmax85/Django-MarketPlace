@@ -1,0 +1,89 @@
+from django.core.cache import cache
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from taggit.models import Tag
+
+from goods_app.models import ProductComment, ProductCategory, Product, Specifications
+
+
+@receiver(post_save, sender=ProductComment)
+def comment_post_reset_cache_save_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    if kwargs['created']:
+        product_id = kwargs['instance'].product_id
+        cache.delete('reviews:{}'.format(product_id))
+
+
+@receiver(post_delete, sender=ProductComment)
+def comment_post_reset_cache_del_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    product_id = kwargs['instance'].product_id
+    cache.delete('reviews:{}'.format(product_id))
+
+
+@receiver(post_save, sender=ProductCategory)
+def category_reset_cache_save_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete('categories:all')
+
+
+@receiver(post_delete, sender=ProductCategory)
+def category_cache_del_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete('categories:all')
+
+
+@receiver(post_save, sender=Product)
+def product_reset_cache_save_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete_many('tags:all', 'specifications:all')
+
+
+@receiver(post_delete, sender=Product)
+def product_reset_cache_del_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete_many('tags:all', 'specifications:all')
+
+
+@receiver(post_save, sender=Tag)
+def tags_reset_cache_save_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete('tags:all')
+
+
+@receiver(post_delete, sender=Tag)
+def tags_reset_cache_del_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete('tags:all')
+
+
+@receiver(post_save, sender=Specifications)
+def specifications_cache_save_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete('specifications:all')
+
+
+@receiver(post_delete, sender=Specifications)
+def specifications_cache_del_handler(sender, **kwargs) -> None:
+    """
+    Signal for clearing cache
+    """
+    cache.delete('specifications:all')

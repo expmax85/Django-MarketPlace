@@ -36,14 +36,7 @@ class CustomMenu(Menu):
                         'profiles_app.*',
                         'taggit.*',),
             ),
-            items.AppList(
-                _('Settings'),
-                models=('dynamic_preferences.*', ),
-                children=[
-                    items.MenuItem(_('Settings'),
-                                   url=reverse('admin-setup')),
-                ]
-            ),
+            items.MenuItem(_('Settings'), reverse('admin-setup')),
         ]
 
     def init_with_context(self, context: Any) -> None:
