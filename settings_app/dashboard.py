@@ -51,10 +51,6 @@ class CustomIndexDashboard(Dashboard):
                              'profiles_app.*',
                              'taggit.*',),
                 ),
-                modules.AppList(
-                    title=_('Settings'),
-                    models=('dynamic_preferences.*',),
-                    children=[CustomPagesModule()]),
             ]
         ))
         self.children.append(modules.RecentActions(_('Recent Actions'), 5))
@@ -68,7 +64,6 @@ class CustomAppIndexDashboard(AppIndexDashboard):
 
     def __init__(self, *args, **kwargs) -> None:
         AppIndexDashboard.__init__(self, *args, **kwargs)
-
         # append a model list module and a recent actions module
         self.children += [
             modules.ModelList(self.app_title, self.models),
@@ -77,7 +72,6 @@ class CustomAppIndexDashboard(AppIndexDashboard):
                 include_list=self.get_app_content_types(),
                 limit=5
             ),
-
         ]
 
     def init_with_context(self, context: Any) -> None:

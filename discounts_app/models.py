@@ -107,10 +107,6 @@ class GroupDiscount(Discount):
         verbose_name_plural = _('group discounts')
         db_table = 'group_discounts'
 
-    # def get_absolute_url(self) -> Callable:
-    #     return reverse('discounts-polls:discount-detail', kwargs={'slug': self.slug,
-    #                                                               'pk': self.id})
-
 
 class CartDiscount(Discount):
     """
@@ -131,7 +127,3 @@ class CartDiscount(Discount):
         verbose_name = _('cart discount')
         verbose_name_plural = _('cart discounts')
         db_table = 'cart_discounts'
-
-    # def get_absolute_url(self) -> Callable:
-    #     return reverse('discounts-polls:discount-detail', kwargs={'slug': self.slug,
-    #                                                               'pk': self.id})

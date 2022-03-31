@@ -14,21 +14,24 @@ from pathlib import Path
 
 import django.middleware.locale
 from braintree import Configuration, Environment
+import environ
 
+
+env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rg--cl9rf%6*2995ba5itf&w-e*3hnh*k7z@jslej@+@+mzul)'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS',default=[])
 
 
 # Application definition
@@ -57,7 +60,6 @@ INSTALLED_APPS = [
     'settings_app',
     'taggit',
     'dynamic_preferences',
-    'django_extensions',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -65,7 +67,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.vk',
 
     'mptt',
-]
+ ] + env.list('INSTALLED_APPS', default=[])
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,8 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
+] + env.list('MIDDLEWARE', default=[])
 
 ROOT_URLCONF = 'config.urls'
 
@@ -95,7 +96,8 @@ TEMPLATES = [
                 'dynamic_preferences.processors.global_preferences',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'orders_app.context_processors.orders_context',
+                'settings_app.context_processor.custom_context',
+                'settings_app.context_processor.stores_context',
             ],
             'loaders': [
                 'admin_tools.template_loaders.Loader',
@@ -114,8 +116,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
+        'ENGINE': env.str('DB_ENGINE'),
+        'NAME': os.path.join(str(BASE_DIR), env.str('DB_NAME')),
+        'USER': env.str('DB_USER'),
+        'PASSWORD': env.str('DB_PASSWORD'),
+        'HOST': env.str('DB_HOST'),
+        'PORT': env.str('DB_PORT'),
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': env.str('CACHE_BACKEND', default='django.core.cache.backends.locmem.LocMemCache'),
+        'LOCATION': env.str('CACHE_LOCATION', default=''),
     }
 }
 
@@ -150,7 +163,7 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = env.str('ACCOUNT_EMAIL_VERIFICATION', default='none')
 
 ADMIN_TOOLS_MENU = 'settings_app.menu.CustomMenu'
 ADMIN_TOOLS_INDEX_DASHBOARD = 'settings_app.dashboard.CustomIndexDashboard'
@@ -201,9 +214,9 @@ CART_SESSION_ID = 'cart'
 
 SESSION_ENGINE = 'config.session_backend'
 
-BRAINTREE_MERCHANT_ID = 'm3wfb5j4gbvcrh3b'  # ID продавца.
-BRAINTREE_PUBLIC_KEY = '93btdgpyybsjkvpf'  # Публичный ключ.
-BRAINTREE_PRIVATE_KEY = 'a9813a01dfac799dec1be1f6b2663878'  # Секретный ключ.
+BRAINTREE_MERCHANT_ID = env.str('BRAINTREE_MERCHANT_ID')  # ID продавца.
+BRAINTREE_PUBLIC_KEY = env.str('BRAINTREE_PUBLIC_KEY')   # Публичный ключ.
+BRAINTREE_PRIVATE_KEY = env.str('BRAINTREE_PRIVATE_KEY')   # Секретный ключ.
 
 Configuration.configure(
     Environment.Sandbox,
@@ -211,3 +224,13 @@ Configuration.configure(
     BRAINTREE_PUBLIC_KEY,
     BRAINTREE_PRIVATE_KEY
 )
+
+# Custom messages codes
+SUCCESS_OPTIONS_ACTIVATE = 200
+SEND_PRODUCT_REQUEST = 160
+CREATE_PRODUCT_ERROR = 150
+SUCCESS_DEL_CART_DISCOUNT = 117
+SUCCESS_DEL_GROUP_DISCOUNT = 116
+SUCCESS_DEL_PRODUCT_DISCOUNT = 115
+SUCCESS_DEL_STORE = 110
+SUCCESS_DEL_PRODUCT = 100

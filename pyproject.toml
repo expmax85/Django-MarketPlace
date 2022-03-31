@@ -1,0 +1,10 @@
+[tool.black]
+line_length = 119
+
+[tool.isort]
+profile = "black"
+line_length = 119
+# Put imports of Django and Django Rest Framework in own sections.
+sections = ["FUTURE","STDLIB","THIRDPARTY","DRF","DJANGO","FIRSTPARTY","LOCALFOLDER"]
+known_drf = "rest_framework"
+known_django = "django"

@@ -1,0 +1,35 @@
+stages:
+  - linting
+
+commit-name-test:
+  stage: linting
+  except:
+    - main
+    - master
+    - merge_requests
+  script:
+    - >
+      if [[ "$CI_COMMIT_MESSAGE" =~ ^#[0-9]{5,6}[[:space:]].{5,100}$ ]]; then
+        echo commit message is valid;
+      else
+        echo "$CI_COMMIT_MESSAGE" is not valid commit message && exit 137
+      fi
+
+branch-name-test:
+  stage: linting
+  except:
+    - main
+    - master
+    - merge_requests
+  script:
+    - if [[ "$CI_COMMIT_BRANCH" =~ ^#[0-9]{5,6}$ ]]; then
+        echo branch name is valid;
+      else
+        echo "$CI_COMMIT_BRANCH" is not valid branch name && exit 1;
+      fi
+
+flake8:
+  stage: linting
+  image: registry.gitlab.com/pipeline-components/flake8:latest
+  script:
+    - flake8 --verbose .

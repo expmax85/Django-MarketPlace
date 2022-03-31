@@ -21,8 +21,6 @@ from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeF
 from orders_app.utils import DecimalEncoder
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
-from django.utils.translation import gettext_lazy as _
-# from settings_app.config_project import OPTIONS
 from settings_app.dynamic_preferences_registry import global_preferences_registry
 from payments_app.services import process_payment
 
@@ -30,7 +28,9 @@ User = get_user_model()
 
 
 def add_viewed(request):
-    """ Добавление в список просмотренных товаров """
+    """
+    Добавление в список просмотренных товаров
+    """
 
     seller_product = SellerProduct.objects.get(id=request.GET.get('seller_product_id'))
     if request.user.is_anonymous:
@@ -43,18 +43,21 @@ def add_viewed(request):
 
 
 def cart_clear(request):
-    """Очистка корзины"""
+    """
+    Очистка корзины
+    """
     cart = CartService(request)
     cart.clear()
     return redirect('orders:cart_detail')
 
 
 class CartView(View):
-    """Представление корзины"""
+    """
+    Представление корзины
+    """
 
     @staticmethod
     def get(request: HttpRequest):
-        """ Данный метод пока только рендерит страницу корзины """
         cart = CartService(request)
         discount_service = DiscountsService(cart)
 
@@ -89,7 +92,6 @@ class CartView(View):
         return render(request, 'orders_app/cart.html', context=context)
 
     def post(self, request: HttpRequest, product_id):
-        """ Здесь будет происходить добавление/обновление/удаление товаров """
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(request.POST['option']))
         quantity = int(request.POST['amount'])
@@ -105,7 +107,9 @@ class CartView(View):
 
 
 class CartAdd(View):
-    """Добавление позиций в корзине"""
+    """
+    Добавление позиций в корзине
+    """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
@@ -114,7 +118,9 @@ class CartAdd(View):
 
 
 class CartRemove(View):
-    """Удаделение позиции из корзины"""
+    """
+    Удаление позиции из корзины
+    """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
         cart.remove_from_cart(product_id)
@@ -122,7 +128,9 @@ class CartRemove(View):
 
 
 class OrderStepOne(View):
-    """Представление первого шага оформления заказа"""
+    """
+    Представление первого шага оформления заказа
+    """
     form_class = OrderStepOneForm
     template_name = 'orders_app/order_step_one.html'
 
@@ -163,7 +171,9 @@ class OrderStepOne(View):
 
 
 class OrderStepTwo(View):
-    """Представление второго шага оформления заказа"""
+    """
+    Представление второго шага оформления заказа
+    """
     form_class = OrderStepTwoForm
     template_name = 'orders_app/order_step_two.html'
 
@@ -209,7 +219,9 @@ class OrderStepTwo(View):
 
 
 class OrderStepThree(View):
-    """Представление третьего шага оформления заказа"""
+    """
+    Представление третьего шага оформления заказа
+    """
     form_class = OrderStepThreeForm
     template_name = 'orders_app/order_step_three.html'
 
@@ -232,7 +244,9 @@ class OrderStepThree(View):
 
 
 class OrderStepFour(View):
-    """Представление четвертого шага оформления заказа"""
+    """
+    Представление четвертого шага оформления заказа
+    """
     template_name = 'orders_app/order_step_four.html'
 
     def get(self, request: HttpRequest):
@@ -242,9 +256,7 @@ class OrderStepFour(View):
 
 class PaymentView(View):
     """
-    Оплата заказа. Логика направлеемя в зависимости от способа оплаты.
-    Пока реализована оплата картой.
-    Оплата рандомным счетом в разработке
+    Оплата заказа. Логика направляется в зависимости от способа оплаты.
     """
     def get(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
@@ -309,17 +321,23 @@ class PaymentWithAccountView(View):
 
 
 def payment_done(request):
-    """Представление удачной оплаты"""
+    """
+    Представление удачной оплаты
+    """
     return render(request, 'orders_app/payment_successful.html')
 
 
 def payment_canceled(request):
-    """Представление неудачной оплаты"""
+    """
+    Представление неудачной оплаты
+    """
     return render(request, 'orders_app/payment_unsuccessful.html')
 
 
-class ViewedGoodsView(ListView):
-    """ Представление просмотренных товаров """
+class ViewedGoodsView(StoreServiceMixin, ListView):
+    """
+    Представление просмотренных товаров
+    """
 
     model = User
     context_object_name = 'goods'
@@ -333,13 +351,15 @@ class ViewedGoodsView(ListView):
             for obj in products_in_session:
                 ViewedProduct.objects.get_or_create(user=self.request.user,
                                                     product=obj.product)
-        queryset = ViewedProduct.objects.filter(user=self.request.user).order_by('-date')[:20]
+        queryset = self.get_viewed_products(user=self.request.user)[:20]
 
         return queryset
 
 
 class CompareView(View):
-    """ Представление страницы товаров для сравнения """
+    """
+    Представление страницы товаров для сравнения
+    """
 
     def get(self, request: HttpRequest):
         """ Данный метод рендерит страницу товаров для сравнения """
@@ -377,7 +397,9 @@ class CompareView(View):
 
 
 class AddToCompare(View):
-    """ Представление добавления товара в список для сравнения """
+    """
+    Представление добавления товара в список для сравнения
+    """
 
     def get(self, request: HttpRequest, product_id: int):
         """ Вызывает метод добавления товара для сравнения и возвращает на исходный url """
@@ -414,7 +436,9 @@ class AddToCompare(View):
 
 
 class RemoveFromCompare(View):
-    """ Представление удаления товара из списка товаров для сравнения """
+    """
+    Представление удаления товара из списка товаров для сравнения
+    """
 
     def get(self, request: HttpRequest, product_name: str):
         """ Удаляет товар из сравниваемых товаров по ключу и возвращает на исходный url"""
@@ -425,8 +449,10 @@ class RemoveFromCompare(View):
         return redirect(request.META.get('HTTP_REFERER'))
 
 
-class HistoryOrderView(ListView):
-    """ Представление истории заказов """
+class HistoryOrderView(StoreServiceMixin, ListView):
+    """
+    Представление истории заказов
+    """
 
     model = Order
     context_object_name = 'orders'
@@ -435,12 +461,14 @@ class HistoryOrderView(ListView):
     def get_queryset(self):
         """ Получить заказы """
 
-        queryset = Order.objects.filter(customer=self.request.user)
+        queryset = self.get_all_orders(user=self.request.user)
         return queryset
 
 
 class HistoryOrderDetail(DetailView):
-    """ Детальное представление заказа"""
+    """
+    Детальное представление заказа
+    """
 
     model = Order
 
