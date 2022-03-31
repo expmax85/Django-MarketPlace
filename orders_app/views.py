@@ -23,6 +23,7 @@ from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
 from settings_app.dynamic_preferences_registry import global_preferences_registry
 from payments_app.services import process_payment
+from stores_app.services import StoreServiceMixin
 
 User = get_user_model()
 

@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'rest_framework',
     'goods_app',
     'banners_app',
