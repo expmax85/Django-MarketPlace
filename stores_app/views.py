@@ -14,7 +14,6 @@ from django.core.management import call_command
 
 from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
 from discounts_app.models import ProductDiscount, GroupDiscount
-from stores_app.models import Seller, SellerProduct
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format

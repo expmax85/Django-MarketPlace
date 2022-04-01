@@ -26,7 +26,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
@@ -213,9 +213,9 @@ CART_SESSION_ID = 'cart'
 
 SESSION_ENGINE = 'config.session_backend'
 
-BRAINTREE_MERCHANT_ID = env.str('BRAINTREE_MERCHANT_ID')  # ID продавца.
-BRAINTREE_PUBLIC_KEY = env.str('BRAINTREE_PUBLIC_KEY')   # Публичный ключ.
-BRAINTREE_PRIVATE_KEY = env.str('BRAINTREE_PRIVATE_KEY')   # Секретный ключ.
+BRAINTREE_MERCHANT_ID = env('BRAINTREE_MERCHANT_ID')  # ID продавца.
+BRAINTREE_PUBLIC_KEY = env('BRAINTREE_PUBLIC_KEY')   # Публичный ключ.
+BRAINTREE_PRIVATE_KEY = env('BRAINTREE_PRIVATE_KEY')   # Секретный ключ.
 
 Configuration.configure(
     Environment.Sandbox,
