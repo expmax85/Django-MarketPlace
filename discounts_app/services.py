@@ -229,11 +229,14 @@ def get_discounted_prices_for_seller_products(products, default_discount=None):
     for product in products:
         price = product.price
         if default_discount is None:
-            discount = product.product_discounts.filter(
-                is_active=True,
-                type_of_discount__in=('f', 'p'),
-                set_discount=False
-            ).order_by('-priority').first()
+            try:
+                discount = product.product_discounts.filter(
+                    is_active=True,
+                    type_of_discount__in=('f', 'p'),
+                    set_discount=False
+                ).order_by('-priority')[0]
+            except IndexError:
+                discount = False
             # discount = list(product.get_discount)
         else:
             discount = default_discount
