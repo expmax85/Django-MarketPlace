@@ -4,6 +4,7 @@ import braintree
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -94,8 +95,9 @@ class CartView(View):
 
     def post(self, request: HttpRequest, product_id):
         cart = CartService(request)
-        product = get_object_or_404(SellerProduct, id=str(request.POST['option']))
-        quantity = int(request.POST['amount'])
+
+        product = get_object_or_404(SellerProduct, id=str(request.POST.get('option')))
+        quantity = int(request.POST.get('amount'))
 
         if quantity < 1:
             quantity = 1
@@ -115,7 +117,7 @@ class CartAdd(View):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
         cart.add_to_cart(product, quantity=1, update_quantity=False)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class CartRemove(View):

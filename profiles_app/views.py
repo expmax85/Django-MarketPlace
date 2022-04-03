@@ -33,7 +33,7 @@ class UserLogin(LoginView):
     def form_valid(self, form: AuthenticationForm) -> HttpResponseRedirect:
         """
         Security check complete. Log the user in.
-        Метод переопределен для слияние анонимной корзины
+        Метод переопределен для слияния анонимной корзины
         с корзиной аутентифицированного пользователя
         """
         old_cart = CartService(self.request)
