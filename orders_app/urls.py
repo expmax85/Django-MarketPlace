@@ -1,7 +1,5 @@
 from django.urls import path
-from orders_app.views import CartView, CartAdd, CartRemove, cart_clear, OrderStepOne, OrderStepTwo, OrderStepThree, \
-    OrderStepFour, PaymentView, PaymentWithCardView, PaymentWithAccountView, payment_done, payment_canceled, \
-    CompareView, AddToCompare, RemoveFromCompare, HistoryOrderView, HistoryOrderDetail, ViewedGoodsView, add_viewed
+from orders_app.views import *
 
 app_name = 'orders'
 urlpatterns = [
@@ -15,6 +13,7 @@ urlpatterns = [
     path('clear/', cart_clear, name='cart_clear'),
     # эндпоинты оформления заказа
     path('step1/', OrderStepOne.as_view(), name='order_step_one'),
+    path('step11/', OrderStepOneAnonym.as_view(), name='order_step_one_anonymous'),
     path('step2/', OrderStepTwo.as_view(), name='order_step_two'),
     path('step3/', OrderStepThree.as_view(), name='order_step_three'),
     path('step4/', OrderStepFour.as_view(), name='order_step_four'),

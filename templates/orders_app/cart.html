@@ -100,8 +100,13 @@
               <strong class="Cart-title">{% trans 'Total:' %}
               </strong><span class="Cart-price">{{ total_discounted_price }}$</span><span class="Cart-price_old">{{ total_price }}$</span>
             </div>
-            <div class="Cart-block"><a class="btn btn_success btn_lg" href="{% url 'orders:order_step_one' %}">{% trans 'Check out' %}</a>
-            </div>
+            {% if request.is_authenticated %}
+                <div class="Cart-block"><a class="btn btn_success btn_lg" href="{% url 'orders:order_step_one' %}">{% trans 'Check out' %}</a>
+                </div>
+            {% else %}
+                <div class="Cart-block"><a class="btn btn_success btn_lg" href="{% url 'orders:order_step_one_anonymous' %}">{% trans 'Check out' %}</a>
+                </div>
+            {% endif %}
           </div>
 
 {#        </form>#}
