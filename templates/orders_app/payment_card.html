@@ -117,9 +117,17 @@
                     }, false);
                 });});
             </script>
-          {% else %}
-            <p class="form-label">{% trans 'This order has been already paid' %}</p>
-          {% endif %}
+        {% else %}
+            <div class="ProgressPayment">
+              <div class="ProgressPayment-title">{% trans 'This order has been already paid' %}
+              </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        {% endif %}
       </div>
     </div>
 

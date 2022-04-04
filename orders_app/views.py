@@ -60,8 +60,8 @@ class CartView(View):
     Представление корзины
     """
 
-    @staticmethod
-    def get(request: HttpRequest):
+    @classmethod
+    def get(cls, request: HttpRequest):
         cart = CartService(request)
         discount_service = DiscountsService(cart)
 
@@ -95,7 +95,8 @@ class CartView(View):
 
         return render(request, 'orders_app/cart.html', context=context)
 
-    def post(self, request: HttpRequest, product_id):
+    @classmethod
+    def post(cls, request: HttpRequest, product_id):
         cart = CartService(request)
 
         product = get_object_or_404(SellerProduct, id=str(request.POST.get('option')))
@@ -349,9 +350,8 @@ class PaymentWithCardView(View):
             # Сохранение ID транзакции в заказе.
             order.braintree_id = result.transaction.id
             order.save()
-            return redirect('orders:payment_done')
-        else:
-            return redirect('orders:payment_canceled')
+            return render(request, 'orders_app/payment_process.html', {'result': True})
+        return render(request, 'orders_app/payment_process.html', {'result': False})
 
 
 class PaymentWithAccountView(View):
@@ -368,10 +368,7 @@ class PaymentWithAccountView(View):
     def post(self, request: HttpRequest, order_id: int):
         account = ''.join(request.POST.get('numero1').split(' '))
         result = process_payment(order_id, account)
-        if result:
-            return redirect('orders:payment_done')
-        else:
-            return redirect('orders:payment_canceled')
+        return render(request, 'orders_app/payment_process.html', {'result': result})
 
 
 def payment_done(request):
