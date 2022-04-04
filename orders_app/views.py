@@ -1,9 +1,10 @@
 import json
-from typing import Dict
+from typing import Dict, Callable
 import braintree
 import datetime
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -19,6 +20,8 @@ from orders_app.models import (
 from orders_app.services import CartService
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
+from profiles_app.forms import RegisterForm
+from profiles_app.services import reset_phone_format, get_auth_user
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
 from settings_app.dynamic_preferences_registry import global_preferences_registry
@@ -57,8 +60,8 @@ class CartView(View):
     Представление корзины
     """
 
-    @staticmethod
-    def get(request: HttpRequest):
+    @classmethod
+    def get(cls, request: HttpRequest):
         cart = CartService(request)
         discount_service = DiscountsService(cart)
 
@@ -92,10 +95,12 @@ class CartView(View):
 
         return render(request, 'orders_app/cart.html', context=context)
 
-    def post(self, request: HttpRequest, product_id):
+    @classmethod
+    def post(cls, request: HttpRequest, product_id):
         cart = CartService(request)
-        product = get_object_or_404(SellerProduct, id=str(request.POST['option']))
-        quantity = int(request.POST['amount'])
+
+        product = get_object_or_404(SellerProduct, id=str(request.POST.get('option')))
+        quantity = int(request.POST.get('amount'))
 
         if quantity < 1:
             quantity = 1
@@ -115,7 +120,7 @@ class CartAdd(View):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
         cart.add_to_cart(product, quantity=1, update_quantity=False)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class CartRemove(View):
@@ -146,6 +151,7 @@ class OrderStepOne(View):
         else:
             initial = {'delivery': 'exp',
                        'payment': 'cash'}
+
         form = self.form_class(initial=initial)
 
         return render(request, self.template_name, {'form': form})
@@ -164,11 +170,61 @@ class OrderStepOne(View):
                 order.email = email
                 order.phone = phone
                 order.save()
+
                 return redirect('orders:order_step_two')
             else:
                 return redirect('profiles:login')
 
         return render(request, self.template_name, {'form': form})
+
+
+class OrderStepOneAnonym(View):
+    """
+    Представление первого шага оформления заказа для анонимного пользователя
+    """
+    def get(self, request: HttpRequest) -> Callable:
+        if request.user.is_authenticated:
+            return redirect('orders-polls:order_step_one')
+
+        form = RegisterForm()
+
+        context = {'form': form}
+        return render(request, 'orders_app/order_step_one_anonimous.html', context=context)
+
+    def post(self, request: HttpRequest) -> Callable:
+        """
+        Метод переопределен для слияние анонимной корзины
+        с корзиной аутентифицированного пользователя
+        """
+        form = RegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            old_cart = CartService(self.request)
+            user = form.save()
+            reset_phone_format(instance=user)
+            login(request, get_auth_user(data=form.cleaned_data))
+            new_cart = CartService(self.request)
+            new_cart.merge_carts(old_cart)
+
+            discount_service = DiscountsService(new_cart)
+            items = new_cart.get_goods()
+            for item in items:
+                discounted_price = discount_service.get_discounted_price(item)
+                item.final_price = discounted_price
+                item.save()
+
+            order = Order.objects.get(customer=request.user, in_order=False)
+            fio = request.POST.get('name')
+            email = form.cleaned_data['email']
+            phone = form.cleaned_data['phone']
+
+            if fio:
+                order.fio = fio
+            order.email = email
+            order.phone = phone
+            order.save()
+            return redirect('orders:order_step_two')
+
+        return render(request, 'orders_app/order_step_one_anonimous.html', {'form' : form})
 
 
 class OrderStepTwo(View):
@@ -208,10 +264,8 @@ class OrderStepTwo(View):
                     same_store_products = order.order_products.filter(seller_product__seller=first_product_seller).count()
                     if same_store_products != len(order) or order.total_discounted_sum < 2000:
                         order.delivery_cost = global_preferences['general__regular_shipping']
-                        # order.delivery_cost = REG
                 else:
                     order.delivery_cost = global_preferences['general__express_shipping']
-                    # order.delivery_cost = EXP
 
             order.save()
 
@@ -296,9 +350,8 @@ class PaymentWithCardView(View):
             # Сохранение ID транзакции в заказе.
             order.braintree_id = result.transaction.id
             order.save()
-            return redirect('orders:payment_done')
-        else:
-            return redirect('orders:payment_canceled')
+            return render(request, 'orders_app/payment_process.html', {'result': True})
+        return render(request, 'orders_app/payment_process.html', {'result': False})
 
 
 class PaymentWithAccountView(View):
@@ -315,10 +368,7 @@ class PaymentWithAccountView(View):
     def post(self, request: HttpRequest, order_id: int):
         account = ''.join(request.POST.get('numero1').split(' '))
         result = process_payment(order_id, account)
-        if result:
-            return redirect('orders:payment_done')
-        else:
-            return redirect('orders:payment_canceled')
+        return render(request, 'orders_app/payment_process.html', {'result': result})
 
 
 def payment_done(request):
