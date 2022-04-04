@@ -213,9 +213,10 @@ CART_SESSION_ID = 'cart'
 
 SESSION_ENGINE = 'config.session_backend'
 
-BRAINTREE_MERCHANT_ID = env.str('BRAINTREE_MERCHANT_ID')  # ID продавца.
-BRAINTREE_PUBLIC_KEY = env.str('BRAINTREE_PUBLIC_KEY')   # Публичный ключ.
-BRAINTREE_PRIVATE_KEY = env.str('BRAINTREE_PRIVATE_KEY')   # Секретный ключ.
+
+BRAINTREE_MERCHANT_ID = env('BRAINTREE_MERCHANT_ID')  # ID продавца.
+BRAINTREE_PUBLIC_KEY = env('BRAINTREE_PUBLIC_KEY')   # Публичный ключ.
+BRAINTREE_PRIVATE_KEY = env('BRAINTREE_PRIVATE_KEY')   # Секретный ключ.
 
 Configuration.configure(
     Environment.Sandbox,

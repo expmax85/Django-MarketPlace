@@ -19,7 +19,8 @@ class BannersTest(TestCase):
 
         for index in range(10):
             product = Product.objects.create(category=category, name=f'Product №{index}', is_published=True)
-            SellerProduct(seller=seller, product=product, price=100.00, quantity=100)
+            seller_product = SellerProduct(seller=seller, product=product, price=100.00, quantity=100)
+            seller_product.save()
 
         for index in range(6):
             valid_from = datetime.strftime(datetime.today() - timedelta(days=3 - index), '%Y-%m-%d %H:%M:%S')
@@ -35,7 +36,7 @@ class BannersTest(TestCase):
                 is_active=True
             )
 
-            discount.seller_products.set(SellerProduct.objects.all())
+            discount.seller_products.set([SellerProduct.objects.get(id=index + 1)])
 
             Banner.objects.create(
                 discount=discount,
@@ -47,13 +48,13 @@ class BannersTest(TestCase):
         """
         Тест выдачи 3 рандомных баннеров на главной странице
         """
-        # response = self.client.get('')
+        response = self.client.get('/')
         banners = banner()
 
-        # self.assertEqual(response.status_code, 200)
-        #
-        # self.assertContains(response, 'Banner - 1')
-        # self.assertContains(response, 'Banner description 3')
-        #
-        # self.assertTemplateUsed(response, 'index.html')
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, 'Banner - 1')
+        self.assertContains(response, 'Banner description 3')
+
+        self.assertTemplateUsed(response, 'goods_app/index.html')
         self.assertEqual(len(banners), 3)

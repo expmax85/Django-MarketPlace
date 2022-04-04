@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="Section-content">
-          <form class="form" action="{% url 'orders-polls:order_step_one' %}" method="post">
+          <form class="form" action="{% url 'orders-polls:order_step_one_anonymous' %}" method="post">
             <div class="Order-block Order-block_OPEN" id="step1">
               <header class="Section-header Section-header_sm">
                 <h2 class="Section-title">{% trans 'Step 1. User requisites' %}
@@ -74,35 +74,35 @@
                     <label class="form-label" for="name">
                         {% trans 'Name Surname' %}
                     </label>
-                    {{ form.fio }}
-{#                    <input class="form-input" id="name" name="name" type="text" value="Иванов Иван Иванович"/>#}
+                    <input class="form-input" id="name" name="name" type="text" value="{% trans 'John Doe' %}"/>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group require-field">
                     <label class="form-label" for="phone">{% trans 'Phone' %}
                     </label>
-{#                    <input class="form-input" id="phone" name="phone" type="text" value="+70000000000"/>#}
                       {{ form.phone }}
+                      <span class="formerror">{{form.errors.phone}}</span>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group require-field">
                     <label class="form-label" for="mail">{% trans 'E-mail' %}
                     </label>
-{#                    <input class="form-input" id="mail" name="mail" type="text" value="" data-validate="require"/>#}
                       {{ form.email }}
+                      <span class="formerror">{{form.errors.email}}</span>
                   </div>
                 </div>
                 <div class="row-block">
-{#                  <div class="form-group">#}
-{#                    <label class="form-label" for="password">Пароль#}
-{#                    </label>#}
-{#                    <input class="form-input" id="password" name="password" type="password" placeholder="Тут можно изменить пароль"/>#}
-{#                  </div>#}
-{#                  <div class="form-group">#}
-{#                    <label class="form-label" for="passwordReply">Подтверждение пароля#}
-{#                    </label>#}
-{#                    <input class="form-input" id="passwordReply" name="passwordReply" type="password" placeholder="Введите пароль повторно"/>#}
-{#                  </div>#}
-{#                  <div class="form-group"><a class="btn btn_muted Order-btnReg" href="#">Я уже зарегистрирован</a>#}
-{#                  </div>#}
+                  <div class="form-group require-field">
+                    <label class="form-label" for="password">{% trans 'Password' %}
+                    </label>
+                    {{ form.password1 }}
+                  </div>
+                  <div class="form-group require-field">
+                    <label class="form-label" for="passwordReply">{% trans 'Confirm Password' %}
+                    </label>
+                    {{ form.password2 }}
+                    <span class="formerror">{{form.errors.password2}}</span>
+                  </div>
+                  <div class="form-group"><a class="btn btn_muted Order-btnReg" href="{% url 'profiles-polls:login' %}">{% trans "I've been already registered" %}</a>
+                  </div>
                 </div>
               </div>
               <div class="Order-footer">

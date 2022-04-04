@@ -5,30 +5,7 @@
 {% block title %}
   {% trans 'Cart' %}
 {% endblock %}
-<style>
-    input.btn_pay {
-        {#display: inline-flex;#}
-        {#align-items: center;#}
-        {#justify-content: center;#}
-        {#min-height: 42px;#}
-        {#border: 1px solid #0063d1;#}
-        {#border-radius: 100px;#}
-        {#padding: 3px 15px;#}
-        {#line-height: 1.2em;#}
-        {#text-align: center;#}
-        {#text-decoration: none;#}
-        {#position: relative;#}
-        {#font-size: 16px;#}
-        {#color: #fff;#}
-        background: #0063d1;
-        {#transition: all 200ms;#}
-        {#font-weight: 500;#}
-        {#text-transform: uppercase;#}
-        {#letter-spacing: 0.8px;#}
-        {#padding-left: 38px;#}
-        {#padding-right: 38px;#}
-}
-</style>
+
 {%block header %}
   {% include 'elems/header.html' %}
 {% endblock %}
@@ -79,9 +56,6 @@
                   <div id="expiration-date" class="form-input Payment-bill" style="height: 50px;"></div>
                   <input type="hidden" id="nonce" name="payment_method_nonce" value="">
                   {% csrf_token %}
-{#                  <div class="Payment-pay">#}
-{#                   <button class="btn btn_primary" type="submit" value="{% trans 'Pay now' %}">{% trans 'Pay now' %}</button>#}
-{#                  </div>#}
                   <div class="Payment-pay">
                     <input
                             style="border-radius: 100px;
@@ -93,9 +67,6 @@
                     </div>
                 </div>
               </div>
-{#              <div class="Payment-pay">#}
-{#                  <button class="btn btn_primary" type="submit">{% trans 'Pay now' %}</button>#}
-{#              </div>#}
             </form>
             <!—Подключаем клиента Braintree. -->
             <script src="https://js.braintreegateway.com/web/3.29.0/js/client.min.js"></script>
@@ -146,9 +117,17 @@
                     }, false);
                 });});
             </script>
-          {% else %}
-            <p class="form-label">{% trans 'This order has been already paid' %}</p>
-          {% endif %}
+        {% else %}
+            <div class="ProgressPayment">
+              <div class="ProgressPayment-title">{% trans 'This order has been already paid' %}
+              </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        {% endif %}
       </div>
     </div>
 
