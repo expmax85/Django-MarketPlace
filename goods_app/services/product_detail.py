@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Avg, QuerySet, Prefetch
 from django.http import HttpRequest
@@ -7,9 +8,8 @@ from dynamic_preferences.registries import global_preferences_registry
 
 from discounts_app.models import ProductDiscount
 from discounts_app.services import get_discounted_prices_for_seller_products
-from goods_app.models import Product
+from goods_app.models import ProductComment, Product
 from stores_app.models import SellerProduct
-from goods_app.signals import *
 
 
 class CurrentProduct:
@@ -49,7 +49,7 @@ class CurrentProduct:
         if not queryset:
             queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
                                             .prefetch_related(Prefetch('product_discounts',
-                                             queryset=ProductDiscount.objects.filter(is_active=True,
+                                                    queryset=ProductDiscount.objects.filter(is_active=True,
                                                                                      type_of_discount__in=('f', 'p'))))\
                                             .filter(product=self.product)
             cache.set(sellers_cache_key, queryset, 24 * 60 * 60)
@@ -85,10 +85,10 @@ class CurrentProduct:
             best_seller = min(all_sellers, key=lambda x: x[1] if x[1] else x[0].price)
         except ValueError:
             return {
-                    'best_offer': False,
-                    'avg_price': avg_price,
-                    'avg_price_after_discount': avg_price_after_discount
-                }
+                'best_offer': False,
+                'avg_price': avg_price,
+                'avg_price_after_discount': avg_price_after_discount
+            }
         return {
             'best_offer': best_seller[0],
             'avg_price': avg_price,

@@ -9,4 +9,3 @@ class DiscountsAppConfig(AppConfig):
 
     def ready(self):
         from discounts_app import signals
-

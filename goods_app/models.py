@@ -1,7 +1,5 @@
 from typing import Callable
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -53,7 +51,7 @@ class Product(models.Model):
     code = models.CharField(max_length=25, null=True, blank=True, verbose_name='product code')
     slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name='product slug')
     image = models.ImageField(null=True, blank=True, verbose_name='product image')
-    description = models.TextField(max_length=255, null=True, verbose_name='product description')
+    description = models.TextField(max_length=2550, null=True, verbose_name='product description')
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                         verbose_name='average price')
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
@@ -140,13 +138,3 @@ class ProductRequest(Product):
         verbose_name = _('new product')
         verbose_name_plural = _('new products')
         db_table = 'add_products'
-
-
-@receiver(post_save, sender=ProductRequest)
-def delete_instance(sender, **kwargs) -> None:
-    """
-    The signal for deleting decided ProductRequest instance
-    """
-    instance = kwargs.get('instance')
-    if instance.is_published:
-        instance.delete(keep_parents=True)

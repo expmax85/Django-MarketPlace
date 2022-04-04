@@ -188,7 +188,7 @@ def get_random_categories() -> Union[List, bool]:
     if not queryset:
         queryset = categories.annotate(count=Count('products__seller_products'),
                                        from_price=Min('products__seller_products__price'))\
-                              .exclude(count=0)
+                             .exclude(count=0)
         cache.set(random_ctg_cache_key, queryset, 60 * 60)
     try:
         random_categories = random.choices(population=list(queryset), k=3)

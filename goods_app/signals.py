@@ -3,7 +3,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from taggit.models import Tag
 
-from goods_app.models import ProductComment, ProductCategory, Product, Specifications
+from goods_app.models import ProductComment, ProductCategory, Product, Specifications, ProductRequest
 
 
 @receiver(post_save, sender=ProductComment)
@@ -87,3 +87,13 @@ def specifications_cache_del_handler(sender, **kwargs) -> None:
     Signal for clearing cache
     """
     cache.delete('specifications:all')
+
+
+@receiver(post_save, sender=ProductRequest)
+def delete_instance(sender, **kwargs) -> None:
+    """
+    The signal for deleting decided ProductRequest instance
+    """
+    instance = kwargs.get('instance')
+    if instance.is_published:
+        instance.delete(keep_parents=True)

@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
-from django.core.management import call_command
 from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductRequest
 from stores_app.forms import AddRequestNewProductAdminForm
-from stores_app.models import Seller, SellerProduct, ProductImportFile
+from stores_app.models import Seller, SellerProduct
 
 
 @admin.register(Seller)

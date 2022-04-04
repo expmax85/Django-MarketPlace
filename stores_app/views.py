@@ -24,7 +24,6 @@ from django.forms import ModelChoiceField
 from stores_app.models import Seller, SellerProduct, ProductImportFile
 
 
-
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
     permission_required = ('profiles_app.Sellers',)
 
@@ -199,7 +198,7 @@ def remove_SellerProduct(request: HttpRequest) -> Callable:
 @permission_required('profiles_app.Sellers')
 def remove_ProductDiscount(request: HttpRequest) -> Callable:
     """
-    Remove product discount in seller room
+    Удаление скидки на товар
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_product_discount(request)
@@ -209,7 +208,7 @@ def remove_ProductDiscount(request: HttpRequest) -> Callable:
 @permission_required('profiles_app.Sellers')
 def remove_GroupDiscount(request: HttpRequest) -> Callable:
     """
-    Remove product discount in seller room
+    Удаление скидки на группу товаров
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_group_discount(request)
@@ -219,7 +218,7 @@ def remove_GroupDiscount(request: HttpRequest) -> Callable:
 @permission_required('profiles_app.Sellers')
 def remove_CartDiscount(request: HttpRequest) -> Callable:
     """
-    Remove product discount in seller room
+    Удаление корзинной скидки
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_cart_discount(request)
@@ -256,7 +255,7 @@ class RequestNewProduct(StoreAppMixin, View):
 
 class AddProductDiscountView(StoreAppMixin, View):
     """
-    Page for adding new product discount
+    Страница создания скидки на продукт
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -292,7 +291,7 @@ class AddProductDiscountView(StoreAppMixin, View):
 
 class EditProductDiscountView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования скидки на продукт
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -319,7 +318,7 @@ class EditProductDiscountView(StoreAppMixin, DetailView):
 
 class AddGroupDiscountView(StoreAppMixin, View):
     """
-    Page for adding new product discount
+    Страница создания скидки на группу товаров
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -348,7 +347,7 @@ class AddGroupDiscountView(StoreAppMixin, View):
 
 class EditGroupDiscountView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования скидки на группу товаров
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -373,7 +372,7 @@ class EditGroupDiscountView(StoreAppMixin, DetailView):
 
 class AddCartDiscountView(StoreAppMixin, View):
     """
-    Page for adding new product discount
+    Страница создания новой корзинной скидки
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -400,7 +399,7 @@ class AddCartDiscountView(StoreAppMixin, View):
 
 class EditCartDiscountView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования корзинной скидки
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -424,7 +423,9 @@ class EditCartDiscountView(StoreAppMixin, DetailView):
 
 
 class ImportView(StoreAppMixin, View):
-    """ Представление страницы проведения импорта """
+    """
+    Представление страницы проведения импорта
+    """
 
     def get(self, request):
         return render(request, 'stores_app/import.html', {})

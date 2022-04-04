@@ -6,7 +6,7 @@ from stores_app.models import Seller, SellerProduct
 
 
 @receiver(post_save, sender=Seller)
-def seller_reset_cache_del_handler(sender, **kwargs) -> None:
+def seller_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
@@ -48,4 +48,3 @@ def seller_product_reset_cache_del_handler(sender, **kwargs) -> None:
     user_id = instance.seller.owner_id
     cache.delete('owner_sp:{}'.format(user_id))
     cache.delete_many(['limited:all', 'hot_offers:all', 'products:all'])
-

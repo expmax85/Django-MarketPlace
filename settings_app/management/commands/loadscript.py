@@ -3,7 +3,6 @@ from typing import List
 
 from django.core import management
 from django.core.management.base import BaseCommand
-from django.db import IntegrityError
 from config.settings import INSTALLED_APPS, DATABASES
 try:
     from config.settings import FOLDER_FIXTURES
@@ -19,7 +18,6 @@ class Command(BaseCommand):
                             type=str,
                             help='Delete only migrations files. '
                                  'Set "no_clear" for cancel deleting')
-        # Optional argument
         parser.add_argument('--db',
                             action='store_true',
                             help='Prefix for deleting database', )
@@ -27,7 +25,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs) -> None:
         fixtures_list = self._get_list_fixtures()
         err_list = list()
-        n_iteration = len(fixtures_list) * 2
+        order_load = list()
+        max_iteration = len(fixtures_list) * 2
 
         if kwargs['with_clear'] == 'with_clear':
             self._remove_old_migrations()
@@ -42,25 +41,22 @@ class Command(BaseCommand):
             for item in fixtures_list:
                 self.stdout.write(f'Loading {item}')
                 try:
-                    management.call_command('loaddata', os.path.normpath(
-                                            os.path.join(FOLDER_FIXTURES, item)))
+                    management.call_command('loaddata', os.path.normpath(os.path.join(FOLDER_FIXTURES, item)))
                     fixtures_list.remove(item)
-                except (KeyError, IntegrityError) as err:
-                    self.stdout.write(self.style.WARNING(
-                        f'{err} when loading {item}'
-                    ))
+                    if item not in order_load:
+                        order_load.append(item)
+                except Exception as err:
+                    self.stdout.write(self.style.WARNING(f'{err} when loading {item}'))
                     err_list.append(item)
-            if n_iteration == 0:
+            if max_iteration == 0:
                 break
-            n_iteration -= 1
-
+            max_iteration -= 1
         if err_list:
-            self.stdout.write(self.style.WARNING(
-                'Not all fixtures have been loaded. Check it:'
-            ))
+            self.stdout.write(self.style.WARNING('Not all fixtures have been loaded. Check it:'))
             self.stdout.write(self.style.WARNING(err_list))
         else:
             self.stdout.write(self.style.SUCCESS('\nAll commands and loadings have been successful!'))
+            self.stdout.write(self.style.SUCCESS(f'\nFixtures upload order: {order_load}'))
 
     def _remove_old_migrations(self) -> None:
         self.stdout.write('\nRemove old migration files...\n')
@@ -77,9 +73,7 @@ class Command(BaseCommand):
         if os.path.exists(path_db):
             os.remove(path_db)
         else:
-            self.stdout.write(self.style.WARNING(
-                f'Database file {path_db} does not exist.\n'
-            ))
+            self.stdout.write(self.style.WARNING(f'Database file {path_db} does not exist.\n'))
 
     def _get_list_fixtures(self) -> List:
         path_fixtures = os.path.normpath(os.path.abspath(FOLDER_FIXTURES))
