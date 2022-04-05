@@ -14,11 +14,11 @@
                                 <strong class="Slider-title">{{ banner.title }}
                                 </strong>
                                 <div class="Slider-text">{{ banner.description }}</div>
-                                <div class="Slider-footer"><a class="btn btn_primary" href="#">{% trans 'Get Started' %}</a>
+                                <div class="Slider-footer"><a class="btn btn_primary" href="{% url 'discounts-polls:discount-detail' banner.discount.slug banner.discount.id %}">{% trans 'Get Started' %}</a>
                                 </div>
                             </div>
                             <div class="row-block">
-                                <div class="Slider-img"><img src="{{ banner.image }}" alt="slider.png"/>
+                                <div class="Slider-img"><img src="{{ banner.image.url }}" alt="slider.png"/>
                                 </div>
                             </div>
                         </div>

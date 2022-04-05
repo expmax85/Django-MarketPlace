@@ -12,7 +12,14 @@ class DiscountsListView(ListView):
 
     def get(self, request, *args, **kwargs):
         discounts = ProductDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
-                                                   valid_to__gte=datetime.date.today())
+                                                   valid_to__gte=datetime.date.today()) | \
+                    ProductDiscount.objects.filter(is_active=True, valid_from=None,
+                                                   valid_to=None) | \
+                    ProductDiscount.objects.filter(is_active=True, valid_from=None,
+                                                   valid_to__gte=datetime.date.today()) | \
+                    ProductDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
+                                                   valid_to=None)
+
         discounts = context_pagination(request, discounts, 2)
         return render(request, 'discounts_app/discounts_list.html', {'discounts': discounts})
 

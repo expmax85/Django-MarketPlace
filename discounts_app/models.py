@@ -81,7 +81,7 @@ class ProductDiscount(Discount):
     seller_products = models.ManyToManyField(SellerProduct, related_name='product_discounts',
                                              verbose_name=_('Seller products'))
     set_discount = models.BooleanField(default=False, verbose_name=_('Set discount'))
-    image = models.ImageField(default='static/assets/img/content/sale/product.png',
+    image = models.ImageField(default='static/assets/img/content/home/discounts/product.png',
                               upload_to='static/assets/img/content/home/discounts',
                               null=True,
                               blank=True,
