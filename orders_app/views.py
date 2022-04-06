@@ -4,7 +4,6 @@ import braintree
 import datetime
 
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -243,12 +242,15 @@ class OrderStepTwo(View):
 
     def get(self, request: HttpRequest):
         user = request.user
-        initial = {'city': user.city,
-                   'address': user.address,
-                   'delivery': 'reg',
-                   'payment': 'cash'}
-        form = self.form_class(initial=initial)
-        return render(request, self.template_name, {'form': form})
+        if user.is_authenticated:
+            initial = {'city': user.city,
+                       'address': user.address,
+                       'delivery': 'reg',
+                       'payment': 'cash'}
+            form = self.form_class(initial=initial)
+            return render(request, self.template_name, {'form': form})
+        else:
+            return redirect('profiles:login')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
@@ -288,8 +290,13 @@ class OrderStepThree(View):
     template_name = 'orders_app/order_step_three.html'
 
     def get(self, request: HttpRequest):
-        form = OrderStepThreeForm
-        return render(request, self.template_name, {'form': form})
+        user = request.user
+        if user.is_authenticated:
+            form = OrderStepThreeForm
+            return render(request, self.template_name, {'form': form})
+
+        else:
+            return redirect('profiles:login')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
@@ -312,8 +319,13 @@ class OrderStepFour(View):
     template_name = 'orders_app/order_step_four.html'
 
     def get(self, request: HttpRequest):
-        order = Order.objects.filter(customer=request.user, in_order=True).last()
-        return render(request, self.template_name, {'order': order})
+        user = request.user
+        if user.is_authenticated:
+            order = Order.objects.filter(customer=user, in_order=True).last()
+            return render(request, self.template_name, {'order': order})
+
+        else:
+            return redirect('profiles:login')
 
 
 class PaymentView(View):
