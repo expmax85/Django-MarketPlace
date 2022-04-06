@@ -2,11 +2,14 @@ import os
 from typing import List
 
 from django.core import management
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
-from config.settings import INSTALLED_APPS, DATABASES
+from django.conf import settings
+
+
 try:
-    from config.settings import FOLDER_FIXTURES
-except ImportError:
+    FOLDER_FIXTURES = settings.FOLDER_FIXTURES
+except AttributeError:
     FOLDER_FIXTURES = 'fixtures'
 
 
@@ -26,7 +29,7 @@ class Command(BaseCommand):
         fixtures_list = self._get_list_fixtures()
         err_list = list()
         order_load = list()
-        max_iteration = len(fixtures_list) * 2
+        max_iteration = len(fixtures_list)
 
         if kwargs['with_clear'] == 'with_clear':
             self._remove_old_migrations()
@@ -69,7 +72,7 @@ class Command(BaseCommand):
 
     def _remove_database(self) -> None:
         self.stdout.write('\nRemove database...\n')
-        path_db = DATABASES['default']['NAME']
+        path_db = settings.DATABASES['default']['NAME']
         if os.path.exists(path_db):
             os.remove(path_db)
         else:
@@ -83,7 +86,7 @@ class Command(BaseCommand):
 
     def _get_apps_list(self) -> List:
         list_apps = []
-        for item in INSTALLED_APPS:
+        for item in settings.INSTALLED_APPS:
             path = os.path.join(os.path.abspath(item), 'migrations')
             if os.path.exists(path):
                 list_apps.append(item)

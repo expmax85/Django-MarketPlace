@@ -124,7 +124,7 @@ def get_limited_products(count: int) -> QuerySet:
     return products
 
 
-def get_hot_offers(count: int = 9) -> QuerySet:
+def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
     """
     Function to get products for hot offers block. Returns zip-iterator by count length with corteges
     (instance model, price with discount, type of discount)
@@ -138,16 +138,19 @@ def get_hot_offers(count: int = 9) -> QuerySet:
                                                                                 .all()))\
                                         .annotate(count=Count('product_discounts'))\
                                         .filter(count__gt=0)
-        if len(list(queryset)) > count:
-            queryset = random.choices(population=queryset, k=len(list(queryset)))
-        else:
-            queryset = random.choices(population=queryset, k=count)
-        cache.set(products_cache_key, queryset, 60 * 60)
-    products = get_discounted_prices_for_seller_products(queryset)
+        try:
+            if len(list(queryset)) > count:
+                queryset = random.choices(population=queryset, k=len(list(queryset)))
+            else:
+                queryset = random.choices(population=queryset, k=count)
+            cache.set(products_cache_key, queryset, 60 * 60)
+            products = get_discounted_prices_for_seller_products(queryset)
+        except IndexError:
+            products = None
     return products
 
 
-def get_limited_deal(products: QuerySet) -> Union[Model, bool]:
+def get_limited_deal(products: QuerySet) -> Union[Model, None]:
     """
     Get one random product from products queryset. Return False if it does not exist. Return
     False if products is empty
@@ -155,7 +158,7 @@ def get_limited_deal(products: QuerySet) -> Union[Model, bool]:
     try:
         return random.choice(list(products))
     except IndexError:
-        return False
+        return None
 
 
 random_product = RandomProduct(fallibility=1)
@@ -177,7 +180,7 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
     return products
 
 
-def get_random_categories() -> Union[List, bool]:
+def get_random_categories() -> Union[List, None]:
     """
     Function to get 3 random categories, if it has at least 1 product. And the annotate for each category with
     minimal price from this category products. Returns QuerySet with 3 random elements or False if Queryset is empty
@@ -193,5 +196,5 @@ def get_random_categories() -> Union[List, bool]:
     try:
         random_categories = random.choices(population=list(queryset), k=3)
     except IndexError:
-        return False
+        return None
     return random_categories

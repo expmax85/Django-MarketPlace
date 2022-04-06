@@ -1,6 +1,7 @@
 import datetime
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from dynamic_preferences.preferences import Section
@@ -20,6 +21,10 @@ class ShippingRegularPrice(DecimalPreference):
     required = True
     verbose_name = _('Regular shipping price')
 
+    def validate(self, value):
+        if value < 0:
+            raise ValidationError(_('Wrong value! Must be positive'))
+
 
 @global_preferences_registry.register
 class ShippingExpressPrice(DecimalPreference):
@@ -29,6 +34,10 @@ class ShippingExpressPrice(DecimalPreference):
     default = Decimal('20.00')
     required = True
     verbose_name = _('Express shipping price')
+
+    def validate(self, value):
+        if value < 0:
+            raise ValidationError(_('Wrong value! Must be positive'))
 
 
 @global_preferences_registry.register
@@ -40,6 +49,10 @@ class ReviewsSizePage(IntegerPreference):
     required = True
     verbose_name = _('Reviews size page')
 
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))
+
 
 @global_preferences_registry.register
 class DaysDuration(IntegerPreference):
@@ -49,6 +62,10 @@ class DaysDuration(IntegerPreference):
     default = 1
     required = True
     verbose_name = _('Days duration limited deal')
+
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))
 
 
 @global_preferences_registry.register
@@ -69,6 +86,10 @@ class CountLimitedProducts(IntegerPreference):
     default = 8
     required = True
     verbose_name = _('Count limited products')
+
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))
 
 
 @global_preferences_registry.register
@@ -94,6 +115,10 @@ class CountPopularProducts(IntegerPreference):
     required = True
     verbose_name = _('Count popular products')
 
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))
+
 
 @global_preferences_registry.register
 class CountHotProducts(IntegerPreference):
@@ -104,6 +129,10 @@ class CountHotProducts(IntegerPreference):
     required = True
     verbose_name = _('Count hot offers')
 
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))
+
 
 @global_preferences_registry.register
 class TimeExpireBanners(IntegerPreference):
@@ -113,3 +142,21 @@ class TimeExpireBanners(IntegerPreference):
     default = 5
     required = True
     verbose_name = _('Banners time expire')
+
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))
+
+
+@global_preferences_registry.register
+class MaxFileSize(IntegerPreference):
+    section = general
+    name = 'max_size_file'
+    help_text = _('Set the max image file sizes in MB')
+    default = 2
+    required = True
+    verbose_name = _('Max image files size')
+
+    def validate(self, value):
+        if value < 1:
+            raise ValidationError(_('Wrong value! Must be more than 0'))

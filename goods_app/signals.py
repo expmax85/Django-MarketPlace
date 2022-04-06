@@ -11,9 +11,8 @@ def comment_post_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    if kwargs['created']:
-        product_id = kwargs['instance'].product_id
-        cache.delete('reviews:{}'.format(product_id))
+    product_id = kwargs['instance'].product_id
+    cache.delete('reviews:{}'.format(product_id))
 
 
 @receiver(post_delete, sender=ProductComment)
@@ -30,7 +29,7 @@ def category_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    cache.delete('categories:all')
+    cache.delete_many(['categories:all', 'random_categories:all'])
 
 
 @receiver(post_delete, sender=ProductCategory)
@@ -38,7 +37,7 @@ def category_cache_del_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    cache.delete('categories:all')
+    cache.delete_many(['categories:all', 'random_categories:all'])
 
 
 @receiver(post_save, sender=Product)

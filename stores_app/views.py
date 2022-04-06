@@ -12,7 +12,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView
 from django.core.management import call_command
 
-from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from django.conf import settings
 from discounts_app.models import ProductDiscount, GroupDiscount
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
@@ -134,7 +134,7 @@ class AddSellerProductView(StoreAppMixin, View):
             form.save(commit=False)
             created = self.create_seller_product(data=form.cleaned_data)
             if not created:
-                messages.add_message(request, CREATE_PRODUCT_ERROR, _('This product is already exist in those store!'))
+                messages.add_message(request, settings.CREATE_PRODUCT_ERROR, _('This product is already exist in those store!'))
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
         return render(request, 'stores_app/new_product_in_store.html', {'form': form})
@@ -243,7 +243,7 @@ class RequestNewProduct(StoreAppMixin, View):
         if form.is_valid():
             product = form.save(commit=False)
             self.request_add_new_product(product=product, user=request.user)
-            messages.add_message(request, SEND_PRODUCT_REQUEST,
+            messages.add_message(request, settings.SEND_PRODUCT_REQUEST,
                                  _('Your request was sending. Wait the answer some before time to your email!'))
             return redirect(reverse('stores-polls:sellers-room'))
         categories = get_categories()

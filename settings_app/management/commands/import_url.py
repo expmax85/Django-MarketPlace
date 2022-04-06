@@ -7,7 +7,6 @@ from config import urls
 
 
 class ViewDoesNotExist(Exception):
-    """The requested view does not exist"""
     pass
 
 

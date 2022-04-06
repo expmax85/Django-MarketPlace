@@ -36,7 +36,9 @@
           {% for item, price_after_discount, discount in products %}
             <div class="Card" type="submit">
             <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-            <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+            <button class="Card-picture" type="submit">
+                <img src="{{ MEDIAROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"/>
+            </button>
             <div class="Card-content">
                 <button class="Card-title" type="submit">
                   {{ item.product.name }}
