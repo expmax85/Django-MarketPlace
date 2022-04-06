@@ -93,7 +93,7 @@ class CartService:
     def get_goods(self) -> Union[OrderProduct, AnonymCart]:
         """получить товары из корзины"""
         if isinstance(self.cart, Order):
-            return self.cart.order_products.all()
+            return self.cart.order_products.prefetch_related('seller_product__product_discounts').all()
         return self.cart
 
     def get_quantity(self) -> int:
@@ -107,7 +107,7 @@ class CartService:
         return self.cart.total_sum()
 
     def merge_carts(self, other):
-        """Перенос анонимной корзины в корзину зарешистрированного"""
+        """Перенос анонимной корзины в корзину зарегистрированного"""
         for item in other.get_goods():
             self.add_to_cart(item['seller_product'], item['quantity'],)
         other.clear()
