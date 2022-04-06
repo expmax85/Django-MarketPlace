@@ -18,8 +18,11 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',), }
 
-    def get_icon(self, obj):
-        return mark_safe(f'<img src="{obj.icon.url}" width="20" height="20">')
+    def get_icon(self, obj=None):
+        try:
+            return mark_safe(f'<img src="{obj.icon.url}" width="20" height="20">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
 
     get_icon.short_description = _('icon')
 
@@ -61,7 +64,10 @@ class ProductAdmin(admin.ModelAdmin):
         queryset.update(is_published=False)
 
     def get_image(self, obj):
-        return mark_safe(f'<img src="{obj.image.url}" width="60" height="60">')
+        try:
+            return mark_safe(f'<img src="{obj.image.url}" width="60" height="60">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
 
     mark_published.short_description = _('Publish')
     mark_unpublished.short_description = _('Remove from publication')
