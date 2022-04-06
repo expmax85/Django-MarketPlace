@@ -32,11 +32,7 @@
           {% for discount in discounts %}
               <div class="Card">
                   <a class="Card-picture" href="{% url 'discounts-polls:discount-detail' discount.slug discount.id %}">
-                      {% if discount.img %}
-                        <img src="{{ discount.img }}" alt="product.png"/>
-                      {% else %}
-                        <img src="../static/assets/img/content/sale/product.png" alt="product.png"/>
-                      {% endif %}
+                      <img src="{{ discount.image.url }}" alt="product.png"/>
                   </a>
                 {% if discount.valid_from %}
                     <div class="Card-date">

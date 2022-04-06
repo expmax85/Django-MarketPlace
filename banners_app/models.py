@@ -13,7 +13,8 @@ class Banner(models.Model):
                                     verbose_name=_('discount_banner'))
     title = models.CharField(max_length=25, null=True, verbose_name=_('banner_title'))
     description = models.TextField(max_length=255, null=True, verbose_name=_('banner_description'))
-    image = models.ImageField(upload_to='static/assets/img/content/home/banners',
+    image = models.ImageField(default='static/assets/img/content/home/banners/slider.png',
+                              upload_to='static/assets/img/content/home/banners',
                               null=True,
                               blank=True,
                               verbose_name=_('banner_image'))

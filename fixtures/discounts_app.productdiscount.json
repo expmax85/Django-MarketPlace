@@ -11,11 +11,12 @@
     "percent": 50.0,
     "amount": 0.0,
     "fixed_price": 0.0,
-    "valid_from": "2022-03-01T22:46:39Z",
-    "valid_to": "2022-03-31T22:46:40Z",
+    "valid_from": "2022-03-01T11:31:41Z",
+    "valid_to": "2022-04-30T11:34:29Z",
     "is_active": true,
     "seller": 1,
     "set_discount": false,
+    "image": "static/assets/img/content/home/discounts/product.png",
     "seller_products": [
       1
     ]
@@ -30,7 +31,7 @@
     "description": "Another discount to compare",
     "type_of_discount": "p",
     "priority": "2",
-    "percent": 0.0,
+    "percent": 15.0,
     "amount": 150.0,
     "fixed_price": 0.0,
     "valid_from": "2022-03-01T12:00:00Z",
@@ -38,6 +39,7 @@
     "is_active": true,
     "seller": 1,
     "set_discount": false,
+    "image": "static/assets/img/content/home/discounts/Rectangle_18_2.jpg",
     "seller_products": [
       1
     ]
@@ -56,10 +58,11 @@
     "amount": 200.0,
     "fixed_price": 0.0,
     "valid_from": "2022-03-06T20:07:11Z",
-    "valid_to": "2022-03-30T00:00:00Z",
+    "valid_to": "2022-04-30T07:57:25Z",
     "is_active": true,
     "seller": 1,
     "set_discount": false,
+    "image": "static/assets/img/content/home/discounts/product.png",
     "seller_products": [
       11
     ]
@@ -82,9 +85,56 @@
     "is_active": true,
     "seller": 1,
     "set_discount": true,
+    "image": "static/assets/img/content/home/discounts/ab3c1981d326f2e903ed0d05316df156.jpg",
     "seller_products": [
       2,
       11
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 7,
+  "fields": {
+    "name": "Juaihei C300",
+    "slug": "juaihei-c300",
+    "description": "Special price in RVideo for 1 week",
+    "type_of_discount": "fp",
+    "priority": "2",
+    "percent": 0.0,
+    "amount": null,
+    "fixed_price": 500.0,
+    "valid_from": "2022-04-04T12:12:00Z",
+    "valid_to": "2022-04-11T12:12:05Z",
+    "is_active": true,
+    "seller": 1,
+    "set_discount": false,
+    "image": "static/assets/img/content/home/discounts/20210630_190600.jpg",
+    "seller_products": [
+      6
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 8,
+  "fields": {
+    "name": "B200",
+    "slug": "b200",
+    "description": "",
+    "type_of_discount": "p",
+    "priority": "1",
+    "percent": 33.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-04-04T12:26:43Z",
+    "valid_to": "2022-04-25T12:26:48Z",
+    "is_active": true,
+    "seller": 2,
+    "set_discount": false,
+    "image": "static/assets/img/content/home/discounts/product.png",
+    "seller_products": [
+      5
     ]
   }
 }
