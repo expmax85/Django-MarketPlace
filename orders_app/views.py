@@ -122,6 +122,13 @@ class CartAdd(View):
         cart.add_to_cart(product, quantity=1, update_quantity=False)
         return redirect(request.META.get('HTTP_REFERER'))
 
+    def post(self, request: HttpRequest, product_id: int):
+        cart = CartService(request)
+        product = get_object_or_404(SellerProduct, id=str(product_id))
+        quantity = int(request.POST.get('amount'))
+        cart.add_to_cart(product, quantity=quantity, update_quantity=False)
+        return redirect(request.META.get('HTTP_REFERER'))
+
 
 class CartRemove(View):
     """
