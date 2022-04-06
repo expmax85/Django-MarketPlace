@@ -24,9 +24,15 @@ class CheckImageIconForm(ModelForm):
 class CheckImageForm(ModelForm):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields['image'].help_text = get_help_text(size=True)
+        try:
+            self.fields['image'].help_text = get_help_text(size=True)
+        except KeyError:
+            self.fields['icon'].help_text = get_help_text(size=True)
 
     def clean_image(self) -> str:
-        image = self.cleaned_data['image']
+        try:
+            image = self.cleaned_data['image']
+        except KeyError:
+            image = self.cleaned_data['icon']
         check_image_size(image)
         return image
