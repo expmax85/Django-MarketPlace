@@ -138,15 +138,12 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
                                                                                 .all()))\
                                         .annotate(count=Count('product_discounts'))\
                                         .filter(count__gt=0)
-        try:
-            if len(list(queryset)) > count:
-                queryset = random.choices(population=queryset, k=len(list(queryset)))
-            else:
-                queryset = random.choices(population=queryset, k=count)
-            cache.set(products_cache_key, queryset, 60 * 60)
-            products = get_discounted_prices_for_seller_products(queryset)
-        except IndexError:
-            products = None
+        if len(list(queryset)) > count:
+            queryset = random.choices(population=queryset, k=len(list(queryset)))
+        else:
+            queryset = random.choices(population=queryset, k=count)
+        cache.set(products_cache_key, queryset, 60 * 60)
+    products = get_discounted_prices_for_seller_products(queryset)
     return products
 
 
