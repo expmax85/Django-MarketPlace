@@ -16,7 +16,7 @@ from dynamic_preferences.registries import global_preferences_registry
 from django.conf import settings
 from goods_app.services.limited_products import random_product, get_limited_products
 from goods_app.models import Product
-
+from stores_app.models import Seller
 
 User = get_user_model()
 
@@ -131,12 +131,12 @@ def clear_banner_cache(request: HttpRequest) -> Callable:
 
 @permission_required('profiles_app.Content_manager')
 def clear_sellers_cache(request: HttpRequest) -> Callable:
-    list_users_id = list(User.objects.all().values('id'))
-    cache.delete_many([f'owner_sp:{item["id"]}' for item in list_users_id])
-    cache.delete_many([f'stores:{item["id"]}' for item in list_users_id])
-    cache.delete_many([f'owner_product_discounts:{item["id"]}' for item in list_users_id])
-    cache.delete_many([f'owner_group_discounts:{item["id"]}' for item in list_users_id])
-    cache.delete_many([f'owner_card_discounts:{item["id"]}' for item in list_users_id])
+    list_owner = list(set([item['owner_id'] for item in Seller.objects.all().values('owner_id')]))
+    cache.delete_many([f'owner_sp:{i}' for i in list_owner])
+    cache.delete_many([f'stores:{i}' for i in list_owner])
+    cache.delete_many([f'owner_product_discounts:{i}' for i in list_owner])
+    cache.delete_many([f'owner_group_discounts:{i}' for i in list_owner])
+    cache.delete_many([f'owner_card_discounts:{i}' for i in list_owner])
     messages.add_message(request, settings.SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
     return redirect(request.META.get('HTTP_REFERER'))
 

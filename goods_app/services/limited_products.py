@@ -115,9 +115,7 @@ def get_limited_products(count: int) -> QuerySet:
     queryset = cache.get(products_cache_key)
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                        .prefetch_related(Prefetch('product_discounts',
-                                                queryset=ProductDiscount.objects.prefetch_related('seller_products')
-                                                                                .all()))\
+                                        .prefetch_related('product_discounts') \
                                         .filter(product__limited=True)[:count]
         cache.set(products_cache_key, queryset, 24 * 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
@@ -133,10 +131,8 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
     queryset = cache.get(products_cache_key)
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                        .prefetch_related(Prefetch('product_discounts',
-                                                queryset=ProductDiscount.objects.prefetch_related('seller_products')
-                                                                                .all()))\
-                                        .annotate(count=Count('product_discounts'))\
+                                        .prefetch_related('product_discounts') \
+                                        .annotate(count=Count('product_discounts')) \
                                         .filter(count__gt=0)
         if len(list(queryset)) > count:
             queryset = random.choices(population=queryset, k=len(list(queryset)))
@@ -170,8 +166,8 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
     queryset = cache.get(products_cache_key)
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                        .prefetch_related('product_discounts')\
-                                        .all().order_by(order_by)[:count]
+                                        .prefetch_related('product_discounts').all()\
+                                        .order_by(order_by)[:count]
         cache.set(products_cache_key, queryset, 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
     return products
@@ -187,7 +183,7 @@ def get_random_categories() -> Union[List, None]:
     queryset = cache.get(random_ctg_cache_key)
     if not queryset:
         queryset = categories.annotate(count=Count('products__seller_products'),
-                                       from_price=Min('products__seller_products__price'))\
+                                       from_price=Min('products__seller_products__price')) \
                              .exclude(count=0)
         cache.set(random_ctg_cache_key, queryset, 60 * 60)
     try:

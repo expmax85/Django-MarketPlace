@@ -134,7 +134,8 @@ class AddSellerProductView(StoreAppMixin, View):
             form.save(commit=False)
             created = self.create_seller_product(data=form.cleaned_data)
             if not created:
-                messages.add_message(request, settings.CREATE_PRODUCT_ERROR, _('This product is already exist in those store!'))
+                messages.add_message(request, settings.CREATE_PRODUCT_ERROR,
+                                     _('This product is already exist in those store!'))
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
         return render(request, 'stores_app/new_product_in_store.html', {'form': form})
@@ -183,7 +184,7 @@ def remove_Store(request: HttpRequest) -> Callable:
     Удаление магазина продавца
     """
     StoreServiceMixin.remove_store(request)
-    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
@@ -192,7 +193,7 @@ def remove_SellerProduct(request: HttpRequest) -> Callable:
     Удаление продукта продавца
     """
     StoreServiceMixin.remove_seller_product(request)
-    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
@@ -202,7 +203,7 @@ def remove_ProductDiscount(request: HttpRequest) -> Callable:
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_product_discount(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
@@ -212,7 +213,7 @@ def remove_GroupDiscount(request: HttpRequest) -> Callable:
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_group_discount(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
@@ -222,7 +223,7 @@ def remove_CartDiscount(request: HttpRequest) -> Callable:
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_cart_discount(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class RequestNewProduct(StoreAppMixin, View):

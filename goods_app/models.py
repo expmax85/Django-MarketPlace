@@ -9,7 +9,7 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from taggit.managers import TaggableManager
 
-from settings_app.utils import check_image_size, check_image_rezolution
+from settings_app.utils import check_image_size, check_image_resolution
 
 User = get_user_model()
 
@@ -45,7 +45,7 @@ class ProductCategory(MPTTModel):
         """
         check_image_size(self.image)
         check_image_size(self.icon)
-        check_image_rezolution(self.icon)
+        check_image_resolution(self.icon)
         if self.pk is not None:
             old_self = ProductCategory.objects.get(pk=self.pk)
             if old_self.image and self.image != old_self.image:

@@ -70,8 +70,7 @@ class StoreServiceMixin:
         Remove store
         """
         store = Seller.objects.get(slug=request.GET.get('id'))
-        messages.add_message(request,settings.SUCCESS_DEL_STORE,
-                             _(f'The {store.name} was removed'))
+        messages.add_message(request, settings.SUCCESS_DEL_STORE, _(f'The {store.name} was removed'))
         store.delete()
 
     @classmethod

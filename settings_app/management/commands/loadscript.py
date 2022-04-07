@@ -2,7 +2,6 @@ import os
 from typing import List
 
 from django.core import management
-from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.conf import settings
 

@@ -23,7 +23,7 @@ class ShippingRegularPrice(DecimalPreference):
 
     def validate(self, value):
         if value < 0:
-            raise ValidationError(_('Wrong value! Must be positive'))
+            raise ValidationError(_('Wrong price value! Must be positive'))
 
 
 @global_preferences_registry.register
@@ -37,7 +37,7 @@ class ShippingExpressPrice(DecimalPreference):
 
     def validate(self, value):
         if value < 0:
-            raise ValidationError(_('Wrong value! Must be positive'))
+            raise ValidationError(_('Wrong price value! Must be positive'))
 
 
 @global_preferences_registry.register
@@ -51,7 +51,7 @@ class ReviewsSizePage(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong size value! Must be more than 0'))
 
 
 @global_preferences_registry.register
@@ -65,7 +65,7 @@ class DaysDuration(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong days value! Must be more than 0'))
 
 
 @global_preferences_registry.register
@@ -76,6 +76,10 @@ class TimeUpdate(TimePreference):
     default = datetime.time(hour=00, minute=00, second=00)
     required = True
     verbose_name = _('Time update limited deal')
+
+    def validate(self, value):
+        if value <= datetime.datetime.now():
+            raise ValidationError(_('Wrong date value! Must be more than 0'))
 
 
 @global_preferences_registry.register
@@ -89,7 +93,7 @@ class CountLimitedProducts(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong count value! Must be more than 0'))
 
 
 @global_preferences_registry.register
@@ -117,7 +121,7 @@ class CountPopularProducts(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong count value! Must be more than 1'))
 
 
 @global_preferences_registry.register
@@ -131,7 +135,7 @@ class CountHotProducts(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong count value! Must be more than 1'))
 
 
 @global_preferences_registry.register
@@ -145,7 +149,7 @@ class TimeExpireBanners(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong banners expire value! Must be more than 1 (minutes)'))
 
 
 @global_preferences_registry.register
@@ -159,4 +163,4 @@ class MaxFileSize(IntegerPreference):
 
     def validate(self, value):
         if value < 1:
-            raise ValidationError(_('Wrong value! Must be more than 0'))
+            raise ValidationError(_('Wrong size file value! Must be more than 1 (MB)'))

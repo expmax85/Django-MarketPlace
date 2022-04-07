@@ -13,11 +13,11 @@ def get_help_text(**kwargs) -> Callable:
     if kwargs.get('size'):
         OPTIONS = global_preferences_registry.manager().by_name()
         max_size = OPTIONS['max_size_file']
-        help_text = f'Load image with max file size {max_size}MB'
-    elif kwargs.get('rezolution'):
+        help_text = _(f'Load image with max file size {max_size}MB')
+    elif kwargs.get('resolution'):
         min_width, min_height = settings.MIN_RESOLUTION
         max_width, max_height = settings.MAX_RESOLUTION
-        help_text = f'Load image with sizes from {min_width}x{min_height} to {max_width}x{max_height} '
+        help_text = _(f'Load image with sizes from {min_width}x{min_height} to {max_width}x{max_height}')
     return mark_safe(f'<span style="color:#417690; font-size:12px;">{help_text}</span>')
 
 
@@ -31,7 +31,7 @@ def check_image_size(image) -> None:
         pass
 
 
-def check_image_rezolution(image) -> None:
+def check_image_resolution(image) -> None:
     min_width, min_height = settings.MIN_RESOLUTION
     max_width, max_height = settings.MAX_RESOLUTION
     try:

@@ -20,7 +20,7 @@
                 <div class="Card">
                     <form method="get" style="display:flex;" action="{% url 'orders-polls:add_viewed' %}">
                   <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
-                  <button class="Card-picture" role="link" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+                  <button class="Card-picture" role="link" type="submit"><img src="{{ MEDIAROOT }}/uploads/{{ offer.product.image }}" alt="card.jpg"/></button>
                   <div class="Card-content">
                     <button class="Card-title" type="submit">{{ offer.product.name }}
                     </button>

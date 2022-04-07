@@ -17,23 +17,19 @@ def user_group_changed_handler(sender, action, **kwargs) -> None:
         if 'Content-manager' in model_list and not instance.is_superuser:
             if action == 'pre_add':
                 instance.is_staff = True
-                instance.save(update_fields=['is_staff'])
             if action == 'pre_remove':
                 instance.is_staff = False
-                instance.save(update_fields=['is_staff'])
+            instance.save(update_fields=['is_staff'])
     elif isinstance(instance, Group):
         if instance.name == 'Content-manager':
             model_list = list(queryset)
-            if action == 'pre_add':
-                for item in model_list:
-                    if not item.is_superuser:
+            for item in model_list:
+                if not item.is_superuser:
+                    if action == 'pre_add':
                         item.is_staff = True
-                model.objects.bulk_update(model_list, ['is_staff'])
-            if action == 'pre_remove':
-                for item in model_list:
-                    if not item.is_superuser:
+                    if action == 'pre_remove':
                         item.is_staff = False
-                model.objects.bulk_update(model_list, ['is_staff'])
+            model.objects.bulk_update(model_list, ['is_staff'])
 
 
 m2m_changed.connect(user_group_changed_handler, sender=User.groups.through)

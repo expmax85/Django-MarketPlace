@@ -80,7 +80,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Method overridden to remove old files and add permissions
         """
-        print(self.avatar)
         check_image_size(self.avatar)
         if self.pk is not None:
             old_self = User.objects.get(pk=self.pk)
