@@ -7,7 +7,7 @@ from django.db import models
 from django.urls import reverse
 
 from goods_app.models import Product
-
+from settings_app.utils import check_image_size
 
 User = get_user_model()
 
@@ -16,9 +16,9 @@ class Seller(models.Model):
     """
     Store model
     """
-    name = models.CharField(max_length=25, verbose_name=_('name'))
+    name = models.CharField(max_length=50, verbose_name=_('name'))
     slug = models.SlugField(verbose_name='slug', unique=True)
-    description = models.TextField(max_length=255, null=True, blank=True, default="", verbose_name=_('description'))
+    description = models.TextField(max_length=2550, null=True, blank=True, default="", verbose_name=_('description'))
     address = models.TextField(max_length=100, null=True, blank=True, default="", verbose_name=_('address'))
     icon = models.ImageField(upload_to='icons/', null=True, blank=True, verbose_name=_('icon'))
     email = models.EmailField(null=True, blank=True, default="", verbose_name='email')
@@ -35,12 +35,13 @@ class Seller(models.Model):
     def get_absolute_url(self) -> Callable:
         return reverse('stores-polls:store-detail', kwargs={'slug': self.slug})
 
-    def save(self, *args, **kwargs) -> Callable:
+    def save(self, *args, **kwargs) -> None:
+        check_image_size(self.icon)
         if self.pk is not None:
             old_self = Seller.objects.get(pk=self.pk)
             if old_self.icon and self.icon != old_self.icon:
                 old_self.icon.delete(False)
-        return super(Seller, self).save(*args, **kwargs)
+        super(Seller, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('store')

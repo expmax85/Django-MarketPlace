@@ -64,7 +64,7 @@
                             <div class="Seller-wrap" style="justify-content: center;">
                                 <div class="store">
                                     <a href="{% url 'stores-polls:store-detail' store.slug %}" class="seller-item">
-                                        <img src="{{MEDIA_ROOT}}/uploads/{{store.icon}}" alt="store-icon" class="seller-icon">
+                                        <img src="{{ MEDIAROOT }}/uploads/{{ store.icon }}" alt="store-icon" class="seller-icon">
                                         <h3 class="seller-title custom_align-center">{{ store.name }}</h3>
                                         <i class="fa-duotone fa-trash-slash"></i>
                                     </a>

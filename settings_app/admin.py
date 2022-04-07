@@ -17,6 +17,7 @@ class PreferenceAdmin(GlobalPreferenceAdmin):
     fields = ('raw_value', 'default_value', 'help_text', 'name')
     readonly_fields = ('default_value', 'help_text', 'name')
     search_fields = ['verbose_name', 'name', 'raw_value']
+    can_delete = False
     list_filter = ()
 
     actions = None

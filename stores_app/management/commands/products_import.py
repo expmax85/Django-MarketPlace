@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from goods_app.models import Product
 from discounts_app.models import ProductDiscount
 from stores_app.models import Seller, SellerProduct, ProductImportFile
-from profiles_app.models import User
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -58,7 +58,7 @@ class Command(BaseCommand):
         with open('import_log.txt', 'r') as imp_log:
             result = imp_log.read()
             file_log = result[result.find(f'{user} starts import at {start_time}>'):result.find(
-                                          f'{user} finished importing which started in {start_time}')]
+                f'{user} finished importing which started in {start_time}')]
             curr_file = ProductImportFile.objects.get(id=file_id)
             curr_file.log_info = file_log
             curr_file.errors = file_log.count('Error:')
@@ -71,9 +71,9 @@ class Command(BaseCommand):
         with open(f'uploads/import/products/{args[0]}', 'r') as json_file:
             try:
                 data = json.loads(json_file.read())
-                logger.info(f'the file has been read>')
+                logger.info('the file has been read>')
             except JSONDecodeError:
-                logger.info(f'Error: bad json structure>')
+                logger.info('Error: bad json structure>')
         for item_name, features in data.items():
             product = Product.objects.get(name=item_name)
             if product:
@@ -88,21 +88,21 @@ class Command(BaseCommand):
                     new_product = self.update_product(SellerProduct.objects.get(seller=seller, product=product),
                                                       features['price'],
                                                       features['quantity'])
-                    logger.info(f'your product was updated>')
+                    logger.info('your product was updated>')
                 except ObjectDoesNotExist:
                     new_product = SellerProduct.objects.create(seller=seller,
                                                                product=product,
                                                                price=features['price'],
                                                                quantity=features['quantity'],
                                                                )
-                    logger.info(f'your product was created>')
+                    logger.info('your product was created>')
                 except KeyError:
-                    logger.info(f'Error: no price or quantity>')
+                    logger.info('Error: no price or quantity>')
                 try:
                     self.create_discount(features['discount'], seller, new_product)
-                    logger.info(f'your discount was created>')
+                    logger.info('your discount was created>')
                 except KeyError:
-                    logger.info(f'Warning: no discount in import file or bad discount structure>')
+                    logger.info('Warning: no discount in import file or bad discount structure>')
                 new_product.save()
                 logger.info(f'"{item_name}" imported>')
             else:

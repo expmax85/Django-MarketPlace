@@ -1,10 +1,10 @@
-from typing import Callable
-
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
+
+from settings_app.utils import check_image_size
 
 
 class UserManager(BaseUserManager):
@@ -76,19 +76,16 @@ class User(AbstractBaseUser, PermissionsMixin):
             return False
         return False
 
-    def save(self, *args, **kwargs) -> Callable:
+    def save(self, *args, **kwargs) -> None:
         """
         Method overridden to remove old files and add permissions
         """
+        check_image_size(self.avatar)
         if self.pk is not None:
             old_self = User.objects.get(pk=self.pk)
             if old_self.avatar and self.avatar != old_self.avatar:
                 old_self.avatar.delete(False)
-        if self.is_member('Content-manager'):
-            self.is_staff = True
-        else:
-            self.is_staff = False
-        return super(User, self).save(*args, **kwargs)
+        super(User, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('user')

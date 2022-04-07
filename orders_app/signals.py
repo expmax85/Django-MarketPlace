@@ -10,10 +10,9 @@ def order_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    if kwargs['created']:
-        user_id = kwargs['instance'].customer_id
-        cache.delete('user_orders:{}'.format(user_id))
-        cache.delete('user_last_order:{}'.format(user_id))
+    user_id = kwargs['instance'].customer_id
+    cache.delete('user_orders:{}'.format(user_id))
+    cache.delete('user_last_order:{}'.format(user_id))
 
 
 @receiver(post_delete, sender=Order)
@@ -31,9 +30,8 @@ def viewed_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    if kwargs['created']:
-        user_id = kwargs['instance'].user_id
-        cache.delete('orders:{}'.format(user_id))
+    user_id = kwargs['instance'].user_id
+    cache.delete('orders:{}'.format(user_id))
 
 
 @receiver(post_delete, sender=ViewedProduct)

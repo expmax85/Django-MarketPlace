@@ -12,9 +12,8 @@ from django.views import View
 from django.views.generic import ListView, DetailView
 from django.core.management import call_command
 
-from config.settings import CREATE_PRODUCT_ERROR, SEND_PRODUCT_REQUEST
+from django.conf import settings
 from discounts_app.models import ProductDiscount, GroupDiscount
-from stores_app.models import Seller, SellerProduct
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format
@@ -23,7 +22,6 @@ from stores_app.forms import AddStoreForm, EditStoreForm, \
 from discounts_app.forms import AddProductDiscountForm, AddGroupDiscountForm, AddCartDiscountForm
 from django.forms import ModelChoiceField
 from stores_app.models import Seller, SellerProduct, ProductImportFile
-
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -136,7 +134,8 @@ class AddSellerProductView(StoreAppMixin, View):
             form.save(commit=False)
             created = self.create_seller_product(data=form.cleaned_data)
             if not created:
-                messages.add_message(request, CREATE_PRODUCT_ERROR, _('This product is already exist in those store!'))
+                messages.add_message(request, settings.CREATE_PRODUCT_ERROR,
+                                     _('This product is already exist in those store!'))
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             return redirect(reverse('stores-polls:sellers-room'))
         return render(request, 'stores_app/new_product_in_store.html', {'form': form})
@@ -185,7 +184,7 @@ def remove_Store(request: HttpRequest) -> Callable:
     Удаление магазина продавца
     """
     StoreServiceMixin.remove_store(request)
-    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
@@ -194,37 +193,37 @@ def remove_SellerProduct(request: HttpRequest) -> Callable:
     Удаление продукта продавца
     """
     StoreServiceMixin.remove_seller_product(request)
-    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_ProductDiscount(request: HttpRequest) -> Callable:
     """
-    Remove product discount in seller room
+    Удаление скидки на товар
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_product_discount(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_GroupDiscount(request: HttpRequest) -> Callable:
     """
-    Remove product discount in seller room
+    Удаление скидки на группу товаров
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_group_discount(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('profiles_app.Sellers')
 def remove_CartDiscount(request: HttpRequest) -> Callable:
     """
-    Remove product discount in seller room
+    Удаление корзинной скидки
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_cart_discount(request)
-        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class RequestNewProduct(StoreAppMixin, View):
@@ -245,7 +244,7 @@ class RequestNewProduct(StoreAppMixin, View):
         if form.is_valid():
             product = form.save(commit=False)
             self.request_add_new_product(product=product, user=request.user)
-            messages.add_message(request, SEND_PRODUCT_REQUEST,
+            messages.add_message(request, settings.SEND_PRODUCT_REQUEST,
                                  _('Your request was sending. Wait the answer some before time to your email!'))
             return redirect(reverse('stores-polls:sellers-room'))
         categories = get_categories()
@@ -257,7 +256,7 @@ class RequestNewProduct(StoreAppMixin, View):
 
 class AddProductDiscountView(StoreAppMixin, View):
     """
-    Page for adding new product discount
+    Страница создания скидки на продукт
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -293,7 +292,7 @@ class AddProductDiscountView(StoreAppMixin, View):
 
 class EditProductDiscountView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования скидки на продукт
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -320,7 +319,7 @@ class EditProductDiscountView(StoreAppMixin, DetailView):
 
 class AddGroupDiscountView(StoreAppMixin, View):
     """
-    Page for adding new product discount
+    Страница создания скидки на группу товаров
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -349,7 +348,7 @@ class AddGroupDiscountView(StoreAppMixin, View):
 
 class EditGroupDiscountView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования скидки на группу товаров
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -374,7 +373,7 @@ class EditGroupDiscountView(StoreAppMixin, DetailView):
 
 class AddCartDiscountView(StoreAppMixin, View):
     """
-    Page for adding new product discount
+    Страница создания новой корзинной скидки
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -401,7 +400,7 @@ class AddCartDiscountView(StoreAppMixin, View):
 
 class EditCartDiscountView(StoreAppMixin, DetailView):
     """
-    Page for editing SellerProduct instance
+    Страница редактирования корзинной скидки
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -425,7 +424,9 @@ class EditCartDiscountView(StoreAppMixin, DetailView):
 
 
 class ImportView(StoreAppMixin, View):
-    """ Представление страницы проведения импорта """
+    """
+    Представление страницы проведения импорта
+    """
 
     def get(self, request):
         return render(request, 'stores_app/import.html', {})

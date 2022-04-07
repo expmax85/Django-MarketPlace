@@ -9,4 +9,3 @@ class GoodsAppConfig(AppConfig):
 
     def ready(self):
         from goods_app import signals
-

@@ -1,0 +1,184 @@
+[
+{
+  "model": "goods_app.productcategory",
+  "pk": 1,
+  "fields": {
+    "name": "Laptops",
+    "slug": "laptops",
+    "description": "Laptops< notebooks and all that stuff",
+    "parent": null,
+    "lft": 18,
+    "rght": 18,
+    "tree_id": 0,
+    "level": 0
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 2,
+  "fields": {
+    "name": "Smartphones",
+    "slug": "smartphones",
+    "description": "Most popular smartphone brands here",
+    "parent": null,
+    "lft": 18,
+    "rght": 18,
+    "tree_id": 0,
+    "level": 0
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 3,
+  "fields": {
+    "name": "Cameras",
+    "slug": "cameras",
+    "description": "Photo, video and action cameras",
+    "parent": null,
+    "lft": 18,
+    "rght": 18,
+    "tree_id": 0,
+    "level": 0
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 4,
+  "fields": {
+    "name": "Scooters",
+    "slug": "scooters",
+    "description": "All kinds of scooters",
+    "parent": null,
+    "lft": 18,
+    "rght": 18,
+    "tree_id": 0,
+    "level": 0
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 10,
+  "fields": {
+    "name": "Pineapple laptops",
+    "slug": "pineapple-laptops",
+    "description": "Best of Pineapple laptops",
+    "parent": 1,
+    "lft": 0,
+    "rght": 1,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 11,
+  "fields": {
+    "name": "Tsamsung laptops",
+    "slug": "tsamsung-laptopss",
+    "description": "Some of Tsamsung most advance laptops",
+    "parent": 1,
+    "lft": 2,
+    "rght": 3,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 12,
+  "fields": {
+    "name": "Juaihei laptops",
+    "slug": "juaihei-laptops",
+    "description": "Last Juaihei laptop models",
+    "parent": 1,
+    "lft": 4,
+    "rght": 5,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 13,
+  "fields": {
+    "name": "MePhone",
+    "slug": "mephone",
+    "description": "MePhone from PineApple",
+    "parent": 2,
+    "lft": 16,
+    "rght": 17,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 14,
+  "fields": {
+    "name": "Tsamsung smartphones",
+    "slug": "tsamsung-smartphones",
+    "description": "Smartphones by Tsamsung",
+    "parent": 2,
+    "lft": 6,
+    "rght": 7,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 15,
+  "fields": {
+    "name": "Orro",
+    "slug": "orro",
+    "description": "Smartphones by Orro",
+    "parent": 2,
+    "lft": 8,
+    "rght": 9,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 17,
+  "fields": {
+    "name": "Pony",
+    "slug": "pony",
+    "description": "Videocameras by Pony",
+    "parent": 3,
+    "lft": 10,
+    "rght": 11,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 18,
+  "fields": {
+    "name": "Panadronic",
+    "slug": "panadronic",
+    "description": "Motion cameras by Panadronic",
+    "parent": 3,
+    "lft": 12,
+    "rght": 13,
+    "tree_id": 0,
+    "level": 1
+  }
+},
+{
+  "model": "goods_app.productcategory",
+  "pk": 19,
+  "fields": {
+    "name": "Shanon",
+    "slug": "shanon",
+    "description": "Photo cameras by Shanon",
+    "parent": 3,
+    "lft": 14,
+    "rght": 15,
+    "tree_id": 0,
+    "level": 1
+  }
+}
+]

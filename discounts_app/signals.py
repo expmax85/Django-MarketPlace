@@ -10,9 +10,8 @@ def product_discount_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    if kwargs['created']:
-        user_id = kwargs['instance'].seller.owner_id
-        cache.delete('owner_product_discounts:{}'.format(user_id))
+    user_id = kwargs['instance'].seller.owner_id
+    cache.delete('owner_product_discounts:{}'.format(user_id))
 
 
 @receiver(post_delete, sender=ProductDiscount)
@@ -29,9 +28,8 @@ def group_discounts_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    if kwargs['created']:
-        user_id = kwargs['instance'].seller.owner_id
-        cache.delete('owner_product_discounts:{}'.format(user_id))
+    user_id = kwargs['instance'].seller.owner_id
+    cache.delete('owner_group_discounts:{}'.format(user_id))
 
 
 @receiver(post_delete, sender=GroupDiscount)
@@ -40,7 +38,7 @@ def group_discounts_cache_del_handler(sender, **kwargs) -> None:
     Signal for clearing cache
     """
     user_id = kwargs['instance'].seller.owner_id
-    cache.delete('owner_product_discounts:{}'.format(user_id))
+    cache.delete('owner_group_discounts:{}'.format(user_id))
 
 
 @receiver(post_save, sender=CartDiscount)
@@ -48,9 +46,8 @@ def cart_discounts_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    if kwargs['created']:
-        user_id = kwargs['instance'].seller.owner_id
-        cache.delete('owner_product_discounts:{}'.format(user_id))
+    user_id = kwargs['instance'].seller.owner_id
+    cache.delete('owner_card_discounts:{}'.format(user_id))
 
 
 @receiver(post_delete, sender=CartDiscount)
@@ -59,4 +56,4 @@ def cart_discounts_cache_del_handler(sender, **kwargs) -> None:
     Signal for clearing cache
     """
     user_id = kwargs['instance'].seller.owner_id
-    cache.delete('owner_product_discounts:{}'.format(user_id))
+    cache.delete('owner_card_discounts:{}'.format(user_id))
