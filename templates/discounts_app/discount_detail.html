@@ -41,11 +41,8 @@
                       </strong><span class="Card-date-month">{{ discount.valid_to|date:"M" }}</span>
                     </div>
                 {% endif %}
-                <img src="{% static 'assets/img/content/home/bigGoods.png' %}" alt="bigGoods.png">
+                <img src="{{ discount.image.url }}" alt="bigGoods.png">
               </div>
-
-{#              <div class="ProductCard-picts"><a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png"><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png"></a><a class="ProductCard-pict" href="assets/img/content/home/slider.png"><img src="assets/img/content/home/slider.png" alt="slider.png"></a><a class="ProductCard-pict" href="assets/img/content/home/videoca.png"><img src="assets/img/content/home/videoca.png" alt="videoca.png"></a>#}
-{#              </div>#}
             </div>
             <div class="ProductCard-desc">
               <div class="ProductCard-header">
@@ -53,226 +50,23 @@
                 <div class="ProductCard-info">
                   <div class="ProductCard-cost">
                     {% if discount.type_of_discount == 'p' %}
-                        <div class="ProductCard-price">%{{ discount.percent }}
+                        <div class="ProductCard-price">{% trans 'Discount' %}: -{{ discount.percent|floatformat:0 }}%
                         </div>
                     {% elif discount.type_of_discount == 'f' %}
-                        <div class="ProductCard-price">${{ discount.amount }}
+                        <div class="ProductCard-price">{% trans 'Discount' %}: -{{ discount.amount|floatformat:2 }}$
                         </div>
                     {% else %}
-                        <div class="ProductCard-price">${{ discount.fixed_price }}
+                        <div class="ProductCard-price">{% trans 'Fixed price' %}: {{ discount.fixed_price|floatformat:2 }}$
                         </div>
                     {% endif %}
                   </div>
-{#                  <div class="ProductCard-compare"><a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>#}
-{#                  </div>#}
                 </div>
               </div>
               <div class="ProductCard-text">
                 {{ discount.description }}
               </div>
-
-{#              <div class="ProductCard-footer">#}
-{#                <div class="ProductCard-tags">#}
-{#                  <strong class="ProductCard-tagsTitle">{% trans 'Tags' %}:#}
-{#                  </strong>#}
-{#                    {% for tag in tags %}#}
-{#                    <a href="#">{{ tag }}</a>#}
-{#                    {% endfor %}#}
-{#                </div>#}
-{#              </div>#}
             </div>
           </div>
-{#          <div class="Tabs Tabs_default">#}
-{#            <div class="Tabs-links">#}
-{#                <a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a>#}
-{#                <a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a>#}
-{#                <a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a>#}
-{#                <a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} (<span class="count_reviews">{{ reviews_count|default_if_none:"0" }}</span>)</span></a>#}
-{#            </div>#}
-{#            <div class="Tabs-wrap">#}
-{#              <div class="Tabs-block" id="description" style="display: none;">#}
-{#                <h2>Megano Store Hystory#}
-{#                </h2>#}
-{#                <p>Lorem ipsum dolor sit amet, consectetuer#}
-{#                  <strong>adipiscing#}
-{#                  </strong> elit doli. Aenean commodo ligula eget dolor. Aenean massa. <a href="#">Cumtipsu</a> sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem.#}
-{#                </p><img class="pict pict_right" src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">#}
-{#                <ul>#}
-{#                  <li>Lorem ipsum dolor sit amet, consectetuer#}
-{#                  </li>#}
-{#                  <li>adipiscing elit doli. <em>Aenean</em> commodo ligula#}
-{#                  </li>#}
-{#                  <li>eget dolor. Aenean massa. Cumtipsu sociis#}
-{#                  </li>#}
-{#                  <li>natoque penatibus et magnis dis parturient#}
-{#                  </li>#}
-{#                  <li>montesti, nascetur ridiculus mus. Donec#}
-{#                  </li>#}
-{#                  <li>quam felis, ultricies nec, pellentesque eutu#}
-{#                  </li>#}
-{#                </ul>#}
-{#                <div class="clearfix">#}
-{#                </div>#}
-{#                <div class="table">#}
-{#                  <table>#}
-{#                    <tbody><tr>#}
-{#                      <th>{% trans 'Performance' %}#}
-{#                      </th>#}
-{#                      <th>{% trans 'Value' %}#}
-{#                      </th>#}
-{#                    </tr>#}
-{#                    {% for spec in specifications %}#}
-{#                    <tr>#}
-{#                      <td>{{ spec.current_specification }}#}
-{#                      </td>#}
-{#                      <td>{{ spec.value }}#}
-{#                      </td>#}
-{#                    </tr>#}
-{#                    {% endfor %}#}
-{#                  </tbody></table>#}
-{#                </div>#}
-{#              </div>#}
-{#              <div class="Tabs-block" id="sellers" style="display: none;">#}
-{#                <div class="Categories Categories_product">#}
-{#                {% for item in sellers %}#}
-{#                  <div class="Categories-row">#}
-{#                    <div class="Categories-block Categories-block_info">#}
-{#                      <div class="Categories-info">#}
-{#                          <a href="{{ item.seller.get_absolute_url }}"><strong>{{ item.seller.name }}#}
-{#                        </strong></a>#}
-{#                      </div>#}
-{#                    </div>#}
-{#                    <div class="Categories-splitProps">#}
-{#                    </div>#}
-{#                    <div class="Categories-block Categories-price">#}
-{#                      <strong>{{ item.price_after_discount }}#}
-{#                      </strong>#}
-{#                    </div>#}
-{#                    <div class="Categories-block Categories-button"><a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Buy' %}</span></a>#}
-{#                    </div>#}
-{#                  </div>#}
-{#                {% endfor %}#}
-{#                </div>#}
-{#              </div>#}
-{#              <div class="Tabs-block" id="addit" style="display: none;">#}
-{#                <div class="Product-props">#}
-{#                  <div class="Product-prop">#}
-{#                    <strong>Lorem#}
-{#                    </strong><span> Pfizer</span>#}
-{#                  </div>#}
-{#                  <div class="Product-prop">#}
-{#                    <strong>ipsum#}
-{#                    </strong><span> Lorem ipsum dolor sit</span>#}
-{#                  </div>#}
-{#                  <div class="Product-prop">#}
-{#                    <strong>dolor sit#}
-{#                    </strong><span> 5 ans</span>#}
-{#                  </div>#}
-{#                  <div class="Product-prop">#}
-{#                    <strong>psum dolo#}
-{#                    </strong><span> 2–3 jours</span>#}
-{#                  </div>#}
-{#                </div>#}
-{#              </div>#}
-{#              <div class="Tabs-block" id="reviews" style="">#}
-{#              {% if comments %}#}
-{#                <header class="Section-header">#}
-{#                  <h3 class="Section-title"><span class="count_reviews">{{ reviews_count|default_if_none:"0" }}</span>{% trans 'Review(s)' %}#}
-{#                  </h3>#}
-{#                </header>#}
-{#              {% endif %}#}
-{#              <form class="form" name="page-filter" action="{% url 'goods-polls:get_reviews' %}" method="get">#}
-{#                <div class="Comments comments-js">#}
-{#                  <div id="comments" class="Comments">#}
-{#                    <input type="hidden" name="slug" value="{{ product.slug }}">#}
-{#                  {% for comment in comments %}#}
-{#                  <div class="Comment">#}
-{#                    <div class="Comment-column Comment-column_pict">#}
-{#                      <div class="Comment-avatar">#}
-{#                      </div>#}
-{#                    </div>#}
-{#                    <div class="Comment-column">#}
-{#                      <header class="Comment-header">#}
-{#                        <div>#}
-{#                          <strong class="Comment-title">{{ comment.author }}#}
-{#                          </strong><span class="Comment-date">{{ comment.added|date:"F / d / o G:i" }}</span>#}
-{#                        </div>#}
-{#                      </header>#}
-{#                      <div class="Comment-content">{{ comment.content }}#}
-{#                      </div>#}
-{#                    </div>#}
-{#                  </div>#}
-{#                  {% endfor %}#}
-{#                    </div>#}
-{#                  {% if comments.paginator.num_pages > 1 %}#}
-{#                    <button type="Submit" id="btn_page" class="btn btn_default btn_sm">#}
-{#                    <select id="id_page" name="page" multiple>#}
-{#                        {% if comments.has_previous %}#}
-{#                        <option class="btn btn_default btn_sm" value="1">1</option>#}
-{#                        <option class="btn btn_default btn_sm" value="{{ comments.previous_page_number }}">&laquo; </option>#}
-{#                        {% endif %}#}
-{#                        <option class="btn btn_default btn_sm active" value="{{ comments.number }}">{{ comments.number }}</option>#}
-{#                        {% if comments.has_next %}#}
-{#                        <option class="btn btn_default btn_sm" value="{{comments.next_page_number }}"> &raquo;</option>#}
-{#                        <option class="btn btn_default btn_sm" value="{{ comments.paginator.num_pages }}"> &raquo;&raquo;</option>#}
-{#                        {% endif %}#}
-{#                    </select>#}
-{#                      </button>#}
-{#                  {% endif %}#}
-{#                </div>#}
-{#              </form>#}
-{#                <header class="Section-header Section-header_product">#}
-{#                  <h3 class="Section-title">{% trans 'Add Review' %}#}
-{#                  </h3>#}
-{#                </header>#}
-{#                <div class="Tabs-addCommentreview-form ">#}
-{#                {% if request.user.is_authenticated %}#}
-{#                  <form class="form" id="comment-form" method="post">#}
-{#                      {% csrf_token %}#}
-{#                      <input type="hidden" name="user" value="{{ request.user.id }}">#}
-{#                      {{ form.errors.user }}#}
-{#                      <input type="hidden" name="product" value="{{ product.id }}">#}
-{#                       <input id="id_slug_post" type="hidden" name="slug" value="{{ product.slug }}">#}
-{#                      {{ form.errors.product }}#}
-{#                    <div class="form-group">#}
-{#                      <textarea class="form-textarea" name="content" id="content" required placeholder="Review" style="width: 1143px; height: 117px;"></textarea>#}
-{#                        {{ form.errors.content }}#}
-{#                    </div>#}
-{#                    <div class="form-group">#}
-{#                      <div class="row" style="margin-left: 0;">#}
-{#                        <div class="row-block">#}
-{#                          <input class="form-input" id="author" name="author" type="text" placeholder="Name" required>#}
-{#                            {{ form.errors.author }}#}
-{#                        </div>#}
-{#                        <div class="row-block">#}
-{#                          <input class="form-input" id="email" name="email" type="text" readonly value="{{ request.user.email }}" placeholder="Email">#}
-{#                        </div>#}
-{#                      </div>#}
-{#                    </div>#}
-{#                    <div class="form-group custom_register_name-block">#}
-{#                      <button class="btn btn_muted" type="submit">{% trans 'Submit Review' %}#}
-{#                      </button>#}
-{#                      <div class="input-rating">#}
-{#                          <span>{% trans 'Your Rating:' %} </span>#}
-{#                          <div class="rating">#}
-{#                              <input id="star5" name="rating" value="5" type="radio"><label for="star5">☆</label>#}
-{#                              <input id="star4" name="rating" value="4" type="radio"><label for="star4">☆</label>#}
-{#                              <input id="star3" name="rating" value="3" type="radio"><label for="star3">☆</label>#}
-{#                              <input id="star2" name="rating" value="2" type="radio"><label for="star2">☆</label>#}
-{#                              <input id="star1" name="rating" value="1" type="radio"><label for="star1">☆</label>#}
-{#                          </div>#}
-{#                      </div>#}
-{#                    </div>#}
-{#                  </form>#}
-{#                  <div class="send-product-request" id="rating_error" style="color: red; text-align: right;">{{rating_error}}</div>#}
-{#                  {% else %}#}
-{#                  <div>{% trans 'Please' %} <a href="{% url 'profiles-polls:login' %}">{% trans 'sign-in' %}</a> {% trans 'or' %} <a#}
-{#                          href="{% url 'profiles-polls:register' %}">{% trans 'registering' %}</a> {% trans 'for leave the comments on the site.' %}</div>#}
-{#                  {% endif %}#}
-{#                </div>#}
-{#              </div>#}
-{#            </div>#}
-{#          </div>#}
         </div>
       </div>
     </div>
@@ -302,17 +96,29 @@
                           </div>
                           <div class="Card-category">{{ product.product.category }}
                           </div>
-                          <div class="Card-hover"><a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a><a class="Card-btn" href="compare.html"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
+                          <div class="Card-hover">
+                              <a class="Card-btn" href="#">
+                                  <img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/>
+                              </a>
+                              <a class="Card-btn" href="{% url 'orders-polls:cart_add' product.id %}">
+                                  <img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/>
+                              </a>
+                              <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' product.id %}">
+                                  <img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/>
+                              </a>
                           </div>
                         </div>
                       </div>
-                      <div class="Card-sale">
-                        {% if discount.type_of_discount == 'p' %}
-                            -{{ discount.percent|floatformat:0 }}%
-                        {% elif discount.type_of_discount == 'f' %}
-                            -{{ discount.amount|floatformat:0 }}$
-                        {% endif %}
-                      </div>
+                      {% if discount.type_of_discount == 'p' and not discount.set_discount %}
+                        <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
+                        </div>
+                      {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
+                        <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
+                        </div>
+                      {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
+                        <div class="Card-sale" style="background-color: #6888fc">!!!
+                        </div>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -320,51 +126,10 @@
           </div>
         </div>
       </div>
-</div>
+    </div>
 </div>
 {% endblock %}
 
 {% block footer %}
-{% include 'elems/footer.html' %}
+    {% include 'elems/footer.html' %}
 {% endblock %}
-
-{#{% block scripts %}#}
-{#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>#}
-{#    <script src="{% static 'assets/js/comments.js' %}"></script>#}
-{#    <script>#}
-{#      $(document).ready(function () {#}
-{#      // отслеживаем событие отправки формы#}
-{#          $('#comment-form').submit(function () {#}
-{#              // создаем AJAX-вызов#}
-{#              $.ajax({#}
-{#                  data: $(this).serialize(), // получаем данные формы#}
-{#                  type: 'post', // GET или POST#}
-{#                  url: "{% url 'goods-polls:post_review' %}",#}
-{#                  // если успешно, то#}
-{#                  success: function (response) {#}
-{#                     let error = document.querySelector('#rating_error')#}
-{#                     let url = '{% url 'goods-polls:get_reviews' %}';#}
-{#                     let page = response['num_pages']#}
-{#                     let slug = response['slug']#}
-{#                     let params = 'slug='+ slug.toString() + '&page=' + page.toString();#}
-{#                     if (response['rating_error'] === undefined) {#}
-{#                      $('#comment-form').trigger('reset');#}
-{#                      error.innerHTML = "";#}
-{#                      ajaxSend(url, params, html, target);#}
-{#                      } else {#}
-{#                      error.innerHTML = response['rating_error'];#}
-{#                      }#}
-{##}
-{#                  },#}
-{#                  // если ошибка, то#}
-{#                  error: function (response) {#}
-{#                      // предупредим об ошибке#}
-{#                      alert(response.responseJSON.errors);#}
-{#                      console.log(response.responseJSON.errors)#}
-{#                  }#}
-{#              });#}
-{#              return false;#}
-{#          });#}
-{#      })#}
-{#    </script>#}
-{#{% endblock %}#}

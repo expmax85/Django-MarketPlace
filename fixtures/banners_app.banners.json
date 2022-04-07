@@ -6,7 +6,7 @@
     "discount": 1,
     "title": "TruckBook 1000",
     "description": "Get it now with 5% discount",
-    "image": "static/assets/img/content/home/banners/django.jpg"
+    "image": "static/assets/img/content/home/banners/Truckbook_banner.png"
   }
 },
 {
@@ -16,7 +16,7 @@
     "discount": 2,
     "title": "Our TruckBook is Cheaper!",
     "description": "Be the first or get nothing. TruckBook into your soul!",
-    "image": "static/assets/img/content/home/banners/python_advanced.jpg"
+    "image": "static/assets/img/content/home/banners/slider.png"
   }
 },
 {
@@ -26,17 +26,27 @@
     "discount": 3,
     "title": "Juahei B200",
     "description": "Juahei Juahei get it now or go away!",
-    "image": "static/assets/img/content/home/banners/python_basic.jpg"
+    "image": "static/assets/img/content/home/banners/slider.png"
   }
 },
 {
   "model": "banners_app.banner",
-  "pk": 4,
+  "pk": 5,
   "fields": {
     "discount": 4,
-    "title": "RVideo special set",
-    "description": "The very ultra mega special RVideo discount 1000$ of A100 and B200 set",
+    "title": "Only in RVideo",
+    "description": "Special set of Juaiheis A100 and B200. Get 1000$ off buynig two at once",
     "image": "static/assets/img/content/home/banners/slider.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 8,
+  "fields": {
+    "discount": 7,
+    "title": "Juaihei C300 is yours",
+    "description": "Only one week in RVideo",
+    "image": "static/assets/img/content/home/banners/Rectangle_19.jpg"
   }
 }
 ]

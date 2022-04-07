@@ -9,7 +9,7 @@
       </header>
       <div class="Card">
         <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-          <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+          <button class="Card-picture" type="submit"><img src="{{ MEDIAROOT }}/uploads/{{ special_product.product.image }}" alt="card.jpg"/></button>
         <div class="Card-content">
           <button class="Card-title" type="submit">{{ special_product.product.name }}
           </button>

@@ -75,34 +75,23 @@
                         {% trans 'Name Surname' %}
                     </label>
                     {{ form.fio }}
-{#                    <input class="form-input" id="name" name="name" type="text" value="Иванов Иван Иванович"/>#}
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="phone">{% trans 'Phone' %}
                     </label>
-{#                    <input class="form-input" id="phone" name="phone" type="text" value="+70000000000"/>#}
                       {{ form.phone }}
+                      <span class="formerror">{{form.errors.phone}}</span>
+
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="mail">{% trans 'E-mail' %}
                     </label>
-{#                    <input class="form-input" id="mail" name="mail" type="text" value="" data-validate="require"/>#}
                       {{ form.email }}
+                      <span class="formerror">{{form.errors.email}}</span>
                   </div>
                 </div>
                 <div class="row-block">
-{#                  <div class="form-group">#}
-{#                    <label class="form-label" for="password">Пароль#}
-{#                    </label>#}
-{#                    <input class="form-input" id="password" name="password" type="password" placeholder="Тут можно изменить пароль"/>#}
-{#                  </div>#}
-{#                  <div class="form-group">#}
-{#                    <label class="form-label" for="passwordReply">Подтверждение пароля#}
-{#                    </label>#}
-{#                    <input class="form-input" id="passwordReply" name="passwordReply" type="password" placeholder="Введите пароль повторно"/>#}
-{#                  </div>#}
-{#                  <div class="form-group"><a class="btn btn_muted Order-btnReg" href="#">Я уже зарегистрирован</a>#}
-{#                  </div>#}
+
                 </div>
               </div>
               <div class="Order-footer">

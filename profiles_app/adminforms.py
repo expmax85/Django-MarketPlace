@@ -7,6 +7,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.exceptions import ValidationError
 
+from settings_app.utils import check_image_size, get_help_text
 
 User = get_user_model()
 
@@ -81,6 +82,15 @@ class UserChangeForm(forms.ModelForm):
     """
     password = ReadOnlyPasswordHashField()
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields['avatar'].help_text = get_help_text(size=True)
+
     class Meta:
         model = User
         fields = ('email', 'password', 'is_active', 'is_staff')
+
+    def clean_image(self) -> str:
+        image = self.cleaned_data['avatar']
+        check_image_size(image)
+        return image

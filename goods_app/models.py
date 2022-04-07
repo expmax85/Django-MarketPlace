@@ -1,7 +1,5 @@
 from typing import Callable
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -11,6 +9,7 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from taggit.managers import TaggableManager
 
+from settings_app.utils import check_image_size, check_image_resolution
 
 User = get_user_model()
 
@@ -22,11 +21,13 @@ class ProductCategory(MPTTModel):
     name = models.CharField(
         max_length=25,
         null=True,
-        verbose_name=_('product_category')
+        verbose_name=_('category title')
     )
-    slug = models.SlugField(null=True, verbose_name=_('product_category_slug'))
-    description = models.TextField(max_length=255, null=True, verbose_name=_('product_category_description'))
+    slug = models.SlugField(null=True, verbose_name=_('slug'))
+    description = models.TextField(max_length=255, null=True, verbose_name=_('description'))
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    icon = models.ImageField(null=True, blank=True, verbose_name=_('icon'))
+    image = models.ImageField(null=True, blank=True, verbose_name=_('image'))
 
     def __str__(self) -> str:
         return self.name
@@ -37,6 +38,21 @@ class ProductCategory(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+    def save(self, *args, **kwargs) -> Callable:
+        """
+        Method overridden to remove old files and add permissions
+        """
+        check_image_size(self.image)
+        check_image_size(self.icon)
+        check_image_resolution(self.icon)
+        if self.pk is not None:
+            old_self = ProductCategory.objects.get(pk=self.pk)
+            if old_self.image and self.image != old_self.image:
+                old_self.image.delete(False)
+            if old_self.icon and self.icon != old_self.icon:
+                old_self.icon.delete(False)
+        return super(ProductCategory, self).save(*args, **kwargs)
 
 
 class Product(models.Model):
@@ -49,15 +65,13 @@ class Product(models.Model):
         related_name='products',
         verbose_name='good_category',
     )
-    name = models.CharField(max_length=25, null=True, verbose_name='product name')
-    code = models.CharField(max_length=25, null=True, blank=True, verbose_name='product code')
-    slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name='product slug')
-    image = models.ImageField(null=True, blank=True, verbose_name='product image')
-    description = models.TextField(max_length=255, null=True, verbose_name='product description')
-    average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
-                                        verbose_name='average price')
-    rating = models.FloatField(null=True, blank=True, default=0, verbose_name='rating')
-    is_published = models.BooleanField(verbose_name='is published', null=True, blank=True, default=True)
+    name = models.CharField(max_length=100, null=True, verbose_name=_('product name'))
+    code = models.CharField(max_length=10, null=True, blank=True, verbose_name=_('product code'))
+    slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name=_('product slug'))
+    image = models.ImageField(null=True, blank=True, verbose_name=_('product image'))
+    description = models.TextField(max_length=2550, null=True, verbose_name=_('product description'))
+    rating = models.FloatField(null=True, blank=True, default=0, verbose_name=_('rating'))
+    is_published = models.BooleanField(verbose_name=_('is published'), null=True, blank=True, default=True)
     tags = TaggableManager(blank=True)
     limited = models.BooleanField(default=False, verbose_name=_('limited edition'))
 
@@ -71,6 +85,17 @@ class Product(models.Model):
         verbose_name = _('product')
         verbose_name_plural = _('products')
         db_table = 'products'
+
+    def save(self, *args, **kwargs) -> Callable:
+        """
+        Method overridden to remove old files and add permissions
+        """
+        check_image_size(self.image)
+        if self.pk is not None:
+            old_self = Product.objects.get(pk=self.pk)
+            if old_self.image and self.image != old_self.image:
+                old_self.image.delete(False)
+        return super(Product, self).save(*args, **kwargs)
 
 
 class ProductComment(models.Model):
@@ -140,13 +165,3 @@ class ProductRequest(Product):
         verbose_name = _('new product')
         verbose_name_plural = _('new products')
         db_table = 'add_products'
-
-
-@receiver(post_save, sender=ProductRequest)
-def delete_instance(sender, **kwargs) -> None:
-    """
-    The signal for deleting decided ProductRequest instance
-    """
-    instance = kwargs.get('instance')
-    if instance.is_published:
-        instance.delete(keep_parents=True)

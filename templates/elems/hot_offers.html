@@ -20,7 +20,7 @@
                 <div class="Card">
                     <form method="get" style="display:flex;" action="{% url 'orders-polls:add_viewed' %}">
                   <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
-                  <button class="Card-picture" role="link" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+                  <button class="Card-picture" role="link" type="submit"><img src="{{ MEDIAROOT }}/uploads/{{ offer.product.image }}" alt="card.jpg"/></button>
                   <div class="Card-content">
                     <button class="Card-title" type="submit">{{ offer.product.name }}
                     </button>
@@ -50,6 +50,9 @@
                     </div>
                   {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
                     <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
+                    </div>
+                  {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
+                    <div class="Card-sale" style="background-color: #6888fc">!!!
                     </div>
                   {% endif %}
                 </div>

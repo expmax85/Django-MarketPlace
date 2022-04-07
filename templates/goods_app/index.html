@@ -36,7 +36,9 @@
           {% for item, price_after_discount, discount in products %}
             <div class="Card" type="submit">
             <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-            <button class="Card-picture" type="submit"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></button>
+            <button class="Card-picture" type="submit">
+                <img src="{{ MEDIAROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"/>
+            </button>
             <div class="Card-content">
                 <button class="Card-title" type="submit">
                   {{ item.product.name }}
@@ -68,6 +70,9 @@
                 </div>
             {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
                 <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
+                </div>
+            {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
+                <div class="Card-sale" style="background-color: #6888fc">!!!
                 </div>
             {% endif %}
           </div>
