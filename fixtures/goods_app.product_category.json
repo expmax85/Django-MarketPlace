@@ -1,184 +1,173 @@
 [
-{
-  "model": "goods_app.productcategory",
-  "pk": 1,
-  "fields": {
-    "name": "Laptops",
-    "slug": "laptops",
-    "description": "Laptops< notebooks and all that stuff",
-    "parent": null,
-    "lft": 18,
-    "rght": 18,
-    "tree_id": 0,
-    "level": 0
+  {
+    "model": "goods_app.productcategory",
+    "pk": 21,
+    "fields": {
+      "name": "electronics",
+      "slug": "electronics",
+      "description": "electronics",
+      "icon": "5_1DTSsb4.png",
+      "image": "images_2.jpg",
+      "lft": 1,
+      "rght": 8,
+      "tree_id": 4,
+      "level": 0
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 22,
+    "fields": {
+      "name": "notebooks",
+      "slug": "notebooks",
+      "description": "notebooks",
+      "parent": 21,
+      "icon": "pc-icon_GVHmkxU.png",
+      "image": "166215_1557732045_0.png",
+      "lft": 4,
+      "rght": 5,
+      "tree_id": 4,
+      "level": 1
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 23,
+    "fields": {
+      "name": "tv",
+      "slug": "tv",
+      "description": "televisions",
+      "parent": 21,
+      "icon": "1_TlmFnNt.png",
+      "image": "images_3.jpg",
+      "lft": 6,
+      "rght": 7,
+      "tree_id": 4,
+      "level": 1
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 25,
+    "fields": {
+      "name": "mobile phones",
+      "slug": "mobile-phones",
+      "description": "mobile phones",
+      "icon": "8_GnkuWJf.png",
+      "image": "digital-wireless_CPkTA8J.jpg",
+      "lft": 1,
+      "rght": 4,
+      "tree_id": 6,
+      "level": 0
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 27,
+    "fields": {
+      "name": "all for home",
+      "slug": "all-for-home",
+      "description": "all for home",
+      "icon": "11.png",
+      "image": "images.jpg",
+      "lft": 1,
+      "rght": 6,
+      "tree_id": 2,
+      "level": 0
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 28,
+    "fields": {
+      "name": "washing machines",
+      "slug": "washing-machines",
+      "description": "washing machines",
+      "parent": 27,
+      "icon": "3.png",
+      "image": "images_1.jpg",
+      "lft": 4,
+      "rght": 5,
+      "tree_id": 2,
+      "level": 1
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 29,
+    "fields": {
+      "name": "kitchen stoves",
+      "slug": "kitchen-stoves",
+      "description": "kitchen stoves",
+      "parent": 27,
+      "icon": "9.png",
+      "image": "PH855_2.jpg",
+      "lft": 2,
+      "rght": 3,
+      "tree_id": 2,
+      "level": 1
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 30,
+    "fields": {
+      "name": "furniture",
+      "slug": "furniture",
+      "description": "furniture",
+      "icon": "7_ksXwJc2.png",
+      "image": "images_4.jpg",
+      "lft": 1,
+      "rght": 10,
+      "tree_id": 5,
+      "level": 0
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 35,
+    "fields": {
+      "name": "Accessories",
+      "slug": "accessories",
+      "description": "Accessories",
+      "icon": "2_uTDNSy4.png",
+      "image": "best_assesories_less_10-17.jpg",
+      "lft": 1,
+      "rght": 6,
+      "tree_id": 1,
+      "level": 0
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 36,
+    "fields": {
+      "name": "phones",
+      "slug": "phones",
+      "description": "phones",
+      "parent": 35,
+      "icon": "8_h5aqGoU.png",
+      "image": "18.jpg",
+      "lft": 4,
+      "rght": 5,
+      "tree_id": 1,
+      "level": 1
+    }
+  },
+  {
+    "model": "goods_app.productcategory",
+    "pk": 37,
+    "fields": {
+      "name": "computers",
+      "slug": "computers",
+      "description": "computers",
+      "parent": 35,
+      "icon": "pc-icon_gDI7hdA.png",
+      "image": "Logitech-PC-Accessories-512x512-1.png",
+      "lft": 2,
+      "rght": 3,
+      "tree_id": 1,
+      "level": 1
+    }
   }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 2,
-  "fields": {
-    "name": "Smartphones",
-    "slug": "smartphones",
-    "description": "Most popular smartphone brands here",
-    "parent": null,
-    "lft": 18,
-    "rght": 18,
-    "tree_id": 0,
-    "level": 0
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 3,
-  "fields": {
-    "name": "Cameras",
-    "slug": "cameras",
-    "description": "Photo, video and action cameras",
-    "parent": null,
-    "lft": 18,
-    "rght": 18,
-    "tree_id": 0,
-    "level": 0
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 4,
-  "fields": {
-    "name": "Scooters",
-    "slug": "scooters",
-    "description": "All kinds of scooters",
-    "parent": null,
-    "lft": 18,
-    "rght": 18,
-    "tree_id": 0,
-    "level": 0
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 10,
-  "fields": {
-    "name": "Pineapple laptops",
-    "slug": "pineapple-laptops",
-    "description": "Best of Pineapple laptops",
-    "parent": 1,
-    "lft": 0,
-    "rght": 1,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 11,
-  "fields": {
-    "name": "Tsamsung laptops",
-    "slug": "tsamsung-laptopss",
-    "description": "Some of Tsamsung most advance laptops",
-    "parent": 1,
-    "lft": 2,
-    "rght": 3,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 12,
-  "fields": {
-    "name": "Juaihei laptops",
-    "slug": "juaihei-laptops",
-    "description": "Last Juaihei laptop models",
-    "parent": 1,
-    "lft": 4,
-    "rght": 5,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 13,
-  "fields": {
-    "name": "MePhone",
-    "slug": "mephone",
-    "description": "MePhone from PineApple",
-    "parent": 2,
-    "lft": 16,
-    "rght": 17,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 14,
-  "fields": {
-    "name": "Tsamsung smartphones",
-    "slug": "tsamsung-smartphones",
-    "description": "Smartphones by Tsamsung",
-    "parent": 2,
-    "lft": 6,
-    "rght": 7,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 15,
-  "fields": {
-    "name": "Orro",
-    "slug": "orro",
-    "description": "Smartphones by Orro",
-    "parent": 2,
-    "lft": 8,
-    "rght": 9,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 17,
-  "fields": {
-    "name": "Pony",
-    "slug": "pony",
-    "description": "Videocameras by Pony",
-    "parent": 3,
-    "lft": 10,
-    "rght": 11,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 18,
-  "fields": {
-    "name": "Panadronic",
-    "slug": "panadronic",
-    "description": "Motion cameras by Panadronic",
-    "parent": 3,
-    "lft": 12,
-    "rght": 13,
-    "tree_id": 0,
-    "level": 1
-  }
-},
-{
-  "model": "goods_app.productcategory",
-  "pk": 19,
-  "fields": {
-    "name": "Shanon",
-    "slug": "shanon",
-    "description": "Photo cameras by Shanon",
-    "parent": 3,
-    "lft": 14,
-    "rght": 15,
-    "tree_id": 0,
-    "level": 1
-  }
-}
 ]

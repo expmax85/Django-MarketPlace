@@ -48,6 +48,7 @@ class CustomIndexDashboard(Dashboard):
                     title=_('Applications'),
                     exclude=('django.contrib.*',
                              'allauth.*',
+                             'dynamic_preferences.*',
                              'profiles_app.*',
                              'taggit.*',),
                 ),

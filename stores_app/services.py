@@ -9,8 +9,7 @@ from django.core.cache import cache
 
 from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
 from orders_app.models import Order, ViewedProduct
-from config.settings import SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT, SUCCESS_DEL_PRODUCT_DISCOUNT, \
-    SUCCESS_DEL_GROUP_DISCOUNT, SUCCESS_DEL_CART_DISCOUNT
+from django.conf import settings
 from stores_app.models import Seller, SellerProduct
 from goods_app.models import Product
 
@@ -71,8 +70,7 @@ class StoreServiceMixin:
         Remove store
         """
         store = Seller.objects.get(slug=request.GET.get('id'))
-        messages.add_message(request, SUCCESS_DEL_STORE,
-                             _(f'The {store.name} was removed'))
+        messages.add_message(request, settings.SUCCESS_DEL_STORE, _(f'The {store.name} was removed'))
         store.delete()
 
     @classmethod
@@ -118,7 +116,7 @@ class StoreServiceMixin:
         Remove store
         """
         item = SellerProduct.objects.select_related('seller', 'product').get(id=request.GET.get('id'))
-        messages.add_message(request, SUCCESS_DEL_PRODUCT,
+        messages.add_message(request, settings.SUCCESS_DEL_PRODUCT,
                              _(f'Product {item.product.name} from the store {item.seller.name} was removed'))
         item.delete()
 
@@ -223,7 +221,7 @@ class StoreServiceMixin:
         Remove store
         """
         item = ProductDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
-        messages.add_message(request, SUCCESS_DEL_PRODUCT_DISCOUNT,
+        messages.add_message(request, settings.SUCCESS_DEL_PRODUCT_DISCOUNT,
                              _(f'Product discount {item.name} from the store {item.seller.name} was removed'))
         item.delete()
 
@@ -263,7 +261,7 @@ class StoreServiceMixin:
         Remove store
         """
         item = GroupDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
-        messages.add_message(request, SUCCESS_DEL_GROUP_DISCOUNT,
+        messages.add_message(request, settings.SUCCESS_DEL_GROUP_DISCOUNT,
                              _(f'Group discount {item.name} from the store {item.seller.name} was removed'))
         item.delete()
 
@@ -303,6 +301,6 @@ class StoreServiceMixin:
         Remove store
         """
         item = CartDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
-        messages.add_message(request, SUCCESS_DEL_CART_DISCOUNT,
+        messages.add_message(request, settings.SUCCESS_DEL_CART_DISCOUNT,
                              _(f'Cart discount {item.name} from the store {item.seller.name} was removed'))
         item.delete()

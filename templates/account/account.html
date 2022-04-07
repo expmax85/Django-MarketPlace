@@ -67,12 +67,17 @@
               <a class="Account-editLink" href="{%  url 'profiles-polls:account-edit' %}">{% trans 'Edit profile' %}</a>
             </div>
           </div>
+          {% if last_order %}
           <div class="Account-group">
             <div class="Account-column Account-column_full">
               <div class="Order Order_anons">
                 <div class="Order-personal">
                   <div class="row">
-                    <div class="row-block"><a class="Order-title" href="{% url 'orders-polls:history-order-detail' last_order.id %}">{% trans 'Order' %}&#32;<span class="Order-numberOrder">№{{last_order.id}}</span>&#32;{% trans 'from' %}&#32;<span class="Order-dateOrder">{{last_order.ordered|date:"d.m.o"}}</span></a>
+                    <div class="row-block">
+                      <a class="Order-title" href="{% url 'orders-polls:history-order-detail' last_order.id %}">{% trans 'Order' %}&#32;
+                        <span class="Order-numberOrder">№{{last_order.id}}</span>&#32;{% trans 'from' %}&#32;
+                        <span class="Order-dateOrder">{{last_order.ordered|date:"d.m.o"}}</span>
+                      </a>
                       <div class="Account-editLink">
                           <a href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
                       </div>
@@ -120,6 +125,7 @@
               </div>
             </div>
           </div>
+          {% endif %}
           {% if viewed_products %}
           <div class="Account-group">
             <div class="Account-column Account-column_full">

@@ -1,10 +1,13 @@
 import openpyxl
 
 from django.contrib.admindocs.views import simplify_regex
-from django.core.exceptions import ViewDoesNotExist
 from django.core.management.base import BaseCommand
 from django.urls import URLPattern, URLResolver
 from config import urls
+
+
+class ViewDoesNotExist(Exception):
+    pass
 
 
 class RegexURLPattern:

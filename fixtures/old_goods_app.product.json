@@ -1,0 +1,216 @@
+[
+{
+  "model": "goods_app.product",
+  "pk": 1,
+  "fields": {
+    "category": 10,
+    "name": "TruckBook 1000",
+    "code": "xz1",
+    "slug": "truckbook-1000",
+    "image": "",
+    "description": "Flagman of new TruckBooks by PineApple",
+    "rating": null,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 2,
+  "fields": {
+    "category": 10,
+    "name": "TruckBook 1000 light",
+    "code": "xz2",
+    "slug": "truckbook-1000-light",
+    "image": "",
+    "description": "Light version of new TruckBook 1000",
+    "rating": 0.0,
+    "is_published": true,
+    "limited": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 3,
+  "fields": {
+    "category": 10,
+    "name": "TruckBook T1000",
+    "code": "xz3",
+    "slug": "truckbook-t1000",
+    "image": "",
+    "description": "Liquid version of new TruckBook 1000",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 4,
+  "fields": {
+    "category": 11,
+    "name": "Tsamsung TS 100",
+    "code": "xz4",
+    "slug": "tsamsung-ts-100",
+    "image": "",
+    "description": "Flagman of Tsamsung modern laptops",
+    "rating": 0.0,
+    "is_published": true,
+    "limited": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 5,
+  "fields": {
+    "category": 11,
+    "name": "Tsamsung FS 100",
+    "code": "xz5",
+    "slug": "tsamsung-fs-100",
+    "image": "",
+    "description": "Dark body limited edition Tsamsung laptop",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 6,
+  "fields": {
+    "category": 11,
+    "name": "Tsamsung MKS",
+    "code": "xz6",
+    "slug": "tsamsung-mks",
+    "image": "",
+    "description": "New cosmic bombastic Tsamsung laptop",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 7,
+  "fields": {
+    "category": 12,
+    "name": "Juaihei A100",
+    "code": "xz7",
+    "slug": "juaihei-a-100",
+    "image": "",
+    "description": "Flagman of Juaihei laptops",
+    "rating": 0.0,
+    "is_published": true,
+    "limited": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 8,
+  "fields": {
+    "category": 12,
+    "name": "Juaihei B200",
+    "code": "xz8",
+    "slug": "juaihei-b-200",
+    "image": "",
+    "description": "Juaihei limited and luxury",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 9,
+  "fields": {
+    "category": 12,
+    "name": "Juaihei C300",
+    "code": "xz9",
+    "slug": "juaihei-c-300",
+    "image": "",
+    "description": "Cheap version of new Juaihei laptop",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 10,
+  "fields": {
+    "category": 4,
+    "name": "test_good_10",
+    "code": "xz10",
+    "slug": "test_good_10-1",
+    "image": "",
+    "description": "some test text",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 11,
+  "fields": {
+    "category": 13,
+    "name": "test_good_11",
+    "code": "xz11",
+    "slug": "test_good_11-1",
+    "image": "",
+    "description": "some test text",
+    "rating": 0.0,
+    "is_published": true,
+    "limited": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 12,
+  "fields": {
+    "category": 15,
+    "name": "test_good_12",
+    "code": "xz12",
+    "slug": "test_good_12-1",
+    "image": "",
+    "description": "some test text",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 13,
+  "fields": {
+    "category": 17,
+    "name": "test_good_13",
+    "code": "xz13",
+    "slug": "test_good_13-1",
+    "image": "",
+    "description": "some test text",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 14,
+  "fields": {
+    "category": 18,
+    "name": "test_good_14",
+    "code": "xz14",
+    "slug": "test_good_14-1",
+    "image": "",
+    "description": "some test text",
+    "rating": 0.0,
+    "is_published": true
+  }
+},
+{
+  "model": "goods_app.product",
+  "pk": 15,
+  "fields": {
+    "category": 18,
+    "name": "test_good_15",
+    "code": "xz15",
+    "slug": "test_good_15-1",
+    "image": "",
+    "description": "some test text",
+    "rating": 0.0,
+    "is_published": true
+  }
+}
+]

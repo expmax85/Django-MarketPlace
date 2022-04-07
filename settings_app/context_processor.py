@@ -1,6 +1,6 @@
+from django.conf import settings
+
 from dynamic_preferences.registries import global_preferences_registry
-from config.settings import CREATE_PRODUCT_ERROR, SUCCESS_DEL_STORE, SUCCESS_DEL_PRODUCT, SUCCESS_OPTIONS_ACTIVATE, \
-    SEND_PRODUCT_REQUEST
 from orders_app.services import CartService
 from orders_app.views import CompareView
 from stores_app.forms import ImportForm
@@ -13,11 +13,11 @@ def custom_context(request):
     cart = CartService(request)
     total = CompareView().get_quantity(request)
     return {
-        'SUCCESS_OPTIONS_ACTIVATE': SUCCESS_OPTIONS_ACTIVATE,
-        'SEND_PRODUCT_REQUEST': SEND_PRODUCT_REQUEST,
-        'CREATE_PRODUCT_ERROR': CREATE_PRODUCT_ERROR,
-        'SUCCESS_DEL_STORE': SUCCESS_DEL_STORE,
-        'SUCCESS_DEL_PRODUCT': SUCCESS_DEL_PRODUCT,
+        'SUCCESS_OPTIONS_ACTIVATE': settings.SUCCESS_OPTIONS_ACTIVATE,
+        'SEND_PRODUCT_REQUEST': settings.SEND_PRODUCT_REQUEST,
+        'CREATE_PRODUCT_ERROR': settings.CREATE_PRODUCT_ERROR,
+        'SUCCESS_DEL_STORE': settings.SUCCESS_DEL_STORE,
+        'SUCCESS_DEL_PRODUCT': settings.SUCCESS_DEL_PRODUCT,
         'cart': cart,
         'total_compared': total,
         'banners_time_expire': OPTIONS['banners_time_expire']

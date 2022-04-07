@@ -1,25 +1,37 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
-from django.core.management import call_command
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from goods_app.models import ProductRequest
+from settings_app.forms import CheckImageForm
 from stores_app.forms import AddRequestNewProductAdminForm
-from stores_app.models import Seller, SellerProduct, ProductImportFile
+from stores_app.models import Seller, SellerProduct
 
 
 @admin.register(Seller)
 class SellerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'phone')
-    list_filter = ('name',)
+    form = CheckImageForm
+    list_display = ('get_icon', 'name', 'email', 'phone', 'owner')
+    list_display_links = ('get_icon', 'name')
+    list_filter = ('name', 'owner')
+    readonly_fields = ('get_icon',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
+
+    def get_icon(self, obj):
+        try:
+            return mark_safe(f'<img src="{obj.icon.url}" width="60" height="50">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
+
+    get_icon.short_description = _('icon')
 
 
 @admin.register(SellerProduct)
 class SellerProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'seller', 'price', 'quantity')
+    list_display = ('product', 'seller', 'price', 'quantity')
     list_filter = ('product', 'seller', 'price', 'quantity')
     search_fields = ('product', 'seller', 'price', 'quantity')
 

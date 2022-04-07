@@ -11,12 +11,14 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
+
+
 from orders_app.models import (
     Order,
     ViewedProduct,
     OrderProduct
 )
-
+from dynamic_preferences.registries import global_preferences_registry
 from orders_app.services import CartService
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
@@ -24,7 +26,6 @@ from profiles_app.forms import RegisterForm
 from profiles_app.services import reset_phone_format, get_auth_user
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
-from settings_app.dynamic_preferences_registry import global_preferences_registry
 from payments_app.services import process_payment
 from stores_app.services import StoreServiceMixin
 

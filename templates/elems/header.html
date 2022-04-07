@@ -26,7 +26,7 @@
                     <div class="CategoriesButton-link">
                         <a href="{% url 'goods-polls:catalog_by_category_url' key.slug %}">
                             <div class="CategoriesButton-icon">
-                                <img src="{% static 'assets/img/icons/departments/1.svg' %}" alt="1.svg"/>
+                                <img src="{{ MEDIAROOT }}/uploads/{{ key.icon }}" alt="image_category" style="width: 100%">
                             </div>
                             <span class="CategoriesButton-text">{{ key.name }}</span>
                         </a>
@@ -40,7 +40,7 @@
                             <a class="CategoriesButton-link"
                                href="{% url 'goods-polls:catalog_by_category_url' elem.slug %}">
                                 <div class="CategoriesButton-icon">
-                                    <img src="{% static 'assets/img/icons/departments/1.svg' %}" alt="1.svg"/>
+                                <img src="{{ MEDIAROOT }}/uploads/{{ elem.icon }}" alt="image_category" style="width: 100%">
                                 </div>
                                 <span class="CategoriesButton-text">{{ elem.name }}</span>
                             </a>
