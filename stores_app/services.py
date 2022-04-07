@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
 
 from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
+from discounts_app.services import get_discounted_prices_for_seller_products
 from orders_app.models import Order, ViewedProduct
 from django.conf import settings
 from stores_app.models import Seller, SellerProduct
@@ -25,7 +26,7 @@ class StoreServiceMixin:
     get_user_stores(user) - get all Seller models by owner=user
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
-    get_products(query params) - get products
+    get_base_products(query params) - get products
     get_seller_products(user) - get SellerProducts query by Sellers owner=user
     get_viewed_products(user) - get all viewed SellerProduct instances
     remove_seller_product(request) - Remove SellerProduct instance with id=request.id
@@ -98,16 +99,18 @@ class StoreServiceMixin:
         instance.save()
 
     @classmethod
-    def get_seller_products(cls, user: User) -> QuerySet:
+    def get_seller_products(cls, user: User, calculate_prices: bool =False) -> QuerySet:
         """
         Get all products, added by user
         """
-        owner_sp_ache_key = 'owner_sp:{}'.format(user.id)
-        products = cache.get(owner_sp_ache_key)
+        owner_sp_cache_key = 'owner_sp:{}'.format(user.id)
+        products = cache.get(owner_sp_cache_key)
         if not products:
             products = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
                 .filter(seller__owner=user)
-            cache.set(owner_sp_ache_key, products, 24 * 60 * 60)
+            cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
+        if calculate_prices:
+            products = get_discounted_prices_for_seller_products(products)
         return products
 
     @classmethod
@@ -121,16 +124,19 @@ class StoreServiceMixin:
         item.delete()
 
     @classmethod
-    def get_products(cls, **kwargs) -> QuerySet:
+    def get_base_products(cls, **kwargs) -> QuerySet:
         """
         Get Products by category, Seller instance or get all Products
         """
         if 'category_id' in kwargs.keys():
-            return Product.objects.select_related('category').filter(category=kwargs.get('category_id'))
-        elif 'instance' in kwargs.keys():
-            return Product.objects.select_related('category').filter(seller_products__seller=kwargs.get('instance'))
+            products = Product.objects.select_related('category').filter(category=kwargs.get('category_id'))
         else:
-            return Product.objects.select_related('category').all()
+            base_products_cache_key = 'base_products:all'
+            products = cache.get(base_products_cache_key)
+            if not products:
+                products = Product.objects.select_related('category').all()
+                cache.set(base_products_cache_key, products, 24 * 60 * 60)
+        return products
 
     @classmethod
     def get_viewed_products(cls, user: User) -> QuerySet:

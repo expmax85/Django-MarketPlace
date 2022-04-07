@@ -45,7 +45,7 @@ def product_reset_cache_save_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    cache.delete_many('tags:all', 'specifications:all')
+    cache.delete_many('tags:all', 'specifications:all', 'base_products:all')
 
 
 @receiver(post_delete, sender=Product)
@@ -53,7 +53,7 @@ def product_reset_cache_del_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    cache.delete_many('tags:all', 'specifications:all')
+    cache.delete_many('tags:all', 'specifications:all', 'base_products:all')
 
 
 @receiver(post_save, sender=Tag)

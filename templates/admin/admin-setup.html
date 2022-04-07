@@ -22,10 +22,10 @@
         <h2>{% trans 'Site settings'%}</h2>
     </header>
     <div class="form-row" style="padding: 10px;">
-        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Regular shipping price' %}:</p> <span>{{ global_preferences.general__regular_shipping }}</span>
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Regular shipping price' %}:</p> <span>${{ global_preferences.general__regular_shipping }}</span>
     </div>
     <div class="form-row" style="padding: 10px;">
-        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Express shipping price' %}: </p><span>{{ global_preferences.general__express_shipping }}</span>
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Express shipping price' %}: </p><span>${{ global_preferences.general__express_shipping }}</span>
     </div>
     <div class="form-row" style="padding: 10px;">
         <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Comments size page' %}:</p><span> {{ global_preferences.general__review_size_page }}</span>
@@ -42,8 +42,11 @@
     <div class="form-row" style="padding: 10px;">
         <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Count hot offers' %}:</p> <span>{{ global_preferences.general__count_hot_offers }}</span>
     </div>
-        <div class="form-row" style="padding: 10px;">
-        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Banners time expire' %}:</p> <span>{{ global_preferences.general__banners_time_expire }}</span>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Banners time expire' %}:</p> <span>{{ global_preferences.general__banners_time_expire }} {% trans 'min' %}</span>
+    </div>
+    <div class="form-row" style="padding: 10px;">
+        <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Max size  for uploading files' %}:</p> <span>{{ global_preferences.general__max_size_file }} MB</span>
     </div>
     <div style="text-align: center;">
         <a class="btn btn_primary" href="{% url 'admin:dynamic_preferences_globalpreferencemodel_changelist' %}" style="margin: 30px 50px; color: white; font-size: 12px;">{% trans 'Change settings' %}</a>
@@ -58,7 +61,7 @@
     </div>
     <div class="form-row" style="padding: 10px;">
         <p style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px;">{% trans 'Frequency update limited deal' %}:</p>
-        <span style="display: inline-block; width: 100px;"> {{ global_preferences.general__days_duration }}</span>
+        <span style="display: inline-block; width: 100px;"> {{ global_preferences.general__days_duration }} {% trans 'day(s)' %}</span>
         <a class="btn btn_primary" href="{% url 'settings-polls:manual-expire-change' %}" style="font-size:12px; color: white;">{% trans 'Manual continue expired' %}</a>
     </div>
     <div class="form-row" style="padding: 10px;">
@@ -76,7 +79,7 @@
         </form>
     </div>
     <header>
-        <h2>{% trans 'Cache Control'%}</h2>
+        <h2>{% trans 'Cache Control' %}</h2>
     </header>
     <div class="block-cache">
         <span class="label-cache-btn" style="width: 300px; min-height: 42px; margin: 0; display: inline-block; font-size: 16px; text-align: right; margin-right: 20px;">{% trans 'Clear all site-cache' %}:</span>

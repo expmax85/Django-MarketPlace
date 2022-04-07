@@ -39,10 +39,6 @@ class IndexView(ListView):
         random_product.days_duration = OPTIONS['days_duration']
         random_product.time_update = OPTIONS['time_update']
         random_product.update_product(queryset=limited_products)
-        from stores_app.models import Seller
-        list_users_id = set([item['owner_id'] for item in Seller.objects.all().values('owner_id')])
-        # list_users_id = Seller.objects.all().values('owner_id')
-        print(list_users_id)
 
         context = {
             'banners': banner(),
@@ -107,7 +103,7 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
 
     if form.is_valid():
         form.save()
-        product.calculate_product_rating()
+        product.update_product_rating()
         reviews = product.get_reviews
         OPTIONS = global_preferences_registry.manager().by_name()
         paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])

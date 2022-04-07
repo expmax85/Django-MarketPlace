@@ -2,11 +2,10 @@ from typing import Dict, List
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet, Prefetch
+from django.db.models import Avg, QuerySet
 from django.http import HttpRequest
 from dynamic_preferences.registries import global_preferences_registry
 
-from discounts_app.models import ProductDiscount
 from discounts_app.services import get_discounted_prices_for_seller_products
 from goods_app.models import ProductComment, Product
 from stores_app.models import SellerProduct
@@ -16,7 +15,7 @@ class CurrentProduct:
     """
     A class for working with a Product instance. You can get a product by its slug or directly instance
 
-    Allowed methods:
+    Allowed methods and properties:
     get_product,
     get_sellers,
     get_calculate_prices(),
@@ -156,9 +155,9 @@ class CurrentProduct:
         }
         return json_dict
 
-    def calculate_product_rating(self) -> None:
+    def update_product_rating(self) -> None:
         """
-        Method for calculating product rating, when the review added
+        Method for calculating and updating product rating, when the review added
         """
         rating = ProductComment.objects.only('rating') \
             .filter(product_id=self.product.id) \

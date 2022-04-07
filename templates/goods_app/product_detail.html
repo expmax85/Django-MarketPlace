@@ -29,10 +29,15 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <div class="ProductCard-photo">
-                <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
+                <img src="{{ MEDIAROOT }}/uploads/{{ product.image }}" alt="product.jpg">
               </div>
-              <div class="ProductCard-picts"><a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png"><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png"></a><a class="ProductCard-pict" href="assets/img/content/home/slider.png"><img src="assets/img/content/home/slider.png" alt="slider.png"></a><a class="ProductCard-pict" href="assets/img/content/home/videoca.png"><img src="assets/img/content/home/videoca.png" alt="videoca.png"></a>
-              </div>
+{#              <div class="ProductCard-picts">#}
+{##}
+{#                  <a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png">#}
+{#                      <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">#}
+{#                  </a>#}
+{##}
+{#              </div>#}
             </div>
             <div class="ProductCard-desc">
               <div class="ProductCard-header">
@@ -49,12 +54,15 @@
                     </div>
                       {% endif %}
                   </div>
-                  <div class="ProductCard-compare"><a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+                  <div class="ProductCard-compare">
+                      <a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}">
+                          <img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg">
+                      </a>
                   </div>
                 </div>
               </div>
               <div class="ProductCard-text">
-                    {{ product.description }}
+                    {{ product.description|truncatechars:50 }}
               </div>
                 <div class="ProductCard-cart">
                     {% if  best_offer.quantity > 0 and best_offer %}
@@ -98,26 +106,7 @@
             </div>
             <div class="Tabs-wrap">
               <div class="Tabs-block" id="description" style="display: none;">
-                <h2>Megano Store Hystory
-                </h2>
-                <p>Lorem ipsum dolor sit amet, consectetuer
-                  <strong>adipiscing
-                  </strong> elit doli. Aenean commodo ligula eget dolor. Aenean massa. Cumtipsu sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem.
-                </p><img class="pict pict_right" src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
-                <ul>
-                  <li>Lorem ipsum dolor sit amet, consectetuer
-                  </li>
-                  <li>adipiscing elit doli. <em>Aenean</em> commodo ligula
-                  </li>
-                  <li>eget dolor. Aenean massa. Cumtipsu sociis
-                  </li>
-                  <li>natoque penatibus et magnis dis parturient
-                  </li>
-                  <li>montesti, nascetur ridiculus mus. Donec
-                  </li>
-                  <li>quam felis, ultricies nec, pellentesque eutu
-                  </li>
-                </ul>
+                    {{ product.description }}
                 <div class="clearfix">
                 </div>
                 <div class="table">
@@ -165,7 +154,7 @@
                         <a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add to cart' %}</span></a>
                     </div>
                   {% else %}
-                      <div class="Categories-block Categories-button" style="justify-content: right; font-size:20px; font-weight:bold; color: red;">Not in stock</div>
+                      <div class="Categories-block Categories-button" style="justify-content: right; font-size:20px; font-weight:bold; color: red;">{% trans 'Not in stock' %}</div>
                   {% endif %}
                   </div>
                 {% endfor %}
@@ -174,20 +163,7 @@
               <div class="Tabs-block" id="addit" style="display: none;">
                 <div class="Product-props">
                   <div class="Product-prop">
-                    <strong>Lorem
-                    </strong><span> Pfizer</span>
-                  </div>
-                  <div class="Product-prop">
-                    <strong>ipsum
-                    </strong><span> Lorem ipsum dolor sit</span>
-                  </div>
-                  <div class="Product-prop">
-                    <strong>dolor sit
-                    </strong><span> 5 ans</span>
-                  </div>
-                  <div class="Product-prop">
-                    <strong>psum dolo
-                    </strong><span> 2–3 jours</span>
+                    В этом блоке можно разместить информацию о скидках или что-то еще
                   </div>
                 </div>
               </div>

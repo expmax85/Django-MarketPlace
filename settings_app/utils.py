@@ -9,6 +9,9 @@ from dynamic_preferences.registries import global_preferences_registry
 
 
 def get_help_text(**kwargs) -> Callable:
+    """
+    Get help text for image fields about needed size
+    """
     help_text = 'error'
     if kwargs.get('size'):
         OPTIONS = global_preferences_registry.manager().by_name()
@@ -22,6 +25,9 @@ def get_help_text(**kwargs) -> Callable:
 
 
 def check_image_size(image) -> None:
+    """
+    Validate image size
+    """
     OPTIONS = global_preferences_registry.manager().by_name()
     max_size = OPTIONS['max_size_file']
     try:
@@ -32,6 +38,9 @@ def check_image_size(image) -> None:
 
 
 def check_image_resolution(image) -> None:
+    """
+    Validate image resolution
+    """
     min_width, min_height = settings.MIN_RESOLUTION
     max_width, max_height = settings.MAX_RESOLUTION
     try:
@@ -41,5 +50,6 @@ def check_image_resolution(image) -> None:
             raise ValidationError(_('resolution image is too small.'))
         if img.height > max_height or img.width > max_width:
             raise ValidationError(_('resolution image is too big.'))
+        img.close()
     except ValueError:
         pass

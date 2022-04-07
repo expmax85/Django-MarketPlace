@@ -103,6 +103,12 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
+            'libraries': {
+                'goods_tags': 'goods_app.templatetags.goods_app_tags',
+                'calculate_rating': 'orders_app.templatetags.calculate_rating',
+                'find_errors': 'stores_app.templatetags.find_errors',
+                'split_log': 'stores_app.templatetags.split_log'
+            },
         },
     },
 ]

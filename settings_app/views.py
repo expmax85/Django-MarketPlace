@@ -131,6 +131,9 @@ def clear_banner_cache(request: HttpRequest) -> Callable:
 
 @permission_required('profiles_app.Content_manager')
 def clear_sellers_cache(request: HttpRequest) -> Callable:
+    """
+    Очистка кеша продавцов
+    """
     list_owner = list(set([item['owner_id'] for item in Seller.objects.all().values('owner_id')]))
     cache.delete_many([f'owner_sp:{i}' for i in list_owner])
     cache.delete_many([f'stores:{i}' for i in list_owner])

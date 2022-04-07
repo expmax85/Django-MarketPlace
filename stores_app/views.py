@@ -111,7 +111,8 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['products'] = self.get_products(instance=self.get_object())
+        seller = self.get_object()
+        context['products'] = self.get_seller_products(user=seller.owner, calculate_prices=True)
         return context
 
 
@@ -123,7 +124,7 @@ class AddSellerProductView(StoreAppMixin, View):
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
         context['categories'] = get_categories()
-        context['products'] = self.get_products()
+        context['products'] = self.get_base_products()
         context['stores'] = self.get_user_stores(user=request.user)
         context['form'] = AddSellerProductForm()
         return render(request, 'stores_app/new_product_in_store.html', context=context)
@@ -148,7 +149,7 @@ class CategoryFilter(StoreServiceMixin, ListView):
 
     def get_queryset(self) -> QuerySet:
         category_id = self.request.GET.get('category_id')
-        return self.get_products(category_id=category_id).values("id", "name")
+        return self.get_base_products(category_id=category_id).values("id", "name")
 
     def get(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
@@ -262,7 +263,7 @@ class AddProductDiscountView(StoreAppMixin, View):
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
         context['categories'] = get_categories()
-        context['products'] = self.get_products()
+        context['products'] = self.get_base_products()
         context['stores'] = self.get_user_stores(user=request.user)
         form = AddProductDiscountForm()
         form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
@@ -325,7 +326,7 @@ class AddGroupDiscountView(StoreAppMixin, View):
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
         context['categories'] = get_categories()
-        # context['products'] = self.get_products()
+        # context['products'] = self.get_base_products()
         context['stores'] = self.get_user_stores(user=request.user)
         form = AddGroupDiscountForm()
         form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))

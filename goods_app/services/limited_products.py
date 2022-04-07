@@ -3,9 +3,8 @@ import datetime as dt
 from typing import Union, List, Dict
 
 from django.core.cache import cache
-from django.db.models import QuerySet, Model, Count, Min, Prefetch
+from django.db.models import QuerySet, Model, Count, Min
 
-from discounts_app.models import ProductDiscount
 from stores_app.models import SellerProduct
 from discounts_app.services import get_discounted_prices_for_seller_products
 from goods_app.services.catalog import get_categories

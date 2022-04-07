@@ -175,7 +175,7 @@
                             </div>
                             {% if messages %}
                                 {% for message in messages %}
-                                    {% if message.level == 100 %}
+                                    {% if message.level == SUCCESS_DEL_PRODUCT %}
                                         <div class="delete-product-success">{{message}}</div>
                                     {% endif %}
                                 {%endfor %}
@@ -230,15 +230,9 @@
                         </div>
                         {% if messages %}
                             {% for message in messages %}
-<<<<<<< HEAD
                             {% if message.level == SUCCESS_DEL_PRODUCT %}
                             <div class="delete-product-success">{{message}}</div>
                             {% endif %}
-=======
-                                {% if message.level == 115 %}
-                                    <div class="delete-product-success">{{message}}</div>
-                                {% endif %}
->>>>>>> 59a213431a899bf11df97f2d3c9429d4b7b06397
                             {%endfor %}
                         {% endif %}
                         </div>
@@ -290,7 +284,7 @@
                         </div>
                         {% if messages %}
                             {% for message in messages %}
-                                {% if message.level == 116 %}
+                                {% if message.level == SUCCESS_DEL_GROUP_DISCOUNT %}
                                     <div class="delete-product-success">{{message}}</div>
                                 {% endif %}
                             {%endfor %}
@@ -344,7 +338,7 @@
                         </div>
                         {% if messages %}
                             {% for message in messages %}
-                                {% if message.level == 117 %}
+                                {% if message.level == SUCCESS_DEL_CART_DISCOUNT %}
                                     <div class="delete-product-success">{{message}}</div>
                                 {% endif %}
                             {%endfor %}
