@@ -29,10 +29,14 @@ def times(number: int) -> Iterable:
 def cards(products, **kwargs):
     slider = False
     exclude = -1
+    seller_perm = False
+    if kwargs.get('seller_perm'):
+        seller_perm = True
     if kwargs.get('slider'):
         slider = True
     if kwargs.get('exclude'):
         exclude = kwargs['exclude']
     return {'products': products,
             'slider': slider,
-            'exclude': exclude}
+            'exclude': exclude,
+            'seller_perm': seller_perm}

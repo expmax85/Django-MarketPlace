@@ -105,7 +105,7 @@ class RandomProduct:
         }
 
 
-def get_limited_products(count: int) -> QuerySet:
+def get_limited_products(count: int = -1) -> Union[QuerySet, bool]:
     """
     Function to get products for limited products block. Returns zip-iterator by count length with corteges
     (instance model, price with discount, type of discount)
@@ -115,9 +115,14 @@ def get_limited_products(count: int) -> QuerySet:
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
                                         .prefetch_related('product_discounts') \
-                                        .filter(product__limited=True)[:count]
+                                        .filter(product__limited=True)
+        if not list(queryset):
+            return False
         cache.set(products_cache_key, queryset, 24 * 60 * 60)
-    products = get_discounted_prices_for_seller_products(queryset)
+    if count > 0:
+        products = get_discounted_prices_for_seller_products(queryset[:count])
+    else:
+        products = get_discounted_prices_for_seller_products(queryset)
     return products
 
 
@@ -133,10 +138,13 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
                                         .prefetch_related('product_discounts') \
                                         .annotate(count=Count('product_discounts')) \
                                         .filter(count__gt=0)
-        if len(list(queryset)) > count:
-            queryset = random.choices(population=queryset, k=len(list(queryset)))
-        else:
-            queryset = random.choices(population=queryset, k=count)
+        try:
+            if len(list(queryset)) > count:
+                queryset = random.choices(population=queryset, k=len(list(queryset)))
+            else:
+                queryset = random.choices(population=queryset, k=count)
+        except IndexError:
+            return None
         cache.set(products_cache_key, queryset, 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
     return products

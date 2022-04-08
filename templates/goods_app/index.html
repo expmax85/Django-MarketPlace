@@ -42,9 +42,11 @@
     {% block hot_offers %}
         {% include 'elems/hot_offers.html' %}
     {% endblock %}
+    {% if limited_products %}
     {% block limited_products %}
         {% include 'elems/limited_products.html' %}
     {% endblock %}
+    {% endif %}
 </div>
 {% endblock %}
 

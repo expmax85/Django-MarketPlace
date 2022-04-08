@@ -29,7 +29,7 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <div class="ProductCard-photo">
-                <img src="{{ MEDIAROOT }}/uploads/{{ product.image }}" alt="product.jpg">
+                <img src="{{ product.image_url }}" alt="product.jpg">
               </div>
 {#              <div class="ProductCard-picts">#}
 {##}
@@ -101,7 +101,7 @@
             <div class="Tabs-links">
                 <a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a>
                 <a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a>
-                <a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a>
+                <a class="Tabs-link" href="#addit"><span>{% trans 'Additional Info' %}</span></a>
                 <a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} (<span class="count_reviews">{{ reviews_count|default_if_none:"0" }}</span>)</span></a>
             </div>
             <div class="Tabs-wrap">
@@ -181,7 +181,7 @@
                   {% for comment in comments %}
                   <div class="Comment">
                     <div class="Comment-column Comment-column_pict">
-                      <div class="Comment-avatar">
+                      <div class="Comment-avatar" style="background-image: url('{{ comment.user.avatar_url }}'); background-size: cover;">
                       </div>
                     </div>
                     <div class="Comment-column">
@@ -282,14 +282,11 @@
     <script src="{% static 'assets/js/comments.js' %}"></script>
     <script>
       $(document).ready(function () {
-      // отслеживаем событие отправки формы
           $('#comment-form').submit(function () {
-              // создаем AJAX-вызов
               $.ajax({
-                  data: $(this).serialize(), // получаем данные формы
-                  type: 'post', // GET или POST
+                  data: $(this).serialize(),
+                  type: 'post',
                   url: "{% url 'goods-polls:post_review' %}",
-                  // если успешно, то
                   success: function (response) {
                      let error = document.querySelector('#rating_error')
                      let url = '{% url 'goods-polls:get_reviews' %}';
@@ -305,11 +302,8 @@
                       }
 
                   },
-                  // если ошибка, то
                   error: function (response) {
-                      // предупредим об ошибке
-                      alert(response.responseJSON.errors);
-                      console.log(response.responseJSON.errors)
+                      alert('unknown error')
                   }
               });
               return false;

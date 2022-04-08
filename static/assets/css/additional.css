@@ -325,7 +325,7 @@ margin-top: 0 !important;
 
 .Account-editLink_view {
     position: absolute;
-    bottom: -60px;
+    bottom: 0;
     right: 0;
 }
 
@@ -358,8 +358,8 @@ margin-top: 0 !important;
 }
 
 .seller-product {
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 100px;
     width: 45px;
 }
 
@@ -367,8 +367,8 @@ margin-top: 0 !important;
     display: block;
     padding: 3px;
     position: absolute;
-    top: 8px;
-    right: 60px;
+    top: 18px;
+    right: 150px;
     width: 45px;
 }
 
@@ -623,4 +623,17 @@ background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w
 }
 .import__content{
     padding: 10px 10px;
+}
+
+.store-name {
+    width: 70px;
+    height: 50px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.store-name img {
+    width: 100%
 }

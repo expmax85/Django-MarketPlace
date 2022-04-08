@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from dynamic_preferences.registries import global_preferences_registry
-from orders_app.services import CartService
+from orders_app.services.cart import CartService
 from orders_app.views import CompareView
 from stores_app.forms import ImportForm
 from stores_app.models import ProductImportFile
@@ -20,7 +20,7 @@ def custom_context(request):
         'SUCCESS_DEL_PRODUCT': settings.SUCCESS_DEL_PRODUCT,
         'cart': cart,
         'total_compared': total,
-        'banners_time_expire': OPTIONS['banners_time_expire']
+        'banners_time_expire': OPTIONS['banners_time_expire'],
     }
 
 

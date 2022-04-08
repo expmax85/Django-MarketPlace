@@ -39,6 +39,16 @@ class ProductCategory(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+
+    @property
+    def icon_url(self):
+        if self.icon and hasattr(self.icon, 'url'):
+            return self.icon.url
+
     def save(self, *args, **kwargs) -> Callable:
         """
         Method overridden to remove old files and add permissions
@@ -80,6 +90,11 @@ class Product(models.Model):
 
     def get_absolute_url(self) -> Callable:
         return reverse('goods-polls:product-detail', kwargs={'slug': self.slug})
+
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
 
     class Meta:
         verbose_name = _('product')

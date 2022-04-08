@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.http import JsonResponse, HttpRequest
 from django.shortcuts import render, redirect
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DetailView, ListView
@@ -36,17 +37,17 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs) -> Dict:
         OPTIONS = global_preferences_registry.manager().by_name()
         limited_products = get_limited_products(count=OPTIONS['count_limited_products'])
-        random_product.days_duration = OPTIONS['days_duration']
-        random_product.time_update = OPTIONS['time_update']
-        random_product.update_product(queryset=limited_products)
-
+        if limited_products:
+            random_product.days_duration = OPTIONS['days_duration']
+            random_product.time_update = OPTIONS['time_update']
+            random_product.update_product(queryset=get_limited_products())
         context = {
             'banners': banner(),
             'limited_products': limited_products,
             'hot_offers': get_hot_offers(count=OPTIONS['count_hot_offers']),
             'random_categories': get_random_categories(),
             **random_product.get_context_data(),
-            **super().get_context_data(**kwargs)
+            **super().get_context_data(**kwargs),
         }
         return context
 
@@ -100,7 +101,6 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)
-
     if form.is_valid():
         form.save()
         product.update_product_rating()

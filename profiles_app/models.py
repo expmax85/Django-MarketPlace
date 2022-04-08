@@ -87,6 +87,11 @@ class User(AbstractBaseUser, PermissionsMixin):
                 old_self.avatar.delete(False)
         super(User, self).save(*args, **kwargs)
 
+    @property
+    def avatar_url(self):
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')

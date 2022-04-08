@@ -62,7 +62,7 @@
                                 {% endif %}
                                     <div class="Profile-img">
                                         {%  if request.user.avatar %}
-                                            <img src="{{ MEDIA_ROOT }}/uploads/{{ request.user.avatar }}" alt="avatar image">
+                                            <img src="{{ request.user.avatar_url }}" alt="avatar image">
                                         {% else %}
                                             <img src="assets/img/#.png" alt="#.png">
                                         {% endif %}

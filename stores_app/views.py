@@ -41,7 +41,8 @@ class SellersRoomView(StoreAppMixin, ListView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['seller_products'] = self.get_seller_products(user=self.request.user)
+        products = self.get_seller_products(user=self.request.user, calculate_prices=True)
+        context['seller_products'] = list(products)[:3]
         context['product_discounts'] = self.get_product_discounts(user=self.request.user)
         context['group_discounts'] = self.get_group_discounts(user=self.request.user)
         context['cart_discounts'] = self.get_cart_discounts(user=self.request.user)
@@ -90,13 +91,30 @@ class EditStoreView(StoreAppMixin, DetailView):
 
 
 class StoresListView(StoreServiceMixin, ListView):
+    """
+    Страница со списком всех магазинов
+    """
     model = Seller
     template_name = 'stores_app/stores_list.html'
     slug_url_kwarg = 'slug'
-    paginate_by = 6
+    paginate_by = 9
 
     def get_queryset(self):
         return self.get_all_stores()
+
+
+class AllSellerProductView(StoreAppMixin, ListView):
+    """
+    Страница со списком всех товаров продавца
+    """
+    model = SellerProduct
+    context_object_name = 'products'
+    template_name = 'stores_app/all_products_list.html'
+    paginate_by = 9
+
+    def get_queryset(self):
+        products = self.get_seller_products(user=self.request.user, calculate_prices=True)
+        return list(products)
 
 
 class StoreDetailView(StoreServiceMixin, DetailView):

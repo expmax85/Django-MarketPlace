@@ -144,13 +144,17 @@ class StoreServiceMixin:
         Get viewed SellerProducts by user
         """
         viewed_cache_key = 'viewed:{}'.format(user.id)
-        viewed = cache.get(viewed_cache_key)
-        if not viewed:
+        products = cache.get(viewed_cache_key)
+        if not products:
             viewed = ViewedProduct.objects.select_related('product__product', 'product__product__category')\
                                           .filter(user=user)\
                                           .order_by('-date')
-            cache.set(viewed_cache_key, viewed, 24 * 60 * 60)
-        return viewed
+            viewed_list = [item['product__id'] for item in viewed.values('product__id')]
+            products = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
+                                            .prefetch_related('product_discounts') \
+                                            .filter(id__in=viewed_list)
+            cache.set(viewed_cache_key, products, 24 * 60 * 60)
+        return products
 
     @classmethod
     def get_last_order(cls, user: User) -> QuerySet:

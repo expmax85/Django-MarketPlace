@@ -4,7 +4,6 @@ import braintree
 import datetime
 
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -19,7 +18,7 @@ from orders_app.models import (
     OrderProduct
 )
 from dynamic_preferences.registries import global_preferences_registry
-from orders_app.services import CartService
+from orders_app.services.cart import CartService
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
 from profiles_app.forms import RegisterForm
@@ -404,8 +403,8 @@ class ViewedGoodsView(StoreServiceMixin, ListView):
                 ViewedProduct.objects.get_or_create(user=self.request.user,
                                                     product=obj.product)
         queryset = self.get_viewed_products(user=self.request.user)[:20]
-
-        return queryset
+        products = get_discounted_prices_for_seller_products(queryset)
+        return products
 
 
 class CompareView(View):

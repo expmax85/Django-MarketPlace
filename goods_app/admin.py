@@ -49,7 +49,11 @@ class ProductAdmin(admin.ModelAdmin):
 
     inlines = [SpecificationsInline, CommentsInline]
 
-    actions = ['mark_published', 'mark_unpublished']
+    def get_image(self, obj):
+        try:
+            return mark_safe(f'<img src="{obj.image.url}" width="60" height="60">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
 
     def get_tags(self, obj):
         lst_tags = []
@@ -57,24 +61,27 @@ class ProductAdmin(admin.ModelAdmin):
             lst_tags.append(str(item['name']))
         return ", ".join(lst_tags)
 
+    get_image.short_description = _('image')
+    get_tags.short_description = _('tags')
+
+    actions = ['mark_published', 'mark_unpublished', 'mark_male_limited', 'mark_del_limited']
+
     def mark_published(self, request: HttpRequest, queryset: QuerySet) -> None:
         queryset.update(is_published=True)
 
     def mark_unpublished(self, request: HttpRequest, queryset: QuerySet) -> None:
         queryset.update(is_published=False)
 
-    def get_image(self, obj):
-        try:
-            return mark_safe(f'<img src="{obj.image.url}" width="60" height="60">')
-        except ValueError:
-            return mark_safe('<img src="" width="20" height="20">')
+    def mark_male_limited(self, request: HttpRequest, queryset: QuerySet) -> None:
+        queryset.update(limited=True)
+
+    def mark_del_limited(self, request: HttpRequest, queryset: QuerySet) -> None:
+        queryset.update(limited=False)
 
     mark_published.short_description = _('Publish')
     mark_unpublished.short_description = _('Remove from publication')
-
-    get_image.short_description = _('image')
-    get_tags.short_description = _('tags')
-
+    mark_male_limited.short_description = _('Make products as limited')
+    mark_del_limited.short_description = _('Cancel limited status for products ')
 
 @admin.register(ProductComment)
 class ProductComment(admin.ModelAdmin):

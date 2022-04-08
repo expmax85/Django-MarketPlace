@@ -16,6 +16,7 @@ urlpatterns = [
     path('delete-seller-product/', remove_SellerProduct, name='delete-seller-product'),
     path('edit-store/<str:slug>/', EditStoreView.as_view(), name='edit-store'),
     path('stores-list/', StoresListView.as_view(), name='stores-list'),
+    path('products-list/', AllSellerProductView.as_view(), name='all-products-list'),
     path('store-detail/<str:slug>/', StoreDetailView.as_view(), name='store-detail'),
     path('<str:slug>/<int:pk>/', EditSelleProductView.as_view(), name='edit-seller-product'),
     # discount endpoints

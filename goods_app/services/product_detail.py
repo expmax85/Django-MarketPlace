@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Avg, QuerySet
@@ -135,7 +136,7 @@ class CurrentProduct:
         and data for pagination
         """
         reviews_count = queryset.count()
-        reviews = queryset.values('author', 'content', 'added')
+        reviews = queryset.values('author', 'user__avatar', 'content', 'added')
         OPTIONS = global_preferences_registry.manager().by_name()
         paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])
         page_obj = paginator.get_page(page)
@@ -151,7 +152,8 @@ class CurrentProduct:
             'next_page_number': page_obj.number + 1,
             'empty_pages': None if page_obj.paginator.num_pages < 2
             else "not_empty",
-            'reviews_count': reviews_count
+            'reviews_count': reviews_count,
+            'media': settings.MEDIA_URL
         }
         return json_dict
 

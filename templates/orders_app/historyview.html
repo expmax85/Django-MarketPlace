@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load goods_tags %}
 
 {% block title %}
    {% trans 'Viewed products' %}
@@ -51,30 +52,7 @@
         </div>
         <div class="Section-content">
           <div class="Cards">
-            {% for item in goods %}
-              <div class="Card"><a class="Card-picture" href="#"><img src="
-                {% if item.shop.product.image %}
-                  {{ item.shop.product.image.url }}
-                {% else %}
-                  {% static 'assets/img/content/home/card.jpg' %}"
-                {% endif %}
-                alt="card.jpg"/></a>
-                <div class="Card-content">
-                  <strong class="Card-title"><a href="#">{{ item.product.product.name }}</a>
-                  </strong>
-                  <div class="Card-description">
-                    <div class="Card-cost"><span class="Card-priceOld">${{ item.product.price_after_discount }}</span><span class="Card-price">${{ item.product.price }}</span>
-                    </div>
-                    <div class="Card-category">{{ item.shop.product.category }}
-                    </div>
-                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a><a class="Card-btn" href="{% url 'orders-polls:cart_add' item.product.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a><a class="Card-btn" href="{% url 'orders-polls:add-to-compare' item.product.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
-                    </div>
-                  </div>
-                </div>
-                <div class="Card-sale">-{{ item.product.discount.percent|floatformat:"0" }}%
-                </div>
-              </div>
-            {% endfor %}
+              {% cards goods %}
           </div>
         </div>
       </div>
@@ -84,13 +62,4 @@
 
 {% block footer %}
   {% include 'elems/footer.html' %}
-{% endblock %}
-
-{% block scripts %}
-  <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
-  <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
-  <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
-  <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
-  <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
-  <script src="{% static 'assets/js/scripts.js' %}"></script>
 {% endblock %}

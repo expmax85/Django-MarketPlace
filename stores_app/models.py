@@ -43,6 +43,11 @@ class Seller(models.Model):
                 old_self.icon.delete(False)
         super(Seller, self).save(*args, **kwargs)
 
+    @property
+    def icon_url(self):
+        if self.icon and hasattr(self.icon, 'url'):
+            return self.icon.url
+
     class Meta:
         verbose_name = _('store')
         verbose_name_plural = _('stores')

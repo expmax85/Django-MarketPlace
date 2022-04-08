@@ -3,6 +3,7 @@ Jinja2==3.0.3
 Pillow==9.0.0
 django-allauth==0.48.0
 django-mptt==0.13.4
+braintree==4.14.0
 django-admin-tools==0.9.2
 django-environ==0.8.1
 django-dynamic-preferences==1.12.0
