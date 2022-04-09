@@ -5,7 +5,7 @@ app_name = 'orders'
 urlpatterns = [
     # эндпоинты корзины
     path('cart/', CartView.as_view(), name='cart_detail'),
-    path('cart/<product_id>', CartView.as_view(), name='cart_detail_post'),
+    path('cart/<int:product_id>', CartView.as_view(), name='cart_detail_post'),
     path('add/<int:product_id>/', CartAdd.as_view(), name='cart_add'),
     path('remove/<int:product_id>/', CartRemove.as_view(), name='cart_remove'),
     path('clear/', cart_clear, name='cart_clear'),

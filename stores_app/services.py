@@ -2,7 +2,7 @@ from typing import Dict
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Prefetch
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
@@ -39,7 +39,7 @@ class StoreServiceMixin:
         Get store with slug
 
         """
-        return Seller.objects.select_related('owner').get(slug=slug)
+        return Seller.objects.get(slug=slug)
 
     @classmethod
     def get_all_stores(cls):
@@ -107,7 +107,7 @@ class StoreServiceMixin:
         products = cache.get(owner_sp_cache_key)
         if not products:
             products = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
-                .filter(seller__owner=user)
+                                            .filter(seller__owner=user)
             cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
         if calculate_prices:
             products = get_discounted_prices_for_seller_products(products)
@@ -118,7 +118,8 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = SellerProduct.objects.select_related('seller', 'product').get(id=request.GET.get('id'))
+        item = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
+                                    .get(id=request.GET.get('id'))
         messages.add_message(request, settings.SUCCESS_DEL_PRODUCT,
                              _(f'Product {item.product.name} from the store {item.seller.name} was removed'))
         item.delete()
@@ -146,13 +147,10 @@ class StoreServiceMixin:
         viewed_cache_key = 'viewed:{}'.format(user.id)
         products = cache.get(viewed_cache_key)
         if not products:
-            viewed = ViewedProduct.objects.select_related('product__product', 'product__product__category')\
-                                          .filter(user=user)\
-                                          .order_by('-date')
-            viewed_list = [item['product__id'] for item in viewed.values('product__id')]
             products = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                            .prefetch_related('product_discounts') \
-                                            .filter(id__in=viewed_list)
+                                            .prefetch_related('product_discounts')\
+                                            .prefetch_related(Prefetch('viewed_list', queryset=ViewedProduct.objects.filter(user=user))) \
+                                            .filter(viewed_list__user=user)
             cache.set(viewed_cache_key, products, 24 * 60 * 60)
         return products
 

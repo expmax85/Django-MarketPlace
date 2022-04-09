@@ -3,7 +3,6 @@ from typing import Dict, Iterable
 from django import template
 from goods_app.services.catalog import get_categories
 
-
 register = template.Library()
 
 
@@ -26,7 +25,7 @@ def times(number: int) -> Iterable:
 
 
 @register.inclusion_tag('elems/card.html')
-def cards(products, **kwargs):
+def cards(products, **kwargs) -> Dict:
     slider = False
     exclude = -1
     seller_perm = False
@@ -36,7 +35,9 @@ def cards(products, **kwargs):
         slider = True
     if kwargs.get('exclude'):
         exclude = kwargs['exclude']
-    return {'products': products,
-            'slider': slider,
-            'exclude': exclude,
-            'seller_perm': seller_perm}
+    return {
+        'products': products,
+        'slider': slider,
+        'exclude': exclude,
+        'seller_perm': seller_perm
+    }
