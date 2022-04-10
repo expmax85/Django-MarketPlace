@@ -20,7 +20,7 @@ class Seller(models.Model):
     slug = models.SlugField(verbose_name='slug', unique=True)
     description = models.TextField(max_length=2550, null=True, blank=True, default="", verbose_name=_('description'))
     address = models.TextField(max_length=100, null=True, blank=True, default="", verbose_name=_('address'))
-    icon = models.ImageField(upload_to='icons/', null=True, blank=True, verbose_name=_('icon'))
+    icon = models.ImageField(upload_to='icons/', null=True, verbose_name=_('icon'))
     email = models.EmailField(null=True, blank=True, default="", verbose_name='email')
     phone = models.CharField(max_length=16, null=True, blank=True, default="",
                              verbose_name=_('phone'))

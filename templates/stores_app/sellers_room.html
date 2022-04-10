@@ -56,9 +56,17 @@
                     </header>
                         {% if messages %}
                             {% for message in messages %}
-                            {% if message.level == SEND_PRODUCT_REQUEST %}
-                            <div class="send-product-request">{{message}}</div>
-                            {% endif %}
+                                {% if message.level == SEND_PRODUCT_REQUEST %}
+                                <div class="send-product-request">{{message}}</div>
+                                {% elif message.level == SUCCESS_DEL_STORE %}
+                                <div class="delete-product-success">{{message}}</div>
+                                {% elif message.level == SUCCESS_DEL_PRODUCT %}
+                                <div class="delete-product-success">{{message}}</div>
+                                {% elif message.level == SUCCESS_DEL_GROUP_DISCOUNT %}
+                                <div class="delete-product-success">{{message}}</div>
+                                {% elif message.level == SUCCESS_DEL_CART_DISCOUNT %}
+                                <div class="delete-product-success">{{message}}</div>
+                                {% endif %}
                             {%endfor %}
                         {% endif %}
                         {% for store in stores %}
@@ -110,13 +118,7 @@
                             </svg>
                             <span class="seller-text">{% trans 'IMPORT' %}</span>
                         </a>
-                        {% if messages %}
-                            {% for message in messages %}
-                            {% if message.level == SUCCESS_DEL_STORE %}
-                            <div class="Profile-success">{{message}}</div>
-                            {% endif %}
-                            {%endfor %}
-                        {% endif %}
+
                     </div>
                     {% if stores %}
                         <div class="Account-group">
@@ -141,13 +143,6 @@
                                 </div>
 
                             </div>
-                            {% if messages %}
-                                {% for message in messages %}
-                                    {% if message.level == SUCCESS_DEL_PRODUCT %}
-                                        <div class="delete-product-success">{{message}}</div>
-                                    {% endif %}
-                                {%endfor %}
-                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
@@ -196,13 +191,6 @@
                                 </span>
                             </a>
                         </div>
-                        {% if messages %}
-                            {% for message in messages %}
-                            {% if message.level == SUCCESS_DEL_PRODUCT %}
-                            <div class="delete-product-success">{{message}}</div>
-                            {% endif %}
-                            {% endfor %}
-                        {% endif %}
                         </div>
                     </div>
 
@@ -250,13 +238,6 @@
                                 </span>
                             </a>
                         </div>
-                        {% if messages %}
-                            {% for message in messages %}
-                                {% if message.level == SUCCESS_DEL_GROUP_DISCOUNT %}
-                                    <div class="delete-product-success">{{message}}</div>
-                                {% endif %}
-                            {%endfor %}
-                        {% endif %}
                         </div>
                     </div>
 
@@ -304,13 +285,6 @@
                                 </span>
                             </a>
                         </div>
-                        {% if messages %}
-                            {% for message in messages %}
-                                {% if message.level == SUCCESS_DEL_CART_DISCOUNT %}
-                                    <div class="delete-product-success">{{message}}</div>
-                                {% endif %}
-                            {%endfor %}
-                        {% endif %}
                         </div>
                     </div>
                 {% endif %}

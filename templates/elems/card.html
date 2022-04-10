@@ -1,56 +1,55 @@
 {% load static i18n %}
 
 {% for offer, price_after_discount, discount in products %}
-    {% if offer.id != exclude.id %}
+{% if offer.id != exclude.id %}
 {% if slider %}
 <div class="Slider-item">
-  <div class="Slider-content">
-      {% endif %}
+    <div class="Slider-content">
+{% endif %}
     <div class="Card" style="position: relative">
-      <div class="store-name">
-          <a href="{% url 'stores-polls:store-detail' offer.seller.slug %}"><img src="{{offer.seller.icon_url}}" alt="store-icon"></a>
-      </div>
-      <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-          <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
-          <button class="Card-picture" type="submit">
-              <img src="{{ offer.product.image_url }}" alt="card.jpg"/>
-          </button>
-          <div class="Card-content">
-            <button class="Card-title" type="submit">
-                {{ offer.product.name }}
+        <div class="store-name">
+            <a href="{% url 'stores-polls:store-detail' offer.seller.slug %}"><img src="{{offer.seller.icon_url}}" alt="store-icon"></a>
+        </div>
+        <form method="get" action="{% url 'orders-polls:add_viewed' %}">
+            <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
+            <button class="Card-picture" type="submit">
+                <img src="{{ offer.product.image_url }}" alt="card.jpg"/>
             </button>
-            <div class="Card-description">
-                <div class="Card-cost">
-                    <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ offer.price }}{% endif %}</span>
-                    <span class="Card-price">
-                        {% if price_after_discount and not discount.set_discount %}
-                            ${{ price_after_discount|floatformat:0 }}
-                        {% else %}
-                            ${{ offer.price }}
-                        {% endif %}
-                    </span>
+            <div class="Card-content">
+                <button class="Card-title" type="submit">
+                    {{ offer.product.name }}
+                </button>
+                <div class="Card-description">
+                    <div class="Card-cost">
+                        <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ offer.price }}{% endif %}</span>
+                        <span class="Card-price">
+                            {% if price_after_discount and not discount.set_discount %}
+                                ${{ price_after_discount|floatformat:0 }}
+                            {% else %}
+                                ${{ offer.price }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="Card-category">{{ offer.product.category.name }}</div>
+                    <div class="Card-hover">
+                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:cart_add' offer.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                        <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' offer.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
+                    </div>
                 </div>
-              <div class="Card-category">{{ offer.product.category.name }}
-              </div>
-              <div class="Card-hover">
-                <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
-                <a class="Card-btn" href="{% url 'orders-polls:cart_add' offer.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
-                <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' offer.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
-              </div>
-            </div>
-          </div>
-      </form>
-      {% if discount.type_of_discount == 'p' and not discount.set_discount %}
+           </div>
+        </form>
+        {% if discount.type_of_discount == 'p' and not discount.set_discount %}
         <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
         </div>
-      {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
+        {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
         <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
         </div>
-      {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
+        {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
         <div class="Card-sale" style="background-color: #6888fc">!!!
         </div>
-      {% endif %}
-      {% if seller_perm %}
+        {% endif %}
+        {% if seller_perm %}
         <form action="{% url 'stores-polls:delete-seller-product' %}" method="get">
             <input type="hidden" name="id" value="{{ offer.id }}">
             <button type="Submit" class="delete-btn seller-product" title="Delete this product">
@@ -64,11 +63,11 @@
                 </svg>
             </a>
         </form>
-      {% endif %}
+        {% endif %}
     </div>
-    {% if slider %}
-  </div>
+{% if slider %}
+    </div>
 </div>
-    {% endif %}
-  {% endif %}
+{% endif %}
+{% endif %}
 {% endfor %}

@@ -24,7 +24,7 @@ def get_help_text(**kwargs) -> Callable:
     return mark_safe(f'<span style="color:#417690; font-size:12px;">{help_text}</span>')
 
 
-def check_image_size(image) -> None:
+def check_image_size(image) -> bool:
     """
     Validate image size
     """
@@ -33,11 +33,12 @@ def check_image_size(image) -> None:
     try:
         if image.size > max_size * 1024 ** 2:
             raise ValidationError(_(f'File must be size less than {max_size}MB'))
-    except ValueError:
-        pass
+        return True
+    except (ValueError, AttributeError):
+        return False
 
 
-def check_image_resolution(image) -> None:
+def check_image_resolution(image) -> bool:
     """
     Validate image resolution
     """
@@ -51,5 +52,6 @@ def check_image_resolution(image) -> None:
         if img.height > max_height or img.width > max_width:
             raise ValidationError(_('resolution image is too big.'))
         img.close()
-    except ValueError:
-        pass
+        return True
+    except (ValueError, AttributeError):
+        return False

@@ -14,13 +14,19 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('get_icon', 'name', 'parent', 'image')
     list_display_links = ('get_icon', 'name')
     list_filter = ('name',)
-    readonly_fields = ('get_icon',)
+    readonly_fields = ('get_image',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',), }
 
     def get_icon(self, obj=None):
         try:
             return mark_safe(f'<img src="{obj.icon.url}" width="20" height="20">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
+
+    def get_image(self, obj=None):
+        try:
+            return mark_safe(f'<img src="{obj.image.url}" width="20" height="20">')
         except ValueError:
             return mark_safe('<img src="" width="20" height="20">')
 
@@ -44,8 +50,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ('category', 'is_published', 'tags', 'limited')
     readonly_fields = ('get_image',)
     search_fields = ('name', 'category')
-    prepopulated_fields = {'slug': ('name', 'code'),
-                           'tags': ('category', )}
+    prepopulated_fields = {'slug': ('name', 'code')}
 
     inlines = [SpecificationsInline, CommentsInline]
 

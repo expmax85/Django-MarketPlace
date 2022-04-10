@@ -212,7 +212,7 @@ def remove_SellerProduct(request: HttpRequest) -> Callable:
     Удаление продукта продавца
     """
     StoreServiceMixin.remove_seller_product(request)
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('stores-polls:sellers-room')
 
 
 @permission_required('profiles_app.Sellers')

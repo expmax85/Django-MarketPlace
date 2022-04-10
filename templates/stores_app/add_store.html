@@ -86,7 +86,7 @@
                               <textarea class="form-area" name="address" cols="10" rows="4" maxlength="255" id="id_address"></textarea>
                               <span class="formerror">{{form.errors.address}}</span>
                           </div>
-                          <div class="form-group">
+                          <div class="form-group require-field">
                              <label class="form-label" for="avatar">{% trans 'Store logo' %}
                              </label>
                              {% if store.icon %}
