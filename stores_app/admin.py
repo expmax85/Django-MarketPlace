@@ -10,6 +10,10 @@ from stores_app.forms import AddRequestNewProductAdminForm
 from stores_app.models import Seller, SellerProduct
 
 
+class SellerProductInLine(admin.TabularInline):
+    model = SellerProduct
+
+
 @admin.register(Seller)
 class SellerAdmin(admin.ModelAdmin):
     form = CheckImageForm
@@ -19,6 +23,7 @@ class SellerAdmin(admin.ModelAdmin):
     readonly_fields = ('get_icon',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
+    inlines = [SellerProductInLine]
 
     def get_icon(self, obj):
         try:

@@ -3,22 +3,23 @@
   "model": "discounts_app.productdiscount",
   "pk": 1,
   "fields": {
-    "name": "Discount for Truckbook",
-    "slug": "discount-for-truckbook",
-    "description": "Get your TruckBook 1000 with 5% discount",
-    "type_of_discount": "p",
+    "name": "Special RVideo Set",
+    "slug": "special-rvideo-set",
+    "description": "Phone with case with fixed discount of 50$",
+    "type_of_discount": "f",
     "priority": "3",
-    "percent": 50.0,
-    "amount": 0.0,
+    "percent": 0.0,
+    "amount": 50.0,
     "fixed_price": 0.0,
-    "valid_from": "2022-03-01T11:31:41Z",
-    "valid_to": "2022-04-30T11:34:29Z",
+    "valid_from": "2022-04-01T16:23:17Z",
+    "valid_to": "2022-04-30T16:23:23Z",
     "is_active": true,
     "seller": 1,
-    "set_discount": false,
-    "image": "static/assets/img/content/home/discounts/product.png",
+    "set_discount": true,
+    "image": "discounts/product.png",
     "seller_products": [
-      1
+      6,
+      12
     ]
   }
 },
@@ -26,22 +27,23 @@
   "model": "discounts_app.productdiscount",
   "pk": 2,
   "fields": {
-    "name": "Discount for TruckBook 2",
-    "slug": "discount-for-truckbook-2",
-    "description": "Another discount to compare",
+    "name": "MediaBazar Black Friday",
+    "slug": "mediabazar-black-friday",
+    "description": "50% black friday discount in Mediabazar for TVs",
     "type_of_discount": "p",
-    "priority": "2",
-    "percent": 15.0,
-    "amount": 150.0,
+    "priority": "3",
+    "percent": 50.0,
+    "amount": 0.0,
     "fixed_price": 0.0,
-    "valid_from": "2022-03-01T12:00:00Z",
-    "valid_to": "2022-04-30T07:57:25Z",
+    "valid_from": "2022-04-01T15:38:52Z",
+    "valid_to": "2022-04-30T15:38:55Z",
     "is_active": true,
-    "seller": 1,
+    "seller": 2,
     "set_discount": false,
-    "image": "static/assets/img/content/home/discounts/Rectangle_18_2.jpg",
+    "image": "discounts/product.png",
     "seller_products": [
-      1
+      21,
+      22
     ]
   }
 },
@@ -49,22 +51,25 @@
   "model": "discounts_app.productdiscount",
   "pk": 3,
   "fields": {
-    "name": "Discount for Juaihei B200",
-    "slug": "discount-for-juaihei-b200",
-    "description": "Incredibly 50%",
+    "name": "MediaBazar CompsFriday",
+    "slug": "mediabazar-compsfriday",
+    "description": "BlackFriday special for comps in Mediabazar. 100$ discount for any comp",
     "type_of_discount": "f",
-    "priority": "2",
-    "percent": 50.0,
-    "amount": 200.0,
+    "priority": "3",
+    "percent": 0.0,
+    "amount": 100.0,
     "fixed_price": 0.0,
-    "valid_from": "2022-03-06T20:07:11Z",
-    "valid_to": "2022-04-30T07:57:25Z",
+    "valid_from": "2022-04-01T15:42:35Z",
+    "valid_to": "2022-04-30T15:42:38Z",
     "is_active": true,
-    "seller": 1,
+    "seller": 2,
     "set_discount": false,
-    "image": "static/assets/img/content/home/discounts/product.png",
+    "image": "discounts/Rectangle_19.jpg",
     "seller_products": [
-      11
+      16,
+      17,
+      18,
+      19
     ]
   }
 },
@@ -72,69 +77,57 @@
   "model": "discounts_app.productdiscount",
   "pk": 4,
   "fields": {
-    "name": "Special RVideo Set",
-    "slug": "special-rvideo-set",
-    "description": "Special price for A100 and B200 in set",
-    "type_of_discount": "f",
-    "priority": "3",
-    "percent": 90.0,
-    "amount": 1000.0,
-    "fixed_price": 100.0,
-    "valid_from": "2022-03-01T07:57:49Z",
-    "valid_to": "2022-04-30T07:57:54Z",
-    "is_active": true,
-    "seller": 1,
-    "set_discount": true,
-    "image": "static/assets/img/content/home/discounts/ab3c1981d326f2e903ed0d05316df156.jpg",
-    "seller_products": [
-      2,
-      11
-    ]
-  }
-},
-{
-  "model": "discounts_app.productdiscount",
-  "pk": 7,
-  "fields": {
-    "name": "Juaihei C300",
-    "slug": "juaihei-c300",
-    "description": "Special price in RVideo for 1 week",
+    "name": "Home comfort tables spec",
+    "slug": "home-comfort-tables-spec",
+    "description": "Any table in Home Comfort for 100$ only this week",
     "type_of_discount": "fp",
-    "priority": "2",
+    "priority": "3",
     "percent": 0.0,
-    "amount": null,
-    "fixed_price": 500.0,
-    "valid_from": "2022-04-04T12:12:00Z",
-    "valid_to": "2022-04-11T12:12:05Z",
+    "amount": 0.0,
+    "fixed_price": 100.0,
+    "valid_from": "2022-04-01T15:48:58Z",
+    "valid_to": "2022-04-30T15:49:01Z",
     "is_active": true,
-    "seller": 1,
+    "seller": 3,
     "set_discount": false,
-    "image": "static/assets/img/content/home/discounts/20210630_190600.jpg",
+    "image": "discounts/product.png",
     "seller_products": [
-      6
+      33,
+      34,
+      35
     ]
   }
 },
 {
   "model": "discounts_app.productdiscount",
-  "pk": 8,
+  "pk": 5,
   "fields": {
-    "name": "B200",
-    "slug": "b200",
-    "description": "",
+    "name": "1000-things elimination",
+    "slug": "1000-things-elimination",
+    "description": "Stock elimination in 1000-things. 80% discount for everithing",
     "type_of_discount": "p",
-    "priority": "1",
-    "percent": 33.0,
+    "priority": "3",
+    "percent": 80.0,
     "amount": 0.0,
     "fixed_price": 0.0,
-    "valid_from": "2022-04-04T12:26:43Z",
-    "valid_to": "2022-04-25T12:26:48Z",
+    "valid_from": "2022-01-01T15:51:39Z",
+    "valid_to": "2022-06-30T15:51:58Z",
     "is_active": true,
-    "seller": 2,
+    "seller": 4,
     "set_discount": false,
-    "image": "static/assets/img/content/home/discounts/product.png",
+    "image": "discounts/scale_1200.jpg",
     "seller_products": [
-      5
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46
     ]
   }
 }

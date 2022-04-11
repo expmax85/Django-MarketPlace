@@ -3,38 +3,57 @@
   "model": "discounts_app.groupdiscount",
   "pk": 1,
   "fields": {
-    "name": "Rvideo for PineApple set",
-    "slug": "rvideo-for-pineapple-set",
-    "description": "This is the category set in RVideo",
-    "type_of_discount": "f",
+    "name": "Rvideo computer discounts",
+    "slug": "rvideo-computer-discounts",
+    "description": "7% for computers in RVideo",
+    "type_of_discount": "p",
     "priority": "2",
-    "percent": 15.0,
-    "amount": 200.0,
+    "percent": 7.0,
+    "amount": 0.0,
     "fixed_price": 0.0,
     "valid_from": null,
     "valid_to": null,
     "is_active": true,
     "seller": 1,
-    "product_category": 10
+    "product_category": 37
   }
 },
 {
   "model": "discounts_app.groupdiscount",
   "pk": 2,
   "fields": {
-    "name": "Discount for Juaheis",
-    "slug": "discount-for-juaheis",
-    "description": "Juaihei category discount",
+    "name": "MediaBazar computers disc",
+    "slug": "mediabazar-computers-disc",
+    "description": "8,5% for comps in MediaBazar",
     "type_of_discount": "p",
-    "priority": "1",
-    "percent": 20.0,
+    "priority": "2",
+    "percent": 8.0,
     "amount": 0.0,
     "fixed_price": 0.0,
-    "valid_from": "2022-03-01T00:00:00Z",
-    "valid_to": "2202-03-31T00:00:00Z",
+    "valid_from": null,
+    "valid_to": null,
     "is_active": true,
-    "seller": 1,
-    "product_category": 12
+    "seller": 2,
+    "product_category": 37
+  }
+},
+{
+  "model": "discounts_app.groupdiscount",
+  "pk": 3,
+  "fields": {
+    "name": "1000-things",
+    "slug": "1000-things",
+    "description": "3$ discount for headphones in 1000-things store",
+    "type_of_discount": "f",
+    "priority": "1",
+    "percent": 0.0,
+    "amount": 3.0,
+    "fixed_price": 0.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": true,
+    "seller": 4,
+    "product_category": 36
   }
 }
 ]
