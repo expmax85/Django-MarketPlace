@@ -24,6 +24,8 @@ User = get_user_model()
 class AdminView(PermissionRequiredMixin, View):
     """
     Страница настроек сайта в админ-панели
+
+    ::Страница: Настройки
     """
     permission_required = ('profiles_app.Content_manager', )
 
@@ -35,6 +37,8 @@ class AdminView(PermissionRequiredMixin, View):
 def clear_all_cache(request: HttpRequest) -> Callable:
     """
     Очистка всего кеша сайта
+
+    ::Страница: Настройки
     """
     cache.clear()
     messages.add_message(request, settings.SUCCESS_OPTIONS_ACTIVATE, _('Cache was cleaned.'))
@@ -45,6 +49,8 @@ def clear_all_cache(request: HttpRequest) -> Callable:
 def change_limited_deal(request: HttpRequest) -> Callable:
     """
     Представление ручного изменения товара из блока "Ограниченный тираж"
+
+    ::Страница: Настройки
     """
     OPTIONS = global_preferences_registry.manager().by_name()
     limited_products = get_limited_products(count=OPTIONS['count_limited_products'])
@@ -57,6 +63,8 @@ def change_limited_deal(request: HttpRequest) -> Callable:
 def update_expire(request: HttpRequest) -> Callable:
     """
     Представление для продления времени следующего обновления товара из "Ограниченного тиража"
+
+    ::Страница: Настройки
     """
     OPTIONS = global_preferences_registry.manager().by_name()
     random_product.add_limited_deal_expire_days(days=OPTIONS['days_duration'])
@@ -68,6 +76,8 @@ def update_expire(request: HttpRequest) -> Callable:
 def set_expire(request: HttpRequest) -> Callable:
     """
     Представление для ручного ввода даты и времени следующего обновления товара из "Ограниченного тиража"
+
+    ::Страница: Настройки
     """
     new_value = " ".join([request.GET.get('date'), request.GET.get('time')])
     dt = datetime.datetime.strptime(new_value, "%Y-%m-%d %H:%M")
@@ -83,6 +93,8 @@ def set_expire(request: HttpRequest) -> Callable:
 def clear_catalog_cache(request: HttpRequest) -> Callable:
     """
     Очистка кэша продуктов и категорий каталога
+
+    ::Страница: Настройки
     """
     cache.delete_many(['products:all',
                        'categories:all',
@@ -98,6 +110,8 @@ def clear_catalog_cache(request: HttpRequest) -> Callable:
 def clear_review_cache(request: HttpRequest) -> Callable:
     """
     Очистка кеша отзывов о товарах
+
+    ::Страница: Настройки
     """
     all_reviews_cache = Product.objects.all().values('id')
     cache.delete_many([f'reviews:{item["id"]}' for item in list(all_reviews_cache)])
@@ -109,6 +123,8 @@ def clear_review_cache(request: HttpRequest) -> Callable:
 def clear_detail_products_cache(request: HttpRequest) -> Callable:
     """
     Очистка кеша детальных страниц товаров (кроме отзывов)
+
+    ::Страница: Настройки
     """
     list_products_id = list(Product.objects.all().values('id'))
     cache.delete_many([f'tags:{item["id"]}' for item in list_products_id])
@@ -122,6 +138,8 @@ def clear_detail_products_cache(request: HttpRequest) -> Callable:
 def clear_banner_cache(request: HttpRequest) -> Callable:
     """
     Очистка кеша баннеров
+
+    ::Страница: Настройки
     """
     key = make_template_fragment_key('banners_block')
     cache.delete(key)
@@ -133,6 +151,8 @@ def clear_banner_cache(request: HttpRequest) -> Callable:
 def clear_sellers_cache(request: HttpRequest) -> Callable:
     """
     Очистка кеша продавцов
+
+    ::Страница: Настройки
     """
     list_owner = list(set([item['owner_id'] for item in Seller.objects.all().values('owner_id')]))
     cache.delete_many([f'owner_sp:{i}' for i in list_owner])
@@ -148,6 +168,8 @@ def clear_sellers_cache(request: HttpRequest) -> Callable:
 def clear_users_cache(request: HttpRequest) -> Callable:
     """
     Очистка кеша пользователей
+
+    ::Страница: Настройки
     """
     list_users_id = list(User.objects.all().values('id'))
     cache.delete_many([f'user_orders:{item["id"]}' for item in list_users_id])

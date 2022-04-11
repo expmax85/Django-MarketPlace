@@ -4,7 +4,6 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.http import JsonResponse, HttpRequest
 from django.shortcuts import render, redirect
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DetailView, ListView
@@ -23,6 +22,8 @@ from stores_app.models import SellerProduct
 class IndexView(ListView):
     """
     Главная страница
+
+    ::Страница: Главная
     """
     model = SellerProduct
     template_name = 'goods_app/index.html'
@@ -55,6 +56,8 @@ class IndexView(ListView):
 class ProductDetailView(DetailView):
     """
     Детальная страница продукта
+
+    ::Страница: Детальная страница продукта
     """
     model = Product
     context_object_name = 'product'
@@ -85,6 +88,8 @@ class ProductDetailView(DetailView):
 def get_reviews(request: HttpRequest) -> JsonResponse:
     """
     Представление для получения всех отзывов о товаре
+
+    ::Страница: Детальная страница продукта
     """
     slug = request.GET.get('slug')
     page = request.GET.get('page')
@@ -96,7 +101,9 @@ def get_reviews(request: HttpRequest) -> JsonResponse:
 
 def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     """
-    Представление для добавления отзыва о товаре
+    Представление для добавления отзыва о
+
+    ::Страница: Детальная страница продукта
     """
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
@@ -119,6 +126,8 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
 class CatalogByCategory(CatalogByCategoriesMixin, View):
     """
     Класс-контроллер для отображения каталога-списка всех товаров в магазинах по определенной категории
+
+    ::Страница: Каталог
     """
 
     def get(self, request, slug, page=1, sort_type='price_inc'):
@@ -171,6 +180,8 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
 class CardForAjax(CatalogByCategoriesMixin, View):
     """
     Класс-контроллер для отображения набора товаров в каталоге с учетом необходимых фильтров, сортировки и пагинации
+
+    ::Страница: Каталог
     """
 
     def get(self, request, slug, sort_type, page):

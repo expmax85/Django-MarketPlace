@@ -34,6 +34,8 @@ User = get_user_model()
 def add_viewed(request):
     """
     Добавление в список просмотренных товаров
+
+    ::Страница: Детальная страница товара
     """
 
     seller_product = SellerProduct.objects.get(id=request.GET.get('seller_product_id'))
@@ -49,6 +51,8 @@ def add_viewed(request):
 def cart_clear(request):
     """
     Очистка корзины
+
+    ::Страница: Корзина
     """
     cart = CartService(request)
     cart.clear()
@@ -58,6 +62,8 @@ def cart_clear(request):
 class CartView(View):
     """
     Представление корзины
+
+    ::Страница: Корзина
     """
 
     @classmethod
@@ -115,6 +121,8 @@ class CartView(View):
 class CartAdd(View):
     """
     Добавление позиций в корзине
+
+    ::Страница: Корзина
     """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
@@ -126,6 +134,8 @@ class CartAdd(View):
 class CartRemove(View):
     """
     Удаление позиции из корзины
+
+    ::Страница: Корзина
     """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
@@ -136,6 +146,8 @@ class CartRemove(View):
 class OrderStepOne(View):
     """
     Представление первого шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     form_class = OrderStepOneForm
     template_name = 'orders_app/order_step_one.html'
@@ -181,6 +193,8 @@ class OrderStepOne(View):
 class OrderStepOneAnonym(View):
     """
     Представление первого шага оформления заказа для анонимного пользователя
+
+    ::Страница: Оформление заказа
     """
     def get(self, request: HttpRequest) -> Callable:
         if request.user.is_authenticated:
@@ -230,6 +244,8 @@ class OrderStepOneAnonym(View):
 class OrderStepTwo(View):
     """
     Представление второго шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     form_class = OrderStepTwoForm
     template_name = 'orders_app/order_step_two.html'
@@ -276,6 +292,8 @@ class OrderStepTwo(View):
 class OrderStepThree(View):
     """
     Представление третьего шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     form_class = OrderStepThreeForm
     template_name = 'orders_app/order_step_three.html'
@@ -301,6 +319,8 @@ class OrderStepThree(View):
 class OrderStepFour(View):
     """
     Представление четвертого шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     template_name = 'orders_app/order_step_four.html'
 
@@ -312,6 +332,8 @@ class OrderStepFour(View):
 class PaymentView(View):
     """
     Оплата заказа. Логика направляется в зависимости от способа оплаты.
+
+    ::Страница: Оплата заказа
     """
     def get(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
@@ -324,6 +346,8 @@ class PaymentView(View):
 class PaymentWithCardView(View):
     """
     Представление оплаты банковской картой
+
+    ::Страница: Оплата заказа
     """
     template_name = 'orders_app/payment_card.html'
 
@@ -357,6 +381,8 @@ class PaymentWithCardView(View):
 class PaymentWithAccountView(View):
     """
     Представление оплаты рандомным счетом
+
+    ::Страница: Оплата заказа
     """
     template_name = 'orders_app/payment_account.html'
 
@@ -374,6 +400,8 @@ class PaymentWithAccountView(View):
 def payment_done(request):
     """
     Представление удачной оплаты
+
+    ::Страница: Оплата заказа
     """
     return render(request, 'orders_app/payment_successful.html')
 
@@ -381,6 +409,8 @@ def payment_done(request):
 def payment_canceled(request):
     """
     Представление неудачной оплаты
+
+    ::Страница: Оплата заказа
     """
     return render(request, 'orders_app/payment_unsuccessful.html')
 
@@ -388,6 +418,8 @@ def payment_canceled(request):
 class ViewedGoodsView(StoreServiceMixin, ListView):
     """
     Представление просмотренных товаров
+
+    ::Страница: История просмотренных товаров
     """
 
     model = User
@@ -410,6 +442,8 @@ class ViewedGoodsView(StoreServiceMixin, ListView):
 class CompareView(View):
     """
     Представление страницы товаров для сравнения
+
+    ::Страница: Сравнение товаров
     """
 
     def get(self, request: HttpRequest):
@@ -450,6 +484,8 @@ class CompareView(View):
 class AddToCompare(View):
     """
     Представление добавления товара в список для сравнения
+
+    ::Страница: Сравнение товаров
     """
 
     def get(self, request: HttpRequest, product_id: int):
@@ -489,6 +525,8 @@ class AddToCompare(View):
 class RemoveFromCompare(View):
     """
     Представление удаления товара из списка товаров для сравнения
+
+    ::Страница: Сравнение товаров
     """
 
     def get(self, request: HttpRequest, product_name: str):
@@ -503,6 +541,8 @@ class RemoveFromCompare(View):
 class HistoryOrderView(StoreServiceMixin, ListView):
     """
     Представление истории заказов
+
+    ::Страница: История заказов
     """
 
     model = Order
@@ -519,6 +559,8 @@ class HistoryOrderView(StoreServiceMixin, ListView):
 class HistoryOrderDetail(DetailView):
     """
     Детальное представление заказа
+
+    ::Страница: Детальная страница заказа
     """
 
     model = Order

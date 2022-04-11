@@ -22,6 +22,8 @@ from stores_app.services import StoreServiceMixin
 class UserLogin(LoginView):
     """
     Аутентификация пользователей
+
+    ::Страница: Логин пользователя
     """
     template_name = 'account/login.html'
     success_url = '/'
@@ -47,6 +49,8 @@ class UserLogin(LoginView):
 class UserLogout(LogoutView):
     """
     Выход с сайта
+
+    ::Страница: Логаут пользователя
     """
     template_name = 'account/logout.html'
     next_page = '/users/login'
@@ -80,6 +84,8 @@ class RegisterView(View):
 class RestorePasswordView(View):
     """
     Представление восстановления пароля
+
+    ::Страница: Восстановление пароля
     """
     def get(self, request: HttpRequest) -> Callable:
         form = RestorePasswordForm()
@@ -104,6 +110,8 @@ class RestorePasswordView(View):
 class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
     """
     Страница информации об аккаунте
+
+    ::Страница: Аккаунт
     """
     template_name = 'account/account.html'
 
@@ -120,6 +128,8 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
 class AccountEditView(LoginRequiredMixin, View):
     """
     Страница редактирования информации об аккаунте
+
+    ::Страница: Аккаунт
     """
     def get(self, request: HttpRequest) -> Callable:
         form = AccountEditForm()

@@ -10,6 +10,11 @@ from goods_app.services.product_detail import context_pagination
 
 
 class DiscountsListView(ListView):
+    """
+    Страница со список всех действующих скидок
+
+    ::Страница: Список всех скидок
+    """
 
     def get(self, request, *args, **kwargs):
         discounts = ProductDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
@@ -26,6 +31,11 @@ class DiscountsListView(ListView):
 
 
 class DiscountDetailView(DetailView):
+    """
+    Детальная страница скидки
+
+    ::Страница: Детальная страница скидки
+    """
     model = ProductDiscount
     context_object_name = 'discount'
     template_name = 'discounts_app/discount_detail.html'

@@ -6,7 +6,7 @@ python manage.py loadscript no_clear
 ```
 python manage.py loadscript with_clear
 ```
-А указав еще и префикс --db, будет удалена также и база данных:
+А указав еще и префикс --db, будет удалена также и база данных(только для БД .sqlite):
 ```
 python manage.py loadscript with_clear --db
 ```
