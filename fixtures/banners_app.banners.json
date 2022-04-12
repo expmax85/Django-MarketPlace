@@ -3,20 +3,20 @@
   "model": "banners_app.banner",
   "pk": 1,
   "fields": {
-    "discount": 1,
-    "title": "TruckBook 1000",
-    "description": "Get it now with 5% discount",
-    "image": "static/assets/img/content/home/banners/Truckbook_banner.png"
+    "discount": 5,
+    "title": "Hurry up!",
+    "description": "1000-things. Stock elimenation. 80% discount for everything and anything!",
+    "image": "banners/slider.png"
   }
 },
 {
   "model": "banners_app.banner",
   "pk": 2,
   "fields": {
-    "discount": 2,
-    "title": "Our TruckBook is Cheaper!",
-    "description": "Be the first or get nothing. TruckBook into your soul!",
-    "image": "static/assets/img/content/home/banners/slider.png"
+    "discount": 4,
+    "title": "Home comfort for you",
+    "description": "Tables? Tables... Tables!!!\r\nWaiting for you in Home comfort for only 100$ each",
+    "image": "banners/HomeComfort.png"
   }
 },
 {
@@ -24,29 +24,29 @@
   "pk": 3,
   "fields": {
     "discount": 3,
-    "title": "Juahei B200",
-    "description": "Juahei Juahei get it now or go away!",
-    "image": "static/assets/img/content/home/banners/slider.png"
+    "title": "Comp Friday in Mediabazar",
+    "description": "Ladies and gentlemen! Boys and girls! Comps Friday in Mediabazar! Be first or get lost! 100$ discount for each and every comp",
+    "image": "banners/CompFriday.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 4,
+  "fields": {
+    "discount": 1,
+    "title": "RVideo set special",
+    "description": "Don't be shy. Buy your phone with a case and get special discount",
+    "image": "banners/RVideoSet.png"
   }
 },
 {
   "model": "banners_app.banner",
   "pk": 5,
   "fields": {
-    "discount": 4,
-    "title": "Only in RVideo",
-    "description": "Special set of Juaiheis A100 and B200. Get 1000$ off buynig two at once",
-    "image": "static/assets/img/content/home/banners/slider.png"
-  }
-},
-{
-  "model": "banners_app.banner",
-  "pk": 8,
-  "fields": {
-    "discount": 7,
-    "title": "Juaihei C300 is yours",
-    "description": "Only one week in RVideo",
-    "image": "static/assets/img/content/home/banners/Rectangle_19.jpg"
+    "discount": 2,
+    "title": "Mediabazar BlackFriday",
+    "description": "You know what to do! Ready... Steady...Go...",
+    "image": "banners/BlackFriday.png"
   }
 }
 ]

@@ -7,6 +7,7 @@ urlpatterns = [
     path('cart/', CartView.as_view(), name='cart_detail'),
     path('cart/<int:product_id>', CartView.as_view(), name='cart_detail_post'),
     path('add/<int:product_id>/', CartAdd.as_view(), name='cart_add'),
+    path('add/<int:product_id>/', CartAdd.as_view(), name='cart_add_many'),
     path('remove/<int:product_id>/', CartRemove.as_view(), name='cart_remove'),
     path('clear/', cart_clear, name='cart_clear'),
     # эндпоинты оформления заказа

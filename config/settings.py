@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.vk',
 
     'mptt',
+    'drf_yasg',
  ] + env.list('INSTALLED_APPS', default=[])
 
 MIDDLEWARE = [
