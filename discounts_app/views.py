@@ -21,7 +21,7 @@ class DiscountsListView(ListView):
                     ProductDiscount.objects.filter(is_active=True, valid_from__lte=datetime.date.today(),
                                                    valid_to=None)
 
-        discounts = context_pagination(request, discounts, 2)
+        discounts = context_pagination(request, discounts, 4)
         return render(request, 'discounts_app/discounts_list.html', {'discounts': discounts})
 
 

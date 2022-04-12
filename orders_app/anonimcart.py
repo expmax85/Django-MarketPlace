@@ -37,7 +37,7 @@ class AnonymCart:
             return False
 
     def save(self):
-        # Отметка сессии как измененной
+        """Отметка сессии как измененной"""
         self.session.modified = True
 
     def remove(self, product: SellerProduct):

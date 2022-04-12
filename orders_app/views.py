@@ -4,21 +4,18 @@ import braintree
 import datetime
 
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
-
-
 from orders_app.models import (
     Order,
     ViewedProduct,
     OrderProduct
 )
-from dynamic_preferences.registries import global_preferences_registry
+
 from orders_app.services import CartService
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
@@ -26,6 +23,7 @@ from profiles_app.forms import RegisterForm
 from profiles_app.services import reset_phone_format, get_auth_user
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
+from settings_app.dynamic_preferences_registry import global_preferences_registry
 from payments_app.services import process_payment
 from stores_app.services import StoreServiceMixin
 
@@ -121,6 +119,13 @@ class CartAdd(View):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
         cart.add_to_cart(product, quantity=1, update_quantity=False)
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    def post(self, request: HttpRequest, product_id: int):
+        cart = CartService(request)
+        product = get_object_or_404(SellerProduct, id=str(product_id))
+        quantity = int(request.POST.get('amount'))
+        cart.add_to_cart(product, quantity=quantity, update_quantity=False)
         return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -237,12 +242,15 @@ class OrderStepTwo(View):
 
     def get(self, request: HttpRequest):
         user = request.user
-        initial = {'city': user.city,
-                   'address': user.address,
-                   'delivery': 'reg',
-                   'payment': 'cash'}
-        form = self.form_class(initial=initial)
-        return render(request, self.template_name, {'form': form})
+        if user.is_authenticated:
+            initial = {'city': user.city,
+                       'address': user.address,
+                       'delivery': 'reg',
+                       'payment': 'cash'}
+            form = self.form_class(initial=initial)
+            return render(request, self.template_name, {'form': form})
+        else:
+            return redirect('profiles:login')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
@@ -282,8 +290,13 @@ class OrderStepThree(View):
     template_name = 'orders_app/order_step_three.html'
 
     def get(self, request: HttpRequest):
-        form = OrderStepThreeForm
-        return render(request, self.template_name, {'form': form})
+        user = request.user
+        if user.is_authenticated:
+            form = OrderStepThreeForm
+            return render(request, self.template_name, {'form': form})
+
+        else:
+            return redirect('profiles:login')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
@@ -306,8 +319,13 @@ class OrderStepFour(View):
     template_name = 'orders_app/order_step_four.html'
 
     def get(self, request: HttpRequest):
-        order = Order.objects.filter(customer=request.user, in_order=True).last()
-        return render(request, self.template_name, {'order': order})
+        user = request.user
+        if user.is_authenticated:
+            order = Order.objects.filter(customer=user, in_order=True).last()
+            return render(request, self.template_name, {'order': order})
+
+        else:
+            return redirect('profiles:login')
 
 
 class PaymentView(View):

@@ -58,7 +58,7 @@
               </div>
                 <div class="ProductCard-cart">
                     {% if  best_offer.quantity > 0 and best_offer %}
-                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_detail_post' product_id=best_offer.id %}" method="get">
+                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_add_many' product_id=best_offer.id %}" method="post">
                         <div class="ProductCard-cartElement ProductCard-cartElement_amount">
                           <div class="Amount Amount_product">
                             <button class="Amount-remove" type="button">
@@ -68,6 +68,7 @@
                             </button>
                           </div>
                         </div>
+                        {% csrf_token %}
                         <div class="ProductCard-cartElement">
                             <button type="submit" class="btn btn_primary">
                                 <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span>

@@ -124,7 +124,7 @@
                   {% for product in order.order_products.all %}
                     <div class="Cart-product">
                         <div class="Cart-block Cart-block_row">
-                          <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img class="Cart-img" src="product.seller_product.product.image" alt="card.jpg"/></a>
+                          <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img class="Cart-img" src="{{ product.seller_product.product.image.url }}" alt="card.jpg"/></a>
                           </div>
                           <div class="Cart-block Cart-block_info"><a class="Cart-title" href="#">{{ product.seller_product.product.name }}</a>
                             <div class="Cart-desc">{{ product.seller_product.product.description }}

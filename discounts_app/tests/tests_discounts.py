@@ -8,7 +8,6 @@ from profiles_app.models import User
 
 class DiscountsTest(TestCase):
     """ Тесты работы корзины """
-
     def setUp(self):
         self.user = User.objects.create(email='test@ru.ru',
                                         password='admin732',

@@ -68,7 +68,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100, null=True, verbose_name=_('product name'))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name=_('product code'))
     slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name=_('product slug'))
-    image = models.ImageField(null=True, blank=True, verbose_name=_('product image'))
+    image = models.ImageField(null=True, blank=True, default='card.jpg', verbose_name=_('product image'))
     description = models.TextField(max_length=2550, null=True, verbose_name=_('product description'))
     rating = models.FloatField(null=True, blank=True, default=0, verbose_name=_('rating'))
     is_published = models.BooleanField(verbose_name=_('is published'), null=True, blank=True, default=True)
