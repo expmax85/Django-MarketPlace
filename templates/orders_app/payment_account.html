@@ -28,57 +28,68 @@
 
     <div class="Section">
       <div class="wrap">
-        {% if not order.paid %}
-            <div class="Cart-total">
-                <div class="Cart-block Cart-block_total">
-                  <strong class="Cart-title">{% trans 'Order Nr:' %}
-                  </strong>
-                  <span class="Cart-price">{{ order.id }}</span>
+         {% if order.in_order %}
+            {% if not order.paid %}
+                <div class="Cart-total">
+                    <div class="Cart-block Cart-block_total">
+                      <strong class="Cart-title">{% trans 'Order Nr:' %}
+                      </strong>
+                      <span class="Cart-price">{{ order.id }}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="Cart-total">
-                <div class="Cart-block Cart-block_total">
-                    <strong class="Cart-title">{% trans 'Total:' %}
-                    </strong>
-                    <span class="Cart-price">{{ order.final_total }}$</span>
-              </div>
-            </div>
-            <form class="form Payment" action="{% url 'orders-polls:payment_with_account' order.id %}" method="post">
-              <div class="Payment-card">
-                <div class="form-group">
-                  <label class="form-label">Номер счета
-                  </label>
-                  <input class="form-input Payment-bill" id="numero1" name="numero1" type="text" placeholder="9999 9999" data-mask="9999 9999" data-validate="require pay" {% if code %}value="{{ code }}{% endif %}"/>
+                <div class="Cart-total">
+                    <div class="Cart-block Cart-block_total">
+                        <strong class="Cart-title">{% trans 'Total:' %}
+                        </strong>
+                        <span class="Cart-price">{{ order.final_total }}$</span>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <a class="btn btn_success Payment-generate" href="{% url 'orders-polls:payment_with_account' order.id %}">
-                        {% trans 'Generate random account' %}
-                    </a>
-                </div>
-              </div>
-{#              <div class="Payment-pay"><a class="btn btn_primary" href="progressPayment.html">Оплатить</a>#}
-              {% csrf_token %}
-              <div class="Payment-pay">
-                  <input
-                            style="border-radius: 100px;
-                            font-size: 16px;
-                            color: #fff;
-                            background: #0063d1;
-                            max-width: 150px;"
-                            type="submit" value="{% trans 'Pay now' %}">
-              </div>
-            </form>
-        {% else %}
+                <form class="form Payment" action="{% url 'orders-polls:payment_with_account' order.id %}" method="post">
+                  <div class="Payment-card">
+                    <div class="form-group">
+                      <label class="form-label">Номер счета
+                      </label>
+                      <input class="form-input Payment-bill" id="numero1" name="numero1" type="text" placeholder="9999 9999" data-mask="9999 9999" data-validate="require pay" {% if code %}value="{{ code }}{% endif %}"/>
+                    </div>
+                    <div class="form-group">
+                        <a class="btn btn_success Payment-generate" href="{% url 'orders-polls:payment_with_account' order.id %}">
+                            {% trans 'Generate random account' %}
+                        </a>
+                    </div>
+                  </div>
+                  {% csrf_token %}
+                  <div class="Payment-pay">
+                      <input
+                                style="border-radius: 100px;
+                                font-size: 16px;
+                                color: #fff;
+                                background: #0063d1;
+                                max-width: 150px;"
+                                type="submit" value="{% trans 'Pay now' %}">
+                  </div>
+                </form>
+            {% else %}
+                <div class="ProgressPayment">
+                  <div class="ProgressPayment-title">{% trans 'This order has been already paid' %}
+                  </div>
+                 </div>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+            {% endif %}
+         {% else %}
             <div class="ProgressPayment">
-              <div class="ProgressPayment-title">{% trans 'This order has been already paid' %}
-              </div>
-             </div>
-             <br>
-             <br>
-             <br>
-             <br>
-             <br>
-        {% endif %}
+                  <div class="ProgressPayment-title">{% trans 'No order with this number' %}
+                  </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+          {% endif %}
       </div>
     </div>
 
