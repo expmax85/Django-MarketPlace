@@ -117,7 +117,10 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
 
     def get(self, request: HttpRequest) -> Callable:
         viewed = list(self.get_viewed_products(user=request.user))[-3:]
-        products = get_discounted_prices_for_seller_products(viewed)
+        if viewed:
+            products = get_discounted_prices_for_seller_products(viewed)
+        else:
+            products = False
         context = {
             'last_order': self.get_last_order(user=request.user),
             'viewed_products': products

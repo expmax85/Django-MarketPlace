@@ -1,8 +1,9 @@
-from typing import Dict
+import functools
+from typing import Dict, Callable
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet, Prefetch
+from django.db.models import QuerySet, Prefetch, Model
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
@@ -22,15 +23,34 @@ class StoreServiceMixin:
     Mixin with functions for queries by models Seller and SellerProduct
 
     All available methods:
+    get_base_products(query params) - get products
+    request_add_new_product(product, user)
+    get_all_orders(user)
+    get_last_order(user)
+    get_viewed_products(user) - get all viewed SellerProduct instances
     get_store(slug) - get Seller instance with slug=slug
     get_user_stores(user) - get all Seller models by owner=user
+    remove_store(request) - remove Seller instance with id=request.id=request
+
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
-    get_base_products(query params) - get products
-    get_seller_products(user) - get SellerProducts query by Sellers owner=user
-    get_viewed_products(user) - get all viewed SellerProduct instances
+    get_seller_products(user, calculate_prices) - get SellerProducts query by Sellers owner=user
     remove_seller_product(request) - Remove SellerProduct instance with id=request.id
-    remove_store(request) - remove Seller instance with id=request.id=request
+
+    create_product_discount(user)
+    get_product_discounts(user)
+    edit_product_group_discount(data, instance)
+    remove_product_discount(request)
+
+    create_group_discount(user)
+    get_group_discounts(user)
+    edit_group_group_discount(data, instance)
+    remove_group_discount(request)
+
+    create_cart_discount(user)
+    get_cart_discounts(user)
+    edit_cart_group_discount(data, instance)
+    remove_cart_discount(request)
     """
 
     @classmethod
