@@ -47,8 +47,9 @@ class CurrentProduct:
         sellers_cache_key = 'sellers:{}'.format(self.product.id)
         queryset = cache.get(sellers_cache_key)
         if not queryset:
-            queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
-                                            .prefetch_related('product_discounts')\
+            queryset = SellerProduct.objects.select_related('seller', 'product',
+                                                            'product__category',
+                                                            'product__category__parent') \
                                             .filter(product=self.product)
             cache.set(sellers_cache_key, queryset, 24 * 60 * 60)
         sellers = get_discounted_prices_for_seller_products(queryset)

@@ -113,8 +113,9 @@ def get_limited_products(count: int = -1) -> Union[QuerySet, bool]:
     products_cache_key = 'limited:all'
     queryset = cache.get(products_cache_key)
     if not queryset:
-        queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                        .prefetch_related('product_discounts') \
+        queryset = SellerProduct.objects.select_related('seller', 'product',
+                                                        'product__category',
+                                                        'product__category__parent') \
                                         .filter(product__limited=True)
         if not list(queryset):
             return False
@@ -134,8 +135,9 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
     products_cache_key = 'hot_offers:all'
     queryset = cache.get(products_cache_key)
     if not queryset:
-        queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                        .prefetch_related('product_discounts') \
+        queryset = SellerProduct.objects.select_related('seller', 'product',
+                                                        'product__category',
+                                                        'product__category__parent') \
                                         .annotate(count=Count('product_discounts')) \
                                         .filter(count__gt=0)
         try:
@@ -172,8 +174,10 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
     products_cache_key = 'products:all'
     queryset = cache.get(products_cache_key)
     if not queryset:
-        queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                        .prefetch_related('product_discounts').all()\
+        queryset = SellerProduct.objects.select_related('seller', 'product',
+                                                        'product__category',
+                                                        'product__category__parent') \
+                                        .annotate(viewed=Count('viewed_list'))\
                                         .order_by(order_by)[:count]
         cache.set(products_cache_key, queryset, 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)

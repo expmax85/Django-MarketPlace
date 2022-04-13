@@ -1,9 +1,8 @@
-import functools
-from typing import Dict, Callable
+from typing import Dict
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet, Prefetch, Model
+from django.db.models import QuerySet, Prefetch
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
@@ -119,14 +118,16 @@ class StoreServiceMixin:
         instance.save()
 
     @classmethod
-    def get_seller_products(cls, user: User, calculate_prices: bool =False) -> QuerySet:
+    def get_seller_products(cls, user: User, calculate_prices: bool = False) -> QuerySet:
         """
         Get all products, added by user
         """
         owner_sp_cache_key = 'owner_sp:{}'.format(user.id)
         products = cache.get(owner_sp_cache_key)
         if not products:
-            products = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
+            products = SellerProduct.objects.select_related('seller', 'product',
+                                                            'product__category',
+                                                            'product__category__parent') \
                                             .filter(seller__owner=user)
             cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
         if calculate_prices:
@@ -138,7 +139,9 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
+        item = SellerProduct.objects.select_related('seller', 'product',
+                                                    'product__category',
+                                                    'product__category__parent') \
                                     .get(id=request.GET.get('id'))
         messages.add_message(request, settings.SUCCESS_DEL_PRODUCT,
                              _(f'Product {item.product.name} from the store {item.seller.name} was removed'))
@@ -150,12 +153,13 @@ class StoreServiceMixin:
         Get Products by category, Seller instance or get all Products
         """
         if 'category_id' in kwargs.keys():
-            products = Product.objects.select_related('category').filter(category=kwargs.get('category_id'))
+            products = Product.objects.select_related('category', 'category__parent')\
+                                      .filter(category=kwargs.get('category_id'))
         else:
             base_products_cache_key = 'base_products:all'
             products = cache.get(base_products_cache_key)
             if not products:
-                products = Product.objects.select_related('category').all()
+                products = Product.objects.select_related('category', 'category__parent').all()
                 cache.set(base_products_cache_key, products, 24 * 60 * 60)
         return products
 
@@ -167,9 +171,11 @@ class StoreServiceMixin:
         viewed_cache_key = 'viewed:{}'.format(user.id)
         products = cache.get(viewed_cache_key)
         if not products:
-            products = SellerProduct.objects.select_related('seller', 'product', 'product__category') \
-                                            .prefetch_related('product_discounts')\
-                                            .prefetch_related(Prefetch('viewed_list', queryset=ViewedProduct.objects.filter(user=user))) \
+            products = SellerProduct.objects.select_related('seller', 'product',
+                                                            'product__category',
+                                                            'product__category__parent') \
+                                            .prefetch_related(Prefetch('viewed_list',
+                                                                   queryset=ViewedProduct.objects.filter(user=user))) \
                                             .filter(viewed_list__user=user)
             cache.set(viewed_cache_key, products, 24 * 60 * 60)
         return products

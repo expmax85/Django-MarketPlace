@@ -27,7 +27,7 @@
                     {% endif %}
                 </span>
             </div>
-            <div class="Card-category">{{ special_product.product.category }}
+            <div class="Card-category">{% if special_product.product.category.parent %}{{ special_product.product.category.parent }} / {% endif %}{{ special_product.product.category }}
             </div>
           </div>
           <div class="CountDown" data-date="{{ update_time }}">

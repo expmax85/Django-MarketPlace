@@ -88,6 +88,7 @@ class ProductAdmin(admin.ModelAdmin):
     mark_male_limited.short_description = _('Make products as limited')
     mark_del_limited.short_description = _('Cancel limited status for products ')
 
+
 @admin.register(ProductComment)
 class ProductComment(admin.ModelAdmin):
     list_display = ('author', 'get_text_comment', 'added')

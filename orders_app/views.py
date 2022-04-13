@@ -244,7 +244,7 @@ class OrderStepOneAnonym(View):
             order.save()
             return redirect('orders:order_step_two')
 
-        return render(request, 'orders_app/order_step_one_anonimous.html', {'form' : form})
+        return render(request, 'orders_app/order_step_one_anonimous.html', {'form': form})
 
 
 class OrderStepTwo(View):

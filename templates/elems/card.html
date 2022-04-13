@@ -6,20 +6,20 @@
 <div class="Slider-item">
     <div class="Slider-content">
 {% endif %}
-    <div class="Card" style="position: relative">
+    <div class="Card" style="position: relative; min-height: 392px;">
         <div class="store-name">
             <a href="{% url 'stores-polls:store-detail' offer.seller.slug %}"><img src="{{offer.seller.icon_url}}" alt="store-icon"></a>
         </div>
         <form method="get" action="{% url 'orders-polls:add_viewed' %}">
             <input type="hidden" name="seller_product_id" value="{{ offer.id }}">
-            <button class="Card-picture" type="submit">
-                <img src="{{ offer.product.image_url }}" alt="card.jpg"/>
+            <button class="Card-picture" type="submit" style="max-width: 200px;">
+                <img src="{{ offer.product.image_url }}" alt="card.jpg">
             </button>
             <div class="Card-content">
-                <button class="Card-title" type="submit">
+                <button class="Card-title" type="submit" style="min-height: 62px; width: 100%; text-align: center;">
                     {{ offer.product.name }}
                 </button>
-                <div class="Card-description">
+                <div class="Card-description" style="width: 100%; text-align: center;">
                     <div class="Card-cost">
                         <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ offer.price }}{% endif %}</span>
                         <span class="Card-price">
@@ -30,7 +30,7 @@
                             {% endif %}
                         </span>
                     </div>
-                    <div class="Card-category">{{ offer.product.category.name }}</div>
+                    <div class="Card-category">{% if offer.product.category.parent_id %}{{ offer.product.category.parent }} / {% endif %}{{ offer.product.category.name }}</div>
                     <div class="Card-hover">
                         <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
                         <a class="Card-btn" href="{% url 'orders-polls:cart_add' offer.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>

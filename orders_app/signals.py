@@ -35,7 +35,7 @@ def viewed_reset_cache_save_handler(sender, **kwargs) -> None:
 
 
 @receiver(pre_delete, sender=ViewedProduct)
-def viewed_reset_cache_save_handler(sender, **kwargs) -> None:
+def viewed_reset_cache_del_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """

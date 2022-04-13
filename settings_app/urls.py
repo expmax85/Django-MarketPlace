@@ -15,20 +15,20 @@ Including another URLconf
 """
 from django.urls import path
 
-from settings_app.views import *
+from settings_app import views
 
 
 app_name = 'settings_app'
 urlpatterns = [
-    path('clear-all-cache/', clear_all_cache, name='clear-all-cache'),
-    path('clear-review-cache/', clear_review_cache, name='clear-review-cache'),
-    path('clear_catalog_cache/', clear_catalog_cache, name='clear-catalog-cache'),
-    path('clear_banner_cache/', clear_banner_cache, name='clear-banner-cache'),
-    path('clear_detail_products_cache/', clear_detail_products_cache, name='clear-detail-products-cache'),
-    path('clear_sellers_cache/', clear_sellers_cache, name='clear-sellers-cache'),
-    path('clear_users_cache/', clear_users_cache, name='clear-users-cache'),
+    path('clear-all-cache/', views.clear_all_cache, name='clear-all-cache'),
+    path('clear-review-cache/', views.clear_review_cache, name='clear-review-cache'),
+    path('clear_catalog_cache/', views.clear_catalog_cache, name='clear-catalog-cache'),
+    path('clear_banner_cache/', views.clear_banner_cache, name='clear-banner-cache'),
+    path('clear_detail_products_cache/', views.clear_detail_products_cache, name='clear-detail-products-cache'),
+    path('clear_sellers_cache/', views.clear_sellers_cache, name='clear-sellers-cache'),
+    path('clear_users_cache/', views.clear_users_cache, name='clear-users-cache'),
 
-    path('update-limited-deal/', change_limited_deal, name='manual-change-product'),
-    path('update-expire/', update_expire, name='manual-expire-change'),
-    path('set-end-time/', set_expire, name='set-end-time')
+    path('update-limited-deal/', views.change_limited_deal, name='manual-change-product'),
+    path('update-expire/', views.update_expire, name='manual-expire-change'),
+    path('set-end-time/', views.set_expire, name='set-end-time')
 ]

@@ -32,11 +32,9 @@
                 <img src="{{ product.image_url }}" alt="product.jpg">
               </div>
 {#              <div class="ProductCard-picts">#}
-{##}
 {#                  <a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png">#}
 {#                      <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">#}
 {#                  </a>#}
-{##}
 {#              </div>#}
             </div>
             <div class="ProductCard-desc">
@@ -62,11 +60,11 @@
                 </div>
               </div>
               <div class="ProductCard-text">
-                    {{ product.description|truncatechars:50 }}
+                    {{ product.description|truncatechars:300 }}
               </div>
                 <div class="ProductCard-cart">
                     {% if  best_offer.quantity > 0 and best_offer %}
-                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_detail_post' product_id=best_offer.id %}" method="post">
+                    <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_add_many' product_id=best_offer.id %}" method="post">
                     {%  csrf_token %}
                         <div class="ProductCard-cartElement ProductCard-cartElement_amount">
                           <div class="Amount Amount_product">

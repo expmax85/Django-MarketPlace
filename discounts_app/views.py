@@ -4,7 +4,7 @@ from typing import Dict
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
-from discounts_app.models import *
+from discounts_app.models import ProductDiscount
 from discounts_app.services import get_discounted_prices_for_seller_products
 from goods_app.services.product_detail import context_pagination
 
