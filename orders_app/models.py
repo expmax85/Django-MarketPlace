@@ -60,7 +60,7 @@ class Order(models.Model):
         total = Decimal(0.00)
         for product in self.order_products.all():
             total += product.seller_product.price * product.quantity
-        return total
+        return Decimal(total)
 
     @property
     def total_discounted_sum(self) -> Decimal:
@@ -75,7 +75,7 @@ class Order(models.Model):
         return self.total_discounted_sum + self.delivery_cost
 
     def __str__(self):
-        return f"{_('Order')} №{self.id}"
+        return f'{_("Order")} №{self.id}'
 
     def name(self):
         return self.__str__()

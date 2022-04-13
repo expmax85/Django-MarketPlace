@@ -118,7 +118,8 @@ class PaymentTest(TestCase):
                                         seller_product=SellerProduct.objects.get(id=index),
                                         final_price=index * 100,
                                         quantity=1)
-
+        order.in_order = True
+        order.save()
         response = self.client.get(f'/orders/payment/account/{order.id}')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'orders_app/payment_account.html')
@@ -139,7 +140,8 @@ class PaymentTest(TestCase):
                                         seller_product=SellerProduct.objects.get(id=index),
                                         final_price=index * 100,
                                         quantity=1)
-
+        order.in_order = True
+        order.save()
         response = self.client.get(f'/orders/payment/account/{order.id}')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'orders_app/payment_account.html')

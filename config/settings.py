@@ -64,9 +64,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.vk',
-
+    'django_celery_beat',
     'mptt',
     'drf_yasg',
+
  ] + env.list('INSTALLED_APPS', default=[])
 
 MIDDLEWARE = [

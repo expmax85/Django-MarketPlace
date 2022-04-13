@@ -108,12 +108,12 @@ class OrderProgressTest(TestCase):
 
         SellerProduct.objects.get(id=4).product_discounts.set([self.product_discount_2])
 
+    def test_order_complete_order_progress_with_express(self):
+        """Тест всего прогресса оформления заказа с самого начала аутентифицированным пользователем"""
         self.client.force_login(user=self.customer)
         for index in range(1, 6):
             self.client.get(reverse('orders:cart_add', kwargs={'product_id': index}), HTTP_REFERER='/orders/cart/')
 
-    def test_order_complete_order_progress_with_express(self):
-        """Тест всего прогресса оформления заказа с самого начала аутентифицированным пользователем"""
         response = self.client.get('/orders/step1/')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'orders_app/order_step_one.html')
