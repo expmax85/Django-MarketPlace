@@ -31,8 +31,8 @@ def payment_view(request):
             order = request.data.get('order')
             account = request.data.get('account')
             if process_payment(order, account):
-                return JsonResponse({'status': 'Payment processed'})
-            return JsonResponse({'status': 'Payment not processed'})
+                return JsonResponse({'status': 'Payment has been put in queue'})
+            return JsonResponse({'status': 'Error. Payment will not be processed'})
 
         else:
             return JsonResponse({'status': f'No command {command}'})
