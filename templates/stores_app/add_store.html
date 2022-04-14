@@ -86,7 +86,7 @@
                               <textarea class="form-area" name="address" cols="10" rows="4" maxlength="255" id="id_address"></textarea>
                               <span class="formerror">{{form.errors.address}}</span>
                           </div>
-                          <div class="form-group">
+                          <div class="form-group require-field">
                              <label class="form-label" for="avatar">{% trans 'Store logo' %}
                              </label>
                              {% if store.icon %}
@@ -96,7 +96,7 @@
                              {% endif %}
                                   <div class="Profile-img">
                                   {% if store.icon %}
-                                     <img src="{{ MEDIAROOT }}/uploads/{{ store.icon }}" alt="#.png"/>
+                                     <img src="{{ store.icon_url }}" alt="#.png"/>
                                   {% else %}
                                       <img src="assets/img/#.png" alt="#.png">
                                   {% endif %}
@@ -130,5 +130,6 @@
 {% endblock %}
 
 {% block scripts %}
+    {{ block.super }}
     <script src="{% static 'assets/js/main.js' %}"></script>
 {% endblock %}

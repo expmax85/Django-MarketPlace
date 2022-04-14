@@ -14,13 +14,19 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('get_icon', 'name', 'parent', 'image')
     list_display_links = ('get_icon', 'name')
     list_filter = ('name',)
-    readonly_fields = ('get_icon',)
+    readonly_fields = ('get_image',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',), }
 
     def get_icon(self, obj=None):
         try:
             return mark_safe(f'<img src="{obj.icon.url}" width="20" height="20">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
+
+    def get_image(self, obj=None):
+        try:
+            return mark_safe(f'<img src="{obj.image.url}" width="20" height="20">')
         except ValueError:
             return mark_safe('<img src="" width="20" height="20">')
 
@@ -44,24 +50,9 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ('category', 'is_published', 'tags', 'limited')
     readonly_fields = ('get_image',)
     search_fields = ('name', 'category')
-    prepopulated_fields = {'slug': ('name', 'code'),
-                           'tags': ('category', )}
+    prepopulated_fields = {'slug': ('name', 'code')}
 
     inlines = [SpecificationsInline, CommentsInline]
-
-    actions = ['mark_published', 'mark_unpublished']
-
-    def get_tags(self, obj):
-        lst_tags = []
-        for item in obj.tags.all().values('name'):
-            lst_tags.append(str(item['name']))
-        return ", ".join(lst_tags)
-
-    def mark_published(self, request: HttpRequest, queryset: QuerySet) -> None:
-        queryset.update(is_published=True)
-
-    def mark_unpublished(self, request: HttpRequest, queryset: QuerySet) -> None:
-        queryset.update(is_published=False)
 
     def get_image(self, obj):
         try:
@@ -69,11 +60,33 @@ class ProductAdmin(admin.ModelAdmin):
         except ValueError:
             return mark_safe('<img src="" width="20" height="20">')
 
-    mark_published.short_description = _('Publish')
-    mark_unpublished.short_description = _('Remove from publication')
+    def get_tags(self, obj):
+        lst_tags = []
+        for item in obj.tags.all().values('name'):
+            lst_tags.append(str(item['name']))
+        return ", ".join(lst_tags)
 
     get_image.short_description = _('image')
     get_tags.short_description = _('tags')
+
+    actions = ['mark_published', 'mark_unpublished', 'mark_male_limited', 'mark_del_limited']
+
+    def mark_published(self, request: HttpRequest, queryset: QuerySet) -> None:
+        queryset.update(is_published=True)
+
+    def mark_unpublished(self, request: HttpRequest, queryset: QuerySet) -> None:
+        queryset.update(is_published=False)
+
+    def mark_male_limited(self, request: HttpRequest, queryset: QuerySet) -> None:
+        queryset.update(limited=True)
+
+    def mark_del_limited(self, request: HttpRequest, queryset: QuerySet) -> None:
+        queryset.update(limited=False)
+
+    mark_published.short_description = _('Publish')
+    mark_unpublished.short_description = _('Remove from publication')
+    mark_male_limited.short_description = _('Make products as limited')
+    mark_del_limited.short_description = _('Cancel limited status for products ')
 
 
 @admin.register(ProductComment)

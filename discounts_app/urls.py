@@ -1,5 +1,5 @@
 from django.urls import path
-from discounts_app.views import *
+from discounts_app.views import DiscountsListView, DiscountDetailView
 
 app_name = 'discounts'
 

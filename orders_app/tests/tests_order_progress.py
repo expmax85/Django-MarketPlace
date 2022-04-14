@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from goods_app.models import Product, SpecificationsNames, Specifications, ProductCategory
-from orders_app.models import Order, OrderProduct
 from stores_app.models import SellerProduct, Seller
 from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
 from profiles_app.models import User

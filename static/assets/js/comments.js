@@ -1,6 +1,5 @@
-// Фильтр
 function ajaxSend(url, params, render_data, target) {
-    // Отправляем запрос
+    // Отправление запроса
     fetch(`${url}?${params}`, {
         method: 'GET',
         headers: {
@@ -31,7 +30,7 @@ function render(data, render_data, target) {
 const target = document.querySelector('.comments-js');
 const forms = document.querySelector('form[name=page-filter]');
 forms.addEventListener('click', function (e) {
- // Получаем данные из формы
+ // Получение данных из формы
  e.preventDefault();
  let url = this.action;
  let params = new URLSearchParams(new FormData(this)).toString();
@@ -44,7 +43,7 @@ let html = '\
 {{#comments}}\
 <div class="Comment">\
     <div class="Comment-column Comment-column_pict">\
-      <div class="Comment-avatar"></div>\
+      <div class="Comment-avatar" style="background-image: url({{media}}{{{ user__avatar }}}); background-size: cover;"></div> \
     </div>\
     <div class="Comment-column">\
       <header class="Comment-header">\

@@ -2,8 +2,9 @@
 {% load i18n %}
 {% load static %}
 {% load account socialaccount %}
+{% load goods_tags %}
 
-{% block title %}{% trans 'Sellers Room' %}
+{% block title %}{% trans 'All our stores' %}
 {% endblock %}
 
 {% block header %}
@@ -24,151 +25,129 @@
         </div>
     </div>
     <div class="Section Section_column Section_columnLeft Section_columnWide">
-          <div class="wrap">
-            <div class="Section-column">
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_advantage">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/shipping.svg' %}" alt="shipping.svg">
-                  </div>
-                  <div class="media-content">
-                    <strong class="media-title">{% trans 'Shipping' %} &amp; {% trans 'Returns' %}</strong>
-                    <p class="media-text">{% trans 'World wide shipping' %}
-                    </p>
-                  </div>
-                </div>
+      <div class="wrap">
+        <div class="Section-column">
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_advantage">
+              <div class="media-image"><img src="{% static 'assets/img/icons/advantages/shipping.svg' %}" alt="shipping.svg">
               </div>
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_advantage">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/moneyBack.svg' %}" alt="moneyBack.svg">
-                  </div>
-                  <div class="media-content">
-                    <strong class="media-title">{% trans "Money Back" %}
-                    </strong>
-                    <p class="media-text">{% trans 'Guaranted payments' %}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_advantage">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/support.svg' %}" alt="support.svg">
-                  </div>
-                  <div class="media-content">
-                    <strong class="media-title">{% trans 'Support Policy' %}
-                    </strong>
-                    <p class="media-text">{% trans 'Fast support team' %}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_advantage">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/advantages/quality.svg'%}" alt="quality.svg">
-                  </div>
-                  <div class="media-content">
-                    <strong class="media-title">{% trans 'Quality Guarantee' %}
-                    </strong>
-                    <p class="media-text">{% trans 'Best guaranted items' %}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_middle">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/contacts/phone.svg' %}" alt="phone.svg">
-                  </div>
-                  <div class="media-content">{% trans 'Phone' %}:
-                    <nobr>+8 (200) 800-2000-600</nobr><br>{% trans 'Mobile' %}:
-                    <nobr>+8 (200) 800-2000-650</nobr>
-                  </div>
-                </div>
-              </div>
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_middle">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/contacts/address.svg' %}" alt="address.svg">
-                  </div>
-                  <div class="media-content">
-                    Megano Business Center,
-                    0012 United States, Los Angeles
-                    Creative Street 15/4
-                  </div>
-                </div>
-              </div>
-              <div class="Section-columnSection Section-columnSection_mark">
-                <div class="media media_middle">
-                  <div class="media-image"><img src="{% static 'assets/img/icons/contacts/mail.svg' %}" alt="mail.svg">
-                  </div>
-                  <div class="media-content">{% trans 'General' %}: hello@ninzio.com<br>{% trans 'Editor' %}: editor@ninzio.com
-                  </div>
-                </div>
-              </div>
-              <div class="Section-columnSection">
-                <header class="Section-header">
-                  <strong class="Section-title">{% trans 'Follow Us' %}
-                  </strong>
-                </header>
-                <div class="Section-columnContent">
-                  <div class="Footer-payments Footer-payments_column">
-                    <div><img src="{% static 'assets/img/icons/socialContent/fb.png' %}" alt="fb.png">
-                    </div>
-                    <div><img src="{% static 'assets/img/icons/socialContent/tw.png' %}" alt="tw.png">
-                    </div>
-                    <div><img src="{% static 'assets/img/icons/socialContent/gg.png' %}" alt="gg.png">
-                    </div>
-                    <div><img src="{% static 'assets/img/icons/socialContent/in.png' %}" alt="in.png">
-                    </div>
-                    <div><img src="{% static 'assets/img/icons/socialContent/pt.png' %}" alt="pt.png">
-                    </div>
-                    <div><img src="{% static 'assets/img/icons/socialContent/ml.png' %}" alt="ml.png">
-                    </div>
-                  </div>
-                </div>
+              <div class="media-content">
+                <strong class="media-title">{% trans 'Shipping' %} &amp; {% trans 'Returns' %}</strong>
+                <p class="media-text">{% trans 'World wide shipping' %}
+                </p>
               </div>
             </div>
-            <div class="Section-content">
-              <div class="row row_verticalCenter row_maxHalf">
-                <div class="row-block">
-                  <div class="pict"><img src="{{ store.icon }}" alt="bigGoods.png">
-                  </div>
+          </div>
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_advantage">
+              <div class="media-image"><img src="{% static 'assets/img/icons/advantages/moneyBack.svg' %}" alt="moneyBack.svg">
+              </div>
+              <div class="media-content">
+                <strong class="media-title">{% trans "Money Back" %}
+                </strong>
+                <p class="media-text">{% trans 'Guaranted payments' %}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_advantage">
+              <div class="media-image"><img src="{% static 'assets/img/icons/advantages/support.svg' %}" alt="support.svg">
+              </div>
+              <div class="media-content">
+                <strong class="media-title">{% trans 'Support Policy' %}
+                </strong>
+                <p class="media-text">{% trans 'Fast support team' %}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_advantage">
+              <div class="media-image"><img src="{% static 'assets/img/icons/advantages/quality.svg'%}" alt="quality.svg">
+              </div>
+              <div class="media-content">
+                <strong class="media-title">{% trans 'Quality Guarantee' %}
+                </strong>
+                <p class="media-text">{% trans 'Best guaranted items' %}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_middle">
+              <div class="media-image"><img src="{% static 'assets/img/icons/contacts/phone.svg' %}" alt="phone.svg">
+              </div>
+              <div class="media-content">{% trans 'Phone' %}:
+                <nobr>+8 (200) 800-2000-600</nobr><br>{% trans 'Mobile' %}:
+                <nobr>+8 (200) 800-2000-650</nobr>
+              </div>
+            </div>
+          </div>
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_middle">
+              <div class="media-image"><img src="{% static 'assets/img/icons/contacts/address.svg' %}" alt="address.svg">
+              </div>
+              <div class="media-content">
+                Megano Business Center,
+                0012 United States, Los Angeles
+                Creative Street 15/4
+              </div>
+            </div>
+          </div>
+          <div class="Section-columnSection Section-columnSection_mark">
+            <div class="media media_middle">
+              <div class="media-image"><img src="{% static 'assets/img/icons/contacts/mail.svg' %}" alt="mail.svg">
+              </div>
+              <div class="media-content">{% trans 'General' %}: hello@ninzio.com<br>{% trans 'Editor' %}: editor@ninzio.com
+              </div>
+            </div>
+          </div>
+          <div class="Section-columnSection">
+            <header class="Section-header">
+              <strong class="Section-title">{% trans 'Follow Us' %}
+              </strong>
+            </header>
+            <div class="Section-columnContent">
+              <div class="Footer-payments Footer-payments_column">
+                <div><img src="{% static 'assets/img/icons/socialContent/fb.png' %}" alt="fb.png">
                 </div>
-                <div class="row-block">
-                  <h2>{% trans 'About' %} {{ store.name }}
-                  </h2>
-                    {{ store.description }}
+                <div><img src="{% static 'assets/img/icons/socialContent/tw.png' %}" alt="tw.png">
+                </div>
+                <div><img src="{% static 'assets/img/icons/socialContent/gg.png' %}" alt="gg.png">
+                </div>
+                <div><img src="{% static 'assets/img/icons/socialContent/in.png' %}" alt="in.png">
+                </div>
+                <div><img src="{% static 'assets/img/icons/socialContent/pt.png' %}" alt="pt.png">
+                </div>
+                <div><img src="{% static 'assets/img/icons/socialContent/ml.png' %}" alt="ml.png">
                 </div>
               </div>
-              <header class="Section-header">
-                <h2 class="Section-title">{% trans 'Popular Products' %}
-                </h2>
-              </header>
-              <div class="Cards">
-                {% for product in products %}
-                <div class="Card"><a class="Card-picture" href="#"><img src="{{ MEDIA_ROOT }}/uploads/{{ product.image }}" alt="card.jpg"></a>
-                  <div class="Card-content">
-                    <strong class="Card-title"><a href="#">{{ product.name }}</a>
-                    </strong>
-                    <div class="Card-description">
-                      <div class="Card-cost">
-                          <span class="Card-priceOld"></span>
-                          <span class="Card-price"></span>
-                      </div>
-                      <div class="Card-category">{{ product.category.name }}
-                      </div>
-                      <div class="Card-hover"><a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"></a>
-                          <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"></a>
-                          <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="Card-sale"></div>
-                </div>
-                {% endfor %}
-              </div>
-
             </div>
           </div>
         </div>
-
+        <div class="Section-content">
+          <div class="row row_verticalCenter row_maxHalf">
+            <div class="row-block">
+              <div class="pict"><img src="{{ store.icon_url }}" alt="store_icon">
+              </div>
+            </div>
+            <div class="row-block">
+              <h2>{% trans 'About' %} {{ store.name }}
+              </h2>
+                {{ store.description }}
+            </div>
+          </div>
+          <header class="Section-header">
+            <h2 class="Section-title">{% trans 'Popular Products' %}
+            </h2>
+          </header>
+          <div class="Cards">
+            {% cards products %}
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 {% endblock %}
 

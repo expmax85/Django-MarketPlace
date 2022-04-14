@@ -2,9 +2,9 @@ from decimal import Decimal
 from typing import Union
 from django.shortcuts import get_object_or_404
 from orders_app.models import Order, OrderProduct
-from orders_app.anonimcart import AnonymCart
+from orders_app.services.anonim_cart import AnonymCart
 from stores_app.models import SellerProduct
-from orders_app.check_stock import check_stock
+from orders_app.utils import check_stock
 
 
 class CartService:

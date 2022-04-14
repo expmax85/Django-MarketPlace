@@ -8,14 +8,14 @@
           <a class="BannersHomeBlock" href="{% url 'goods-polls:catalog_by_category_url' category.slug %}">
             <div class="BannersHomeBlock-row">
             <div class="BannersHomeBlock-block">
-              <strong class="BannersHomeBlock-title">{{ category.name }}
+              <strong class="BannersHomeBlock-title">{% if category.parent %}{{ category.parent }} / {% endif %}{{ category.name }}
               </strong>
               <div class="BannersHomeBlock-content">{% trans 'from' %}&#32;<span class="BannersHomeBlock-price">${{ category.from_price }}</span>
               </div>
             </div>
             <div class="BannersHomeBlock-block">
               <div class="BannersHomeBlock-img">
-                <img src="{{ MEDIAROOT }}/uploads/{{ category.image }}" alt="card.jpg"/>
+                <img src="{{ category.image_url }}" alt="card.jpg"/>
               </div>
             </div>
           </div>

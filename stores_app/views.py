@@ -31,6 +31,8 @@ class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMix
 class SellersRoomView(StoreAppMixin, ListView):
     """
     Страница раздела для продавцов на странице информации об аккаунте
+
+    ::Страница: Аккаунт продавцов
     """
     model = Seller
     template_name = 'stores_app/sellers_room.html'
@@ -41,7 +43,8 @@ class SellersRoomView(StoreAppMixin, ListView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['seller_products'] = self.get_seller_products(user=self.request.user)
+        products = self.get_seller_products(user=self.request.user, calculate_prices=True)
+        context['seller_products'] = list(products)[:3]
         context['product_discounts'] = self.get_product_discounts(user=self.request.user)
         context['group_discounts'] = self.get_group_discounts(user=self.request.user)
         context['cart_discounts'] = self.get_cart_discounts(user=self.request.user)
@@ -51,6 +54,8 @@ class SellersRoomView(StoreAppMixin, ListView):
 class AddNewStoreView(StoreAppMixin, View):
     """
     Страница создания магазина
+
+    ::Страница: Добавление магазина
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -69,6 +74,8 @@ class AddNewStoreView(StoreAppMixin, View):
 class EditStoreView(StoreAppMixin, DetailView):
     """
     Редактирование информации о магазине
+
+    ::Страница: Редактирование магазина
     """
     context_object_name = 'store'
     template_name = 'stores_app/edit-store.html'
@@ -90,18 +97,41 @@ class EditStoreView(StoreAppMixin, DetailView):
 
 
 class StoresListView(StoreServiceMixin, ListView):
+    """
+    Страница со списком всех магазинов
+
+    ::Страница: Список всех магазинов
+    """
     model = Seller
     template_name = 'stores_app/stores_list.html'
     slug_url_kwarg = 'slug'
-    paginate_by = 6
+    paginate_by = 9
 
     def get_queryset(self):
         return self.get_all_stores()
 
 
+class AllSellerProductView(StoreAppMixin, ListView):
+    """
+    Страница со списком всех товаров продавца
+
+    ::Страница: Список всех товаров продавца
+    """
+    model = SellerProduct
+    context_object_name = 'products'
+    template_name = 'stores_app/all_products_list.html'
+    paginate_by = 9
+
+    def get_queryset(self):
+        products = self.get_seller_products(user=self.request.user, calculate_prices=True)
+        return list(products)
+
+
 class StoreDetailView(StoreServiceMixin, DetailView):
     """
     Детальная страница магазина
+
+    ::Страница: Детальная страница магазина
     """
     permission_required = None
     context_object_name = 'store'
@@ -111,19 +141,22 @@ class StoreDetailView(StoreServiceMixin, DetailView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        context['products'] = self.get_products(instance=self.get_object())
+        seller = self.get_object()
+        context['products'] = self.get_seller_products(user=seller.owner, calculate_prices=True)
         return context
 
 
 class AddSellerProductView(StoreAppMixin, View):
     """
-    Страница добавления нового продука продавца
+    Страница добавления нового продукта продавца
+
+    ::Страница: Добавление продукта продавца
     """
 
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
         context['categories'] = get_categories()
-        context['products'] = self.get_products()
+        context['products'] = self.get_base_products()
         context['stores'] = self.get_user_stores(user=request.user)
         context['form'] = AddSellerProductForm()
         return render(request, 'stores_app/new_product_in_store.html', context=context)
@@ -144,11 +177,13 @@ class AddSellerProductView(StoreAppMixin, View):
 class CategoryFilter(StoreServiceMixin, ListView):
     """
     Представление для выборки продуктов по категориям при создании продукта продавца
+
+    ::Страница: Добавление продукта продавца
     """
 
     def get_queryset(self) -> QuerySet:
         category_id = self.request.GET.get('category_id')
-        return self.get_products(category_id=category_id).values("id", "name")
+        return self.get_base_products(category_id=category_id).values("id", "name")
 
     def get(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         queryset = self.get_queryset()
@@ -158,6 +193,8 @@ class CategoryFilter(StoreServiceMixin, ListView):
 class EditSelleProductView(StoreAppMixin, DetailView):
     """
     Страница редактирования продукта продавца
+
+    ::Страница: Редактирование продукта продавца
     """
     context_object_name = 'item'
     template_name = 'stores_app/edit-seller-product.html'
@@ -182,6 +219,8 @@ class EditSelleProductView(StoreAppMixin, DetailView):
 def remove_Store(request: HttpRequest) -> Callable:
     """
     Удаление магазина продавца
+
+    ::Страница: Аккаунт продавцов
     """
     StoreServiceMixin.remove_store(request)
     return redirect(request.META.get('HTTP_REFERER'))
@@ -191,15 +230,19 @@ def remove_Store(request: HttpRequest) -> Callable:
 def remove_SellerProduct(request: HttpRequest) -> Callable:
     """
     Удаление продукта продавца
+
+    ::Страница: Аккаунт продавцов
     """
     StoreServiceMixin.remove_seller_product(request)
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('stores-polls:sellers-room')
 
 
 @permission_required('profiles_app.Sellers')
 def remove_ProductDiscount(request: HttpRequest) -> Callable:
     """
     Удаление скидки на товар
+
+    ::Страница: Аккаунт продавцов
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_product_discount(request)
@@ -210,6 +253,8 @@ def remove_ProductDiscount(request: HttpRequest) -> Callable:
 def remove_GroupDiscount(request: HttpRequest) -> Callable:
     """
     Удаление скидки на группу товаров
+
+    ::Страница: Аккаунт продавцов
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_group_discount(request)
@@ -220,6 +265,8 @@ def remove_GroupDiscount(request: HttpRequest) -> Callable:
 def remove_CartDiscount(request: HttpRequest) -> Callable:
     """
     Удаление корзинной скидки
+
+    ::Страница: Аккаунт продавцов
     """
     if request.method == 'GET':
         StoreServiceMixin.remove_store_cart_discount(request)
@@ -229,6 +276,8 @@ def remove_CartDiscount(request: HttpRequest) -> Callable:
 class RequestNewProduct(StoreAppMixin, View):
     """
     Страница для запроса создания нового продукта
+
+    ::Страница: Запрос на новый продукт
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -257,12 +306,14 @@ class RequestNewProduct(StoreAppMixin, View):
 class AddProductDiscountView(StoreAppMixin, View):
     """
     Страница создания скидки на продукт
+
+    ::Страница: Добавление скидки на продукт
     """
 
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
         context['categories'] = get_categories()
-        context['products'] = self.get_products()
+        context['products'] = self.get_base_products()
         context['stores'] = self.get_user_stores(user=request.user)
         form = AddProductDiscountForm()
         form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
@@ -293,6 +344,8 @@ class AddProductDiscountView(StoreAppMixin, View):
 class EditProductDiscountView(StoreAppMixin, DetailView):
     """
     Страница редактирования скидки на продукт
+
+    ::Страница: Редактирование скидки на продукт
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -320,12 +373,14 @@ class EditProductDiscountView(StoreAppMixin, DetailView):
 class AddGroupDiscountView(StoreAppMixin, View):
     """
     Страница создания скидки на группу товаров
+
+    ::Страница: РДобавление скидки на группу товаров
     """
 
     def get(self, request: HttpRequest) -> Callable:
         context = dict()
         context['categories'] = get_categories()
-        # context['products'] = self.get_products()
+        # context['products'] = self.get_base_products()
         context['stores'] = self.get_user_stores(user=request.user)
         form = AddGroupDiscountForm()
         form.fields['seller'] = ModelChoiceField(Seller.objects.filter(owner=request.user))
@@ -349,6 +404,8 @@ class AddGroupDiscountView(StoreAppMixin, View):
 class EditGroupDiscountView(StoreAppMixin, DetailView):
     """
     Страница редактирования скидки на группу товаров
+
+    ::Страница: Редактирование скидки на группу товаров
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -374,6 +431,8 @@ class EditGroupDiscountView(StoreAppMixin, DetailView):
 class AddCartDiscountView(StoreAppMixin, View):
     """
     Страница создания новой корзинной скидки
+
+    ::Страница: Добавление корзинной скидки
     """
 
     def get(self, request: HttpRequest) -> Callable:
@@ -401,6 +460,8 @@ class AddCartDiscountView(StoreAppMixin, View):
 class EditCartDiscountView(StoreAppMixin, DetailView):
     """
     Страница редактирования корзинной скидки
+
+    ::Страница: Редактирование корзинной скидки
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
@@ -426,6 +487,8 @@ class EditCartDiscountView(StoreAppMixin, DetailView):
 class ImportView(StoreAppMixin, View):
     """
     Представление страницы проведения импорта
+
+    ::Страница: Импорт товаров из файла
     """
 
     def get(self, request):

@@ -2,12 +2,13 @@ from typing import Dict
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Prefetch
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
 
 from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
+from discounts_app.services import get_discounted_prices_for_seller_products
 from orders_app.models import Order, ViewedProduct
 from django.conf import settings
 from stores_app.models import Seller, SellerProduct
@@ -21,15 +22,34 @@ class StoreServiceMixin:
     Mixin with functions for queries by models Seller and SellerProduct
 
     All available methods:
+    get_base_products(query params) - get products
+    request_add_new_product(product, user)
+    get_all_orders(user)
+    get_last_order(user)
+    get_viewed_products(user) - get all viewed SellerProduct instances
     get_store(slug) - get Seller instance with slug=slug
     get_user_stores(user) - get all Seller models by owner=user
+    remove_store(request) - remove Seller instance with id=request.id=request
+
     create_seller_product(data) - create SelleProduct instance
     edit_seller_product(data, instance) - edit SellerProduct instance
-    get_products(query params) - get products
-    get_seller_products(user) - get SellerProducts query by Sellers owner=user
-    get_viewed_products(user) - get all viewed SellerProduct instances
+    get_seller_products(user, calculate_prices) - get SellerProducts query by Sellers owner=user
     remove_seller_product(request) - Remove SellerProduct instance with id=request.id
-    remove_store(request) - remove Seller instance with id=request.id=request
+
+    create_product_discount(user)
+    get_product_discounts(user)
+    edit_product_group_discount(data, instance)
+    remove_product_discount(request)
+
+    create_group_discount(user)
+    get_group_discounts(user)
+    edit_group_group_discount(data, instance)
+    remove_group_discount(request)
+
+    create_cart_discount(user)
+    get_cart_discounts(user)
+    edit_cart_group_discount(data, instance)
+    remove_cart_discount(request)
     """
 
     @classmethod
@@ -38,7 +58,7 @@ class StoreServiceMixin:
         Get store with slug
 
         """
-        return Seller.objects.select_related('owner').get(slug=slug)
+        return Seller.objects.get(slug=slug)
 
     @classmethod
     def get_all_stores(cls):
@@ -98,16 +118,20 @@ class StoreServiceMixin:
         instance.save()
 
     @classmethod
-    def get_seller_products(cls, user: User) -> QuerySet:
+    def get_seller_products(cls, user: User, calculate_prices: bool = False) -> QuerySet:
         """
         Get all products, added by user
         """
-        owner_sp_ache_key = 'owner_sp:{}'.format(user.id)
-        products = cache.get(owner_sp_ache_key)
+        owner_sp_cache_key = 'owner_sp:{}'.format(user.id)
+        products = cache.get(owner_sp_cache_key)
         if not products:
-            products = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
-                .filter(seller__owner=user)
-            cache.set(owner_sp_ache_key, products, 24 * 60 * 60)
+            products = SellerProduct.objects.select_related('seller', 'product',
+                                                            'product__category',
+                                                            'product__category__parent') \
+                                            .filter(seller__owner=user)
+            cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
+        if calculate_prices:
+            products = get_discounted_prices_for_seller_products(products)
         return products
 
     @classmethod
@@ -115,22 +139,29 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = SellerProduct.objects.select_related('seller', 'product').get(id=request.GET.get('id'))
+        item = SellerProduct.objects.select_related('seller', 'product',
+                                                    'product__category',
+                                                    'product__category__parent') \
+                                    .get(id=request.GET.get('id'))
         messages.add_message(request, settings.SUCCESS_DEL_PRODUCT,
                              _(f'Product {item.product.name} from the store {item.seller.name} was removed'))
         item.delete()
 
     @classmethod
-    def get_products(cls, **kwargs) -> QuerySet:
+    def get_base_products(cls, **kwargs) -> QuerySet:
         """
         Get Products by category, Seller instance or get all Products
         """
         if 'category_id' in kwargs.keys():
-            return Product.objects.select_related('category').filter(category=kwargs.get('category_id'))
-        elif 'instance' in kwargs.keys():
-            return Product.objects.select_related('category').filter(seller_products__seller=kwargs.get('instance'))
+            products = Product.objects.select_related('category', 'category__parent')\
+                                      .filter(category=kwargs.get('category_id'))
         else:
-            return Product.objects.select_related('category').all()
+            base_products_cache_key = 'base_products:all'
+            products = cache.get(base_products_cache_key)
+            if not products:
+                products = Product.objects.select_related('category', 'category__parent').all()
+                cache.set(base_products_cache_key, products, 24 * 60 * 60)
+        return products
 
     @classmethod
     def get_viewed_products(cls, user: User) -> QuerySet:
@@ -138,13 +169,16 @@ class StoreServiceMixin:
         Get viewed SellerProducts by user
         """
         viewed_cache_key = 'viewed:{}'.format(user.id)
-        viewed = cache.get(viewed_cache_key)
-        if not viewed:
-            viewed = ViewedProduct.objects.select_related('product__product', 'product__product__category')\
-                                          .filter(user=user)\
-                                          .order_by('-date')
-            cache.set(viewed_cache_key, viewed, 24 * 60 * 60)
-        return viewed
+        products = cache.get(viewed_cache_key)
+        if not products:
+            products = SellerProduct.objects.select_related('seller', 'product',
+                                                            'product__category',
+                                                            'product__category__parent') \
+                                            .prefetch_related(Prefetch('viewed_list',
+                                                                   queryset=ViewedProduct.objects.filter(user=user))) \
+                                            .filter(viewed_list__user=user)
+            cache.set(viewed_cache_key, products, 24 * 60 * 60)
+        return products
 
     @classmethod
     def get_last_order(cls, user: User) -> QuerySet:

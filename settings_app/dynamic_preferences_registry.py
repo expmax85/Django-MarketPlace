@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from dynamic_preferences.preferences import Section
-from dynamic_preferences.types import DecimalPreference, IntegerPreference, TimePreference, ChoicePreference
+from dynamic_preferences.types import DecimalPreference, IntegerPreference, TimePreference
 from dynamic_preferences.registries import global_preferences_registry
 
 
@@ -94,20 +94,6 @@ class CountLimitedProducts(IntegerPreference):
     def validate(self, value):
         if value < 1:
             raise ValidationError(_('Wrong count value! Must be more than 0'))
-
-
-@global_preferences_registry.register
-class SortIndexProducts(ChoicePreference):
-    section = general
-    name = 'sort_index'
-    help_text = _('Set the count hot offers, showing on main page')
-    choices = (
-        ('-date added', _('date_added')),
-        ('-viewed', _('viewed_count')),
-    )
-    default = '-date_added'
-    required = True
-    verbose_name = _('Sort index products')
 
 
 @global_preferences_registry.register
