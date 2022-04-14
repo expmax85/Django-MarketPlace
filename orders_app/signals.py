@@ -49,5 +49,5 @@ def products_reset_cache_save_order_handler(sender, **kwargs) -> None:
     Signal for clearing cache
     """
     instance = kwargs['instance']
-    if instance.paid:
+    if instance.order.paid:
         cache.delete('products:all')
