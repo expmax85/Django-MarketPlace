@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
+from django.http.response import Http404
 from orders_app.models import (
     Order,
     ViewedProduct,
@@ -371,7 +372,10 @@ class PaymentWithCardView(View):
     template_name = 'orders_app/payment_card.html'
 
     def get(self, request: HttpRequest, order_id: int):
-        order = get_object_or_404(Order, id=order_id)
+        try:
+            order = get_object_or_404(Order, id=order_id)
+        except Http404:
+            order = None
         client_token = braintree.ClientToken.generate()
         context = {'order': order, 'client_token': client_token}
         return render(request, self.template_name, context=context)
@@ -393,7 +397,11 @@ class PaymentWithCardView(View):
             # Сохранение ID транзакции в заказе.
             order.braintree_id = result.transaction.id
             order.save()
+            print(result)
             return render(request, 'orders_app/payment_process.html', {'result': True})
+        print(result.__dict__['errors'].__dict__)
+        order.payment_error = str(result)
+        order.save()
         return render(request, 'orders_app/payment_process.html', {'result': False})
 
 

@@ -28,10 +28,10 @@ class StoresTestCase(TestCase):
         Seller.objects.bulk_create([Seller(name='test_store', slug='test_store_1', owner=cls.user),
                                    Seller(name='test_store_2', slug='test_store_2', owner=cls.user)])
         categories = [
-            ProductCategory.objects.create(name="test_category_1"),
-            ProductCategory.objects.create(name="test_category_2")
+            ProductCategory.objects.create(name="test_category_1", slug="test_category_1"),
+            ProductCategory.objects.create(name="test_category_2", slug="test_category_2")
         ]
-        Product.objects.bulk_create([Product(name=f'name{num}', category=random.choice(categories), rating=1)
+        Product.objects.bulk_create([Product(name=f'name{num}', slug=f'name{num}', category=random.choice(categories), rating=1)
                                      for num in range(1, 4)])
         seller = Seller.objects.all().last()
         SellerProduct.objects.bulk_create([SellerProduct(seller=seller,

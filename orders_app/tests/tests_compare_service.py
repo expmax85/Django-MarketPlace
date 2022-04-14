@@ -13,7 +13,7 @@ class CompareTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(email='test@ru.ru', password='admin732', first_name='test1',
                                         last_name='test1', phone='+7(999)999-99-99')
-        self.category = ProductCategory.objects.create(name="test_category")
+        self.category = ProductCategory.objects.create(name="test_category", slug="test_category")
         self.seller = Seller.objects.create(name="test_seller", owner=self.user)
         self.discount = ProductDiscount.objects.create(name="test_discount", seller=self.seller)
         for num in range(1, 3):
@@ -22,7 +22,7 @@ class CompareTest(TestCase):
             Specifications.objects.create(value='num',
                                           current_specification=SpecificationsNames.objects.get(id=num))
         for num in range(1, 5):
-            product = Product.objects.create(name=f'name{num}', category=self.category, rating=1)
+            product = Product.objects.create(name=f'name{num}', slug=f'name{num}', category=self.category, rating=1)
             if num < 3:
                 product.specifications.add(Specifications.objects.all()[0])
             else:
@@ -71,13 +71,13 @@ class HistoryOrderTest(TestCase):
         self.order2 = Order.objects.create(customer=self.user, delivery='express', payment_method='cash', paid='False',
                                            in_order=False)
 
-        self.category = ProductCategory.objects.create(name="test_category")
+        self.category = ProductCategory.objects.create(name="test_category", slug="test_category")
         self.seller = Seller.objects.create(name="test_seller", owner=self.user)
         self.discount = ProductDiscount.objects.create(name="test_discount",
                                                        seller=self.seller)
 
         for num in range(1, 5):
-            Product.objects.create(name=f'name{num}', category=self.category, rating=1)
+            Product.objects.create(name=f'name{num}', slug=f'name{num}', category=self.category, rating=1)
         for num in range(1, 5):
             SellerProduct.objects.create(seller=self.seller,
                                          product=Product.objects.get(id=num),
