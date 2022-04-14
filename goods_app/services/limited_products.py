@@ -139,7 +139,7 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
                                                         'product__category',
                                                         'product__category__parent') \
                                         .annotate(count=Count('product_discounts')) \
-                                        .filter(count__gt=0)
+                                        .filter(count__gt=0).distinct()
         try:
             if len(list(queryset)) < count:
                 queryset = random.choices(population=queryset, k=len(list(queryset)))
