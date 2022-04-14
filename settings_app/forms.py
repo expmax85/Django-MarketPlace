@@ -1,5 +1,6 @@
-from typing import List
+from typing import Any
 
+from django.db.models.fields.files import ImageFieldFile
 from django.forms import ModelForm, ImageField
 from django.utils.translation import gettext_lazy as _
 
@@ -21,11 +22,23 @@ class CheckImageForm(ModelForm):
         for field in self.image_list:
             self.fields[str(field)].help_text = get_help_text(size=True)
 
-    def clean_image(self) -> List:
-        for field in self.image_list:
-            image = self.cleaned_data[str(field)]
+    def clean_image(self) -> ImageFieldFile:
+        if 'image' in self.image_list:
+            image = self.cleaned_data['image']
             check_image_size(image)
-        return self.image_list
+            return image
+
+    def clean_icon(self) -> ImageFieldFile:
+        if 'icon' in self.image_list:
+            icon = self.cleaned_data['icon']
+            check_image_size(icon)
+            return icon
+
+    def clean_avatar(self) -> ImageFieldFile:
+        if 'avatar' in self.image_list:
+            avatar = self.cleaned_data['avatar']
+            check_image_size(avatar)
+            return avatar
 
 
 class CheckImageIconForm(CheckImageForm):
@@ -36,11 +49,7 @@ class CheckImageIconForm(CheckImageForm):
         super().__init__(*args, **kwargs)
         self.fields['icon'].help_text = get_help_text(resolution=True)
 
-    def clean_image(self) -> List:
-        image_list = super().clean_image()
-        if 'icon' in image_list:
-            i = image_list.index('icon')
-            field = image_list[i]
-            image = self.cleaned_data[str(field)]
-            check_image_resolution(image)
-        return image_list
+    def clean_icon(self) -> Any:
+        icon = self.cleaned_data['icon']
+        check_image_resolution(icon)
+        super().clean_icon()

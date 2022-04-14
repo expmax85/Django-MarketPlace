@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load goods_tags %}
+
+{% block title %}
+{% trans 'All products' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                    <h1 class="Middle-title">{% trans 'all your products' %}
+                </h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="{% url 'goods-polls:index_url' %}">{% trans 'home' %}</a>
+                    </li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'all products' %}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+     <div class="Section Section_column Section_columnLeft">
+        <div class="wrap">
+            <div class="Section-column">
+                <div class="Section-columnSection">
+                    <header class="Section-header"><strong class="Section-title">{% trans 'Navigation' %}</strong></header>
+                    <div class="Section-columnContent">
+                        <div class="NavigateProfile">
+                            <ul class="menu menu_vt">
+                                <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:private-room' %}">{% trans 'Account info' %}</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'profiles-polls:account-edit' %}">{% trans 'Profile' %}</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-order' %}">{% trans 'Orders history' %}</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-view' %}">{% trans 'Views history' %}</a>
+                                </li>
+                                {% if perms.profiles_app.Sellers %}
+                                <li class="menu-item_ACTIVE menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="Section-content">
+                <header class="Section-header">
+                    <h2 class="Section-title">{% trans 'Your Products' %}</h2>
+                </header>
+                <div class="Cards Cards_account">
+                    {% cards page_obj seller_perm=True %}
+                </div>
+            </div>
+        </div>
+        <div class="Pagination">
+           <div class="Pagination-ins">
+               <a class="Pagination-element Pagination-element_prev" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}{{ page_obj.number }}{% endif %}">
+                   <img src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/>
+               </a>
+               {% if page_obj.has_previous %}
+                   <a class="Pagination-element" href="?page={{ page_obj.previous_page_number }}">
+                       <span class="Pagination-text">{{ page_obj.previous_page_number }}</span>
+                   </a>
+               {% endif %}
+               <a class="Pagination-element Pagination-element_current" href="#">
+                   <span class="Pagination-text">{{ page_obj.number }}</span>
+               </a>
+               {% if page_obj.has_next %}
+                   <a class="Pagination-element" href="?page={{ page_obj.next_page_number }}">
+                       <span class="Pagination-text">{{ page_obj.next_page_number }}</span>
+                   </a>
+               {% endif %}
+               <a class="Pagination-element Pagination-element_prev" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}{{ page_obj.number }}{% endif %}">
+                   <img src="{% static 'assets/img/icons/nextPagination.svg' %}" alt="nextPagination.svg"/>
+               </a>
+           </div>
+        </div>
+     </div>
+</div>
+{% endblock %}

@@ -9,8 +9,6 @@ from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from taggit.managers import TaggableManager
 
-from settings_app.utils import check_image_size, check_image_resolution
-
 User = get_user_model()
 
 
@@ -23,11 +21,11 @@ class ProductCategory(MPTTModel):
         null=True,
         verbose_name=_('category title')
     )
-    slug = models.SlugField(null=True, verbose_name=_('slug'))
-    description = models.TextField(max_length=255, null=True, verbose_name=_('description'))
+    slug = models.SlugField(verbose_name=_('slug'), unique=True)
+    description = models.TextField(max_length=255, null=True, blank=True, verbose_name=_('description'))
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
-    icon = models.ImageField(null=True, blank=True, verbose_name=_('icon'))
-    image = models.ImageField(null=True, blank=True, verbose_name=_('image'))
+    icon = models.ImageField(verbose_name=_('icon'))
+    image = models.ImageField(verbose_name=_('image'))
 
     def __str__(self) -> str:
         return self.name
@@ -39,13 +37,20 @@ class ProductCategory(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+
+    @property
+    def icon_url(self):
+        if self.icon and hasattr(self.icon, 'url'):
+            return self.icon.url
+
     def save(self, *args, **kwargs) -> Callable:
         """
         Method overridden to remove old files and add permissions
         """
-        check_image_size(self.image)
-        check_image_size(self.icon)
-        check_image_resolution(self.icon)
         if self.pk is not None:
             old_self = ProductCategory.objects.get(pk=self.pk)
             if old_self.image and self.image != old_self.image:
@@ -65,14 +70,14 @@ class Product(models.Model):
         related_name='products',
         verbose_name='good_category',
     )
-    name = models.CharField(max_length=100, null=True, verbose_name=_('product name'))
+    name = models.CharField(max_length=100, verbose_name=_('product name'))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name=_('product code'))
-    slug = models.SlugField(null=True, db_index=True, blank=True, verbose_name=_('product slug'))
-    image = models.ImageField(null=True, blank=True, default='card.jpg', verbose_name=_('product image'))
+    slug = models.SlugField(db_index=True, verbose_name=_('product slug'), unique=True)
+    image = models.ImageField(verbose_name=_('product image'))
     description = models.TextField(max_length=2550, null=True, verbose_name=_('product description'))
-    rating = models.FloatField(null=True, blank=True, default=0, verbose_name=_('rating'))
+    rating = models.FloatField(null=True, default=0, verbose_name=_('rating'))
     is_published = models.BooleanField(verbose_name=_('is published'), null=True, blank=True, default=True)
-    tags = TaggableManager(blank=True)
+    tags = TaggableManager()
     limited = models.BooleanField(default=False, verbose_name=_('limited edition'))
 
     def __str__(self):
@@ -80,6 +85,11 @@ class Product(models.Model):
 
     def get_absolute_url(self) -> Callable:
         return reverse('goods-polls:product-detail', kwargs={'slug': self.slug})
+
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
 
     class Meta:
         verbose_name = _('product')
@@ -90,12 +100,11 @@ class Product(models.Model):
         """
         Method overridden to remove old files and add permissions
         """
-        check_image_size(self.image)
         if self.pk is not None:
             old_self = Product.objects.get(pk=self.pk)
             if old_self.image and self.image != old_self.image:
                 old_self.image.delete(False)
-        return super(Product, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class ProductComment(models.Model):
@@ -121,7 +130,7 @@ class ProductComment(models.Model):
 class SpecificationsNames(models.Model):
     """ Все возможные характеристики """
 
-    name = models.CharField(max_length=32, null=False)
+    name = models.CharField(max_length=32)
 
     def __str__(self) -> str:
         return self.name

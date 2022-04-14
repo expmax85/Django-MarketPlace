@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.conf import settings
 from stores_app.models import SellerProduct
-from orders_app.check_stock import check_stock
+from orders_app.utils import check_stock
 
 
 class AnonymCart:

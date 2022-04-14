@@ -31,7 +31,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS',default=[])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # Application definition
@@ -105,6 +105,12 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
+            'libraries': {
+                'goods_tags': 'goods_app.templatetags.goods_app_tags',
+                'calculate_rating': 'orders_app.templatetags.calculate_rating',
+                'find_errors': 'stores_app.templatetags.find_errors',
+                'split_log': 'stores_app.templatetags.split_log'
+            },
         },
     },
 ]
@@ -196,7 +202,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-MEDIA_URL = '/uploads/'
+MEDIA_URL = 'uploads/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 

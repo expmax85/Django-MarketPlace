@@ -33,7 +33,7 @@ class CompareTest(TestCase):
                                                           price=100,
                                                           quantity=10)
             seller_product.product_discounts.set([self.discount])
-            
+
     def test_comparison_page(self):
         """ Добавляет товары в список для сравнения и проверяет страницу сравнения """
 

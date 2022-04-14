@@ -1,5 +1,6 @@
 {% load static %}
 {% load i18n %}
+{% load goods_tags %}
 
   <div class="Section Section_column Section_columnRight">
     <div class="wrap">
@@ -66,56 +67,7 @@
             </div>
           </header>
           <div class="Slider-box Cards">
-            {% for limited_item, price_after_discount, discount in limited_products %}
-            {% if limited_item.id != special_product.id %}
-            <div class="Slider-item">
-              <div class="Slider-content">
-               <div class="Card" type="submit">
-                <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-                  <input type="hidden" name="seller_product_id" value="{{ special_product.id }}">
-                  <button class="Card-picture" type="submit">
-                    <img src="{{ MEDIAROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"/>
-                  </button>
-                  <div class="Card-content">
-                    <button class="Card-title" type="submit">
-                      {{ limited_item.product.name }}
-                    </button>
-                    <div class="Card-description">
-                        <div class="Card-cost">
-                            <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ limited_item.price }}{% endif %}</span>
-                            <span class="Card-price">
-                                {% if price_after_discount and not discount.set_discount %}
-                                    ${{ price_after_discount|floatformat:0 }}
-                                {% else %}
-                                    ${{ limited_item.price }}
-                                {% endif %}
-                            </span>
-                        </div>
-                      <div class="Card-category">{{ limited_item.product.category.name }}
-                      </div>
-                      <div class="Card-hover">
-                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
-                        <a class="Card-btn" href="{% url 'orders-polls:cart_add' limited_item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
-                        <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' limited_item.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-                  {% if discount.type_of_discount == 'p' and not discount.set_discount %}
-                    <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
-                    </div>
-                  {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
-                    <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
-                    </div>
-                  {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
-                    <div class="Card-sale" style="background-color: #6888fc">!!!
-                    </div>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            {% endif %}
-            {% endfor %}
+            {% cards limited_products slider=True exclude=special_product %}
           </div>
         </div>
       </div>

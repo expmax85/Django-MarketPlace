@@ -17,7 +17,11 @@ from payments_app.services import check_status, process_payment
 @api_view(('POST',))
 @renderer_classes((JSONRenderer,))
 def payment_view(request):
-    """Payment service via API"""
+    """
+    Представление статуса оплаты заказа
+
+    ::Страница: Оплата заказа
+    """
     if request.method == 'POST':
         print(request.data)
         command = request.data.get('command')

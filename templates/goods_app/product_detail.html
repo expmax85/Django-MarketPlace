@@ -6,6 +6,10 @@
 {% block title %}{% trans 'Product detail' %}
 {% endblock %}
 
+{% block top_scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hogan.js/3.0.2/hogan.js"></script>
+{% endblock %}
+
 {% block header %}
 {% include 'elems/header.html' %}
 {% endblock %}
@@ -29,10 +33,13 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <div class="ProductCard-photo">
-                <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
+                <img src="{{ product.image_url }}" alt="product.jpg">
               </div>
-              <div class="ProductCard-picts"><a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png"><img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png"></a><a class="ProductCard-pict" href="assets/img/content/home/slider.png"><img src="assets/img/content/home/slider.png" alt="slider.png"></a><a class="ProductCard-pict" href="assets/img/content/home/videoca.png"><img src="assets/img/content/home/videoca.png" alt="videoca.png"></a>
-              </div>
+{#              <div class="ProductCard-picts">#}
+{#                  <a class="ProductCard-pict ProductCard-pict_ACTIVE" href="assets/img/content/home/bigGoods.png">#}
+{#                      <img src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">#}
+{#                  </a>#}
+{#              </div>#}
             </div>
             <div class="ProductCard-desc">
               <div class="ProductCard-header">
@@ -49,16 +56,20 @@
                     </div>
                       {% endif %}
                   </div>
-                  <div class="ProductCard-compare"><a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"></a>
+                  <div class="ProductCard-compare">
+                      <a class="btn btn_default" href="{% url 'orders-polls:add-to-compare' product.id %}">
+                          <img class="btn-icon" src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg">
+                      </a>
                   </div>
                 </div>
               </div>
               <div class="ProductCard-text">
-                    {{ product.description }}
+                    {{ product.description|truncatechars:300 }}
               </div>
                 <div class="ProductCard-cart">
                     {% if  best_offer.quantity > 0 and best_offer %}
                     <form style="display: flex; justify-content: space-evenly; width: 100%;" action="{% url 'orders:cart_add_many' product_id=best_offer.id %}" method="post">
+                    {%  csrf_token %}
                         <div class="ProductCard-cartElement ProductCard-cartElement_amount">
                           <div class="Amount Amount_product">
                             <button class="Amount-remove" type="button">
@@ -68,7 +79,6 @@
                             </button>
                           </div>
                         </div>
-                        {% csrf_token %}
                         <div class="ProductCard-cartElement">
                             <button type="submit" class="btn btn_primary">
                                 <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add To Cart' %}</span>
@@ -94,31 +104,12 @@
             <div class="Tabs-links">
                 <a class="Tabs-link" href="#description"><span>{% trans 'Description' %}</span></a>
                 <a class="Tabs-link" href="#sellers"><span>{% trans 'Stores' %}</span></a>
-                <a class="Tabs-link" href="#addit"><span>{% trans 'AdditionaL Info' %}</span></a>
+                <a class="Tabs-link" href="#addit"><span>{% trans 'Additional Info' %}</span></a>
                 <a class="Tabs-link Tabs-link_ACTIVE" href="#reviews"><span>{% trans 'Reviews' %} (<span class="count_reviews">{{ reviews_count|default_if_none:"0" }}</span>)</span></a>
             </div>
             <div class="Tabs-wrap">
               <div class="Tabs-block" id="description" style="display: none;">
-                <h2>Megano Store Hystory
-                </h2>
-                <p>Lorem ipsum dolor sit amet, consectetuer
-                  <strong>adipiscing
-                  </strong> elit doli. Aenean commodo ligula eget dolor. Aenean massa. Cumtipsu sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem.
-                </p><img class="pict pict_right" src="assets/img/content/home/bigGoods.png" alt="bigGoods.png">
-                <ul>
-                  <li>Lorem ipsum dolor sit amet, consectetuer
-                  </li>
-                  <li>adipiscing elit doli. <em>Aenean</em> commodo ligula
-                  </li>
-                  <li>eget dolor. Aenean massa. Cumtipsu sociis
-                  </li>
-                  <li>natoque penatibus et magnis dis parturient
-                  </li>
-                  <li>montesti, nascetur ridiculus mus. Donec
-                  </li>
-                  <li>quam felis, ultricies nec, pellentesque eutu
-                  </li>
-                </ul>
+                    {{ product.description }}
                 <div class="clearfix">
                 </div>
                 <div class="table">
@@ -163,10 +154,10 @@
                     </div>
                   {% if item.quantity > 0 %}
                     <div class="Categories-block Categories-button">
-                        <a class="btn btn_primary" href="#"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add to cart' %}</span></a>
+                        <a class="btn btn_primary" href="{% url 'orders-polls:cart_add' item.id %}"><img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}" alt="cart_white.svg"><span class="btn-content">{% trans 'Add to cart' %}</span></a>
                     </div>
                   {% else %}
-                      <div class="Categories-block Categories-button" style="justify-content: right; font-size:20px; font-weight:bold; color: red;">Not in stock</div>
+                      <div class="Categories-block Categories-button" style="justify-content: right; font-size:20px; font-weight:bold; color: red;">{% trans 'Not in stock' %}</div>
                   {% endif %}
                   </div>
                 {% endfor %}
@@ -175,20 +166,7 @@
               <div class="Tabs-block" id="addit" style="display: none;">
                 <div class="Product-props">
                   <div class="Product-prop">
-                    <strong>Lorem
-                    </strong><span> Pfizer</span>
-                  </div>
-                  <div class="Product-prop">
-                    <strong>ipsum
-                    </strong><span> Lorem ipsum dolor sit</span>
-                  </div>
-                  <div class="Product-prop">
-                    <strong>dolor sit
-                    </strong><span> 5 ans</span>
-                  </div>
-                  <div class="Product-prop">
-                    <strong>psum dolo
-                    </strong><span> 2–3 jours</span>
+                    В этом блоке можно разместить информацию о скидках или что-то еще
                   </div>
                 </div>
               </div>
@@ -206,7 +184,7 @@
                   {% for comment in comments %}
                   <div class="Comment">
                     <div class="Comment-column Comment-column_pict">
-                      <div class="Comment-avatar">
+                      <div class="Comment-avatar" style="background-image: url('{{ comment.user.avatar_url }}'); background-size: cover;">
                       </div>
                     </div>
                     <div class="Comment-column">
@@ -307,14 +285,11 @@
     <script src="{% static 'assets/js/comments.js' %}"></script>
     <script>
       $(document).ready(function () {
-      // отслеживаем событие отправки формы
           $('#comment-form').submit(function () {
-              // создаем AJAX-вызов
               $.ajax({
-                  data: $(this).serialize(), // получаем данные формы
-                  type: 'post', // GET или POST
+                  data: $(this).serialize(),
+                  type: 'post',
                   url: "{% url 'goods-polls:post_review' %}",
-                  // если успешно, то
                   success: function (response) {
                      let error = document.querySelector('#rating_error')
                      let url = '{% url 'goods-polls:get_reviews' %}';
@@ -330,11 +305,8 @@
                       }
 
                   },
-                  // если ошибка, то
                   error: function (response) {
-                      // предупредим об ошибке
-                      alert(response.responseJSON.errors);
-                      console.log(response.responseJSON.errors)
+                      alert('unknown error')
                   }
               });
               return false;

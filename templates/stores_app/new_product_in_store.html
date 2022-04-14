@@ -5,6 +5,11 @@
 {% block title %}{% trans 'Add Product in Store' %}
 {% endblock %}
 
+
+{% block top_scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hogan.js/3.0.2/hogan.js"></script>
+{% endblock %}
+
 {% block header %}
 {% include 'elems/header.html' %}
 {% endblock %}
@@ -54,7 +59,7 @@
                     <select class="form-area" name="category_id" required="" id="id_category">
                         <option value="" selected="">---------</option>
                         {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        <option value="{{ category.id }}">{{ category.name|capfirst }}</option>
                         {%  endfor %}
                     </select>
               </form>
