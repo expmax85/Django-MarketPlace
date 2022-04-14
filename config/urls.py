@@ -19,9 +19,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 from settings_app.views import AdminView
+from settings_app.language import set_language
 
 urlpatterns = [
-    path('i18n', include('django.conf.urls.i18n')),
+    path('i18n', set_language, name='set_language'),
     path('admin/', admin.site.urls),
     path('admin/', include('admin_tools.urls')),
     path('api_auth/', include('rest_framework.urls')),

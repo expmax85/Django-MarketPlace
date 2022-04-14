@@ -27,7 +27,7 @@
         <div class="row ControlPanel-rowSplit">
           <div class="row-block">
 
-{#          {% include 'elems/localize_menu.html' %}#}
+              {% include 'elems/localize_menu.html' %}
 
               {% if request.user.is_authenticated %}
                 <a class="ControlPanel-title" href="{% url 'profiles-polls:private-room' %}">{% trans 'My Account' %}</a> / <a class="ControlPanel-title" href="{% url 'profiles-polls:logout' %}"> {% trans 'Logout' %}</a>

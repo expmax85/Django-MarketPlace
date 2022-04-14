@@ -25,10 +25,10 @@ class AdminView(PermissionRequiredMixin, View):
     """
     Страница настроек сайта в админ-панели
     """
-    permission_required = ('profiles_app.Content_manager', )
+    permission_required = ('profiles_app.Content_manager',)
 
     def get(self, request: HttpRequest) -> Callable:
-        return render(request, 'admin/admin-setup.html',)
+        return render(request, 'admin/admin-setup.html', )
 
 
 @permission_required('profiles_app.Content_manager')
@@ -60,7 +60,8 @@ def update_expire(request: HttpRequest) -> Callable:
     """
     OPTIONS = global_preferences_registry.manager().by_name()
     random_product.add_limited_deal_expire_days(days=OPTIONS['days_duration'])
-    messages.add_message(request, settings.SUCCESS_OPTIONS_ACTIVATE, _('The Limited product days duration has changed.'))
+    messages.add_message(request, settings.SUCCESS_OPTIONS_ACTIVATE,
+                         _('The Limited product days duration has changed.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -73,7 +74,8 @@ def set_expire(request: HttpRequest) -> Callable:
     dt = datetime.datetime.strptime(new_value, "%Y-%m-%d %H:%M")
     if dt > datetime.datetime.now():
         random_product.end_time = dt
-        messages.add_message(request, settings.SUCCESS_OPTIONS_ACTIVATE, _('The time expire for limited deal was changed.'))
+        messages.add_message(request, settings.SUCCESS_OPTIONS_ACTIVATE,
+                             _('The time expire for limited deal was changed.'))
     else:
         messages.error(request, _('You need to choose datetime, later then now'))
     return redirect(request.META.get('HTTP_REFERER'))

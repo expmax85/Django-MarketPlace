@@ -30,5 +30,5 @@ urlpatterns = [
 
     path('update-limited-deal/', change_limited_deal, name='manual-change-product'),
     path('update-expire/', update_expire, name='manual-expire-change'),
-    path('set-end-time/', set_expire, name='set-end-time')
+    path('set-end-time/', set_expire, name='set-end-time'),
 ]

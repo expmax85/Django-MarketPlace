@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-22 03:17+0000\n"
+"POT-Creation-Date: 2022-04-15 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,176 +20,332 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: banners_app/apps.py:8
-msgid "Banners control"
-msgstr "Управление баннерами"
-
-#: banners_app/models.py:13
-msgid "discount_banner"
-msgstr "баннер_со_скидкой"
-
-#: banners_app/models.py:14
-msgid "banner_title"
-msgstr "название_баннера"
-
-#: banners_app/models.py:15
-msgid "banner_description"
-msgstr "название_баннера"
-
-#: banners_app/models.py:19
-msgid "banner_image"
-msgstr "картинка_баннера"
-
 #: discounts_app/apps.py:8
 msgid "Discounts control"
 msgstr "Управление скидками"
 
-#: discounts_app/models.py:9
-msgid "title discount category"
-msgstr "название категории скидки"
+#: discounts_app/models.py:13
+#, fuzzy
+#| msgid "percent"
+msgid "Percent"
+msgstr "Процент"
 
-#: discounts_app/models.py:12 discounts_app/models.py:36
-#: stores_app/models.py:22
-msgid "description"
-msgstr "описание"
+#: discounts_app/models.py:14
+#, fuzzy
+#| msgid "amount"
+msgid "Fixed amount"
+msgstr "Изменённое количество"
 
-#: discounts_app/models.py:16
-msgid "discount category"
-msgstr "категория скидки"
+#: discounts_app/models.py:15 discounts_app/models.py:45
+#: templates/discounts_app/discount_detail.html:59
+#, fuzzy
+#| msgid "Full price"
+msgid "Fixed price"
+msgstr "Изменённая стоимость"
 
-#: discounts_app/models.py:17
-msgid "discount categories"
-msgstr "категории скидок"
+#: discounts_app/models.py:19
+msgid "Low"
+msgstr "Нижний уровень"
 
-#: discounts_app/models.py:32
-msgid "category"
-msgstr "категория"
+#: discounts_app/models.py:20
+msgid "Medium"
+msgstr "Средний уровень"
+
+#: discounts_app/models.py:21
+msgid "High"
+msgstr "Высокий уровень"
+
+#: discounts_app/models.py:29
+#, fuzzy
+#| msgid "title discount"
+msgid "Title discount"
+msgstr "Название скидки"
+
+#: discounts_app/models.py:31 templates/goods_app/product_detail.html:94
+#: templates/stores_app/add_store.html:68
+#: templates/stores_app/edit-store.html:71
+#: templates/stores_app/request-add-new-product.html:112
+msgid "Description"
+msgstr "Описание"
 
 #: discounts_app/models.py:34
-msgid "title discount"
-msgstr "название скидки"
+#, fuzzy
+#| msgid "Discount"
+msgid "Discount type"
+msgstr "Тип скидки"
 
-#: discounts_app/models.py:38
-msgid "percent"
-msgstr "процент"
+#: discounts_app/models.py:36
+#, fuzzy
+#| msgid "Popularity"
+msgid "Priority"
+msgstr "Приоритет"
 
-#: discounts_app/models.py:40
-msgid "amount"
-msgstr "количество"
+#: discounts_app/models.py:37
+#, fuzzy
+#| msgid "percent"
+msgid "Percent"
+msgstr "Процент"
 
-#: discounts_app/models.py:42
-msgid "valid_from"
-msgstr "валидная_форма"
-
-#: discounts_app/models.py:43
-msgid "valid_to"
-msgstr "действительно_до"
-
-#: discounts_app/models.py:49 stores_app/models.py:69
-msgid "discount"
-msgstr "скидка"
+#: discounts_app/models.py:41
+#, fuzzy
+#| msgid "amount"
+msgid "Amount"
+msgstr "Количество"
 
 #: discounts_app/models.py:50
-msgid "discounts"
-msgstr "скидки"
+#, fuzzy
+#| msgid "valid_from"
+msgid "Valid from"
+msgstr "Валидная форма"
 
-#: goods_app/admin.py:37 stores_app/admin.py:39
+#: discounts_app/models.py:51
+#, fuzzy
+#| msgid "valid_to"
+msgid "Valid to"
+msgstr "Действительно до"
+
+#: discounts_app/models.py:80 discounts_app/models.py:106
+#: discounts_app/models.py:122 templates/orders_app/oneorder.html:145
+#: templates/orders_app/order_step_four.html:142
+msgid "Seller"
+msgstr "Продавец"
+
+#: discounts_app/models.py:82
+#, fuzzy
+#| msgid "new products"
+msgid "Seller products"
+msgstr "Товары продавца"
+
+#: discounts_app/models.py:83
+#, fuzzy
+#| msgid "discount"
+msgid "Set discount"
+msgstr "Настроить скидку"
+
+#: discounts_app/models.py:91
+#, fuzzy
+#| msgid "product comment"
+msgid "product discount"
+msgstr "скидка на товар"
+
+#: discounts_app/models.py:92
+#, fuzzy
+#| msgid "product comments"
+msgid "product discounts"
+msgstr "скидка на товары"
+
+#: discounts_app/models.py:108
+#, fuzzy
+#| msgid "discounts"
+msgid "group_discounts"
+msgstr "групповые_скидки"
+
+#: discounts_app/models.py:111
+#, fuzzy
+#| msgid "discount"
+msgid "group discount"
+msgstr "групповая скидка"
+
+#: discounts_app/models.py:112
+#, fuzzy
+#| msgid "discounts"
+msgid "group discounts"
+msgstr "групповые скидки"
+
+#: discounts_app/models.py:123
+msgid "Min quantity threshold"
+msgstr "Минимальное количество"
+
+#: discounts_app/models.py:124
+msgid "Max quantity threshold"
+msgstr "Максимальное количество"
+
+#: discounts_app/models.py:127
+msgid "Total sum min threshold"
+msgstr "Итоговая сумма минимального количества"
+
+#: discounts_app/models.py:129
+msgid "Total sum max threshold"
+msgstr "Итоговас сумма максимального количества"
+
+#: discounts_app/models.py:132
+#, fuzzy
+#| msgid "discount"
+msgid "cart discount"
+msgstr "скидка на корзину"
+
+#: discounts_app/models.py:133
+#, fuzzy
+#| msgid "discounts"
+msgid "cart discounts"
+msgstr "скидки на корзину"
+
+#: goods_app/admin.py:27 goods_app/models.py:29 stores_app/admin.py:29
+#: stores_app/models.py:23
+msgid "icon"
+msgstr "иконка"
+
+#: goods_app/admin.py:72 stores_app/admin.py:54
 msgid "Publish"
 msgstr "Опубликовано"
 
-#: goods_app/admin.py:38
+#: goods_app/admin.py:73
 msgid "Remove from publication"
 msgstr "Убрать из опубликованных"
+
+#: goods_app/admin.py:75 goods_app/models.py:30
+msgid "image"
+msgstr "изображение"
+
+#: goods_app/admin.py:76
+msgid "tags"
+msgstr "тэги"
+
+#: goods_app/admin.py:88
+msgid "[removed by admin]"
+msgstr "[удалено админом]"
+
+#: goods_app/admin.py:93
+#, fuzzy
+#| msgid "product comment"
+msgid "text comment"
+msgstr "текст камментария"
+
+#: goods_app/admin.py:94
+msgid "delete text comment"
+msgstr "удалить текст комментария"
 
 #: goods_app/apps.py:8
 msgid "Products management"
 msgstr "Управление продуктами"
 
-#: goods_app/models.py:23
-msgid "product_category"
-msgstr "категория_товара"
-
-#: goods_app/models.py:25
-msgid "product_category_slug"
-msgstr "слаг_категории_товара"
+#: goods_app/models.py:24
+#, fuzzy
+#| msgid "category"
+msgid "category title"
+msgstr "название категории"
 
 #: goods_app/models.py:26
-msgid "product_category_description"
-msgstr "описание_категории_товара"
+msgid "slug"
+msgstr "слаг"
 
-#: goods_app/models.py:33
+#: goods_app/models.py:27 stores_app/models.py:21
+msgid "description"
+msgstr "описание"
+
+#: goods_app/models.py:36
 msgid "product categories"
 msgstr "категории товаров"
 
-#: goods_app/models.py:34
+#: goods_app/models.py:37
 msgid "product category"
 msgstr "категория товара"
 
-#: goods_app/models.py:67 stores_app/models.py:64
-msgid "product"
-msgstr "товар"
-
 #: goods_app/models.py:68
-msgid "products"
-msgstr "товары"
+#, fuzzy
+#| msgid "Product name"
+msgid "product name"
+msgstr "наименование товара"
 
-#: goods_app/models.py:78
-msgid "author"
-msgstr "автор"
+#: goods_app/models.py:69
+#, fuzzy
+#| msgid "product comment"
+msgid "product code"
+msgstr "код товара"
 
-#: goods_app/models.py:79
-msgid "content"
-msgstr "содержание"
+#: goods_app/models.py:70
+#, fuzzy
+#| msgid "products"
+msgid "product slug"
+msgstr "слаг товара"
 
-#: goods_app/models.py:80
-msgid "added"
-msgstr "дабавлено"
+#: goods_app/models.py:71
+#, fuzzy
+#| msgid "Product image"
+msgid "product image"
+msgstr "изображение товара"
 
-#: goods_app/models.py:81
+#: goods_app/models.py:72
+#, fuzzy
+#| msgid "product_category_description"
+msgid "product description"
+msgstr "описание товара"
+
+#: goods_app/models.py:73 goods_app/models.py:110
 msgid "rating"
 msgstr "рейтинг"
 
-#: goods_app/models.py:87
+#: goods_app/models.py:74
+#, fuzzy
+#| msgid "Publish"
+msgid "is published"
+msgstr "опубликовано"
+
+#: goods_app/models.py:76
+msgid "limited edition"
+msgstr "ограниченное предложение"
+
+#: goods_app/models.py:85 stores_app/models.py:64
+msgid "product"
+msgstr "товар"
+
+#: goods_app/models.py:86
+msgid "products"
+msgstr "товары"
+
+#: goods_app/models.py:107
+msgid "author"
+msgstr "автор"
+
+#: goods_app/models.py:108
+msgid "content"
+msgstr "содержание"
+
+#: goods_app/models.py:109
+msgid "added"
+msgstr "дабавлено"
+
+#: goods_app/models.py:116
 msgid "product comment"
 msgstr "камментарий к товару"
 
-#: goods_app/models.py:88
+#: goods_app/models.py:117
 msgid "product comments"
 msgstr "комментарии к товару"
 
-#: goods_app/models.py:101
+#: goods_app/models.py:130
 msgid "specification name"
 msgstr "название спецификации"
 
-#: goods_app/models.py:102
+#: goods_app/models.py:131
 msgid "specification names"
 msgstr "назваеия спецификаций"
 
-#: goods_app/models.py:118
+#: goods_app/models.py:147
 msgid "specification"
 msgstr "спецификация"
 
-#: goods_app/models.py:119
+#: goods_app/models.py:148
 msgid "specifications"
 msgstr "спецификации"
 
-#: goods_app/models.py:126 stores_app/models.py:47
+#: goods_app/models.py:158 stores_app/models.py:47
 msgid "store"
 msgstr "маназин"
 
-#: goods_app/models.py:127
+#: goods_app/models.py:159
 msgid "notes"
 msgstr "примечания"
 
-#: goods_app/models.py:133
+#: goods_app/models.py:165
 msgid "new product"
 msgstr "новый товар"
 
-#: goods_app/models.py:134
+#: goods_app/models.py:166
 msgid "new products"
 msgstr "новые товары"
 
-#: goods_app/views.py:79
+#: goods_app/views.py:117
 msgid "You should to indicate the product rating"
 msgstr "Вы должны указать рейтинг продукта"
 
@@ -197,181 +353,402 @@ msgstr "Вы должны указать рейтинг продукта"
 msgid "Purchase and carts"
 msgstr "Покупки и корзина товаров"
 
-#: orders_app/models.py:16
+#: orders_app/models.py:14
 msgid "Regular"
 msgstr "Обычный"
 
-#: orders_app/models.py:17
+#: orders_app/models.py:15
 msgid "Express"
 msgstr "Эксперсс"
 
-#: orders_app/models.py:21
+#: orders_app/models.py:19
 msgid "Bank Card"
 msgstr "Банковская карта"
 
-#: orders_app/models.py:22
+#: orders_app/models.py:20
 msgid "From random account"
 msgstr "Со случайного аккаунта"
 
-#: orders_app/models.py:28
-msgid "customer"
-msgstr "покупатель"
+#: orders_app/models.py:26
+#, fuzzy
+#| msgid "customer"
+msgid "Customer"
+msgstr "Покупатель"
 
-#: orders_app/models.py:29
-msgid "name and lastname"
-msgstr "имя и фамилия"
+#: orders_app/models.py:27
+#, fuzzy
+#| msgid "name and lastname"
+msgid "Name and lastname"
+msgstr "Имя и фамилия"
 
-#: orders_app/models.py:32
+#: orders_app/models.py:30
 msgid "Phone number must be entered in the format:"
 msgstr "Номер телефона необходимо вводить в формате:"
 
-#: orders_app/models.py:33
+#: orders_app/models.py:31
 msgid "Up to 15 digits allowed."
 msgstr "Допускается до 15 цифр."
 
-#: orders_app/models.py:35 profiles_app/models.py:40
-msgid "phone number"
-msgstr "номер телефона"
+#: orders_app/models.py:33
+#, fuzzy
+#| msgid "Phone number*"
+msgid "Phone number"
+msgstr "Номер телефона"
 
-#: orders_app/models.py:37 profiles_app/models.py:36
-msgid "email"
-msgstr "электронная почта"
+#: orders_app/models.py:35 templates/orders_app/oneorder.html:57
+#: templates/stores_app/add_store.html:63
+#: templates/stores_app/edit-store.html:66
+msgid "Email"
+msgstr "Электронная почта"
 
-#: orders_app/models.py:40
-msgid "delivery"
-msgstr "доставка"
+#: orders_app/models.py:38 templates/orders_app/historyorder.html:65
+#: templates/orders_app/oneorder.html:65
+msgid "Delivery"
+msgstr "Доставка"
 
-#: orders_app/models.py:45
-msgid "payment method"
-msgstr "метод оплаты"
+#: orders_app/models.py:43 templates/account/account.html:97
+msgid "Payment method"
+msgstr "Способ оплаты"
 
-#: orders_app/models.py:47 profiles_app/models.py:48
-msgid "city"
-msgstr "город"
+#: orders_app/models.py:45 templates/account/profile.html:108
+#: templates/account/signup.html:79 templates/orders_app/oneorder.html:76
+msgid "City"
+msgstr "Город"
 
-#: orders_app/models.py:48 profiles_app/models.py:50 stores_app/models.py:23
-msgid "address"
-msgstr "адрес"
+#: orders_app/models.py:46 templates/account/profile.html:113
+#: templates/account/signup.html:84 templates/orders_app/oneorder.html:82
+#: templates/stores_app/add_store.html:85
+#: templates/stores_app/edit-store.html:88
+msgid "Address"
+msgstr "Адрес"
 
-#: orders_app/models.py:50
+#: orders_app/models.py:48
 msgid "In order"
 msgstr "В заказе"
 
-#: orders_app/models.py:51
+#: orders_app/models.py:49
 msgid "Order is payed"
 msgstr "Заказ оплачен"
 
-#: orders_app/models.py:53
+#: orders_app/models.py:51
 msgid "Order placement date"
 msgstr "Дата размещения заказа"
 
-#: orders_app/models.py:93
+#: orders_app/models.py:52
+msgid "Transaction id"
+msgstr "Id транзакции"
+
+#: orders_app/models.py:54
+#, fuzzy
+#| msgid "Delivery"
+msgid "Delivery cost"
+msgstr "Стоимость доставки"
+
+#: orders_app/models.py:102
 msgid "Guess discount price"
 msgstr "Определить цену со скидкой"
 
-#: orders_app/models.py:95 stores_app/models.py:73
+#: orders_app/models.py:104 stores_app/models.py:67
 msgid "quantity"
 msgstr "количество"
 
-#: orders_app/views.py:328
+#: orders_app/views.py:436
 msgid "no data"
 msgstr "нет данных"
+
+#: profiles_app/admin.py:56 profiles_app/models.py:50
+msgid "avatar"
+msgstr "аватар"
 
 #: profiles_app/apps.py:8
 msgid "Customers and users"
 msgstr "Покупатели и пользователи"
 
-#: profiles_app/models.py:16
+#: profiles_app/models.py:18
 msgid "Email must be entering"
-msgstr "Электронная почта должна быть введена"
+msgstr "Электронная почта должна быть указана"
 
-#: profiles_app/models.py:37
+#: profiles_app/models.py:40
+msgid "email"
+msgstr "электронная почта"
+
+#: profiles_app/models.py:41
 msgid "username"
 msgstr "имя пользователя"
 
-#: profiles_app/models.py:38 stores_app/models.py:20
+#: profiles_app/models.py:42 stores_app/models.py:19
 msgid "name"
 msgstr "имя"
 
-#: profiles_app/models.py:39
+#: profiles_app/models.py:43
 msgid "surname"
 msgstr "фамилия"
 
-#: profiles_app/models.py:42
+#: profiles_app/models.py:44
+msgid "phone number"
+msgstr "номер телефона"
+
+#: profiles_app/models.py:46
 msgid "registered"
 msgstr "зарегестрирован"
 
-#: profiles_app/models.py:43
+#: profiles_app/models.py:47
 msgid "is_staff"
 msgstr "стафф"
 
-#: profiles_app/models.py:44
+#: profiles_app/models.py:48
 msgid "is_active"
 msgstr "активен"
 
-#: profiles_app/models.py:45
+#: profiles_app/models.py:49
 msgid "is_superuser"
 msgstr "суперпользователь"
 
-#: profiles_app/models.py:46
-msgid "avatar"
-msgstr "аватар"
+#: profiles_app/models.py:52
+msgid "city"
+msgstr "город"
 
-#: profiles_app/models.py:84
+#: profiles_app/models.py:54 stores_app/models.py:22
+msgid "address"
+msgstr "адрес"
+
+#: profiles_app/models.py:91
 msgid "user"
 msgstr "пользователь"
 
-#: profiles_app/models.py:85
+#: profiles_app/models.py:92
 msgid "users"
 msgstr "пользователи"
 
-#: profiles_app/views.py:130
+#: profiles_app/views.py:131
 msgid "The profile was saved successfully"
 msgstr "Профиль был успешно сохранён"
+
+#: settings_app/admin.py:11 settings_app/dashboard.py:41
+#: settings_app/menu.py:33
+msgid "Administration"
+msgstr "Администрация"
 
 #: settings_app/apps.py:8 templates/admin/admin-setup.html:4
 #: templates/admin/admin-setup.html:22
 msgid "Site settings"
 msgstr "Настройки сайта"
 
-#: settings_app/dashboard.py:19 settings_app/dashboard.py:55
-#: settings_app/menu.py:37 settings_app/menu.py:40
+#: settings_app/dashboard.py:19 settings_app/menu.py:39
 msgid "Settings"
 msgstr "Настройки"
 
-#: settings_app/dashboard.py:41 settings_app/menu.py:31
-msgid "Administration"
-msgstr "Администрация"
-
-#: settings_app/dashboard.py:48 settings_app/menu.py:23
+#: settings_app/dashboard.py:48 settings_app/menu.py:25
 msgid "Applications"
 msgstr "Приложения"
 
-#: settings_app/dashboard.py:60 settings_app/dashboard.py:76
+#: settings_app/dashboard.py:57 settings_app/dashboard.py:72
 msgid "Recent Actions"
 msgstr "Недавние действия"
 
-#: settings_app/menu.py:21
+#: settings_app/dynamic_preferences_registry.py:19
+msgid "Set the regular shipping amount"
+msgstr "Установить количество для стандартной доставки"
+
+#: settings_app/dynamic_preferences_registry.py:22
+#: templates/admin/admin-setup.html:25
+msgid "Regular shipping price"
+msgstr "Стоимость стандартной доставки"
+
+#: settings_app/dynamic_preferences_registry.py:26
+#: settings_app/dynamic_preferences_registry.py:40
+msgid "Wrong price value! Must be positive"
+msgstr "Неверная стоимость! Число должно быть положительным"
+
+#: settings_app/dynamic_preferences_registry.py:33
+msgid "Set the express shipping amount"
+msgstr "Установить количество для экспресс доставки"
+
+#: settings_app/dynamic_preferences_registry.py:36
+#: templates/admin/admin-setup.html:28
+msgid "Express shipping price"
+msgstr "Стоимость эксперсс доставки"
+
+#: settings_app/dynamic_preferences_registry.py:47
+msgid "Set the count reviews, showing on product detail page"
+msgstr "Установить колчество отзывов, показываемых на детальной странице товара"
+
+#: settings_app/dynamic_preferences_registry.py:50
+msgid "Reviews size page"
+msgstr "Размер страницы отзывов"
+
+#: settings_app/dynamic_preferences_registry.py:54
+msgid "Wrong size value! Must be more than 0"
+msgstr "Неверный размер! Должен быть больше 0"
+
+#: settings_app/dynamic_preferences_registry.py:61
+msgid "Set the days duration for updating limited deal product"
+msgstr "Установить период дней для обновления товаров ограниченного предложения"
+
+#: settings_app/dynamic_preferences_registry.py:64
+msgid "Days duration limited deal"
+msgstr "Длительность дней ограниченного предложения"
+
+#: settings_app/dynamic_preferences_registry.py:68
+msgid "Wrong days value! Must be more than 0"
+msgstr "Неверное количество дней! Должно быть больше 0"
+
+#: settings_app/dynamic_preferences_registry.py:75
+#, fuzzy
+#| msgid "The time expire for limited deal was changed."
+msgid "Set the time update for limited deal product"
+msgstr "Установить время обновления ограниченного предложения"
+
+#: settings_app/dynamic_preferences_registry.py:78
+msgid "Time update limited deal"
+msgstr "Время обновления огриниченного предложения"
+
+#: settings_app/dynamic_preferences_registry.py:82
+msgid "Wrong date value! Must be more than 0"
+msgstr "Неврное значение! Должно быть больше 0"
+
+#: settings_app/dynamic_preferences_registry.py:89
+msgid "Set the count limited products, showing on main page"
+msgstr "Установить количество товаров в огриниченном предложении для показа на главной странице"
+
+#: settings_app/dynamic_preferences_registry.py:92
+#: templates/admin/admin-setup.html:40
+#, fuzzy
+#| msgid "Compare products"
+msgid "Count limited products"
+msgstr "Количество товаров в огриниченном предложении"
+
+#: settings_app/dynamic_preferences_registry.py:96
+msgid "Wrong count value! Must be more than 0"
+msgstr "Неверное значение! Должно быть больше 0"
+
+#: settings_app/dynamic_preferences_registry.py:103
+#: settings_app/dynamic_preferences_registry.py:131
+msgid "Set the count hot offers, showing on main page"
+msgstr "Установить количество горячих предложений для показа на главной"
+
+#: settings_app/dynamic_preferences_registry.py:105
+#, fuzzy
+#| msgid "date added"
+msgid "date_added"
+msgstr "дата_добавления"
+
+#: settings_app/dynamic_preferences_registry.py:106
+#, fuzzy
+#| msgid "title discount"
+msgid "viewed_count"
+msgstr "количестов_просмотров"
+
+#: settings_app/dynamic_preferences_registry.py:110
+#, fuzzy
+#| msgid "new products"
+msgid "Sort index products"
+msgstr "Короткий индекс товаров"
+
+#: settings_app/dynamic_preferences_registry.py:117
+msgid "Set the count popular products, showing on main page"
+msgstr "Установить количество популярных товаров для показа на главной"
+
+#: settings_app/dynamic_preferences_registry.py:120
+#: templates/admin/admin-setup.html:37
+#, fuzzy
+#| msgid "Popular Products"
+msgid "Count popular products"
+msgstr "Количество популярных продуктов"
+
+#: settings_app/dynamic_preferences_registry.py:124
+#: settings_app/dynamic_preferences_registry.py:138
+msgid "Wrong count value! Must be more than 1"
+msgstr "Неверное количество! Должно быть больше 1"
+
+#: settings_app/dynamic_preferences_registry.py:134
+#: templates/admin/admin-setup.html:43
+msgid "Count hot offers"
+msgstr "Количество горячих предложений"
+
+#: settings_app/dynamic_preferences_registry.py:145
+msgid "Set the time update banners (in minutes)"
+msgstr "Установить время обновления баннеров (в минутах)"
+
+#: settings_app/dynamic_preferences_registry.py:148
+#: templates/admin/admin-setup.html:46
+msgid "Banners time expire"
+msgstr "Время показа баннеров истекло"
+
+#: settings_app/dynamic_preferences_registry.py:152
+msgid "Wrong banners expire value! Must be more than 1 (minutes)"
+msgstr "Неверное время показа баннеров! Должно быть больше 1 (минуты)"
+
+#: settings_app/dynamic_preferences_registry.py:159
+msgid "Set the max image file sizes in MB"
+msgstr "Установить максимальный размер для файла изображения в МБ"
+
+#: settings_app/dynamic_preferences_registry.py:162
+msgid "Max image files size"
+msgstr "Макмимальный размер файла изображения"
+
+#: settings_app/dynamic_preferences_registry.py:166
+msgid "Wrong size file value! Must be more than 1 (MB)"
+msgstr "Неверное значение размера файла! Должно быть больше 1 (МБ)"
+
+#: settings_app/forms.py:20
+msgid "Image field does not exist"
+msgstr "Нет файла изображения"
+
+#: settings_app/menu.py:23
 msgid "Dashboard"
 msgstr "Панель"
 
-#: settings_app/views.py:26 settings_app/views.py:58
+#: settings_app/utils.py:16
+#, python-brace-format
+msgid "Load image with max file size {max_size}MB"
+msgstr "Загрузить изображение с максимальным размером {max_size}MB"
+
+#: settings_app/utils.py:20
+#, python-brace-format
+msgid ""
+"Load image with sizes from {min_width}x{min_height} to {max_width}"
+"x{max_height}"
+msgstr ""
+"Загрузить изображение размером от {min_width}x{min_height} до {max_width}"
+"x{max_height}"
+
+#: settings_app/utils.py:29
+#, python-brace-format
+msgid "File must be size less than {max_size}MB"
+msgstr "Размер файла должен быть меньше {max_size}MB"
+
+#: settings_app/utils.py:41
+msgid "resolution image is too small."
+msgstr "разрешение изображения слишком мало."
+
+#: settings_app/utils.py:43
+msgid "resolution image is too big."
+msgstr "разрешение изображения слишком велико."
+
+#: settings_app/views.py:40 settings_app/views.py:95 settings_app/views.py:106
+#: settings_app/views.py:119 settings_app/views.py:130
+#: settings_app/views.py:142 settings_app/views.py:155
 msgid "Cache was cleaned."
 msgstr "Кэш был очищен."
 
-#: settings_app/views.py:33
-msgid "The Limited deal product has changed successfully."
+#: settings_app/views.py:52
+#, fuzzy
+#| msgid "The Limited deal product has changed successfully."
+msgid "The Limited product has changed successfully."
 msgstr "Товар в ограниченном предложении был успешно изменен."
 
-#: settings_app/views.py:40
-msgid "The Limited deal product days duration has changed."
+#: settings_app/views.py:64
+#, fuzzy
+#| msgid "The Limited deal product days duration has changed."
+msgid "The Limited product days duration has changed."
 msgstr "Продолжительность ограниченного предложения была изменена."
 
-#: settings_app/views.py:50
+#: settings_app/views.py:78
 msgid "The time expire for limited deal was changed."
 msgstr "Время окончания ограниченного предложения было изменено"
 
-#: settings_app/views.py:52
+#: settings_app/views.py:80
 msgid "You need to choose datetime, later then now"
 msgstr "Вам необходимо выбрать дату и время, позже, чем сейчас"
 
@@ -379,19 +756,19 @@ msgstr "Вам необходимо выбрать дату и время, по�
 msgid "Stores and sellers"
 msgstr "Магазины и продавцы"
 
-#: stores_app/models.py:24
-msgid "icon"
-msgstr "иконка"
+#: stores_app/forms.py:56
+msgid "Your json file"
+msgstr "Ваш json файл"
 
-#: stores_app/models.py:27
+#: stores_app/models.py:26
 msgid "phone"
 msgstr "номер телефона"
 
-#: stores_app/models.py:31
+#: stores_app/models.py:30
 msgid "owner"
 msgstr "владелец"
 
-#: stores_app/models.py:48
+#: stores_app/models.py:48 templates/stores_app/stores_list.html:23
 msgid "stores"
 msgstr "магазины"
 
@@ -399,45 +776,68 @@ msgstr "магазины"
 msgid "seller"
 msgstr "продавец"
 
-#: stores_app/models.py:71
+#: stores_app/models.py:66
 msgid "price"
 msgstr "стоимость"
 
-#: stores_app/models.py:72
-msgid "price_after_discount"
-msgstr "стоимость_с_учётом_скидки"
-
-#: stores_app/models.py:74
+#: stores_app/models.py:68
 msgid "date added"
 msgstr "дата добавления"
 
-#: stores_app/models.py:83
+#: stores_app/models.py:77
 msgid "product in shop"
 msgstr "товар в магазине"
 
-#: stores_app/models.py:84
+#: stores_app/models.py:78
 msgid "products in shop"
 msgstr "товары в магазине"
 
-#: stores_app/services.py:63
+#: stores_app/services.py:73
 #, python-brace-format
 msgid "The {store.name} was removed"
 msgstr "{store.name} был удалён"
 
-#: stores_app/services.py:123
+#: stores_app/services.py:120
 #, python-brace-format
 msgid ""
 "Product {item.product.name} from the store {item.seller.name} was removed"
-msgstr "Товар {item.product.name} из магазина {item.seller.name} был удалён"
+msgstr ""
+"Товар {item.product.name} из магазина {item.seller.name} был удалён"
 
-#: stores_app/views.py:111
+#: stores_app/services.py:225
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Product {item.product.name} from the store {item.seller.name} was removed"
+msgid ""
+"Product discount {item.name} from the store {item.seller.name} was removed"
+msgstr ""
+"Скидка на товар {item.name} из магазина {item.seller.name} была удалена"
+
+#: stores_app/services.py:265
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Product {item.product.name} from the store {item.seller.name} was removed"
+msgid ""
+"Group discount {item.name} from the store {item.seller.name} was removed"
+msgstr ""
+"Групповая скидка {item.name} из магазина {item.seller.name} была удалена"
+
+#: stores_app/services.py:305
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Product {item.product.name} from the store {item.seller.name} was removed"
+msgid "Cart discount {item.name} from the store {item.seller.name} was removed"
+msgstr "Скидка на корзину {item.name} из магазина {item.seller.name} была удалена"
+
+#: stores_app/views.py:138
 msgid "This product is already exist in those store!"
 msgstr "Данный товар уже есть в магазине!"
 
-#: stores_app/views.py:180
+#: stores_app/views.py:248
 msgid ""
 "Your request was sending. Wait the answer some before time to your email!"
-msgstr "Ваш запрос был отправлен. Дождитесь ответа на вашу электронную почту!"
+msgstr ""
+"Ваш запрос был отправлен. Дождитесь ответа на вашу электронную почту!"
 
 #: templates/account/account.html:6 templates/account/account.html:18
 #: templates/account/account.html:23 templates/account/profile.html:5
@@ -447,16 +847,21 @@ msgstr "Личный кабинет"
 #: templates/account/account.html:21 templates/account/login.html:20
 #: templates/account/logout.html:17 templates/account/password_reset.html:17
 #: templates/account/profile.html:18 templates/account/signup.html:18
+#: templates/discounts_app/discount_detail.html:20
+#: templates/discounts_app/discounts_list.html:21
 #: templates/goods_app/catalog.html:21
 #: templates/goods_app/product_detail.html:20
+#: templates/orders_app/compare.html:19
 #: templates/orders_app/historyview.html:20
 #: templates/stores_app/add_store.html:18
 #: templates/stores_app/edit-seller-product.html:18
 #: templates/stores_app/edit-store.html:20
 #: templates/stores_app/new_product_in_store.html:18
+#: templates/stores_app/product_discount_in_store.html:18
 #: templates/stores_app/request-add-new-product.html:18
 #: templates/stores_app/sellers_room.html:20
 #: templates/stores_app/store_detail.html:20
+#: templates/stores_app/stores_list.html:21
 msgid "home"
 msgstr "на главную"
 
@@ -466,6 +871,7 @@ msgstr "на главную"
 #: templates/stores_app/edit-seller-product.html:29
 #: templates/stores_app/edit-store.html:31
 #: templates/stores_app/new_product_in_store.html:29
+#: templates/stores_app/product_discount_in_store.html:29
 #: templates/stores_app/request-add-new-product.html:29
 #: templates/stores_app/sellers_room.html:30
 msgid "Navigation"
@@ -478,6 +884,7 @@ msgstr "Навигация"
 #: templates/stores_app/edit-seller-product.html:35
 #: templates/stores_app/edit-store.html:37
 #: templates/stores_app/new_product_in_store.html:35
+#: templates/stores_app/product_discount_in_store.html:35
 #: templates/stores_app/request-add-new-product.html:35
 #: templates/stores_app/sellers_room.html:34
 msgid "Account info"
@@ -490,18 +897,27 @@ msgstr "Информация об аккаунте"
 #: templates/stores_app/edit-seller-product.html:37
 #: templates/stores_app/edit-store.html:39
 #: templates/stores_app/new_product_in_store.html:37
+#: templates/stores_app/product_discount_in_store.html:37
 #: templates/stores_app/request-add-new-product.html:37
 #: templates/stores_app/sellers_room.html:36
 msgid "Profile"
 msgstr "Профиль"
 
-#: templates/account/account.html:44 templates/account/account.html:76
+#: templates/account/account.html:44 templates/account/account.html:82
 #: templates/account/profile.html:39 templates/orders_app/historyorder.html:15
+#: templates/orders_app/historyorder.html:41
+#: templates/orders_app/historyview.html:41
+#: templates/stores_app/add_store.html:39
+#: templates/stores_app/edit-seller-product.html:39
+#: templates/stores_app/edit-store.html:41
+#: templates/stores_app/new_product_in_store.html:39
+#: templates/stores_app/product_discount_in_store.html:39
+#: templates/stores_app/request-add-new-product.html:39
 #: templates/stores_app/sellers_room.html:38
 msgid "Orders history"
 msgstr "История заказов"
 
-#: templates/account/account.html:46 templates/account/account.html:118
+#: templates/account/account.html:46 templates/account/account.html:133
 #: templates/orders_app/historyorder.html:43
 #: templates/orders_app/historyview.html:43
 #: templates/stores_app/edit-store.html:43
@@ -514,8 +930,9 @@ msgstr "История просмотров"
 #: templates/orders_app/historyview.html:45
 #: templates/stores_app/add_store.html:43
 #: templates/stores_app/edit-seller-product.html:43
-#: templates/stores_app/edit-store.html:46
+#: templates/stores_app/edit-store.html:46 templates/stores_app/import.html:19
 #: templates/stores_app/new_product_in_store.html:43
+#: templates/stores_app/product_discount_in_store.html:43
 #: templates/stores_app/request-add-new-product.html:43
 #: templates/stores_app/sellers_room.html:43
 msgid "Sellers room"
@@ -525,33 +942,66 @@ msgstr "Комната продавцов"
 msgid "Edit profile"
 msgstr "Редактировать профиль"
 
-#: templates/account/account.html:75 templates/orders_app/historyorder.html:61
+#: templates/account/account.html:77 templates/orders_app/historyorder.html:61
 #: templates/orders_app/oneorder.html:5 templates/orders_app/oneorder.html:15
 #: templates/orders_app/oneorder.html:22
 msgid "Order"
 msgstr "Заказ"
 
-#: templates/account/account.html:75 templates/orders_app/historyorder.html:61
+#: templates/account/account.html:78 templates/elems/random_categories.html:13
+#: templates/orders_app/historyorder.html:61
 msgid "from"
 msgstr "от"
 
-#: templates/account/account.html:81
+#: templates/account/account.html:87
 msgid "Type of delivery"
 msgstr "Вид доставки"
 
-#: templates/account/account.html:87
-msgid "Payment method"
-msgstr "Способ оплаты"
+#: templates/account/account.html:90 templates/orders_app/historyorder.html:70
+#: templates/orders_app/oneorder.html:69
+msgid "Regular delivery"
+msgstr "Стандартная доставка"
 
-#: templates/account/account.html:93
-msgid "Full price"
-msgstr "Полная стоимость"
+#: templates/account/account.html:92 templates/orders_app/historyorder.html:72
+#: templates/orders_app/oneorder.html:71
+msgid "Express delivery"
+msgstr "Экспресс доставка"
 
-#: templates/account/account.html:99
+#: templates/account/account.html:100 templates/orders_app/historyorder.html:82
+#: templates/orders_app/oneorder.html:92
+msgid "Card"
+msgstr "Карта"
+
+#: templates/account/account.html:102 templates/orders_app/historyorder.html:84
+#: templates/orders_app/oneorder.html:94
+msgid "Cash"
+msgstr "Наличные"
+
+#: templates/account/account.html:107 templates/goods_app/catalog.html:157
+#: templates/orders_app/compare.html:136
+#: templates/orders_app/historyorder.html:89
+#: templates/stores_app/edit-seller-product.html:77
+#: templates/stores_app/new_product_in_store.html:89
+msgid "Price"
+msgstr "Стоимость"
+
+#: templates/account/account.html:113
 msgid "Order Status"
 msgstr "Статус заказа"
 
-#: templates/account/account.html:171
+#: templates/account/account.html:116
+#: templates/orders_app/historyorder.html:100
+#: templates/orders_app/oneorder.html:103
+msgid "Paid"
+msgstr "Оплачено"
+
+#: templates/account/account.html:118
+#: templates/orders_app/historyorder.html:102
+#: templates/orders_app/oneorder.html:105
+msgid "Not paid"
+msgstr "Не оплачено"
+
+#: templates/account/account.html:162
 msgid "Show all viewed products"
 msgstr "Показать все просмотренные товары"
 
@@ -561,11 +1011,12 @@ msgstr "Показать все просмотренные товары"
 msgid "Sign-in"
 msgstr "Войти"
 
-#: templates/account/login.html:17 templates/elems/menu_head.html:50
+#: templates/account/login.html:17 templates/elems/menu_head.html:35
 msgid "Login"
 msgstr "Логин"
 
 #: templates/account/login.html:38
+#: templates/orders_app/order_step_one_anonimous.html:94
 msgid "Password"
 msgstr "Пароль"
 
@@ -579,7 +1030,7 @@ msgstr "Войти"
 
 #: templates/account/login.html:45
 #: templates/account/password_reset_error.html:22
-#: templates/elems/menu_head.html:50
+#: templates/elems/menu_head.html:35
 msgid "Register"
 msgstr "Зарегистрироваться"
 
@@ -588,7 +1039,7 @@ msgid "See you soon!"
 msgstr "До скорых встреч"
 
 #: templates/account/logout.html:15 templates/account/logout.html:18
-#: templates/elems/menu_head.html:48
+#: templates/elems/menu_head.html:33
 msgid "Logout"
 msgstr "Выйти"
 
@@ -625,8 +1076,10 @@ msgstr "Изменить пароль"
 msgid ""
 "We have sent you an e-mail. If you have not received it please check your "
 "spam folder. Otherwise contact us if you do not receive it in a few minutes."
-msgstr "Мы отправили вам электронное письмо. Если вы его не получили, проверьте папку со спамом."
-"В противном случае свяжитесь с нами, если вы не получите его в течение нескольких минут."
+msgstr ""
+"Мы отправили вам электронное письмо. Если вы его не получили, проверьте "
+"папку со спамом.В противном случае свяжитесь с нами, если вы не получите его "
+"в течение нескольких минут."
 
 #: templates/account/password_reset_error.html:4
 msgid "Reset Password Error"
@@ -650,6 +1103,7 @@ msgstr "Информация профиля"
 #: templates/stores_app/add_store.html:41
 #: templates/stores_app/edit-seller-product.html:41
 #: templates/stores_app/new_product_in_store.html:41
+#: templates/stores_app/product_discount_in_store.html:41
 #: templates/stores_app/request-add-new-product.html:41
 msgid "Viewed products"
 msgstr "Просмотренные товары"
@@ -692,17 +1146,6 @@ msgstr "Повторный пароль"
 msgid "Phone number*"
 msgstr "Номер телефона"
 
-#: templates/account/profile.html:108 templates/account/signup.html:79
-#: templates/orders_app/oneorder.html:76
-msgid "City"
-msgstr "Город"
-
-#: templates/account/profile.html:113 templates/account/signup.html:84
-#: templates/orders_app/oneorder.html:82 templates/stores_app/add_store.html:85
-#: templates/stores_app/edit-store.html:88
-msgid "Address"
-msgstr "Адрес"
-
 #: templates/account/profile.html:120 templates/stores_app/edit-store.html:117
 msgid "Save changes"
 msgstr "Сохранить изменения"
@@ -721,7 +1164,7 @@ msgstr "Зарегистрировать нового пользователя"
 
 #: templates/account/signup.html:19
 msgid "Sign Up"
-msgstr "Войти"
+msgstr "Зарегистрироваться"
 
 #: templates/account/signup.html:91
 msgid "Accept and Register"
@@ -734,7 +1177,7 @@ msgstr "Настройки и администрирование"
 #: templates/admin/admin-setup.html:13 templates/admin/app_index.html:9
 #: templates/admin/change_form.html:20 templates/admin/change_list.html:32
 #: templates/admin/delete_selected_confirmation.html:14
-#: templates/elems/menu_head.html:75
+#: templates/elems/menu_head.html:50
 msgid "Home"
 msgstr "На главную"
 
@@ -742,17 +1185,117 @@ msgstr "На главную"
 msgid "Settnigs"
 msgstr "Настройки"
 
-#: templates/admin/admin-setup.html:53
+#: templates/admin/admin-setup.html:31
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments size page"
+msgstr "Размер страницы комментариев"
+
+#: templates/admin/admin-setup.html:34
+#, fuzzy
+#| msgid "Show all your products"
+msgid "Sort index popular products"
+msgstr "Отсортировать по индексу популярности товаров"
+
+#: templates/admin/admin-setup.html:49
+#, fuzzy
+#| msgid "Site settings"
+msgid "Change settings"
+msgstr "Изменить настройки"
+
+#: templates/admin/admin-setup.html:52
+#, fuzzy
+#| msgid "Discounts control"
+msgid "Limited products control"
+msgstr "Управление ограниченными предложениями"
+
+#: templates/admin/admin-setup.html:55
+#, fuzzy
+#| msgid "The time expire for limited deal was changed."
+msgid "Time update for limited deal"
+msgstr "Время обновления ограниченного предложения"
+
+#: templates/admin/admin-setup.html:57
+msgid "Manual update now"
+msgstr "Обновить сейчас вручную"
+
+#: templates/admin/admin-setup.html:60
+msgid "Frequency update limited deal"
+msgstr "Частота обновления ограниченного предложения"
+
+#: templates/admin/admin-setup.html:62
+msgid "Manual continue expired"
+msgstr "Продление истекло"
+
+#: templates/admin/admin-setup.html:65
+#, fuzzy
+#| msgid "The time expire for limited deal was changed."
+msgid "Set manual expire time for limited deal"
+msgstr "Установить время истечения огриниченного предложения"
+
+#: templates/admin/admin-setup.html:68
+msgid "Date"
+msgstr "Дата"
+
+#: templates/admin/admin-setup.html:72
+msgid "Time"
+msgstr "Время"
+
+#: templates/admin/admin-setup.html:75
+msgid "Apply"
+msgstr "Применить"
+
+#: templates/admin/admin-setup.html:79
 msgid "Cache Control"
 msgstr "Управление кэшем"
 
-#: templates/admin/admin-setup.html:56 templates/admin/model_change_list.html:5
+#: templates/admin/admin-setup.html:82
+#, fuzzy
+#| msgid "Clear cache"
+msgid "Clear all site-cache"
+msgstr "Очистить весь кэш"
+
+#: templates/admin/admin-setup.html:83 templates/admin/admin-setup.html:87
+#: templates/admin/admin-setup.html:91 templates/admin/admin-setup.html:95
+#: templates/admin/admin-setup.html:99 templates/admin/admin-setup.html:103
+#: templates/admin/admin-setup.html:107
+#: templates/admin/model_change_list.html:5
 msgid "Clear cache"
 msgstr "Очистить кэш"
 
-#: templates/admin/admin-setup.html:59
+#: templates/admin/admin-setup.html:86
 msgid "Clear comments cache"
 msgstr "Очистить кэш комментариев"
+
+#: templates/admin/admin-setup.html:90
+#, fuzzy
+#| msgid "Clear comments cache"
+msgid "Clear catalogs cache"
+msgstr "Очистить кэш каталогов"
+
+#: templates/admin/admin-setup.html:94
+#, fuzzy
+#| msgid "Clear cache"
+msgid "Clear banner cache"
+msgstr "Очистить кэш баннеров"
+
+#: templates/admin/admin-setup.html:98
+#, fuzzy
+#| msgid "Clear comments cache"
+msgid "Clear products cache"
+msgstr "Очистить кэш товаров"
+
+#: templates/admin/admin-setup.html:102
+#, fuzzy
+#| msgid "Clear cache"
+msgid "Clear sellers cache"
+msgstr "Очистить кэш продавцов"
+
+#: templates/admin/admin-setup.html:106
+#, fuzzy
+#| msgid "Clear comments cache"
+msgid "Clear main page products cache"
+msgstr "Очистить кэш товаров на главной"
 
 #: templates/admin/change_form.html:23
 #, python-format
@@ -768,7 +1311,7 @@ msgid "Please correct the errors below."
 msgstr "Пожалуйста, исправьте ошибки ниже."
 
 #: templates/admin/change_list.html:79 templates/goods_app/catalog.html:34
-#: templates/goods_app/catalog.html:91
+#: templates/goods_app/catalog.html:93
 msgid "Filter"
 msgstr "Фильтр"
 
@@ -786,25 +1329,30 @@ msgid ""
 "Deleting the selected %(objects_name)s would result in deleting related "
 "objects, but your account doesn't have permission to delete the following "
 "types of objects:"
-msgstr "Удаление выбранных %(objects_name) приведет к удалению связанных"
-"объектов, но у вашей учетной записи нет разрешения на удаление следующих"
-"типов объектов:"
+msgstr ""
+"Удаление выбранных %(objects_name) приведет к удалению связанныхобъектов, но "
+"у вашей учетной записи нет разрешения на удаление следующихтипов объектов:"
 
 #: templates/admin/delete_selected_confirmation.html:32
 #, python-format
 msgid ""
 "Deleting the selected %(objects_name)s would require deleting the following "
 "protected related objects:"
-msgstr "Удаление выбранных %(objects_name) потребует удаления следующих"
-"защищенных связанных объектов:"
+msgstr ""
+"Удаление выбранных %(objects_name) потребует удаления следующихзащищенных "
+"связанных объектов:"
 
 #: templates/admin/delete_selected_confirmation.html:39
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "Are you sure you want to delete the selected %(objects_name)? All of the "
+#| "following objects and their related items will be deleted:"
 msgid ""
-"Are you sure you want to delete the selected %(objects_name)? All of the "
+"Are you sure you want to delete the selected %(objects_name)s? All of the "
 "following objects and their related items will be deleted:"
-msgstr "Вы уверены, что хотите удалить выбранные %(objects_name)? Все"
-"следующие объекты и связанные с ними элементы будут удалены:"
+msgstr ""
+"Вы уверены, что хотите удалить выбранные %(objects_name)? Всеследующие "
+"объекты и связанные с ними элементы будут удалены:"
 
 #: templates/admin/delete_selected_confirmation.html:41
 msgid "Objects"
@@ -822,6 +1370,43 @@ msgstr "Нет, вернуться"
 msgid "MEGANO site admin"
 msgstr "MEGANO панель управления"
 
+#: templates/discounts_app/discount_detail.html:6
+#, fuzzy
+#| msgid "Discount"
+msgid "Discount detail"
+msgstr "Детально о скидке"
+
+#: templates/discounts_app/discount_detail.html:18
+#: templates/discounts_app/discount_detail.html:53
+#: templates/discounts_app/discount_detail.html:56
+msgid "Discount"
+msgstr "Скидка"
+
+#: templates/discounts_app/discount_detail.html:21
+#, fuzzy
+#| msgid "Discount"
+msgid "Discount Detail"
+msgstr "Детально о скидке"
+
+#: templates/discounts_app/discount_detail.html:79
+msgid "Participating products"
+msgstr "Участвующие товары"
+
+#: templates/discounts_app/discounts_list.html:6
+#: templates/goods_app/catalog.html:6 templates/goods_app/catalog.html:23
+#: templates/stores_app/stores_list.html:6
+msgid "Catalog"
+msgstr "Каталог"
+
+#: templates/discounts_app/discounts_list.html:18
+#: templates/goods_app/catalog.html:18
+msgid "Catalog Megano"
+msgstr "Каталог Megano"
+
+#: templates/discounts_app/discounts_list.html:23
+msgid "blog"
+msgstr "блог"
+
 #: templates/elems/banner.html:17
 msgid "Get Started"
 msgstr "Начать"
@@ -830,9 +1415,60 @@ msgstr "Начать"
 msgid "All Departments"
 msgstr "Все категории"
 
-#: templates/elems/header.html:66
+#: templates/elems/header.html:72
 msgid "Search"
 msgstr "Поиск"
+
+#: templates/elems/hot_offers.html:9
+msgid "Hot Offers"
+msgstr "Горячие Преложения"
+
+#: templates/elems/limited_products.html:13
+#, fuzzy
+#| msgid "Shipping &amp; Returns"
+msgid "Shipping & Returns"
+msgstr "Доставка & Возвраты"
+
+#: templates/elems/limited_products.html:15
+#: templates/stores_app/store_detail.html:35
+msgid "World wide shipping"
+msgstr "Доставка по всему миру"
+
+#: templates/elems/limited_products.html:26
+#: templates/stores_app/store_detail.html:45
+msgid "Money Back"
+msgstr "Возврат средств"
+
+#: templates/elems/limited_products.html:28
+#: templates/stores_app/store_detail.html:47
+msgid "Guaranted payments"
+msgstr "Гарантированные платежи"
+
+#: templates/elems/limited_products.html:38
+#: templates/stores_app/store_detail.html:57
+msgid "Support Policy"
+msgstr "Политика поддержки"
+
+#: templates/elems/limited_products.html:40
+#: templates/stores_app/store_detail.html:59
+msgid "Fast support team"
+msgstr "Команда быстрой поддержки"
+
+#: templates/elems/limited_products.html:50
+#: templates/stores_app/store_detail.html:69
+msgid "Quality Guarantee"
+msgstr "Гарантия Качества"
+
+#: templates/elems/limited_products.html:52
+#: templates/stores_app/store_detail.html:71
+msgid "Best guaranted items"
+msgstr "Лучшие гарантированные товары"
+
+#: templates/elems/limited_products.html:61
+#, fuzzy
+#| msgid "Limited Deals"
+msgid "Limited edition"
+msgstr "Ограниченное предложение"
 
 #: templates/elems/menu_head.html:8
 msgid "Free Delivery"
@@ -842,96 +1478,105 @@ msgstr "Бесплатная доставка"
 msgid "Follow Us"
 msgstr "Следить за нами"
 
-#: templates/elems/menu_head.html:48
+#: templates/elems/menu_head.html:33
 msgid "My Account"
 msgstr "Мой аккаунт"
 
-#: templates/elems/menu_head.html:77
-msgid "Shop"
+#: templates/elems/menu_head.html:54
+#, fuzzy
+#| msgid "Shop"
+msgid "Shops"
 msgstr "Магазин"
 
-#: templates/elems/menu_head.html:79
-msgid "Blog"
-msgstr "Блог"
+#: templates/elems/menu_head.html:56
+msgid "Promotions"
+msgstr "Акции"
 
-#: templates/elems/menu_head.html:81
+#: templates/elems/menu_head.html:58
 msgid "Hot"
 msgstr "Хот"
 
-#: templates/elems/menu_head.html:81
+#: templates/elems/menu_head.html:58
 msgid "Gallery"
 msgstr "Галерея"
 
-#: templates/elems/menu_head.html:83
+#: templates/elems/menu_head.html:60
 msgid "Contacts"
 msgstr "Контакты"
 
-#: templates/elems/menu_head.html:85
-msgid "Purshase"
-msgstr "Купить"
+#: templates/elems/menu_head.html:62
+#, fuzzy
+#| msgid "Purshase"
+msgid "Purchase"
+msgstr "Покупка"
 
-#: templates/elems/menu_head.html:99
+#: templates/elems/menu_head.html:76
 msgid "Show navigation"
 msgstr "Показать навигацию"
 
-#: templates/goods_app/catalog.html:6 templates/goods_app/catalog.html:23
-msgid "Catalog"
-msgstr "Каталог"
+#: templates/elems/special_product.html:7
+msgid "Limited Deals"
+msgstr "Ограниченное Предложение"
 
-#: templates/goods_app/catalog.html:18
-msgid "Catalog Megano"
-msgstr "Каталог Megano"
+#: templates/elems/special_product.html:34
+msgid "days"
+msgstr "дни"
 
-#: templates/goods_app/catalog.html:48
+#: templates/elems/special_product.html:40
+msgid "hours"
+msgstr "часы"
+
+#: templates/elems/special_product.html:46
+msgid "mins"
+msgstr "минуты"
+
+#: templates/elems/special_product.html:52
+msgid "secs"
+msgstr "секунды"
+
+#: templates/goods_app/catalog.html:51
 msgid "Price:"
 msgstr "Стоимость:"
 
-#: templates/goods_app/catalog.html:60
+#: templates/goods_app/catalog.html:63
 msgid "Seller:"
 msgstr "Продавец:"
 
-#: templates/goods_app/catalog.html:73
+#: templates/goods_app/catalog.html:76
 msgid "Only items in stock:"
 msgstr "Товары только в наличии"
 
-#: templates/goods_app/catalog.html:80
-msgid "With free shipping:"
-msgstr "С беслатной доставкой"
+#: templates/goods_app/catalog.html:83
+msgid "Only limited offers:"
+msgstr "Только огриниченные предложения"
 
-#: templates/goods_app/catalog.html:105
+#: templates/goods_app/catalog.html:108
 msgid "Popular tags"
 msgstr "Популярные тэги"
 
-#: templates/goods_app/catalog.html:133
+#: templates/goods_app/catalog.html:140
 msgid "Sort by:"
 msgstr "Сортировать по:"
 
-#: templates/goods_app/catalog.html:142
+#: templates/goods_app/catalog.html:149
 msgid "Popularity"
 msgstr "Популярность"
 
-#: templates/goods_app/catalog.html:150 templates/orders_app/compare.html:136
-#: templates/orders_app/historyorder.html:89
-#: templates/stores_app/edit-seller-product.html:96
-#: templates/stores_app/new_product_in_store.html:106
-msgid "Price"
-msgstr "Стоимость"
-
-#: templates/goods_app/catalog.html:158
+#: templates/goods_app/catalog.html:165
 msgid "Comments"
 msgstr "Комментарии"
 
-#: templates/goods_app/catalog.html:166 templates/orders_app/oneorder.html:45
+#: templates/goods_app/catalog.html:173 templates/orders_app/oneorder.html:45
 msgid "Name"
 msgstr "Название"
 
-#: templates/goods_app/catalog.html:174
+#: templates/goods_app/catalog.html:181
 msgid "Newness"
 msgstr "Новизна"
 
-#: templates/goods_app/limited-deal.html:5
-msgid "Limited Deals"
-msgstr "Ограниченное предложение"
+#: templates/goods_app/index.html:32 templates/stores_app/store_detail.html:141
+msgid "Popular Products"
+msgstr "Популярные продукты"
 
 #: templates/goods_app/product_detail.html:6
 msgid "Product detail"
@@ -946,92 +1591,94 @@ msgid "Add To Cart"
 msgstr "Добавить в корзину"
 
 #: templates/goods_app/product_detail.html:78
+#, fuzzy
+#| msgid "Only items in stock:"
+msgid "Not in stock"
+msgstr "Нет в наличии"
+
+#: templates/goods_app/product_detail.html:83
 msgid "Tags"
 msgstr "Тэги"
 
-#: templates/goods_app/product_detail.html:89
-#: templates/stores_app/add_store.html:68
-#: templates/stores_app/edit-store.html:71
-#: templates/stores_app/request-add-new-product.html:112
-msgid "Description"
-msgstr "Описание"
-
-#: templates/goods_app/product_detail.html:90
+#: templates/goods_app/product_detail.html:95
 msgid "Stores"
 msgstr "Магазины"
 
-#: templates/goods_app/product_detail.html:91
+#: templates/goods_app/product_detail.html:96
 msgid "AdditionaL Info"
 msgstr "Дополнителная информация"
 
-#: templates/goods_app/product_detail.html:92
+#: templates/goods_app/product_detail.html:97
 msgid "Reviews"
 msgstr "Отзывы"
 
-#: templates/goods_app/product_detail.html:121
+#: templates/goods_app/product_detail.html:126
 msgid "Performance"
 msgstr "Производительность"
 
-#: templates/goods_app/product_detail.html:123
+#: templates/goods_app/product_detail.html:128
 msgid "Value"
 msgstr "Значение"
 
-#: templates/goods_app/product_detail.html:153
-msgid "Buy"
-msgstr "Купить"
+#: templates/goods_app/product_detail.html:165
+#, fuzzy
+#| msgid "Add To Cart"
+msgid "Add to cart"
+msgstr "Добавить в корзину"
 
-#: templates/goods_app/product_detail.html:182
+#: templates/goods_app/product_detail.html:197
 msgid "Review(s)"
 msgstr "Отзыв(ы)"
 
-#: templates/goods_app/product_detail.html:227
+#: templates/goods_app/product_detail.html:242
 msgid "Add Review"
 msgstr "Добавить отзыв"
 
-#: templates/goods_app/product_detail.html:255
+#: templates/goods_app/product_detail.html:270
 msgid "Submit Review"
 msgstr "Отправить отзыв"
 
-#: templates/goods_app/product_detail.html:258
+#: templates/goods_app/product_detail.html:273
 msgid "Your Rating:"
 msgstr "Ваш рейтинг:"
 
-#: templates/goods_app/product_detail.html:271
+#: templates/goods_app/product_detail.html:286
 msgid "Please"
 msgstr "Пожалуйста"
 
-#: templates/goods_app/product_detail.html:271
+#: templates/goods_app/product_detail.html:286
 msgid "sign-in"
-msgstr "войдите"
+msgstr "войти"
 
-#: templates/goods_app/product_detail.html:271
+#: templates/goods_app/product_detail.html:286
 msgid "or"
 msgstr "или"
 
-#: templates/goods_app/product_detail.html:272
+#: templates/goods_app/product_detail.html:287
 msgid "registering"
-msgstr "зарегистрируйтесь"
+msgstr "зарегистрирация"
 
-#: templates/goods_app/product_detail.html:272
+#: templates/goods_app/product_detail.html:287
 msgid "for leave the comments on the site."
-msgstr "для того, чтобы оставить комментарий на сайте"
+msgstr "для того, чтобы оставить комментарий на сайте."
 
 #: templates/orders_app/cart.html:6 templates/orders_app/cart.html:17
 #: templates/orders_app/cart.html:22 templates/orders_app/payment_card.html:6
 msgid "Cart"
 msgstr "Корзина"
 
-#: templates/orders_app/cart.html:91
+#: templates/orders_app/cart.html:93
 msgid "No products yet"
 msgstr "Товаров нет"
 
-#: templates/orders_app/cart.html:98
-#: templates/orders_app/order_step_four.html:154
-#: templates/orders_app/payment_card.html:40
+#: templates/orders_app/cart.html:100
+#: templates/orders_app/order_step_four.html:161
+#: templates/orders_app/payment_account.html:41
+#: templates/orders_app/payment_card.html:41
 msgid "Total:"
 msgstr "Итого:"
 
-#: templates/orders_app/cart.html:101
+#: templates/orders_app/cart.html:104 templates/orders_app/cart.html:107
 msgid "Check out"
 msgstr "Оплата"
 
@@ -1074,32 +1721,7 @@ msgstr "История заказа"
 #: templates/orders_app/historyorder.html:20
 #: templates/orders_app/historyorder.html:31
 msgid "orders history"
-msgstr "История заказов"
-
-#: templates/orders_app/historyorder.html:41
-#: templates/orders_app/historyview.html:41
-#: templates/stores_app/add_store.html:39
-#: templates/stores_app/edit-seller-product.html:39
-#: templates/stores_app/edit-store.html:41
-#: templates/stores_app/new_product_in_store.html:39
-#: templates/stores_app/request-add-new-product.html:39
-msgid "Purchases history"
-msgstr "История оплат"
-
-#: templates/orders_app/historyorder.html:65
-#: templates/orders_app/oneorder.html:65
-msgid "Delivery"
-msgstr "Доставка"
-
-#: templates/orders_app/historyorder.html:70
-#: templates/orders_app/oneorder.html:69
-msgid "Regular delivery"
-msgstr "Стандартная доставка"
-
-#: templates/orders_app/historyorder.html:72
-#: templates/orders_app/oneorder.html:71
-msgid "Express delivery"
-msgstr "Экспресс доставка"
+msgstr "история заказов"
 
 #: templates/orders_app/historyorder.html:78
 #: templates/orders_app/oneorder.html:88
@@ -1107,6 +1729,8 @@ msgstr "Экспресс доставка"
 #: templates/orders_app/payment_account.html:22
 #: templates/orders_app/payment_card.html:17
 #: templates/orders_app/payment_card.html:22
+#: templates/orders_app/payment_process.html:17
+#: templates/orders_app/payment_process.html:22
 #: templates/orders_app/payment_successful.html:17
 #: templates/orders_app/payment_successful.html:22
 #: templates/orders_app/payment_unsuccessful.html:17
@@ -1114,30 +1738,10 @@ msgstr "Экспресс доставка"
 msgid "Payment"
 msgstr "Оплата"
 
-#: templates/orders_app/historyorder.html:82
-#: templates/orders_app/oneorder.html:92
-msgid "Card"
-msgstr "Карта"
-
-#: templates/orders_app/historyorder.html:84
-#: templates/orders_app/oneorder.html:94
-msgid "Cash"
-msgstr "Наличные"
-
 #: templates/orders_app/historyorder.html:95
 #: templates/orders_app/oneorder.html:99
 msgid "Status"
 msgstr "Статус"
-
-#: templates/orders_app/historyorder.html:100
-#: templates/orders_app/oneorder.html:103
-msgid "Paid"
-msgstr "Оплачено"
-
-#: templates/orders_app/historyorder.html:102
-#: templates/orders_app/oneorder.html:105
-msgid "Not paid"
-msgstr "Не оплачено"
 
 #: templates/orders_app/oneorder.html:20
 msgid "order history"
@@ -1148,19 +1752,11 @@ msgid "Order date"
 msgstr "Дата заказа"
 
 #: templates/orders_app/oneorder.html:51
+#: templates/orders_app/order_step_one.html:80
+#: templates/orders_app/order_step_one_anonimous.html:80
 #: templates/stores_app/store_detail.html:80
 msgid "Phone"
 msgstr "Номер телефона"
-
-#: templates/orders_app/oneorder.html:57 templates/stores_app/add_store.html:63
-#: templates/stores_app/edit-store.html:66
-msgid "Email"
-msgstr "Электронная почта"
-
-#: templates/orders_app/oneorder.html:145
-#: templates/orders_app/order_step_four.html:142
-msgid "Seller"
-msgstr "Продавец"
 
 #: templates/orders_app/oneorder.html:150
 msgid "pc"
@@ -1171,12 +1767,13 @@ msgid "Total"
 msgstr "Итого"
 
 #: templates/orders_app/oneorder.html:161
-#: templates/orders_app/order_step_four.html:161
+#: templates/orders_app/order_step_four.html:168
 msgid "Pay"
 msgstr "Оплатить"
 
 #: templates/orders_app/order_step_four.html:6
 #: templates/orders_app/order_step_one.html:6
+#: templates/orders_app/order_step_one_anonimous.html:6
 #: templates/orders_app/order_step_three.html:6
 #: templates/orders_app/order_step_two.html:5
 msgid "Order step 1"
@@ -1186,6 +1783,8 @@ msgstr "Заказ шаг 1"
 #: templates/orders_app/order_step_four.html:22
 #: templates/orders_app/order_step_one.html:17
 #: templates/orders_app/order_step_one.html:22
+#: templates/orders_app/order_step_one_anonimous.html:17
+#: templates/orders_app/order_step_one_anonimous.html:22
 #: templates/orders_app/order_step_three.html:17
 #: templates/orders_app/order_step_three.html:22
 #: templates/orders_app/order_step_two.html:16
@@ -1195,6 +1794,7 @@ msgstr "Оплата заказа"
 
 #: templates/orders_app/order_step_four.html:35
 #: templates/orders_app/order_step_one.html:35
+#: templates/orders_app/order_step_one_anonimous.html:35
 #: templates/orders_app/order_step_three.html:35
 #: templates/orders_app/order_step_two.html:34
 msgid "Overall progress"
@@ -1203,6 +1803,8 @@ msgstr "Общий прогресс"
 #: templates/orders_app/order_step_four.html:42
 #: templates/orders_app/order_step_one.html:42
 #: templates/orders_app/order_step_one.html:68
+#: templates/orders_app/order_step_one_anonimous.html:42
+#: templates/orders_app/order_step_one_anonimous.html:68
 #: templates/orders_app/order_step_three.html:42
 #: templates/orders_app/order_step_two.html:41
 msgid "Step 1. User requisites"
@@ -1210,6 +1812,7 @@ msgstr "Шаг 1. Пользовательские реквизиты"
 
 #: templates/orders_app/order_step_four.html:47
 #: templates/orders_app/order_step_one.html:47
+#: templates/orders_app/order_step_one_anonimous.html:47
 #: templates/orders_app/order_step_three.html:47
 #: templates/orders_app/order_step_two.html:46
 #: templates/orders_app/order_step_two.html:67
@@ -1218,6 +1821,7 @@ msgstr "Шаг 2. Способ доставки"
 
 #: templates/orders_app/order_step_four.html:52
 #: templates/orders_app/order_step_one.html:52
+#: templates/orders_app/order_step_one_anonimous.html:52
 #: templates/orders_app/order_step_three.html:52
 #: templates/orders_app/order_step_three.html:68
 #: templates/orders_app/order_step_two.html:51
@@ -1227,6 +1831,7 @@ msgstr "Шаг 3. Способ оплаты"
 #: templates/orders_app/order_step_four.html:57
 #: templates/orders_app/order_step_four.html:68
 #: templates/orders_app/order_step_one.html:57
+#: templates/orders_app/order_step_one_anonimous.html:57
 #: templates/orders_app/order_step_three.html:57
 #: templates/orders_app/order_step_two.html:56
 msgid "Step 4. Order confirmation"
@@ -1245,6 +1850,7 @@ msgid "Email:"
 msgstr "Электронная почта:"
 
 #: templates/orders_app/order_step_four.html:97
+#: templates/orders_app/order_step_four.html:154
 msgid "Delivery:"
 msgstr "Доставка:"
 
@@ -1265,33 +1871,72 @@ msgid "pcs"
 msgstr "шт"
 
 #: templates/orders_app/order_step_one.html:75
+#: templates/orders_app/order_step_one_anonimous.html:75
 msgid "Name Surname"
 msgstr "Имя Фамилия"
 
-#: templates/orders_app/order_step_one.html:109
+#: templates/orders_app/order_step_one.html:87
+#: templates/orders_app/order_step_one_anonimous.html:86
+#, fuzzy
+#| msgid "Email"
+msgid "E-mail"
+msgstr "Электронная почта"
+
+#: templates/orders_app/order_step_one.html:98
+#: templates/orders_app/order_step_one_anonimous.html:109
 #: templates/orders_app/order_step_three.html:75
 #: templates/orders_app/order_step_two.html:80
 msgid "Next"
 msgstr "Далее"
 
+#: templates/orders_app/order_step_one_anonimous.html:77
+msgid "John Doe"
+msgstr "John Doe"
+
+#: templates/orders_app/order_step_one_anonimous.html:99
+#, fuzzy
+#| msgid "Password"
+msgid "Confirm Password"
+msgstr "Подтвердить пароль"
+
+#: templates/orders_app/order_step_one_anonimous.html:104
+msgid "I've been already registered"
+msgstr "Я уже зарегистрирован"
+
 #: templates/orders_app/payment_account.html:6
+#: templates/orders_app/payment_process.html:6
 #: templates/orders_app/payment_successful.html:6
 msgid "Success"
 msgstr "Успешно"
 
-#: templates/orders_app/payment_account.html:31
-msgid "You can not pay with account so far. In development"
-msgstr "Вы не можете оплатить со счета до сих пор. В разработке"
-
-#: templates/orders_app/payment_card.html:33
+#: templates/orders_app/payment_account.html:34
+#: templates/orders_app/payment_card.html:34
 msgid "Order Nr:"
 msgstr "Номер заказа:"
 
-#: templates/orders_app/payment_card.html:62
+#: templates/orders_app/payment_account.html:55
+#, fuzzy
+#| msgid "From random account"
+msgid "Generate random account"
+msgstr "Сгенерировать случайный аккаунт"
+
+#: templates/orders_app/payment_account.html:68
+#: templates/orders_app/payment_card.html:66
 msgid "Pay now"
 msgstr "Оплатить сейчас"
 
-#: templates/orders_app/payment_successful.html:31
+#: templates/orders_app/payment_account.html:73
+#: templates/orders_app/payment_card.html:122
+msgid "This order has been already paid"
+msgstr "Данный заказ уже оплачен"
+
+#: templates/orders_app/payment_process.html:32
+#, fuzzy
+#| msgid "Your payment has been successful"
+msgid "Your payment is being processed"
+msgstr "Ваша оплата обрабатывается"
+
+#: templates/orders_app/payment_successful.html:32
 msgid "Your payment has been successful"
 msgstr "Олата была проведена успешно"
 
@@ -1299,7 +1944,7 @@ msgstr "Олата была проведена успешно"
 msgid "Error"
 msgstr "Ошибка"
 
-#: templates/orders_app/payment_unsuccessful.html:31
+#: templates/orders_app/payment_unsuccessful.html:32
 msgid "Sorry, something went wrong!"
 msgstr "Извините, что-то пошло не так!"
 
@@ -1369,6 +2014,7 @@ msgstr "Создать магазин"
 #: templates/stores_app/edit-seller-product.html:19
 #: templates/stores_app/edit-store.html:6
 #: templates/stores_app/new_product_in_store.html:19
+#: templates/stores_app/product_discount_in_store.html:19
 #: templates/stores_app/request-add-new-product.html:19
 #: templates/stores_app/sellers_room.html:6
 #: templates/stores_app/sellers_room.html:18
@@ -1403,8 +2049,9 @@ msgid "Choose logo"
 msgstr "Выбрать лого"
 
 #: templates/stores_app/add_store.html:113
-#: templates/stores_app/edit-seller-product.html:111
-#: templates/stores_app/new_product_in_store.html:121
+#: templates/stores_app/edit-seller-product.html:86
+#: templates/stores_app/new_product_in_store.html:98
+#: templates/stores_app/product_discount_in_store.html:107
 #: templates/stores_app/request-add-new-product.html:105
 msgid "Back to seller room"
 msgstr "Назад в кабинет магазина"
@@ -1416,6 +2063,7 @@ msgstr "Принять и создать"
 #: templates/stores_app/edit-seller-product.html:5
 #: templates/stores_app/new_product_in_store.html:5
 #: templates/stores_app/new_product_in_store.html:16
+#: templates/stores_app/product_discount_in_store.html:5
 msgid "Add Product in Store"
 msgstr "Добавить товар в магазине"
 
@@ -1437,17 +2085,7 @@ msgstr "Товар"
 msgid "Quantity"
 msgstr "Количество"
 
-#: templates/stores_app/edit-seller-product.html:74
-#: templates/stores_app/new_product_in_store.html:87
-msgid "Discount"
-msgstr "Скидка"
-
-#: templates/stores_app/edit-seller-product.html:102
-#: templates/stores_app/new_product_in_store.html:112
-msgid "Price with discount"
-msgstr "Стоимость с учетов скидки"
-
-#: templates/stores_app/edit-seller-product.html:112
+#: templates/stores_app/edit-seller-product.html:87
 msgid "Accept and edit"
 msgstr "Принять и редактировать"
 
@@ -1455,8 +2093,20 @@ msgstr "Принять и редактировать"
 msgid "Store Detail"
 msgstr "Делатьная информация о магазине"
 
+#: templates/stores_app/import.html:7 templates/stores_app/import.html:17
+#: templates/stores_app/import.html:20
+msgid "Import"
+msgstr "Импортировать"
+
+#: templates/stores_app/import.html:33
+msgid "Send"
+msgstr "Отправить"
+
+#: templates/stores_app/import.html:37
+msgid "My imports:"
+msgstr "Му импорты:"
+
 #: templates/stores_app/new_product_in_store.html:53
-#: templates/stores_app/sellers_room.html:152
 msgid "Choose Category Product"
 msgstr "Выберите категорию товара"
 
@@ -1464,13 +2114,25 @@ msgstr "Выберите категорию товара"
 msgid "Choose store"
 msgstr "Выберите магазин"
 
-#: templates/stores_app/new_product_in_store.html:122
+#: templates/stores_app/new_product_in_store.html:99
 msgid "Add product"
 msgstr "Добавить товар"
 
+#: templates/stores_app/product_discount_in_store.html:16
+#, fuzzy
+#| msgid "Add Product in Store"
+msgid "Add/Edit Discount in Store"
+msgstr "Добавить/редактировать скидку в магазине"
+
+#: templates/stores_app/product_discount_in_store.html:108
+#, fuzzy
+#| msgid "product comment"
+msgid "Save product discount"
+msgstr "Сохранить скидку на товар"
+
 #: templates/stores_app/request-add-new-product.html:5
 msgid "Request new product"
-msgstr "Запросить новый торор"
+msgstr "Запросить новый товар"
 
 #: templates/stores_app/request-add-new-product.html:16
 msgid "Request for creation new product"
@@ -1508,57 +2170,69 @@ msgstr "Ваши магазины"
 msgid "ADD NEW STORE"
 msgstr "ДОБАВИТЬ НОВЫЙ МАГАЗИН"
 
-#: templates/stores_app/sellers_room.html:111
+#: templates/stores_app/sellers_room.html:110
+msgid "IMPORT"
+msgstr "ИМПОРТ"
+
+#: templates/stores_app/sellers_room.html:124
 msgid "Your Products"
 msgstr "Ваши товары"
 
-#: templates/stores_app/sellers_room.html:169
+#: templates/stores_app/sellers_room.html:171
 msgid "ADD PRODUCT"
 msgstr "ДОБАВИТЬ ТОВАР"
 
-#: templates/stores_app/sellers_room.html:171
+#: templates/stores_app/sellers_room.html:173
 msgid "Show all your products"
 msgstr "Показать все ваши товары"
+
+#: templates/stores_app/sellers_room.html:190
+#, fuzzy
+#| msgid "Your Products"
+msgid "Your Product Discounts"
+msgstr "Ваши скидки на товары"
+
+#: templates/stores_app/sellers_room.html:227
+#, fuzzy
+#| msgid "ADD PRODUCT"
+msgid "ADD PRODUCT DISCOUNT"
+msgstr "ДОБАВИТЬ СКИДКУ НА ТОВАР"
+
+#: templates/stores_app/sellers_room.html:250
+#, fuzzy
+#| msgid "Your Products"
+msgid "Your Group Discounts"
+msgstr "Ваши групповые скидки"
+
+#: templates/stores_app/sellers_room.html:287
+msgid "ADD CATEGORY DISCOUNT"
+msgstr "ДОБАВИТЬ ГРУППОВУЮ СКИДКУ"
+
+#: templates/stores_app/sellers_room.html:304
+#, fuzzy
+#| msgid "Your Products"
+msgid "Your Cart Discounts"
+msgstr "Ваши скидки на корзину"
+
+#: templates/stores_app/sellers_room.html:341
+msgid "ADD CART DISCOUNT"
+msgstr "ДОБАВИТЬ СКИДКУ НА КОРЗИНУ"
 
 #: templates/stores_app/store_detail.html:21
 msgid "About Store"
 msgstr "Про магазин"
 
 #: templates/stores_app/store_detail.html:34
-msgid "Shipping &amp; Returns"
-msgstr "Доставка; Возвраты"
+msgid "Shipping"
+msgstr "Доставка"
 
-#: templates/stores_app/store_detail.html:35
-msgid "World wide shipping"
-msgstr "Доставка по всему миру"
-
-#: templates/stores_app/store_detail.html:45
-msgid "Money Back"
-msgstr "Возврат средств"
-
-#: templates/stores_app/store_detail.html:47
-msgid "Guaranted payments"
-msgstr "Гарантированные платежи"
-
-#: templates/stores_app/store_detail.html:57
-msgid "Support Policy"
-msgstr "Политика поддержки"
-
-#: templates/stores_app/store_detail.html:59
-msgid "Fast support team"
-msgstr "Команда быстрой поддержки"
-
-#: templates/stores_app/store_detail.html:69
-msgid "Quality Guarantee"
-msgstr "Гарантия качества"
-
-#: templates/stores_app/store_detail.html:71
-msgid "Best guaranted items"
-msgstr "Лучшие гарантированные товары"
+#: templates/stores_app/store_detail.html:34
+msgid "Returns"
+msgstr "Возвраты"
 
 #: templates/stores_app/store_detail.html:81
 msgid "Mobile"
-msgstr "Мобильные телефоны"
+msgstr "Мобильный телефон"
 
 #: templates/stores_app/store_detail.html:101
 msgid "General"
@@ -1572,6 +2246,63 @@ msgstr "Редактор"
 msgid "About"
 msgstr "Про"
 
-#: templates/stores_app/store_detail.html:141
-msgid "Popular Products"
-msgstr "Популярные продукты"
+#: templates/stores_app/stores_list.html:18
+msgid "all stores on Megano"
+msgstr "все магазину на Megano"
+
+#~ msgid "Banners control"
+#~ msgstr "Управление баннерами"
+
+#~ msgid "discount_banner"
+#~ msgstr "баннер_со_скидкой"
+
+#~ msgid "banner_title"
+#~ msgstr "название_баннера"
+
+#~ msgid "banner_description"
+#~ msgstr "название_баннера"
+
+#~ msgid "banner_image"
+#~ msgstr "картинка_баннера"
+
+#~ msgid "title discount category"
+#~ msgstr "название категории скидки"
+
+#~ msgid "discount category"
+#~ msgstr "категория скидки"
+
+#~ msgid "discount categories"
+#~ msgstr "категории скидок"
+
+#~ msgid "product_category"
+#~ msgstr "категория_товара"
+
+#~ msgid "product_category_slug"
+#~ msgstr "слаг_категории_товара"
+
+#~ msgid "delivery"
+#~ msgstr "доставка"
+
+#~ msgid "payment method"
+#~ msgstr "метод оплаты"
+
+#~ msgid "price_after_discount"
+#~ msgstr "стоимость_с_учётом_скидки"
+
+#~ msgid "Blog"
+#~ msgstr "Блог"
+
+#~ msgid "With free shipping:"
+#~ msgstr "С беслатной доставкой"
+
+#~ msgid "Buy"
+#~ msgstr "Купить"
+
+#~ msgid "Purchases history"
+#~ msgstr "История оплат"
+
+#~ msgid "You can not pay with account so far. In development"
+#~ msgstr "Вы не можете оплатить со счета до сих пор. В разработке"
+
+#~ msgid "Price with discount"
+#~ msgstr "Стоимость с учетов скидки"

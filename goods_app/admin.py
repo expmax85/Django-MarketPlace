@@ -39,7 +39,7 @@ class CommentsInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = CheckImageForm
-    list_display = ('get_image', 'name', 'category', 'is_published', 'limited', 'get_tags')
+    list_display = ('get_image', 'id', 'name', 'category', 'is_published', 'limited', 'get_tags')
     list_display_links = ('get_image', 'name')
     list_filter = ('category', 'is_published', 'tags', 'limited')
     readonly_fields = ('get_image',)

@@ -42,8 +42,11 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="range Section-columnRange">
-                                    <input class="range-line" id="price" name="price" type="text" data-type="double"
-                                           data-min="{{ mini }}" data-max="{{ maxi }}" data-from="{{ min }}"
+                                    <input class="range-line" id="price" name="price" type="text"
+                                           data-type="double"
+                                           data-min="{{ mini }}"
+                                           data-max="{{ maxi }}"
+                                           data-from="{{ min }}"
                                            data-to="{{  midi }}"/>
                                     <div class="range-price">{% trans 'Price:' %}&#32;
                                         <div class="rangePrice"></div>
@@ -84,7 +87,6 @@
                                 <div class="buttons">
                                     <button class="filter-btn btn btn_square btn_dark btn_narrow" type="submit"
                                             onclick="return false;"
-                                            data-slug={{ category.slug }}
                                             data-sort={{ sort_type }}
                                             data-active=0
                                             id="submit_btn">
@@ -95,7 +97,7 @@
                         </form>
                     </div>
                 </div>
-                {% if tags %}
+
                 <div class="Section-columnSection">
                     <header class="Section-header">
                         <strong
@@ -107,23 +109,26 @@
                         </strong>
                     </header>
                     <div class="Section-columnContent">
+
                         <div class="buttons">
 
                             {% for tag in tags %}
-                            <a class="btn btn_default btn_sm tag_btn" href="#"
+                            {% if tag %}
+                            <a class="btn btn_default btn_sm tag_btn" href=""
                                onclick="return false;"
-                               data-slug={{ category.slug }}
                                data-sort={{ sort_type }}
                                data-in_use=0
                                data-tag={{ tag.name }}>
                                 {{ tag.name }}
                             </a>
+                            {% endif %}
                             {% endfor %}
 
                         </div>
+
                     </div>
                 </div>
-                {% endif %}
+
             </div>
 
             <div class="Section-content">
@@ -139,7 +144,7 @@
                         <!--=========================================  SORT BY Popularity ==================================================-->
 
                         <a class="Sort-sortBy" data-name="pop"
-                           data-sort="pop_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           data-sort="pop_inc" data-page="{{ page_obj.number }}"
                            href="#" onclick="return false;">
                             {% trans 'Popularity' %}
                         </a>
@@ -147,7 +152,7 @@
                         <!--    =========================================  SORT BY PRICE ====================================================-->
 
                         <a class="Sort-sortBy Sort-sortBy_inc" data-name="price"
-                           data-sort="price_dec" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           data-sort="price_dec" data-page="{{ page_obj.number }}"
                            href="#" onclick="return false;">
                             {% trans 'Price' %}
                         </a>
@@ -155,7 +160,7 @@
                         <!-- =========================================  SORT BY COMMENTS ====================================================-->
 
                         <a class="Sort-sortBy" data-name="comment"
-                           data-sort="comment_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           data-sort="comment_inc" data-page="{{ page_obj.number }}"
                            href="#" onclick="return false;">
                             {% trans 'Comments' %}
                         </a>
@@ -163,7 +168,7 @@
                         <!-- =========================================  SORT BY name =====================================================-->
 
                         <a class="Sort-sortBy" data-name="name"
-                           data-sort="name_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           data-sort="name_inc" data-page="{{ page_obj.number }}"
                            href="#" onclick="return false;">
                             {% trans 'Name' %}
                         </a>
@@ -171,7 +176,7 @@
                         <!-- =========================================  SORT BY newness ===================================================-->
 
                         <a class="Sort-sortBy" data-name="newness"
-                           data-sort="newness_inc" data-page="{{ page_obj.number }}" data-slug={{ category.slug }}
+                           data-sort="newness_inc" data-page="{{ page_obj.number }}"
                            href="#" onclick="return false;">
                             {% trans 'Newness' %}
                         </a>

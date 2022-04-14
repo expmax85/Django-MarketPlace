@@ -1,12 +1,13 @@
 from typing import List, Dict, Tuple, Any
 
 from django.core.cache import cache
+from django.core.paginator import Paginator
 from django.http import HttpRequest
-from django.db.models import Count, QuerySet
+from django.db.models import Count, QuerySet, Q
 from taggit.models import Tag
 
 from goods_app.models import ProductCategory
-from stores_app.models import SellerProduct
+from stores_app.models import SellerProduct, Seller
 from discounts_app.services import get_discounted_prices_for_seller_products
 
 
@@ -71,66 +72,75 @@ class CatalogByCategoriesMixin:
         return some_list, next_state
 
     @classmethod
-    def get_products_set_with_subcategories(cls, some_category: Any) -> List:
-        """метод возвращает список всех товаров для каталога с учётом подкатегорий"""
-        all_categories = some_category.get_children() if some_category.get_children() else [some_category]
-
-        res = list()
-        for elem in all_categories:
-            res.extend(elem.products.all())
-        return res
-
-    @classmethod
-    def add_sale_prices_in_goods_if_needed(cls, some_goods: List) -> List:
+    def add_sale_prices_in_goods_if_needed(cls, some_goods: QuerySet) -> List:
         """метод расчитывает и добавляет к товару стоимость с учётом скидки, при её наличии"""
         goods_with_sale = get_discounted_prices_for_seller_products(some_goods)
-
+        result = []
         for elem in goods_with_sale:
+
             if elem[1] is not None:
                 elem[0].price_after_discount = round(elem[1], 2)
                 elem[0].total = round(elem[1], 2)
                 elem[0].sale = '1'
+                elem[0].discount = elem[2]
+                result.append(elem[0])
+
             else:
                 elem[0].total = elem[0].price
                 elem[0].sale = '0'
+                result.append(elem[0])
 
-        return goods_with_sale
+        return result
 
     @classmethod
-    def get_data_without_filters(cls, slug: str) -> Tuple[List, Any, set, List]:
-        """
-        метод для получения всех необходимых данных для отрисовки каталога при условии отсутствия фильтров
-        :param slug: уникальных слаг категории товаров
+    def get_full_data(cls, tag: str = '', search: str = '', slug: str = '') -> Tuple[QuerySet or List, List, List]:
+        """метод возвращвет все товары или товары по тэгу или товары подходящие под запрос из строки поиска"""
+        goods = []
+        if tag:
+            goods = cls.get_data_by_tag(tag)
 
-        :return:    items_for_catalog - список товаров из магазина для отрисовки в каталоге
-                    category - категория товаров
-                    sellers - список уникальных продавцов
-                    tags - список первых 6-ти самых популярных тэгов
-        """
+        elif slug:
+            goods = cls.get_data_by_slug(slug)
 
-        category = ProductCategory.objects.prefetch_related(
-            'products',
-            'products__seller_products',
-            'products__seller_products__seller',
-            'products__tags',
-        ).get(slug=slug)
+        elif search:
+            goods = cls.get_data_by_search_query(search)
 
-        products_set = cls.get_products_set_with_subcategories(category)
+        sellers, tags = cls.get_sellers_and_tags(some_goods=goods, main_tag=tag)
 
-        sellers = []
-        items_for_catalog = []
-        tags = []
+        return goods, sellers, tags
 
-        for elem in products_set:
-            items_for_catalog.extend(elem.seller_products.all())
-            tags.extend(elem.tags.all())
-            for el in elem.seller_products.all():
-                sellers.append(el.seller)
+    @classmethod
+    def get_data_by_slug(cls, some_slug: str) -> QuerySet:
+        """метод возвращает список товаров по слагу"""
 
-        tags = cls.choose_popular_tags(tags)
-        cls.add_sale_prices_in_goods_if_needed(items_for_catalog)
+        return SellerProduct.objects.select_related('product', 'seller', ) \
+            .prefetch_related('product__category', 'product__tags') \
+            .filter(
+            product__category__slug__icontains=some_slug
+        ).annotate(Count('product__product_comments'))
 
-        return items_for_catalog, category, set(sellers), tags
+    @classmethod
+    def get_data_by_tag(cls, some_tag: str) -> QuerySet:
+        """метод возвращает список товаров по тэгу"""
+
+        return SellerProduct.objects.select_related('product', 'seller', ) \
+            .prefetch_related('product__category', 'product__tags') \
+            .filter(
+            product__tags__name__icontains=some_tag
+        ).annotate(Count('product__product_comments'))
+
+    @classmethod
+    def get_data_by_search_query(cls, some_search_query: str) -> QuerySet:
+        """метод возвращает список товаров по запросу из строки поиска"""
+
+        return SellerProduct.objects.select_related('product', 'seller', ) \
+            .prefetch_related('product__category', 'product__tags') \
+            .filter(
+            Q(product__name__icontains=some_search_query) |
+            Q(product__category__name__icontains=some_search_query) |
+            Q(product__tags__name__icontains=some_search_query) |
+            Q(seller__name__icontains=some_search_query)
+        ).annotate(Count('product__product_comments'))
 
     @classmethod
     def choose_popular_tags(cls, tags_list: List[Tag]) -> List:
@@ -144,58 +154,81 @@ class CatalogByCategoriesMixin:
             return [tag[0] for tag in the_most_popular_tags]
         return [tag[0] for tag in the_most_popular_tags][:6]
 
-
     @classmethod
-    def get_data_with_filters(cls, slug: str, filter_data: Dict) -> Tuple[List, Any, set]:
-        """
-        метод для получения всех необходимых данных для отрисовки каталога с фильтрами
-        :param slug: уникальных слаг категории товаров
-        :param filter_data: словарь со значениями фильтров для отображения карточек товаров в магазинах
+    def filtering_data(cls, some_goods: QuerySet, filter_data: Dict) -> QuerySet:
+        """фильтрует товары в соответсвии с данными формы фильтров"""
 
-        :return:    items_for_catalog - список товаров из магазина для отрисовки в каталоге
-                    category - категория товаров
-                    sellers - список уникальных продавцов
-        """
-        category = ProductCategory.objects.prefetch_related(
-            'products',
-            'products__seller_products',
-            'products__seller_products__seller',
-            'products__tags',
-        ).get(slug=slug)
-
-        products_set = cls.get_products_set_with_subcategories(category)
-        sellers = []
-
-        for elem in products_set:
-            for el in elem.seller_products.all():
-                sellers.append(el.seller)
-
-        items_for_catalog = SellerProduct.objects.select_related('product', 'seller', ) \
-            .prefetch_related('product__category', 'product__tags') \
-            .filter(
+        some_goods = some_goods.filter(
             seller__name__icontains=filter_data['f_select'],
-            product__tags__name__icontains=filter_data['tag'],
             product__name__icontains=filter_data['f_title'],
-            product__category__name__icontains=category,
             quantity__gte=filter_data['in_stock'],
-            product__limited=filter_data['is_hot']
+            product__limited__icontains=filter_data['is_hot'],
         ).annotate(Count('product__product_comments'))
 
-        if filter_data['f_price'][0] and filter_data['f_price'][1]:
-            mini_price = int(filter_data['f_price'][0], 0)
-            maxi_price = int(filter_data['f_price'][1], 0)
-            final_goods_set = cls.filtering_by_price(mini_price, maxi_price, items_for_catalog)
-            return final_goods_set, category, set(sellers)
+        if filter_data.get('tag', False):
+            some_goods = some_goods.filter(
+                product__tags__name=filter_data['tag'],
+            )
 
-        return items_for_catalog, category, set(sellers)
+        if filter_data['f_price'][0] and filter_data['f_price'][1]:
+            some_goods = cls.filtering_by_price(filter_data, some_goods)
+
+        return some_goods
 
     @classmethod
-    def filtering_by_price(cls, mini: int, maxi: int, some_goods_list: List) -> List:
+    def get_full_data_with_filters(cls, search_query: str or None, search_tag: str or None, slug: str, filter_data: Dict
+                                   ) -> Tuple:
+        """
+        метод для получения всех необходимых данных для отрисовки каталога с фильтрами
+        :param search_query: пользовательский запрос из поисковой строки
+        :param search_tag: пользовательский тэг для поиска всех товаров независимо от категории
+        :param filter_data: словарь со значениями фильтров для отображения карточек товаров в магазинах
+        :param slug: слаг категории товаров
+
+        :return:    items_for_catalog - список товаров из магазина для отрисовки в каталоге
+                    sellers - список уникальных продавцов
+        """
+
+        if search_tag:
+            goods = cls.get_data_by_tag(search_tag)
+        elif search_query:
+            goods = cls.get_data_by_search_query(search_query)
+        else:
+            goods = cls.get_data_by_slug(slug)
+
+        goods = cls.filtering_data(goods, filter_data)
+        sellers, tags = cls.get_sellers_and_tags(goods, search_tag)
+
+        return goods, sellers, tags
+
+    @classmethod
+    def get_sellers_and_tags(cls, some_goods: QuerySet, main_tag: str = '') -> Tuple[List, List]:
+        """метод возвращает уникальных продавцов и тэги по списку товаров"""
+        sellers = []
+        tags = []
+
+        for good in some_goods:
+            if good.seller not in sellers:
+                sellers.append(good.seller)
+
+            for tag in good.product.tags.all():
+                if tag not in tags and tag.name != main_tag:
+                    tags.append(tag)
+
+        tags = cls.choose_popular_tags(tags)
+        return sellers, tags
+
+    @classmethod
+    def filtering_by_price(cls, filter_data: dict, some_goods_list: QuerySet) -> List:
         """метод фильтрации списка товаров по минимальной и максимальной стоимостям"""
-        cls.add_sale_prices_in_goods_if_needed(some_goods_list)
+
+        mini = int(filter_data['f_price'][0], 0)
+        maxi = int(filter_data['f_price'][1], 0)
+
+        goods_with_price = cls.add_sale_prices_in_goods_if_needed(some_goods_list)
         result_goods = []
 
-        for elem in some_goods_list:
+        for elem in goods_with_price:
             if mini <= elem.total <= maxi:
                 result_goods.append(elem)
 
@@ -223,10 +256,7 @@ class CatalogByCategoriesMixin:
 
     @classmethod
     def sort_by_price(cls, some_list: List, direction: bool) -> List:
-        # return sorted(some_list, key=lambda x: x.price_after_discount if x.price_after_discount else x.price,
-        #               reverse=direction)
-        return sorted(some_list, key=lambda x: x.total,
-                      reverse=direction)
+        return sorted(some_list, key=lambda x: x.total, reverse=direction)
 
     @classmethod
     def sort_by_amount_of_comments(cls, some_list: List, direction: bool) -> List:
@@ -273,7 +303,7 @@ class CatalogByCategoriesMixin:
             maxi = max([x.total for x in some_list])
 
         except ValueError:
-            maxi = 100
+            maxi = 10000
         return maxi
 
     @classmethod
@@ -285,15 +315,74 @@ class CatalogByCategoriesMixin:
         """
         filter_data = {
             'f_price': request.GET.get('price').split(';') if request.GET.get('price') else ['0', '1000000'],
-            'f_title': request.GET.get('title') if request.GET.get('title') else '',
+            'f_title': request.GET.get('title') if request.GET.get('title', None) else '',
             'f_select': request.GET.get('select') if request.GET.get('select', None) and request.GET.get(
                 'select') != 'seller' else '',
-            'in_stock': 1 if request.GET.get('in_stock') and request.GET.get('in_stock') == '1' else 0,
-            'is_hot': True if request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == 1 else False,
+            'in_stock': 1 if request.GET.get('in_stock', None) == '1' else 0,
+            'is_hot': cls.get_is_hot_param(request),
             'tag': request.GET.get('tag') if request.GET.get('tag', None) else '',
         }
 
         return filter_data
+
+    @classmethod
+    def get_is_hot_param(cls, request: HttpRequest):
+        if request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == '1':
+            return True
+        elif request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == '0':
+            return False
+        else:
+            return ''
+
+    @classmethod
+    def get_request_params_for_full_catalog(cls, request: HttpRequest) -> Tuple:
+        """метод возвращает все все необходимые параметры гет-запроса для каталога без учета категории"""
+        search = request.GET.get('query', None) \
+            if request.GET.get('query', None) and request.GET.get('query', None) != 'undefined' else ''
+        tag = request.GET.get('main_tag', None) if request.GET.get('main_tag', None) else ''
+        sort_type = request.GET.get('sort_type', None) if request.GET.get('sort_type', None) else 'price_inc'
+        page = request.GET.get('page', None) if request.GET.get('page', None) else 1
+        slug = request.GET.get('slug', None) if request.GET.get('slug', None) else ''
+
+        return search, tag, sort_type, page, slug
+
+    @classmethod
+    def check_if_filter_params(cls, request: HttpRequest) -> bool:
+        """метод возвращает False если нет параметров фильтрации, иначе - True"""
+        if not request.GET.get('price') and \
+                not request.GET.get('title') and \
+                not request.GET.get('select') and \
+                not request.GET.get('in_stock') and \
+                not request.GET.get('is_hot') and \
+                not request.GET.get('tag'):
+            return False
+        return True
+
+    @classmethod
+    def custom_pagination_list(cls, paginator: Paginator, current_page: str or int) -> List:
+        """ метод возвращает списов страниц для отрисовки. при большом количестве страниц, заменяет некоторую
+            часть номеров (как в начале, так и в конце списка) страниц многоточиями
+        """
+        current_page = int(current_page)
+        pages_list = list(range(1, paginator.num_pages + 1))
+        if paginator.num_pages <= 9:
+            return pages_list
+        else:
+            if current_page == 1:
+                res = [*list(range(1, 7)), '...', pages_list[-1]]
+                return res
+            elif current_page in [2, 3, 4, 5]:
+                res = [*list(range(1, current_page + 5)), '...', pages_list[-1]]
+                return res
+            elif current_page in [pages_list[-2], pages_list[-3], pages_list[-4], pages_list[-5]]:
+                res = [1, '...', *list(range(current_page - 2, pages_list[-1] + 1))]
+                return res
+            elif current_page == pages_list[-1]:
+                res = [1, '...', *list(range(current_page - 4, pages_list[-1] + 1))]
+                return res
+            else:
+                res = [1, '...', *list(range(current_page - 2, current_page + 3)), '...', pages_list[-1]]
+                return res
 
 
 def get_categories() -> QuerySet:

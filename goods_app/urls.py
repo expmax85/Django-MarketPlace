@@ -1,5 +1,6 @@
 from django.urls import path
-from goods_app.views import IndexView, ProductDetailView, get_reviews, post_review, CatalogByCategory, CardForAjax
+from goods_app.views import IndexView, ProductDetailView, get_reviews, post_review, \
+    FullCatalogView, AllCardForAjax
 
 app_name = 'goods'
 urlpatterns = [
@@ -8,10 +9,7 @@ urlpatterns = [
     path('get_reviews/', get_reviews, name='get_reviews'),
     path('post_review/', post_review, name='post_review'),
 
-    path('catalogs/<slug>/',
-         CatalogByCategory.as_view(),
-         name="catalog_by_category_url"),
+    path('catalogs/', FullCatalogView.as_view(), name="catalog_url"),
 
-    path('ajax/<slug>/sotrby/<str:sort_type>/page/<int:page>',
-         CardForAjax.as_view(), name='ajax')
+    path('async_catalog/', AllCardForAjax.as_view(), name="ajax_full"),
 ]

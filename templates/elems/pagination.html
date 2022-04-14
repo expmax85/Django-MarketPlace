@@ -1,0 +1,41 @@
+{% load static %}
+{% load i18n %}
+
+<div class="Pagination" id="pagination">
+    <div class="Pagination-ins" id="pagination_settings"
+         data-sort={{ sort_type }}>
+
+        <a class="Pagination-element Pagination-element_prev" href="#" onclick="return false;"
+           id="prevPage"
+           data-page={{ prev_page }}
+           data-name="prev">
+            <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
+        </a>
+
+        {% for elem in pages_list %}
+        {% if elem == 1 %}
+        <a class="Pagination-element Pagination-element_current" href="#" onclick="return false;"
+           data-page={{ elem }}
+           data-name={{ elem }}>
+            <span class="Pagination-text">{{ elem }}</span></a>
+        {% elif elem == '...' %}
+        <a class="Pagination-element disabled" href="#" onclick="return false;">
+            <span class="Pagination-text">...</span></a>
+        {% else %}
+        <a class="Pagination-element" href="#" onclick="return false;"
+           data-page={{ elem }}
+           data-name={{ elem }}>
+            <span class="Pagination-text">{{ elem }}</span></a>
+        {% endif %}
+        {% endfor %}
+
+        <a class="Pagination-element Pagination-element_next" href="#" onclick="return false;"
+           id="nextPage"
+           data-page={{ next_page }}
+           data-name="next">
+
+            <img src={% static "assets/img/icons/nextPagination.svg" %} alt="next"/>
+        </a>
+
+    </div>
+</div>

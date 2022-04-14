@@ -20,7 +20,7 @@
                         {% endif %}
 
                     </div>
-                    <div class="Card-category">{{category}}</div>
+                    <div class="Card-category">{{elem.product.category}}</div>
                     <div class="Card-hover">
                         <a class="Card-btn" href="#">
                             <img src={% static "assets/img/icons/card/bookmark.svg" %} alt="bookmark.svg"/>
@@ -34,53 +34,30 @@
                     </div>
                 </div>
             </div>
-            <div class="Card-sale">-60%</div>
+
+            {% if elem.discount.type_of_discount == 'p' and not elem.discount.set_discount %}
+            <div class="Card-sale">
+                -{{ elem.discount.percent|floatformat:0}}%
+            </div>
+
+            {% elif elem.discount.type_of_discount == 'f' and not elem.discount.set_discount %}
+            <div class="Card-sale" style="background-color: #d00d0d">
+                -{{ elem.discount.amount|floatformat:0}}$
+            </div>
+
+            {% elif elem.discount.type_of_discount == 'fp' and not elem.discount.set_discount %}
+            <div class="Card-sale" style="background-color: #6888fc">
+                !!!
+            </div>
+            {% endif %}
+
         </div>
         {% endfor %}
 
     </div>
-    <div class="Pagination" id="pagination">
-        <div class="Pagination-ins">
 
-            <a class="Pagination-element Pagination-element_prev" href="#" onclick="return false;"
-               id="prevPage"
-               data-slug={{ category.slug }}
-               data-sort={{ sort_type }}
-               data-page={{ prev_page }}
-               data-name="prev">
-                <img src={% static "assets/img/icons/prevPagination.svg" %} alt="prev"/>
-            </a>
+    {% include 'elems/pagination.html' %}
 
-            {% for elem in pages_list %}
-            {% if elem == 1 %}
-            <a class="Pagination-element Pagination-element_current" href="#" onclick="return false;"
-               data-slug={{ category.slug }}
-               data-page={{ elem }}
-               data-sort={{ sort_type }}
-               data-name={{ elem }}>
-                <span class="Pagination-text">{{ elem }}</span></a>
-            {% else %}
-            <a class="Pagination-element" href="#" onclick="return false;"
-               data-slug={{ category.slug }}
-               data-page={{ elem }}
-               data-sort={{ sort_type }}
-               data-name={{ elem }}>
-                <span class="Pagination-text">{{ elem }}</span></a>
-            {% endif %}
-            {% endfor %}
-
-            <a class="Pagination-element Pagination-element_next" href="#" onclick="return false;"
-               id="nextPage"
-               data-slug={{ category.slug }}
-               data-page={{ next_page }}
-               data-sort={{ sort_type }}
-               data-name="next">
-
-                <img src={% static "assets/img/icons/nextPagination.svg" %} alt="next"/>
-            </a>
-
-        </div>
-    </div>
 </div>
 
 

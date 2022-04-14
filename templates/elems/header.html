@@ -18,15 +18,16 @@
                 </div>
                 <div class="CategoriesButton-content">
 
-<!--                    {% load mptt_tags %}-->
+                    <!--                    {% load mptt_tags %}-->
                     {% get_tree_dict as dict %}
 
                     {% for key, value in dict.items %}
 
                     <div class="CategoriesButton-link">
-                        <a href="{% url 'goods-polls:catalog_by_category_url' key.slug %}">
+                        <a href="{% url 'goods-polls:catalog_url' %}?slug={{key.slug}}">
                             <div class="CategoriesButton-icon">
-                                <img src="{{ MEDIAROOT }}/uploads/{{ key.icon }}" alt="image_category" style="width: 100%">
+                                <img src="{{ MEDIAROOT }}/uploads/{{ key.icon }}" alt="image_category"
+                                     style="width: 100%">
                             </div>
                             <span class="CategoriesButton-text">{{ key.name }}</span>
                         </a>
@@ -38,9 +39,10 @@
 
 
                             <a class="CategoriesButton-link"
-                               href="{% url 'goods-polls:catalog_by_category_url' elem.slug %}">
+                               href="{% url 'goods-polls:catalog_url' %}?slug={{elem.slug}}">
                                 <div class="CategoriesButton-icon">
-                                <img src="{{ MEDIAROOT }}/uploads/{{ elem.icon }}" alt="image_category" style="width: 100%">
+                                    <img src="{{ MEDIAROOT }}/uploads/{{ elem.icon }}" alt="image_category"
+                                         style="width: 100%">
                                 </div>
                                 <span class="CategoriesButton-text">{{ elem.name }}</span>
                             </a>
@@ -58,14 +60,19 @@
         <div class="Header-searchLink"><img src="{% static 'assets/img/icons/search.svg' %}" alt="search.svg"/>
         </div>
         <div class="Header-search">
-            <div class="search">
-                <form class="form form_search" action="#" method="post">
+            <div class="search" id="search_div"
+                 data-search_query={{ search }}>
+
+                <form class="form form_search" action="{% url 'goods-polls:catalog_url' %}" method="get"
+                      name="search_form">
                     <input class="search-input" id="query" name="query" type="text"
-                           placeholder="What are you looking for ..."/>
-                    <button class="search-button" type="submit" name="search" id="search"><img
-                            src="{% static 'assets/img/icons/search.svg' %}" alt="search.svg"/>{% trans 'Search' %}
+                           placeholder="What are you looking for ...">
+                    <button class="search-button" type="submit" id="search_btn" onclick="return false;">
+                        <img src="{% static 'assets/img/icons/search.svg' %}" alt="search.svg"/>
+                        {% trans 'Search' %}
                     </button>
                 </form>
+
             </div>
         </div>
     </div>
