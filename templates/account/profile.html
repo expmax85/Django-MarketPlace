@@ -122,6 +122,13 @@
                     </div>
                     </div>
                 </form>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                        <div class="send-product-request" style="text-align: right;margin-top: 10px;">{{message}}</div>
+                        {% endif %}
+                    {%endfor %}
+                {% endif %}
             </div>
         </div>
     </div>

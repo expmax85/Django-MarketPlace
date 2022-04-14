@@ -3,6 +3,8 @@ from typing import Dict, Callable
 import braintree
 import datetime
 
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -133,7 +135,11 @@ class CartAdd(View):
         cart = CartService(request)
         product = get_object_or_404(SellerProduct, id=str(product_id))
         quantity = int(request.POST.get('amount'))
-        cart.add_to_cart(product, quantity=quantity, update_quantity=False)
+        added = cart.add_to_cart(product, quantity=quantity, update_quantity=False)
+        if added:
+            messages.add_message(request, settings.SUCCESS_ADD_TO_CART, _(f'{product.product.name} was added to cart succesfully.'))
+        else:
+            messages.add_message(request, settings.ERROR_ADD_TO_CART, _(f'The quantity in stock for {product.product.name} is not enough.'))
         return redirect(request.META.get('HTTP_REFERER'))
 
 
