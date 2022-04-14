@@ -19,7 +19,6 @@ class RegexURLResolver:
 
 
 SECTION = {
-    'banners-polls': 'Скидки',
     'discounts-polls': 'Скидки',
     'goods-polls': 'Каталог',
     'orders-polls': 'Заказы и Корзины',
@@ -28,7 +27,6 @@ SECTION = {
     'stores-polls': 'Продавцы',
     'settings-polls': 'Админ-панель',
     'admin': 'Админ-панель',
-    'admin-setup': 'Админ-панель',
 }
 
 
@@ -129,7 +127,8 @@ class Command(BaseCommand):
                not line[0].startswith('/i18nsetlang/') and \
                not line[0].startswith('/__debug__/') and \
                not line[0].startswith('/uploads/') and \
-               not line[0].startswith('/api_auth/'):
+               not line[0].startswith('/api_auth/') and \
+               not line[0].startswith('/swagger/'):
 
                 sheet[f'E{str(i)}'] = line[0]
                 sheet[f'C{str(i)}'] = line[3]

@@ -59,6 +59,8 @@ class UserLogout(LogoutView):
 class RegisterView(View):
     """
     Регистрация нового пользователя
+
+    ::Страница: Регистрация пользователей
     """
     def get(self, request: HttpRequest) -> Callable:
         form = RegisterForm()
