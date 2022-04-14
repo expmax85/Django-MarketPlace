@@ -42,16 +42,12 @@
             </div>
             <div class="Compare-products">
                <!-- Названия и изображения товаров -->
-              {% for product in compared.keys %}
+              {% for product, values in compared.items %}
               <div class="Compare-product">
                 <div class="Compare-nameProduct Compare-nameProduct_main">{{ product }}
                 </div>
                 <div class="Compare-feature"><img class="Compare-pict" 
-                  src="{% if compared.product.4 %}
-                        {{ compared.product.4 }}
-                        {% else %}
-                        {% static 'assets/img/content/home/card.jpg' %}
-                        {% endif %}" 
+                  src="{{ values.4 }}"
                   alt="card.jpg"/>
                 </div>
               </div>
