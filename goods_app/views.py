@@ -31,8 +31,7 @@ class IndexView(ListView):
 
     def get_queryset(self) -> Iterable:
         OPTIONS = global_preferences_registry.manager().by_name()
-        products = get_all_products(order_by=OPTIONS['sort_index'],
-                                    count=OPTIONS['count_popular_products'])
+        products = get_all_products(count=OPTIONS['count_popular_products'])
         return products
 
     def get_context_data(self, **kwargs) -> Dict:

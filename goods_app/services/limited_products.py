@@ -3,7 +3,7 @@ import datetime as dt
 from typing import Union, List, Dict
 
 from django.core.cache import cache
-from django.db.models import QuerySet, Model, Count, Min
+from django.db.models import QuerySet, Model, Count, Min, Q, Sum
 
 from stores_app.models import SellerProduct
 from discounts_app.services import get_discounted_prices_for_seller_products
@@ -147,7 +147,7 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
                 queryset = random.choices(population=queryset, k=count)
         except IndexError:
             return None
-        cache.set(products_cache_key, queryset, 60 * 60)
+        cache.set(products_cache_key, queryset, 24 * 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
     return products
 
@@ -166,7 +166,7 @@ def get_limited_deal(products: QuerySet) -> Union[Model, None]:
 random_product = RandomProduct(fallibility=1)
 
 
-def get_all_products(order_by: str, count: int) -> QuerySet:
+def get_all_products(count: int) -> QuerySet:
     """
     Function to get all products. Returns zip-iterator by count length with corteges:
     (instance model, price with discount, type of discount) and with sort by order_by param
@@ -176,10 +176,12 @@ def get_all_products(order_by: str, count: int) -> QuerySet:
     if not queryset:
         queryset = SellerProduct.objects.select_related('seller', 'product',
                                                         'product__category',
-                                                        'product__category__parent') \
-                                        .annotate(viewed=Count('viewed_list'))\
-                                        .order_by(order_by)[:count]
-        cache.set(products_cache_key, queryset, 60 * 60)
+                                                        'product__category__parent')\
+                                        .annotate(buying=Count('order_products__quantity',
+                                                               filter=Q(order_products__order__paid=True)))\
+                                        .order_by('-buying')[:count]
+        # queryset = order_products_by_quantity_selling(queryset)
+        cache.set(products_cache_key, queryset, 24 * 60 * 60)
     products = get_discounted_prices_for_seller_products(queryset)
     return products
 
@@ -196,9 +198,22 @@ def get_random_categories() -> Union[List, None]:
         queryset = categories.annotate(count=Count('products__seller_products'),
                                        from_price=Min('products__seller_products__price')) \
                              .exclude(count=0)
-        cache.set(random_ctg_cache_key, queryset, 60 * 60)
+        cache.set(random_ctg_cache_key, queryset, 24 * 60 * 60)
     try:
         random_categories = random.choices(population=list(queryset), k=3)
     except IndexError:
         return None
     return random_categories
+
+
+def order_products_by_quantity_selling(queryset):
+    temp_list = []
+    for item in queryset:
+        count = item.order_products.aggregate(Sum('quantity'))
+        if count['quantity__sum'] is None:
+            count['quantity__sum'] = 0
+        temp_list.append(count['quantity__sum'])
+    zp = zip(queryset, temp_list)
+    zp = sorted(zp, key=lambda x: x[1], reverse=True)
+    sort_list = [item[0] for item in zp]
+    return sort_list
