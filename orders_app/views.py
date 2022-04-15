@@ -488,7 +488,8 @@ class CompareView(View):
             context = dict()
         return render(request, 'orders_app/compare.html', context)
 
-    def create_queryset(self, session_data: json) -> Dict:
+    @classmethod
+    def create_queryset(cls, session_data: json) -> Dict:
         """ Здесь формируется queryset для сравнения товаров """
 
         compared = json.loads(session_data)
@@ -503,10 +504,23 @@ class CompareView(View):
         for value in specifications.values():
             if len(value) == value.count(value[0]):
                 value.append(True)
-        return {'compared': compared, 'specifications': specifications}
+        equal_categories = cls.check_equal_categories(compared)
+        return {'compared': compared, 'specifications': specifications, 'is_equals': equal_categories}
 
-    def get_quantity(self, request):
+    @classmethod
+    def check_equal_categories(cls, compared: dict[str, any]) -> bool:
+        """ Проверяет есть ли товары одинаковой категории """
+
+        categories = list()
+        for item in compared. values():
+            categories.append(item[6])
+        return len(set(categories)) == 1
+
+
+    @classmethod
+    def get_quantity(cls, request):
         """ Данный метод возвращает количество товаров в списке для сравнения """
+
         try:
             compared = json.loads(request.session['compared'])
             return len(list(compared.keys()))
@@ -542,14 +556,15 @@ class AddToCompare(View):
                            product.product.specifications.all()})
         image = product.product.image_url
         price_after_discount = product.price
+        category = product.product.category.name
         for item in get_discounted_prices_for_seller_products([product]):
             product = item[0]
             if item[1]:
                 price_after_discount = item[1]
-        compared[product.product.name] = [product.price,
-                                          price_after_discount,
+        compared[product.product.name] = [product.price, price_after_discount,
                                           product.product.rating, specifications,
-                                          image, int(product.id)]
+                                          image, int(product.id),
+                                          category]
         request.session['compared'] = json.dumps(compared, cls=DecimalEncoder)
 
 
