@@ -38,7 +38,7 @@
                               </a>
                           </div>
                           <div class="Cart-block Cart-block_info"><a class="Cart-title" href="#">{{ item.seller_product.product.name }}</a>
-                            <div class="Cart-desc">{{ item.seller_product.product.description }}
+                            <div class="Cart-desc">{{ item.seller_product.product.description|truncatechars:30 }}
                             </div>
                           </div>
                           <div class="Cart-block Cart-block_price">

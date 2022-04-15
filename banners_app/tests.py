@@ -18,7 +18,8 @@ class BannersTest(TestCase):
         category = ProductCategory.objects.create(name='Test category', slug='test-category')
 
         for index in range(10):
-            product = Product.objects.create(category=category, name=f'Product №{index}', is_published=True)
+            product = Product.objects.create(category=category, name=f'Product №{index}',
+                                             slug=f'Product №{index}', is_published=True)
             seller_product = SellerProduct(seller=seller, product=product, price=100.00, quantity=100)
             seller_product.save()
 

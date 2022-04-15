@@ -28,7 +28,7 @@
 
     <div class="Section">
       <div class="wrap">
-          {% if order.in_order %}
+          {% if order and order.in_order %}
             {% if not order.paid %}
                 <div class="Cart-total">
                     <div class="Cart-block Cart-block_total">

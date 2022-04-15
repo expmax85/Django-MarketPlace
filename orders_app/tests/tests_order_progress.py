@@ -21,8 +21,8 @@ class OrderProgressTest(TestCase):
                                             last_name='lastname2',
                                             phone='+7(999)999-88-88')
 
-        self.category_1 = ProductCategory.objects.create(name="test_category_1")
-        self.category_2 = ProductCategory.objects.create(name="test_category_2")
+        self.category_1 = ProductCategory.objects.create(name="test_category_1", slug="test_category_1")
+        self.category_2 = ProductCategory.objects.create(name="test_category_2", slug="test_category_2")
 
         self.seller_1 = Seller.objects.create(name="test_seller_1",
                                               slug="test_seller_1",
@@ -81,9 +81,9 @@ class OrderProgressTest(TestCase):
 
         for num in range(1, 6):
             if num < 3:
-                product = Product.objects.create(name=f'name{num}', category=self.category_1, rating=1)
+                product = Product.objects.create(name=f'name{num}', slug=f'name{num}', category=self.category_1, rating=1)
             else:
-                product = Product.objects.create(name=f'name{num}', category=self.category_2, rating=1)
+                product = Product.objects.create(name=f'name{num}', slug=f'name{num}', category=self.category_2, rating=1)
 
             if num < 3:
                 product.specifications.add(Specifications.objects.all()[0])
@@ -107,12 +107,12 @@ class OrderProgressTest(TestCase):
 
         SellerProduct.objects.get(id=4).product_discounts.set([self.product_discount_2])
 
+    def test_order_complete_order_progress_with_express(self):
+        """Тест всего прогресса оформления заказа с самого начала аутентифицированным пользователем"""
         self.client.force_login(user=self.customer)
         for index in range(1, 6):
             self.client.get(reverse('orders:cart_add', kwargs={'product_id': index}), HTTP_REFERER='/orders/cart/')
 
-    def test_order_complete_order_progress_with_express(self):
-        """Тест всего прогресса оформления заказа с самого начала аутентифицированным пользователем"""
         response = self.client.get('/orders/step1/')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'orders_app/order_step_one.html')

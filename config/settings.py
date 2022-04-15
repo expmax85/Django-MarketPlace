@@ -64,9 +64,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.vk',
-
+    'django_celery_beat',
     'mptt',
     'drf_yasg',
+
  ] + env.list('INSTALLED_APPS', default=[])
 
 MIDDLEWARE = [
@@ -246,3 +247,10 @@ ERROR_ADD_TO_CART = 310
 # Resolution images for icons
 MAX_RESOLUTION = (100, 100)
 MIN_RESOLUTION = (30, 30)
+
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'

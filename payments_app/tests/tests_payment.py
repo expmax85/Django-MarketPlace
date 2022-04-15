@@ -22,8 +22,8 @@ class PaymentTest(TestCase):
                                             last_name='lastname2',
                                             phone='+7(999)999-88-88')
 
-        self.category_1 = ProductCategory.objects.create(name="test_category_1")
-        self.category_2 = ProductCategory.objects.create(name="test_category_2")
+        self.category_1 = ProductCategory.objects.create(name="test_category_1", slug="test_category_1")
+        self.category_2 = ProductCategory.objects.create(name="test_category_2", slug="test_category_2")
 
         self.seller_1 = Seller.objects.create(name="test_seller_1",
                                               slug="test_seller_1",
@@ -82,9 +82,11 @@ class PaymentTest(TestCase):
 
         for num in range(1, 6):
             if num < 3:
-                product = Product.objects.create(name=f'name{num}', category=self.category_1, rating=1)
+                product = Product.objects.create(name=f'name{num}', slug=f'name{num}',
+                                                 category=self.category_1, rating=1)
             else:
-                product = Product.objects.create(name=f'name{num}', category=self.category_2, rating=1)
+                product = Product.objects.create(name=f'name{num}', slug=f'name{num}',
+                                                 category=self.category_2, rating=1)
 
             if num < 3:
                 product.specifications.add(Specifications.objects.all()[0])
@@ -118,7 +120,8 @@ class PaymentTest(TestCase):
                                         seller_product=SellerProduct.objects.get(id=index),
                                         final_price=index * 100,
                                         quantity=1)
-
+        order.in_order = True
+        order.save()
         response = self.client.get(f'/orders/payment/account/{order.id}')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'orders_app/payment_account.html')
@@ -139,7 +142,8 @@ class PaymentTest(TestCase):
                                         seller_product=SellerProduct.objects.get(id=index),
                                         final_price=index * 100,
                                         quantity=1)
-
+        order.in_order = True
+        order.save()
         response = self.client.get(f'/orders/payment/account/{order.id}')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'orders_app/payment_account.html')
