@@ -128,7 +128,7 @@ class HistoryViewedTest(TestCase):
                                                        # category=self.discount_cat
                                                        )
         for num in range(1, 5):
-            Product.objects.create(name=f'name{num}', category=self.category, rating=1)
+            Product.objects.create(name=f'name{num}', slug=f'name{num}', category=self.category, rating=1)
         for num in range(1, 5):
             SellerProduct.objects.create(seller=self.seller,
                                          product=Product.objects.get(id=num),

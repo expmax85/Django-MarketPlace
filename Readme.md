@@ -83,3 +83,10 @@ manager@user.com      |   Qerk1212   |      Контент-менеджер|
 Более подробно узнать о функциях скрипта можно в файле Readme/loadscript.md 
 > ### Примечание:
 > При заполнении проекта тестовыми данными нет необходимости вызывать команду createsuperuser, так как таковой уже имеется в тестовых данных. 
+
+Запуск обработки асинхронных задач:
+```
+celery -A config worker -l INFO
+celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+```
