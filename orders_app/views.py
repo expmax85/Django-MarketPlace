@@ -453,7 +453,7 @@ class ViewedGoodsView(StoreServiceMixin, ListView):
             for obj in products_in_session:
                 ViewedProduct.objects.get_or_create(user=self.request.user,
                                                     product=obj.product)
-        queryset = self.get_viewed_products(user=self.request.user)[:20]
+        queryset = self.get_viewed_products(user=self.request.user)[20::-1]
         products = get_discounted_prices_for_seller_products(queryset)
         return products
 
@@ -526,14 +526,12 @@ class AddToCompare(View):
             compared = dict()
         specifications = ({spec.current_specification.name: spec.value for spec in
                            product.product.specifications.all()})
-        image = product.product.image.url if product.product.image else None
+        image = product.product.image_url
         price_after_discount = product.price
-
         for item in get_discounted_prices_for_seller_products([product]):
             product = item[0]
             if item[1]:
                 price_after_discount = item[1]
-
         compared[product.product.name] = [product.price,
                                           price_after_discount,
                                           product.product.rating, specifications,
