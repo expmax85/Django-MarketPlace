@@ -31,7 +31,7 @@ def viewed_reset_cache_save_handler(sender, **kwargs) -> None:
     Signal for clearing cache
     """
     user_id = kwargs['instance'].user_id
-    cache.delete('orders:{}'.format(user_id))
+    cache.delete('viewed:{}'.format(user_id))
 
 
 @receiver(pre_delete, sender=ViewedProduct)
@@ -40,7 +40,7 @@ def viewed_reset_cache_del_handler(sender, **kwargs) -> None:
     Signal for clearing cache
     """
     user_id = kwargs['instance'].user_id
-    cache.delete('orders:{}'.format(user_id))
+    cache.delete('viewed:{}'.format(user_id))
 
 
 @receiver(post_save, sender=OrderProduct)

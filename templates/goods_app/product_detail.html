@@ -85,10 +85,19 @@
                             </button>
                         </div>
                     </form>
-                    {% else %}
-                        <div class="ProductCard-cartElement" style="margin-left: 70%; font-size:20px; font-weight:bold; color: red;">{% trans 'Not in stock' %}</div>
-                    {% endif %}
                 </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level == SUCCESS_ADD_TO_CART %}
+                        <div class="send-product-request" style="text-align: right; margin-top: 10px;">{{message}}</div>
+                        {% elif message.level == ERROR_ADD_TO_CART %}
+                        <div class="send-product-request" style="text-align: right; margin-top: 10px; color: red;">{{message}}</div>
+                        {% endif %}
+                    {%endfor %}
+                {% endif %}
+                {% else %}
+                    <div class="ProductCard-cartElement" style="margin-left: 70%; font-size:20px; font-weight:bold; color: red;">{% trans 'Not in stock' %}</div>
+                {% endif %}
               <div class="ProductCard-footer">
                 <div class="ProductCard-tags">
                   <strong class="ProductCard-tagsTitle">{% trans 'Tags' %}:

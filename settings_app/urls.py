@@ -17,7 +17,6 @@ from django.urls import path
 
 from settings_app import views
 
-
 app_name = 'settings_app'
 urlpatterns = [
     path('clear-all-cache/', views.clear_all_cache, name='clear-all-cache'),
@@ -28,6 +27,7 @@ urlpatterns = [
     path('clear_sellers_cache/', views.clear_sellers_cache, name='clear-sellers-cache'),
     path('clear_users_cache/', views.clear_users_cache, name='clear-users-cache'),
 
+    path('setup/', views.AdminView.as_view(), name='admin-setup'),
     path('update-limited-deal/', views.change_limited_deal, name='manual-change-product'),
     path('update-expire/', views.update_expire, name='manual-expire-change'),
     path('set-end-time/', views.set_expire, name='set-end-time')

@@ -374,7 +374,7 @@ class AddGroupDiscountView(StoreAppMixin, View):
     """
     Страница создания скидки на группу товаров
 
-    ::Страница: РДобавление скидки на группу товаров
+    ::Страница: Добавление скидки на группу товаров
     """
 
     def get(self, request: HttpRequest) -> Callable:
