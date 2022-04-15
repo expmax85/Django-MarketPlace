@@ -86,6 +86,8 @@ manager@user.com      |   Qerk1212   |      Контент-менеджер|
 
 Запуск обработки асинхронных задач:
 ```
+
+redis-server
 celery -A config worker -l INFO
 celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 
