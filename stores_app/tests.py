@@ -1,4 +1,5 @@
 import random
+import tempfile
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission, Group
@@ -58,6 +59,7 @@ class StoresTestCase(TestCase):
 
     def test_add_new_store(self):
         """ Создание нового магазина продавцом """
+        self.temp_image = tempfile.NamedTemporaryFile(suffix='.jpg').name
         response = self.client.get(reverse('stores-polls:add-store'), follow=False)
         self.assertNotEqual(response.status_code, 200)
 
@@ -68,7 +70,8 @@ class StoresTestCase(TestCase):
         count = Seller.objects.all().count()
         self.assertEqual(count, 2)
 
-        form = AddStoreForm({'name': 'test_store_3', 'slug': 'test_store_3', 'owner': self.user})
+        form = AddStoreForm({'name': 'test_store_3', 'slug': 'test_store_3', 'owner': self.user,
+                             'icon': self.temp_image})
         form.save()
         count = Seller.objects.all().count()
         self.assertEqual(count, 3)
