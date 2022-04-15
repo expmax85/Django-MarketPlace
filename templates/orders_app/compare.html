@@ -107,6 +107,7 @@
               {% endfor %}
             </div>
           </div>
+          {% if is_equals %}
           {% for key, values in specifications.items %}
           <div class="Compare-row 
             {% if True in values %}
@@ -146,6 +147,11 @@
                   </div>
                 </div>
               {% endfor %}
+              {% else %}
+              <div class="Compare-error">
+                <p>{% trans 'You are trying to compare what cannot be compared' %}</p>
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>
