@@ -69,7 +69,7 @@ class HistoryOrderTest(TestCase):
         self.order1 = Order.objects.create(customer=self.user, delivery='reg', payment_method='card', paid='True',
                                            in_order=True)
         self.order2 = Order.objects.create(customer=self.user, delivery='express', payment_method='cash', paid='False',
-                                           in_order=False)
+                                           in_order=True)
 
         self.category = ProductCategory.objects.create(name="test_category", slug="test_category")
         self.seller = Seller.objects.create(name="test_seller", owner=self.user)
@@ -98,7 +98,7 @@ class HistoryOrderTest(TestCase):
         self.assertContains(response, 'Regular delivery')
         self.assertContains(response, 'Express delivery')
         self.assertContains(response, 'Card')
-        self.assertContains(response, 'Cash')
+        self.assertContains(response, 'Random account')
 
     def test_order_detail_page(self):
         """ Детальная страница заказа """
@@ -108,7 +108,7 @@ class HistoryOrderTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Express delivery')
         self.assertContains(response, 'Not paid')
-        self.assertContains(response, 'Cash')
+        self.assertContains(response, 'Random account')
         self.assertContains(response, 'name3')
         self.assertContains(response, 'test_seller')
         # self.assertContains(response, '400$')
@@ -122,11 +122,8 @@ class HistoryViewedTest(TestCase):
                                         last_name='test1', phone='+7(999)999-99-99')
         self.category = ProductCategory.objects.create(name="test_category")
         self.seller = Seller.objects.create(name="test_seller", owner=self.user)
-        # self.discount_cat = DiscountCategory.objects.create(name="test_d_category")
         self.discount = ProductDiscount.objects.create(name="test_discount",
-                                                       seller=self.seller
-                                                       # category=self.discount_cat
-                                                       )
+                                                       seller=self.seller)
         for num in range(1, 5):
             Product.objects.create(name=f'name{num}', slug=f'name{num}', category=self.category, rating=1)
         for num in range(1, 5):

@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Dict, Callable
 import braintree
 import datetime
@@ -405,8 +406,7 @@ class PaymentWithCardView(View):
             order.save()
             print(result)
             return render(request, 'orders_app/payment_process.html', {'result': True})
-        print(result.__dict__['errors'].__dict__)
-        order.payment_error = str(result)
+        order.payment_error = re.search(r"(?<=')(.*?)(?=')", str(result)).group()
         order.save()
         return render(request, 'orders_app/payment_process.html', {'result': False})
 
@@ -598,7 +598,7 @@ class HistoryOrderView(StoreServiceMixin, ListView):
     def get_queryset(self):
         """ Получить заказы """
 
-        queryset = self.get_all_orders(user=self.request.user)
+        queryset = self.get_all_orders(user=self.request.user).order_by('-ordered',)
         return queryset
 
 
