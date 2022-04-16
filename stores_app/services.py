@@ -200,7 +200,7 @@ class StoreServiceMixin:
         orders_cache_key = 'user_orders:{}'.format(user.id)
         orders = cache.get(orders_cache_key)
         if not orders:
-            orders = Order.objects.filter(customer=user)
+            orders = Order.objects.filter(customer=user, in_order=True)
             cache.set(orders_cache_key, orders, 24 * 60 * 60)
         return orders
 
