@@ -1206,20 +1206,22 @@ async function setLanguage() {
 
             let target = event.currentTarget
 
-            let url = target.dataset.href
-            const language_code = target.dataset.language_code
+            if (!target.classList.contains('selected_lang')) {
+                let url = target.dataset.href
+                const language_code = target.dataset.language_code
 
-            let data = new FormData();
-            data.append('LANGUAGE_QUERY_PARAMETER', language_code);
+                let data = new FormData();
+                data.append('LANGUAGE_QUERY_PARAMETER', language_code);
 
-            console.log(url)
+                console.log(url)
 
-            const trueRequest = new XMLHttpRequest();
-            trueRequest.open('POST', url, true);
-            trueRequest.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-            trueRequest.send(data);
-            trueRequest.onload = function () {
-                reload_page();
+                const trueRequest = new XMLHttpRequest();
+                trueRequest.open('POST', url, true);
+                trueRequest.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                trueRequest.send(data);
+                trueRequest.onload = function () {
+                    reload_page();
+                }
             }
 
         })

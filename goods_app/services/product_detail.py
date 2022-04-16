@@ -1,12 +1,12 @@
 from typing import Dict, List
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Avg, QuerySet, Prefetch
+from django.db.models import Avg, QuerySet
 from django.http import HttpRequest
 from dynamic_preferences.registries import global_preferences_registry
 
-from discounts_app.models import ProductDiscount
 from discounts_app.services import get_discounted_prices_for_seller_products
 from goods_app.models import ProductComment, Product
 from stores_app.models import SellerProduct
@@ -16,7 +16,7 @@ class CurrentProduct:
     """
     A class for working with a Product instance. You can get a product by its slug or directly instance
 
-    Allowed methods:
+    Allowed methods and properties:
     get_product,
     get_sellers,
     get_calculate_prices(),
@@ -47,8 +47,9 @@ class CurrentProduct:
         sellers_cache_key = 'sellers:{}'.format(self.product.id)
         queryset = cache.get(sellers_cache_key)
         if not queryset:
-            queryset = SellerProduct.objects.select_related('seller', 'product', 'product__category')\
-                                            .prefetch_related('product_discounts')\
+            queryset = SellerProduct.objects.select_related('seller', 'product',
+                                                            'product__category',
+                                                            'product__category__parent') \
                                             .filter(product=self.product)
             cache.set(sellers_cache_key, queryset, 24 * 60 * 60)
         sellers = get_discounted_prices_for_seller_products(queryset)
@@ -136,7 +137,7 @@ class CurrentProduct:
         and data for pagination
         """
         reviews_count = queryset.count()
-        reviews = queryset.values('author', 'content', 'added')
+        reviews = queryset.values('author', 'user__avatar', 'content', 'added')
         OPTIONS = global_preferences_registry.manager().by_name()
         paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])
         page_obj = paginator.get_page(page)
@@ -152,13 +153,14 @@ class CurrentProduct:
             'next_page_number': page_obj.number + 1,
             'empty_pages': None if page_obj.paginator.num_pages < 2
             else "not_empty",
-            'reviews_count': reviews_count
+            'reviews_count': reviews_count,
+            'media': settings.MEDIA_URL
         }
         return json_dict
 
-    def calculate_product_rating(self) -> None:
+    def update_product_rating(self) -> None:
         """
-        Method for calculating product rating, when the review added
+        Method for calculating and updating product rating, when the review added
         """
         rating = ProductComment.objects.only('rating') \
             .filter(product_id=self.product.id) \

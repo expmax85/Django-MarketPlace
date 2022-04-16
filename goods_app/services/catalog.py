@@ -112,11 +112,12 @@ class CatalogByCategoriesMixin:
     @classmethod
     def get_data_by_slug(cls, some_slug: str) -> QuerySet:
         """метод возвращает список товаров по слагу"""
+        acceptable_categories = ProductCategory.objects.get(slug=some_slug).get_children()
 
         return SellerProduct.objects.select_related('product', 'seller', ) \
             .prefetch_related('product__category', 'product__tags') \
             .filter(
-            product__category__slug__icontains=some_slug
+            product__category__in=acceptable_categories
         ).annotate(Count('product__product_comments'))
 
     @classmethod
@@ -157,21 +158,23 @@ class CatalogByCategoriesMixin:
     @classmethod
     def filtering_data(cls, some_goods: QuerySet, filter_data: Dict) -> QuerySet:
         """фильтрует товары в соответсвии с данными формы фильтров"""
-
+        print(f'filter*** {filter_data}')
+        print(f'start*** {some_goods}')
         some_goods = some_goods.filter(
             seller__name__icontains=filter_data['f_select'],
             product__name__icontains=filter_data['f_title'],
             quantity__gte=filter_data['in_stock'],
             product__limited__icontains=filter_data['is_hot'],
         ).annotate(Count('product__product_comments'))
-
+        print(f'big filter*** {some_goods}')
         if filter_data.get('tag', False):
             some_goods = some_goods.filter(
                 product__tags__name=filter_data['tag'],
             )
-
+        print(f'tag*** {some_goods}')
         if filter_data['f_price'][0] and filter_data['f_price'][1]:
             some_goods = cls.filtering_by_price(filter_data, some_goods)
+        print(f'price*** {some_goods}')
 
         return some_goods
 
@@ -329,8 +332,6 @@ class CatalogByCategoriesMixin:
     def get_is_hot_param(cls, request: HttpRequest):
         if request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == '1':
             return True
-        elif request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == '0':
-            return False
         else:
             return ''
 

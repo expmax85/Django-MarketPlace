@@ -27,30 +27,30 @@
     </div>
     <div class="Section">
       <div class="wrap">
-{#        <form class="form Cart" action="#" method="post">#}
           {% if cart %}
               {% for item, discount in items %}
                   <form class="form Cart" action="{% url 'orders:cart_detail_post' product_id=item.seller_product.id %}" method="post">
                       <div class="Cart-product">
                         <div class="Cart-block Cart-block_row">
-                          <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img class="Cart-img" src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
+                          <div class="Cart-block Cart-block_pict">
+                              <a class="Cart-pict" href="#">
+                                  <img class="Cart-img" src="{{ item.seller_product.product.image_url }}" alt="card.jpg"/>
+                              </a>
                           </div>
                           <div class="Cart-block Cart-block_info"><a class="Cart-title" href="#">{{ item.seller_product.product.name }}</a>
-                            <div class="Cart-desc">{{ item.seller_product.product.description }}
+                            <div class="Cart-desc">{{ item.seller_product.product.description|truncatechars:30 }}
                             </div>
                           </div>
                           <div class="Cart-block Cart-block_price">
-                            <div class="Cart-price Cart-price_old">{{ item.seller_product.price }}$
+                            <div class="Cart-price Cart-price_old">{% if discount != item.seller_product.price %}{{ item.seller_product.price }}${% endif %}
                             </div>
                             <div class="Cart-price">
-{#                                {{ item.seller_product.price_after_discount }}$#}
                                 {{ discount }}$
                             </div>
                           </div>
                         </div>
                         <div class="Cart-block Cart-block_row">
                           <div class="Cart-block Cart-block_seller" style="margin-right: 10px;">
-                            <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
                             <select class="form-select" name="option">
                               {% for product in item.seller_product.product.seller_products.all %}
                                   <option value="{{ product.id }}" {% if product.id == item.seller_product.id %}selected="selected"{% endif %}>
@@ -64,11 +64,7 @@
                               <div class="Amount">
                                 <button class="Amount-remove" type="submit">
                                 </button>
-{#                                <div class="Cart-block-remove Cart-block_delete"><a class="Cart-delete blue" href="{% url 'orders:cart_decrease' item.seller_product.id %}">➖</a>#}
-{#                                </div>#}
                                 <input class="Amount-input form-input" name="amount" type="text" min="1" value="{{ item.quantity }}"/>
-{#                                <div class="Cart-block-add Cart-block_delete"><a class="Cart-delete blue" href="{% url 'orders:cart_increase' item.seller_product.id %}">➕</a>#}
-{#                                </div>#}
                                 <button class="Amount-add" type="submit">
                                 </button>
                               </div>
@@ -98,7 +94,9 @@
           <div class="Cart-total">
             <div class="Cart-block Cart-block_total">
               <strong class="Cart-title">{% trans 'Total:' %}
-              </strong><span class="Cart-price">{{ total_discounted_price }}$</span><span class="Cart-price_old">{{ total_price }}$</span>
+              </strong>
+                <span class="Cart-price">{{ total_discounted_price }}$</span>
+                <span class="Cart-price_old">{% if total_discounted_price != total_price %}{{ total_price }}${% endif %}</span>
             </div>
             {% if request.is_authenticated %}
                 <div class="Cart-block"><a class="btn btn_success btn_lg" href="{% url 'orders:order_step_one' %}">{% trans 'Check out' %}</a>

@@ -35,15 +35,15 @@ class Discount(models.Model):
     priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES,
                                 default='1', verbose_name=_('Priority'))
     percent = models.FloatField(verbose_name=_("Percent"),
-                                null=True, blank=True,
+                                # null=True, blank=True,
                                 validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
                                 default=0)
     amount = models.FloatField(verbose_name=_("Amount"),
-                               null=True, blank=True,
+                               # null=True, blank=True,
                                validators=[MinValueValidator(0.0)],
                                default=0)
     fixed_price = models.FloatField(verbose_name=_("Fixed price"),
-                                    null=True, blank=True,
+                                    # null=True, blank=True,
                                     validators=[MinValueValidator(0.0)],
                                     default=0)
 
@@ -81,8 +81,8 @@ class ProductDiscount(Discount):
     seller_products = models.ManyToManyField(SellerProduct, related_name='product_discounts',
                                              verbose_name=_('Seller products'))
     set_discount = models.BooleanField(default=False, verbose_name=_('Set discount'))
-    image = models.ImageField(default='static/assets/img/content/home/discounts/product.png',
-                              upload_to='static/assets/img/content/home/discounts',
+    image = models.ImageField(default='discounts/product.png',
+                              upload_to='discounts',
                               null=True,
                               blank=True,
                               verbose_name='discounts image')

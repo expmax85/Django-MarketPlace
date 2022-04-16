@@ -36,7 +36,7 @@ class CustomMenu(Menu):
                         'profiles_app.*',
                         'taggit.*',),
             ),
-            items.MenuItem(_('Settings'), reverse('admin-setup')),
+            items.MenuItem(_('Settings'), reverse('settings-polls:admin-setup')),
         ]
 
     def init_with_context(self, context: Any) -> None:

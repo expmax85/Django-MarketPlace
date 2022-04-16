@@ -1,7 +1,8 @@
-{% extends 'base.html ' %}
+{% extends 'base.html' %}
 {% load i18n %}
 {%  load static %}
 {% load account socialaccount %}
+{% load goods_tags %}
 
 {% block title %}{% trans 'Private Room' %}
 {% endblock %}
@@ -59,7 +60,7 @@
           <div class="Account-group">
             <div class="Account-column">
               <figure class="figure-avatar">
-                  <img class="Account-avatar-img" src="{{ MEDIA_ROOT }}/uploads/{{ request.user.avatar }}" alt="avatar.jpg" height="100%"/>
+                  <img class="Account-avatar-img" src="{{ request.user.avatar_url }}" alt="avatar.jpg" height="100%"/>
               </figure>
             </div>
             <div class="Account-column">
@@ -133,31 +134,8 @@
                 <h2 class="Section-title">{% trans 'Views history' %}
                 </h2>
               </header>
-              <div class="Cards Cards_account">
-                {% for item in viewed_products %}
-                <div class="Card">
-                  <a class="Card-picture" href="{{ item.product.product.get_absolute_url }}"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
-                  <div class="Card-content">
-                    <strong class="Card-title"><a href="{{ item.product.product.get_absolute_url }}">{{ item.product.product.name}}</a>
-                    </strong>
-                    <div class="Card-description">
-                      <div class="Card-cost">
-                          <span class="Card-priceOld">{{ item.product.price }}</span>
-                          <span class="Card-price">{{ item.product.price_after_discount }}</span>
-                      </div>
-                      <div class="Card-category">{{ item.product.product.category.name }}</div>
-                      <div class="Card-hover">
-                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
-                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
-                        <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
-                      </div>
-                    </div>
-                  </div>
-                  {% if item.product.discount.percent %}
-                  <div class="Card-sale">-{{ item.product.discount.percent|floatformat:"0" }}%</div>
-                  {% endif %}
-                </div>
-                {% endfor %}
+              <div class="Cards Cards_account" style="position: relative;">
+                {% cards viewed_products %}
                 <div class="Account-editLink Account-editLink_view">
                   <a href="{% url 'orders-polls:history-view' %}">{% trans 'Show all viewed products' %}</a>
                 </div>

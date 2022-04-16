@@ -8,8 +8,12 @@
         </strong>
       </header>
       <div class="Card">
+        <div class="store-name">
+            <a href="{% url 'stores-polls:store-detail' special_product.seller.slug %}"><img src="{{special_product.seller.icon_url}}" alt="store-icon"></a>
+        </div>
         <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-          <button class="Card-picture" type="submit"><img src="{{ MEDIAROOT }}/uploads/{{ special_product.product.image }}" alt="card.jpg"/></button>
+          <input type="hidden" name="seller_product_id" value="{{ special_product.id }}">
+          <button class="Card-picture" type="submit"><img src="{{ special_product.product.image_url }}" alt="card.jpg"/></button>
         <div class="Card-content">
           <button class="Card-title" type="submit">{{ special_product.product.name }}
           </button>
@@ -24,7 +28,7 @@
                     {% endif %}
                 </span>
             </div>
-            <div class="Card-category">{{ special_product.product.category }}
+            <div class="Card-category">{% if special_product.product.category.parent %}{{ special_product.product.category.parent }} / {% endif %}{{ special_product.product.category }}
             </div>
           </div>
           <div class="CountDown" data-date="{{ update_time }}">

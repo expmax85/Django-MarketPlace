@@ -3,29 +3,30 @@ from typing import Dict, Callable
 import braintree
 import datetime
 
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import get_user_model, login
-from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
-
-
+from django.http.response import Http404
 from orders_app.models import (
     Order,
     ViewedProduct,
     OrderProduct
 )
-from dynamic_preferences.registries import global_preferences_registry
-from orders_app.services import CartService
+
+from orders_app.services.cart import CartService
 from orders_app.forms import OrderStepOneForm, OrderStepTwoForm, OrderStepThreeForm
 from orders_app.utils import DecimalEncoder
 from profiles_app.forms import RegisterForm
 from profiles_app.services import reset_phone_format, get_auth_user
 from stores_app.models import SellerProduct
 from discounts_app.services import DiscountsService, get_discounted_prices_for_seller_products
+from settings_app.dynamic_preferences_registry import global_preferences_registry
 from payments_app.services import process_payment
 from stores_app.services import StoreServiceMixin
 
@@ -35,6 +36,8 @@ User = get_user_model()
 def add_viewed(request):
     """
     Добавление в список просмотренных товаров
+
+    ::Страница: Детальная страница товара
     """
 
     seller_product = SellerProduct.objects.get(id=request.GET.get('seller_product_id'))
@@ -50,6 +53,8 @@ def add_viewed(request):
 def cart_clear(request):
     """
     Очистка корзины
+
+    ::Страница: Корзина
     """
     cart = CartService(request)
     cart.clear()
@@ -59,6 +64,8 @@ def cart_clear(request):
 class CartView(View):
     """
     Представление корзины
+
+    ::Страница: Корзина
     """
 
     @classmethod
@@ -116,6 +123,8 @@ class CartView(View):
 class CartAdd(View):
     """
     Добавление позиций в корзине
+
+    ::Страница: Корзина
     """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
@@ -123,10 +132,23 @@ class CartAdd(View):
         cart.add_to_cart(product, quantity=1, update_quantity=False)
         return redirect(request.META.get('HTTP_REFERER'))
 
+    def post(self, request: HttpRequest, product_id: int):
+        cart = CartService(request)
+        product = get_object_or_404(SellerProduct, id=str(product_id))
+        quantity = int(request.POST.get('amount'))
+        added = cart.add_to_cart(product, quantity=quantity, update_quantity=False)
+        if added:
+            messages.add_message(request, settings.SUCCESS_ADD_TO_CART, _(f'{product.product.name} was added to cart succesfully.'))
+        else:
+            messages.add_message(request, settings.ERROR_ADD_TO_CART, _(f'The quantity in stock for {product.product.name} is not enough.'))
+        return redirect(request.META.get('HTTP_REFERER'))
+
 
 class CartRemove(View):
     """
     Удаление позиции из корзины
+
+    ::Страница: Корзина
     """
     def get(self, request: HttpRequest, product_id: int):
         cart = CartService(request)
@@ -137,6 +159,8 @@ class CartRemove(View):
 class OrderStepOne(View):
     """
     Представление первого шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     form_class = OrderStepOneForm
     template_name = 'orders_app/order_step_one.html'
@@ -182,6 +206,8 @@ class OrderStepOne(View):
 class OrderStepOneAnonym(View):
     """
     Представление первого шага оформления заказа для анонимного пользователя
+
+    ::Страница: Оформление заказа
     """
     def get(self, request: HttpRequest) -> Callable:
         if request.user.is_authenticated:
@@ -225,24 +251,29 @@ class OrderStepOneAnonym(View):
             order.save()
             return redirect('orders:order_step_two')
 
-        return render(request, 'orders_app/order_step_one_anonimous.html', {'form' : form})
+        return render(request, 'orders_app/order_step_one_anonimous.html', {'form': form})
 
 
 class OrderStepTwo(View):
     """
     Представление второго шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     form_class = OrderStepTwoForm
     template_name = 'orders_app/order_step_two.html'
 
     def get(self, request: HttpRequest):
         user = request.user
-        initial = {'city': user.city,
-                   'address': user.address,
-                   'delivery': 'reg',
-                   'payment': 'cash'}
-        form = self.form_class(initial=initial)
-        return render(request, self.template_name, {'form': form})
+        if user.is_authenticated:
+            initial = {'city': user.city,
+                       'address': user.address,
+                       'delivery': 'reg',
+                       'payment': 'cash'}
+            form = self.form_class(initial=initial)
+            return render(request, self.template_name, {'form': form})
+        else:
+            return redirect('profiles:login')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
@@ -277,13 +308,20 @@ class OrderStepTwo(View):
 class OrderStepThree(View):
     """
     Представление третьего шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     form_class = OrderStepThreeForm
     template_name = 'orders_app/order_step_three.html'
 
     def get(self, request: HttpRequest):
-        form = OrderStepThreeForm
-        return render(request, self.template_name, {'form': form})
+        user = request.user
+        if user.is_authenticated:
+            form = OrderStepThreeForm
+            return render(request, self.template_name, {'form': form})
+
+        else:
+            return redirect('profiles:login')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
@@ -302,17 +340,26 @@ class OrderStepThree(View):
 class OrderStepFour(View):
     """
     Представление четвертого шага оформления заказа
+
+    ::Страница: Оформление заказа
     """
     template_name = 'orders_app/order_step_four.html'
 
     def get(self, request: HttpRequest):
-        order = Order.objects.filter(customer=request.user, in_order=True).last()
-        return render(request, self.template_name, {'order': order})
+        user = request.user
+        if user.is_authenticated:
+            order = Order.objects.filter(customer=user, in_order=True).last()
+            return render(request, self.template_name, {'order': order})
+
+        else:
+            return redirect('profiles:login')
 
 
 class PaymentView(View):
     """
     Оплата заказа. Логика направляется в зависимости от способа оплаты.
+
+    ::Страница: Оплата заказа
     """
     def get(self, request: HttpRequest, order_id):
         order = get_object_or_404(Order, id=order_id)
@@ -325,11 +372,16 @@ class PaymentView(View):
 class PaymentWithCardView(View):
     """
     Представление оплаты банковской картой
+
+    ::Страница: Оплата заказа
     """
     template_name = 'orders_app/payment_card.html'
 
     def get(self, request: HttpRequest, order_id: int):
-        order = get_object_or_404(Order, id=order_id)
+        try:
+            order = get_object_or_404(Order, id=order_id)
+        except Http404:
+            order = None
         client_token = braintree.ClientToken.generate()
         context = {'order': order, 'client_token': client_token}
         return render(request, self.template_name, context=context)
@@ -351,13 +403,19 @@ class PaymentWithCardView(View):
             # Сохранение ID транзакции в заказе.
             order.braintree_id = result.transaction.id
             order.save()
+            print(result)
             return render(request, 'orders_app/payment_process.html', {'result': True})
+        print(result.__dict__['errors'].__dict__)
+        order.payment_error = str(result)
+        order.save()
         return render(request, 'orders_app/payment_process.html', {'result': False})
 
 
 class PaymentWithAccountView(View):
     """
     Представление оплаты рандомным счетом
+
+    ::Страница: Оплата заказа
     """
     template_name = 'orders_app/payment_account.html'
 
@@ -375,6 +433,8 @@ class PaymentWithAccountView(View):
 def payment_done(request):
     """
     Представление удачной оплаты
+
+    ::Страница: Оплата заказа
     """
     return render(request, 'orders_app/payment_successful.html')
 
@@ -382,6 +442,8 @@ def payment_done(request):
 def payment_canceled(request):
     """
     Представление неудачной оплаты
+
+    ::Страница: Оплата заказа
     """
     return render(request, 'orders_app/payment_unsuccessful.html')
 
@@ -389,6 +451,8 @@ def payment_canceled(request):
 class ViewedGoodsView(StoreServiceMixin, ListView):
     """
     Представление просмотренных товаров
+
+    ::Страница: История просмотренных товаров
     """
 
     model = User
@@ -403,14 +467,16 @@ class ViewedGoodsView(StoreServiceMixin, ListView):
             for obj in products_in_session:
                 ViewedProduct.objects.get_or_create(user=self.request.user,
                                                     product=obj.product)
-        queryset = self.get_viewed_products(user=self.request.user)[:20]
-
-        return queryset
+        queryset = self.get_viewed_products(user=self.request.user)[20::-1]
+        products = get_discounted_prices_for_seller_products(queryset)
+        return products
 
 
 class CompareView(View):
     """
     Представление страницы товаров для сравнения
+
+    ::Страница: Сравнение товаров
     """
 
     def get(self, request: HttpRequest):
@@ -422,7 +488,8 @@ class CompareView(View):
             context = dict()
         return render(request, 'orders_app/compare.html', context)
 
-    def create_queryset(self, session_data: json) -> Dict:
+    @classmethod
+    def create_queryset(cls, session_data: json) -> Dict:
         """ Здесь формируется queryset для сравнения товаров """
 
         compared = json.loads(session_data)
@@ -437,10 +504,23 @@ class CompareView(View):
         for value in specifications.values():
             if len(value) == value.count(value[0]):
                 value.append(True)
-        return {'compared': compared, 'specifications': specifications}
+        equal_categories = cls.check_equal_categories(compared)
+        return {'compared': compared, 'specifications': specifications, 'is_equals': equal_categories}
 
-    def get_quantity(self, request):
+    @classmethod
+    def check_equal_categories(cls, compared):
+        """ Проверяет есть ли товары одинаковой категории """
+
+        categories = list()
+        for item in compared. values():
+            categories.append(item[6])
+        return len(set(categories)) == 1
+
+
+    @classmethod
+    def get_quantity(cls, request):
         """ Данный метод возвращает количество товаров в списке для сравнения """
+
         try:
             compared = json.loads(request.session['compared'])
             return len(list(compared.keys()))
@@ -451,6 +531,8 @@ class CompareView(View):
 class AddToCompare(View):
     """
     Представление добавления товара в список для сравнения
+
+    ::Страница: Сравнение товаров
     """
 
     def get(self, request: HttpRequest, product_id: int):
@@ -472,24 +554,25 @@ class AddToCompare(View):
             compared = dict()
         specifications = ({spec.current_specification.name: spec.value for spec in
                            product.product.specifications.all()})
-        image = product.product.image.url if product.product.image else None
+        image = product.product.image_url
         price_after_discount = product.price
-
+        category = product.product.category.name
         for item in get_discounted_prices_for_seller_products([product]):
             product = item[0]
             if item[1]:
                 price_after_discount = item[1]
-
-        compared[product.product.name] = [product.price,
-                                          price_after_discount,
+        compared[product.product.name] = [product.price, price_after_discount,
                                           product.product.rating, specifications,
-                                          image, int(product.id)]
+                                          image, int(product.id),
+                                          category]
         request.session['compared'] = json.dumps(compared, cls=DecimalEncoder)
 
 
 class RemoveFromCompare(View):
     """
     Представление удаления товара из списка товаров для сравнения
+
+    ::Страница: Сравнение товаров
     """
 
     def get(self, request: HttpRequest, product_name: str):
@@ -504,6 +587,8 @@ class RemoveFromCompare(View):
 class HistoryOrderView(StoreServiceMixin, ListView):
     """
     Представление истории заказов
+
+    ::Страница: История заказов
     """
 
     model = Order
@@ -520,6 +605,8 @@ class HistoryOrderView(StoreServiceMixin, ListView):
 class HistoryOrderDetail(DetailView):
     """
     Детальное представление заказа
+
+    ::Страница: Детальная страница заказа
     """
 
     model = Order

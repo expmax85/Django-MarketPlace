@@ -22,6 +22,8 @@ from stores_app.models import SellerProduct
 class IndexView(ListView):
     """
     Главная страница
+
+    ::Страница: Главная
     """
     model = SellerProduct
     template_name = 'goods_app/index.html'
@@ -29,28 +31,23 @@ class IndexView(ListView):
 
     def get_queryset(self) -> Iterable:
         OPTIONS = global_preferences_registry.manager().by_name()
-        products = get_all_products(order_by=OPTIONS['sort_index'],
-                                    count=OPTIONS['count_popular_products'])
+        products = get_all_products(count=OPTIONS['count_popular_products'])
         return products
 
     def get_context_data(self, **kwargs) -> Dict:
         OPTIONS = global_preferences_registry.manager().by_name()
         limited_products = get_limited_products(count=OPTIONS['count_limited_products'])
-        random_product.days_duration = OPTIONS['days_duration']
-        random_product.time_update = OPTIONS['time_update']
-        random_product.update_product(queryset=limited_products)
-        from stores_app.models import Seller
-        list_users_id = set([item['owner_id'] for item in Seller.objects.all().values('owner_id')])
-        # list_users_id = Seller.objects.all().values('owner_id')
-        print(list_users_id)
-
+        if limited_products:
+            random_product.days_duration = OPTIONS['days_duration']
+            random_product.time_update = OPTIONS['time_update']
+            random_product.update_product(queryset=get_limited_products())
         context = {
             'banners': banner(),
             'limited_products': limited_products,
             'hot_offers': get_hot_offers(count=OPTIONS['count_hot_offers']),
             'random_categories': get_random_categories(),
             **random_product.get_context_data(),
-            **super().get_context_data(**kwargs)
+            **super().get_context_data(**kwargs),
         }
         return context
 
@@ -58,6 +55,8 @@ class IndexView(ListView):
 class ProductDetailView(DetailView):
     """
     Детальная страница продукта
+
+    ::Страница: Детальная страница продукта
     """
     model = Product
     context_object_name = 'product'
@@ -88,6 +87,8 @@ class ProductDetailView(DetailView):
 def get_reviews(request: HttpRequest) -> JsonResponse:
     """
     Представление для получения всех отзывов о товаре
+
+    ::Страница: Детальная страница продукта
     """
     slug = request.GET.get('slug')
     page = request.GET.get('page')
@@ -99,15 +100,16 @@ def get_reviews(request: HttpRequest) -> JsonResponse:
 
 def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     """
-    Представление для добавления отзыва о товаре
+    Представление для добавления отзыва о
+
+    ::Страница: Детальная страница продукта
     """
     slug = request.POST.get('slug')
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)
-
     if form.is_valid():
         form.save()
-        product.calculate_product_rating()
+        product.update_product_rating()
         reviews = product.get_reviews
         OPTIONS = global_preferences_registry.manager().by_name()
         paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])
@@ -181,7 +183,9 @@ class FullCatalogView(CatalogByCategoriesMixin, View):
 
 class AllCardForAjax(CatalogByCategoriesMixin, View):
     """
-    Класс-контроллер для отображения набора товаров без учёта категории, но с учетом необходимых фильтров, сортировки и пагинации
+    Класс-контроллер для отображения набора товаров в каталоге с учетом необходимых фильтров, сортировки и пагинации
+
+    ::Страница: Каталог
     """
 
     def get(self, request):

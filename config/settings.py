@@ -31,7 +31,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS',default=[])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # Application definition
@@ -64,8 +64,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.vk',
-
+    'django_celery_beat',
     'mptt',
+    'drf_yasg',
+
  ] + env.list('INSTALLED_APPS', default=[])
 
 MIDDLEWARE = [
@@ -103,6 +105,12 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
+            'libraries': {
+                'goods_tags': 'goods_app.templatetags.goods_app_tags',
+                'calculate_rating': 'orders_app.templatetags.calculate_rating',
+                'find_errors': 'stores_app.templatetags.find_errors',
+                'split_log': 'stores_app.templatetags.split_log'
+            },
         },
     },
 ]
@@ -194,7 +202,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-MEDIA_URL = '/uploads/'
+MEDIA_URL = 'uploads/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
@@ -233,7 +241,16 @@ SUCCESS_DEL_GROUP_DISCOUNT = 116
 SUCCESS_DEL_PRODUCT_DISCOUNT = 115
 SUCCESS_DEL_STORE = 110
 SUCCESS_DEL_PRODUCT = 100
+SUCCESS_ADD_TO_CART = 210
+ERROR_ADD_TO_CART = 310
 
 # Resolution images for icons
 MAX_RESOLUTION = (100, 100)
 MIN_RESOLUTION = (30, 30)
+
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'

@@ -19,10 +19,10 @@ class RegexURLResolver:
 
 
 SECTION = {
-    'banners-polls': 'Скидки',
     'discounts-polls': 'Скидки',
     'goods-polls': 'Каталог',
     'orders-polls': 'Заказы и Корзины',
+    'account-payment': 'Заказы и Корзины',
     'profiles-polls': 'Пользователи',
     'stores-polls': 'Продавцы',
     'settings-polls': 'Админ-панель',
@@ -48,15 +48,23 @@ class Command(BaseCommand):
             except KeyError:
                 if func.__name__.startswith('post'):
                     methods = 'POST'
+            try:
+                index = func.__doc__.rfind("::Страница:")
+                page = func.__doc__[index + 11:].rstrip()
+                doc = func.__doc__[:index].strip()
+            except (AttributeError, TypeError):
+                page = ""
+                doc = func.__doc__
 
-            views.append("{url}|{url_name}|{doc}|{methods}".format(
+            views.append("{url}|{url_name}|{page}|{doc}|{methods}".format(
                 url_name=url_name,
                 url=url,
-                doc=func.__doc__,
+                page=page,
+                doc=doc,
                 methods=methods
             ).strip())
 
-        views = [row.split('|', 3) for row in views]
+        views = [row.split('|', 4) for row in views]
         self.import_to_excel(views)
 
     def extract_views_from_urlpatterns(self, urlpatterns, base='', namespace=None):
@@ -118,19 +126,22 @@ class Command(BaseCommand):
                not line[0].startswith('/accounts/') and \
                not line[0].startswith('/i18nsetlang/') and \
                not line[0].startswith('/__debug__/') and \
-               not line[0].startswith('/uploads/'):
+               not line[0].startswith('/uploads/') and \
+               not line[0].startswith('/api_auth/') and \
+               not line[0].startswith('/swagger/'):
 
                 sheet[f'E{str(i)}'] = line[0]
-                sheet[f'C{str(i)}'] = line[2]
-                sheet[f'D{str(i)}'] = line[3]
+                sheet[f'C{str(i)}'] = line[3]
+                sheet[f'B{str(i)}'] = line[2]
+                sheet[f'D{str(i)}'] = line[4]
                 url_name = line[1].split(':')
                 try:
                     sheet[f'F{str(i)}'] = url_name[0]
                     sheet[f'G{str(i)}'] = url_name[1]
                     sheet[f'A{str(i)}'] = SECTION[str(url_name[0])]
-                except IndexError:
+                except (IndexError, KeyError):
                     sheet[f'G{str(i)}'] = url_name[0]
+                    sheet[f'A{str(i)}'] = SECTION[str(url_name[0])]
                 i += 1
-
         book.save('urls.xlsx')
         book.close()

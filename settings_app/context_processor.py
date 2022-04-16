@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from dynamic_preferences.registries import global_preferences_registry
-from orders_app.services import CartService
+from orders_app.services.cart import CartService
 from orders_app.views import CompareView
 from stores_app.forms import ImportForm
 from stores_app.models import ProductImportFile
@@ -18,9 +18,14 @@ def custom_context(request):
         'CREATE_PRODUCT_ERROR': settings.CREATE_PRODUCT_ERROR,
         'SUCCESS_DEL_STORE': settings.SUCCESS_DEL_STORE,
         'SUCCESS_DEL_PRODUCT': settings.SUCCESS_DEL_PRODUCT,
+        'SUCCESS_DEL_CART_DISCOUNT': settings.SUCCESS_DEL_CART_DISCOUNT,
+        'SUCCESS_DEL_GROUP_DISCOUNT': settings.SUCCESS_DEL_GROUP_DISCOUNT,
+        'SUCCESS_DEL_PRODUCT_DISCOUNT': settings.SUCCESS_DEL_PRODUCT_DISCOUNT,
+        'SUCCESS_ADD_TO_CART': settings.SUCCESS_ADD_TO_CART,
+        'ERROR_ADD_TO_CART': settings.ERROR_ADD_TO_CART,
         'cart': cart,
         'total_compared': total,
-        'banners_time_expire': OPTIONS['banners_time_expire']
+        'banners_time_expire': OPTIONS['banners_time_expire'],
     }
 
 

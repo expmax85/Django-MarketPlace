@@ -38,27 +38,30 @@ class Command(BaseCommand):
         management.call_command('migrate')
         management.call_command('new_site_name')
         self.stdout.write('\nFIXTURES LOAD...')
-        while fixtures_list:
-            err_list.clear()
-            for item in fixtures_list:
-                self.stdout.write(f'Loading {item}')
-                try:
-                    management.call_command('loaddata', os.path.normpath(os.path.join(FOLDER_FIXTURES, item)))
-                    fixtures_list.remove(item)
-                    if item not in order_load:
-                        order_load.append(item)
-                except Exception as err:
-                    self.stdout.write(self.style.WARNING(f'{err} when loading {item}'))
-                    err_list.append(item)
-            if max_iteration == 0:
-                break
-            max_iteration -= 1
-        if err_list:
-            self.stdout.write(self.style.WARNING('Not all fixtures have been loaded. Check it:'))
-            self.stdout.write(self.style.WARNING(err_list))
+        if not fixtures_list:
+            self.stdout.write(self.style.WARNING(f'The folder "{FOLDER_FIXTURES}" is empty.'))
         else:
-            self.stdout.write(self.style.SUCCESS('\nAll commands and loadings have been successful!'))
-            self.stdout.write(self.style.SUCCESS(f'\nFixtures upload order: {order_load}'))
+            while fixtures_list:
+                err_list.clear()
+                for item in fixtures_list:
+                    self.stdout.write(f'Loading {item}')
+                    try:
+                        management.call_command('loaddata', os.path.normpath(os.path.join(FOLDER_FIXTURES, item)))
+                        fixtures_list.remove(item)
+                        if item not in order_load:
+                            order_load.append(item)
+                    except Exception as err:
+                        self.stdout.write(self.style.WARNING(f'{err} when loading {item}'))
+                        err_list.append(item)
+                if max_iteration == 0:
+                    break
+                max_iteration -= 1
+            if err_list:
+                self.stdout.write(self.style.WARNING('Not all fixtures have been loaded. Check it:'))
+                self.stdout.write(self.style.WARNING(err_list))
+            else:
+                self.stdout.write(self.style.SUCCESS('\nAll commands and loadings have been successful!'))
+                self.stdout.write(self.style.SUCCESS(f'\nFixtures upload order: {order_load}'))
 
     def _remove_old_migrations(self) -> None:
         self.stdout.write('\nRemove old migration files...\n')

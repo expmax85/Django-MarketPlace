@@ -1,4 +1,4 @@
-{% extends 'base.html ' %}
+{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 {% load account socialaccount %}
@@ -87,7 +87,7 @@
             {% for product, discounted_price, _ in products %}
                 <div class="Slider-item">
                   <div class="Slider-content">
-                    <div class="Card"><a class="Card-picture" href="#"><img src="{% static 'assets/img/content/home/card.jpg' %}" alt="card.jpg"/></a>
+                    <div class="Card"><a class="Card-picture" href="#"><img src="{{ product.product.image.url }}" alt="card.jpg"/></a>
                       <div class="Card-content">
                         <strong class="Card-title"><a href="#">{{ product.product.name }}</a>
                         </strong>

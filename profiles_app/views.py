@@ -12,15 +12,18 @@ from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import render, redirect
 from django.views import View
 
+from discounts_app.services import get_discounted_prices_for_seller_products
 from profiles_app.forms import RegisterForm, RestorePasswordForm, AccountEditForm
 from profiles_app.services import get_user_and_change_password, get_auth_user, reset_phone_format
-from orders_app.services import CartService
+from orders_app.services.cart import CartService
 from stores_app.services import StoreServiceMixin
 
 
 class UserLogin(LoginView):
     """
     Аутентификация пользователей
+
+    ::Страница: Логин пользователя
     """
     template_name = 'account/login.html'
     success_url = '/'
@@ -46,6 +49,8 @@ class UserLogin(LoginView):
 class UserLogout(LogoutView):
     """
     Выход с сайта
+
+    ::Страница: Логаут пользователя
     """
     template_name = 'account/logout.html'
     next_page = '/users/login'
@@ -54,6 +59,8 @@ class UserLogout(LogoutView):
 class RegisterView(View):
     """
     Регистрация нового пользователя
+
+    ::Страница: Регистрация пользователей
     """
     def get(self, request: HttpRequest) -> Callable:
         form = RegisterForm()
@@ -79,6 +86,8 @@ class RegisterView(View):
 class RestorePasswordView(View):
     """
     Представление восстановления пароля
+
+    ::Страница: Восстановление пароля
     """
     def get(self, request: HttpRequest) -> Callable:
         form = RestorePasswordForm()
@@ -103,13 +112,20 @@ class RestorePasswordView(View):
 class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
     """
     Страница информации об аккаунте
+
+    ::Страница: Аккаунт
     """
     template_name = 'account/account.html'
 
     def get(self, request: HttpRequest) -> Callable:
+        viewed = list(self.get_viewed_products(user=request.user))[-3:]
+        if viewed:
+            products = get_discounted_prices_for_seller_products(viewed)
+        else:
+            products = False
         context = {
             'last_order': self.get_last_order(user=request.user),
-            'viewed_products': list(self.get_viewed_products(user=request.user))[-3:]
+            'viewed_products': products
         }
         return render(request, 'account/account.html', context=context)
 
@@ -117,6 +133,8 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
 class AccountEditView(LoginRequiredMixin, View):
     """
     Страница редактирования информации об аккаунте
+
+    ::Страница: Аккаунт
     """
     def get(self, request: HttpRequest) -> Callable:
         form = AccountEditForm()

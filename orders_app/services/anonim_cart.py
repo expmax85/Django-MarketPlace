@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.conf import settings
 from stores_app.models import SellerProduct
-from orders_app.check_stock import check_stock
+from orders_app.utils import check_stock
 
 
 class AnonymCart:
@@ -37,7 +37,7 @@ class AnonymCart:
             return False
 
     def save(self):
-        # Отметка сессии как измененной
+        """Отметка сессии как измененной"""
         self.session.modified = True
 
     def remove(self, product: SellerProduct):

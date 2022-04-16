@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n%}
 {% load cache %}
+{% load goods_tags %}
 
 {% block title %}
   Megano
@@ -33,50 +34,7 @@
           </h2>
         </header>
         <div class="Cards">
-          {% for item, price_after_discount, discount in products %}
-            <div class="Card" type="submit">
-            <form method="get" action="{% url 'orders-polls:add_viewed' %}">
-            <button class="Card-picture" type="submit">
-                <img src="{{ MEDIAROOT }}/uploads/{{ item.product.image }}" alt="card.jpg"/>
-            </button>
-            <div class="Card-content">
-                <button class="Card-title" type="submit">
-                  {{ item.product.name }}
-                </button>
-                <input type="hidden" name="seller_product_id" value="{{ item.id }}">
-              <div class="Card-description">
-                <div class="Card-cost">
-                    <span class="Card-priceOld">{% if price_after_discount and not discount.set_discount %}${{ item.price }}{% endif %}</span>
-                    <span class="Card-price">
-                        {% if price_after_discount and not discount.set_discount %}
-                            ${{ price_after_discount|floatformat:0 }}
-                        {% else %}
-                            ${{ item.price }}
-                        {% endif %}
-                    </span>
-                </div>
-                <div class="Card-category">{{ item.product.category }}
-                </div>
-                <div class="Card-hover">
-                    <a class="Card-btn" href="#"><img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/></a>
-                    <a class="Card-btn" href="{% url 'orders-polls:cart_add' item.id %}"><img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
-                    <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' item.id %}"><img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/></a>
-                </div>
-              </div>
-            </div>
-            </form>
-            {% if discount.type_of_discount == 'p' and not discount.set_discount %}
-                <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
-                </div>
-            {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
-                <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
-                </div>
-            {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
-                <div class="Card-sale" style="background-color: #6888fc">!!!
-                </div>
-            {% endif %}
-          </div>
-          {% endfor %}
+            {% cards products %}
         </div>
       </div>
     </div>
@@ -84,9 +42,11 @@
     {% block hot_offers %}
         {% include 'elems/hot_offers.html' %}
     {% endblock %}
+    {% if limited_products %}
     {% block limited_products %}
         {% include 'elems/limited_products.html' %}
     {% endblock %}
+    {% endif %}
 </div>
 {% endblock %}
 
