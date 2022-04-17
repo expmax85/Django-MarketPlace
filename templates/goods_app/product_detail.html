@@ -103,7 +103,7 @@
                   <strong class="ProductCard-tagsTitle">{% trans 'Tags' %}:
                   </strong>
                     {% for tag in tags %}
-                    <a href="{% url 'goods-polls:catalog_by_category_url' tag.name %}">{{ tag }}</a>
+                    <a href="{% url 'goods-polls:catalog_url' %}?main_tag={{tag.name}}">{{ tag }}</a>
                     {% endfor %}
                 </div>
               </div>

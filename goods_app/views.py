@@ -122,47 +122,50 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
     return redirect(request.META.get('HTTP_REFERER'))
 
 
-class CatalogByCategory(CatalogByCategoriesMixin, View):
+class FullCatalogView(CatalogByCategoriesMixin, View):
     """
-    Класс-контроллер для отображения каталога-списка всех товаров в магазинах по определенной категории
-
-    ::Страница: Каталог
+    Класс-контроллер для отображения каталога-списка всех товаро
     """
 
-    def get(self, request, slug, page=1, sort_type='price_inc'):
+    def get(self, request):
         """
-        метод для гет-запроса контроллера для отображения каталога товаров определенной категории
-        :param request: искомый запрос
-        :param slug: слаг необходимой категории товаров
-        :param page: номер страницы пагинации для отображения
-        :param sort_type: тип сортировки и её направление
+        метод для гет-запроса контроллера для отображения каталога всех товаров с учётом параметров гет-запроса
+        возможные параметры
+            search - запрос пользователя из поисковой строки
+            tag - выбранный тэг
+            sort_type - тип сортировки
+            page - страница пагинации
+            slug - слаг категории товаров
         :return: рендер страницы каталога товаров определенной категории
         """
-        # get data and sort this data
-        row_items_for_catalog, category, sellers, tags = self.get_data_without_filters(slug)
+        # получаем параметры гет-запроса
+        search, tag, sort_type, page, slug = self.get_request_params_for_full_catalog(request)
+
+        # получаем товары в соответсвии с параметрами гет-запроса
+        row_items_for_catalog, sellers, tags = self.get_full_data(tag, search, slug)
+        row_items_for_catalog = self.add_sale_prices_in_goods_if_needed(row_items_for_catalog)
+
+        # сортируем товары
         items_for_catalog, *_ = self.simple_sort(row_items_for_catalog, sort_type)
 
-        # print(items_for_catalog)
-
-        # paginator
+        # пагинатор
         paginator = Paginator(items_for_catalog, 8)
         page_obj = paginator.get_page(page)
 
-        # custom levels for range input
+        # кастомные параметры для рэнж-инпута в фильтре каталога
         maxi = self.get_max_price(items_for_catalog)
         mini = self.get_min_price(items_for_catalog)
         midi = round((maxi + mini) / 2, 2)
 
-        # next and previous buttons values
+        # настройка кнопок пагинации
         next_page = str(page_obj.next_page_number() if page_obj.has_next() else page_obj.paginator.num_pages)
         prev_page = str(page_obj.previous_page_number() if page_obj.has_previous() else 1)
-        pages_list = list(range(1, paginator.num_pages + 1)) if paginator.num_pages > 1 else [1, ]
+        pages_list = self.custom_pagination_list(paginator, page)
 
         return render(
             request,
             'goods_app/catalog.html',
             context={
-                'category': category,
                 'sellers': sellers,
                 'page_obj': page_obj,
                 'sort_type': sort_type,
@@ -173,24 +176,30 @@ class CatalogByCategory(CatalogByCategoriesMixin, View):
                 'prev_page': prev_page,
                 'pages_list': pages_list,
                 'tags': tags,
+                'search': search,
+                'tag': tag,
             })
 
 
-class CardForAjax(CatalogByCategoriesMixin, View):
+class AllCardForAjax(CatalogByCategoriesMixin, View):
     """
     Класс-контроллер для отображения набора товаров в каталоге с учетом необходимых фильтров, сортировки и пагинации
 
     ::Страница: Каталог
     """
 
-    def get(self, request, slug, sort_type, page):
+    def get(self, request):
         """
         метод для гет-запроса контроллера для отображения  набора товаров в каталоге
         с учетом необходимых фильтров, сортировки и пагинации без обновления изначальной страницы каталога
+        get параметры :
+            search - запрос пользователя из поисковой строки
+            tag - выбранный тэг
+            sort_type - тип сортировки
+            page - страница пагинации
+            slug - слаг категории товаров
         :param request: искомый запрос клиента
-        :param slug: слаг необходимой категории товаров
-        :param sort_type: тип сортировки и её направление
-        :param page: номер страницы пагинации для отображения
+
         :return: json с ключами:
                 html - текст разметки необходимых карточек товаров с учетов входных условий
                 current_state - вид и направление текущей использованной сортировки
@@ -199,34 +208,38 @@ class CardForAjax(CatalogByCategoriesMixin, View):
                 prev_page - значение предыдущей доступной страницы пагинации
                 pages_list - список доступных номеров страниц пагинации при данных входных условиях
         """
-        if not request.GET.get('price') and \
-                not request.GET.get('title') and \
-                not request.GET.get('select') and \
-                not request.GET.get('in_stock') and \
-                not request.GET.get('is_hot') and \
-                not request.GET.get('tag'):
-            # get data
-            row_items_for_catalog, category, *_ = self.get_data_without_filters(slug)
+
+        search, tag, sort_type, page, slug = self.get_request_params_for_full_catalog(request)
+
+        if not self.check_if_filter_params(request):
+            # получаем товары без фильтра и актуальные стоимости
+            row_items_for_catalog, sellers, tags = self.get_full_data(tag, search, slug)
+            row_items_for_catalog = self.add_sale_prices_in_goods_if_needed(row_items_for_catalog)
 
         else:
-            # get data and filter settings
+            # получаем товары с фильтром и актуальные стоимости
             filter_data = self.get_data_from_form(request)
-            row_items_for_catalog, category, sellers = self.get_data_with_filters(slug, filter_data)
+            row_items_for_catalog, sellers, tags = self.get_full_data_with_filters(
+                search_query=search,
+                search_tag=tag,
+                slug=slug,
+                filter_data=filter_data
+            )
 
         items_for_catalog, next_state = self.simple_sort(row_items_for_catalog, sort_type)
 
-        # paginator
+        # пагинатор
         paginator = Paginator(items_for_catalog, 8)
-        pages_list = list(range(1, paginator.num_pages + 1)) if paginator.num_pages > 1 else [1, ]
+
+        pages_list = self.custom_pagination_list(paginator, page)
         page_obj = paginator.get_page(page)
 
-        # next and previous buttons values
+        # кнопки пагинации
         next_page = str(page_obj.next_page_number() if page_obj.has_next() else page_obj.paginator.num_pages)
         prev_page = str(page_obj.previous_page_number() if page_obj.has_previous() else 1)
 
         context = {
             'pages_list': pages_list,
-            'category': category,
             'page_obj': page_obj,
             'sort_type': sort_type,
             'next_page': next_page,
@@ -240,4 +253,5 @@ class CardForAjax(CatalogByCategoriesMixin, View):
             'next_page': next_page,
             'prev_page': prev_page,
             'pages_list': pages_list,
+            'sort_type': sort_type,
         })

@@ -2276,6 +2276,16 @@ a.Cart-title {
   letter-spacing: 1.3px;
   vertical-align: middle;
 }
+
+.selected_lang {
+  color: #1d459b;
+  cursor: default;
+}
+
+.selected_lang:hover {
+  border: none;
+}
+
 .ControlPanel-menu {
   vertical-align: middle;
   margin-left: 15px;
@@ -3205,6 +3215,12 @@ a.Cart-title {
     color: #0063d1;
     background: #a5cfff;
     border-bottom-color: transparent;
+  }
+  .disabled {
+    color: #9c9fa6;
+    background: #e8eaef;
+    pointer-events: none;
+    cursor: default;
   }
 }
 .Pagination-element:after {

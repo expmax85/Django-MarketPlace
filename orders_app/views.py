@@ -508,7 +508,7 @@ class CompareView(View):
         return {'compared': compared, 'specifications': specifications, 'is_equals': equal_categories}
 
     @classmethod
-    def check_equal_categories(cls, compared: dict[str, any]) -> bool:
+    def check_equal_categories(cls, compared):
         """ Проверяет есть ли товары одинаковой категории """
 
         categories = list()

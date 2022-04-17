@@ -5,7 +5,7 @@
     <div class="wrap">
       <div class="BannersHome">
           {% for category in random_categories %}
-          <a class="BannersHomeBlock" href="{% url 'goods-polls:catalog_by_category_url' category.slug %}">
+          <a class="BannersHomeBlock" href="{% url 'goods-polls:catalog_url' %}?slug={{category.slug}}">
             <div class="BannersHomeBlock-row">
             <div class="BannersHomeBlock-block">
               <strong class="BannersHomeBlock-title">{% if category.parent %}{{ category.parent }} / {% endif %}{{ category.name }}
