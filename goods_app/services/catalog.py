@@ -112,7 +112,9 @@ class CatalogByCategoriesMixin:
     @classmethod
     def get_data_by_slug(cls, some_slug: str) -> QuerySet:
         """метод возвращает список товаров по слагу"""
-        acceptable_categories = ProductCategory.objects.get(slug=some_slug).get_children()
+        acceptable_categories = ProductCategory.objects.get(slug=some_slug).get_children() \
+            if ProductCategory.objects.get(slug=some_slug).get_children() \
+            else [ProductCategory.objects.get(slug=some_slug)]
 
         return SellerProduct.objects.select_related('product', 'seller', ) \
             .prefetch_related('product__category', 'product__tags') \
