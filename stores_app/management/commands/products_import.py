@@ -1,13 +1,14 @@
 import json
 from json import JSONDecodeError
 import logging
+import time
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
 from goods_app.models import Product
 from discounts_app.models import ProductDiscount
-from stores_app.models import Seller, SellerProduct, ProductImportFile
+from stores_app.models import Seller, SellerProduct, ProductImportFile, ImportOrder
 
 
 logger = logging.getLogger(__name__)
@@ -34,7 +35,7 @@ class Command(BaseCommand):
         return product
 
     @classmethod
-    def create_discount(cls, discount: dict[str, any], seller: Seller, product: SellerProduct):
+    def create_discount(cls, discount: dict[str, any], seller: Seller, product: SellerProduct) -> None:
         """ Создает скидку на товар """
 
         discount = ProductDiscount.objects.get_or_create(seller=seller,
@@ -50,7 +51,7 @@ class Command(BaseCommand):
         product.product_discounts.add(discount[0])
 
     @classmethod
-    def save_log_info(cls, user, start_time, file_id):
+    def save_log_info(cls, user: str, start_time: datetime, file_id: int) -> None:
         """ Сохраняет часть лога в модель файла импорта """
 
         with open('import_log.txt', 'r') as imp_log:
@@ -61,9 +62,26 @@ class Command(BaseCommand):
             curr_file.log_info = file_log
             curr_file.errors = file_log.count('Error:')
             curr_file.warnings = file_log.count('Warning:')
+            curr_file.status = 'Complete'
             curr_file.save()
 
+    @classmethod
+    def semaphore(cls, value: bool) -> None:
+        """ Переключает флаг очереди в базе данных """
+
+        flag = ImportOrder.objects.all()[0]
+        if value:
+            flag.can_import = True
+            flag.save()
+        else:
+            flag.can_import = False
+            flag.save()
+
     def handle(self, *args, **options) -> None:
+        """ Парсит файл импорта """
+
+        self.semaphore(False)
+        time.sleep(20)
         start_time = datetime.now()
         logger.info(f'{args[1]} starts import at {start_time}>')
         with open(f'uploads/import/products/{args[0]}', 'r') as json_file:
@@ -73,8 +91,8 @@ class Command(BaseCommand):
             except JSONDecodeError:
                 logger.info('Error: bad json structure>')
         for item_name, features in data.items():
-            product = Product.objects.get(name=item_name)
-            if product:
+            try:
+                product = Product.objects.get(name=item_name)
                 logger.info(f'product "{product.name}" was found>')
                 try:
                     seller = Seller.objects.get(name=features['store'])
@@ -103,7 +121,11 @@ class Command(BaseCommand):
                     logger.info('Warning: no discount in import file or bad discount structure>')
                 new_product.save()
                 logger.info(f'"{item_name}" imported>')
-            else:
+            except ObjectDoesNotExist:
                 logger.info(f'Error: "{item_name}" was not found in marketplace>')
+                continue
         logger.info(f'{args[1]} finished importing which started in {start_time}>')
         self.save_log_info(args[1], start_time, args[2])
+        self.semaphore(True)
+
+

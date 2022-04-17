@@ -21,7 +21,8 @@ from stores_app.forms import AddStoreForm, EditStoreForm, \
     AddSellerProductForm, EditSellerProductForm, AddRequestNewProduct, ImportForm
 from discounts_app.forms import AddProductDiscountForm, AddGroupDiscountForm, AddCartDiscountForm
 from django.forms import ModelChoiceField
-from stores_app.models import Seller, SellerProduct, ProductImportFile
+from stores_app.models import Seller, SellerProduct, ProductImportFile, ImportOrder
+from stores_app.tasks import start_import
 
 
 class StoreAppMixin(LoginRequiredMixin, PermissionRequiredMixin, StoreServiceMixin):
@@ -500,5 +501,5 @@ class ImportView(StoreAppMixin, View):
             file = ProductImportFile.objects.create(file=request.FILES['file'],
                                                     user=request.user)
             file.save()
-            call_command('products_import', request.FILES['file'], request.user.email, file.id)
-        return render(request, 'stores_app/import.html', {})
+            start_import.delay([file.filename(), request.user.email, file.id])
+        return redirect(request.META.get('HTTP_REFERER'))

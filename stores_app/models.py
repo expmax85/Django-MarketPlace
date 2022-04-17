@@ -1,3 +1,4 @@
+import os
 from typing import Callable, Dict
 
 from django.contrib.auth import get_user_model
@@ -105,3 +106,11 @@ class ProductImportFile(models.Model):
     warnings = models.IntegerField(default=0)
     log_info = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(default='In progress', blank=True, max_length=24)
+
+    def filename(self):
+        return os.path.basename(self.file.name)
+
+class ImportOrder(models.Model):
+
+    can_import = models.BooleanField(default=True)

@@ -38,7 +38,10 @@
                     {% for import in imports %}
                      <div class="imports__import">
                          <div class="import__header">
-                            {{ import.file }}
+                            <span class="">
+                                {{ import.filename }}
+                            </span>
+                            <span>{{ import.status }}</span>
                             <div class="header__stats">
                                 <span class="stats_err">Errors: {{ import.errors }}</span>
                                 <span class="stats_warb">Warnings: {{ import.warnings }}</span>
