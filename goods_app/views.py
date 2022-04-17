@@ -124,7 +124,9 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
 
 class FullCatalogView(CatalogByCategoriesMixin, View):
     """
-    Класс-контроллер для отображения каталога-списка всех товаро
+    Класс-контроллер для отображения каталога-списка всех товаров
+
+    ::Страница: Каталог
     """
 
     def get(self, request):

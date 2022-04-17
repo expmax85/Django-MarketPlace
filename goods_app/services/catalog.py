@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
@@ -7,7 +7,7 @@ from django.db.models import Count, QuerySet, Q
 from taggit.models import Tag
 
 from goods_app.models import ProductCategory
-from stores_app.models import SellerProduct, Seller
+from stores_app.models import SellerProduct
 from discounts_app.services import get_discounted_prices_for_seller_products
 
 

@@ -5,11 +5,14 @@
     <div class="Cards" id="good_card">
         {% for elem in page_obj %}
         <div class="Card">
+            <div class="store-name">
+                <a href="{% url 'stores-polls:store-detail' elem.seller.slug %}"><img src="{{elem.seller.icon_url}}" alt="store-icon"></a>
+            </div>
             <a class="Card-picture" href="{% url 'orders-polls:add_viewed' %}?seller_product_id={{elem.id}}">
-                <img src={% static "assets/img/content/home/card.jpg" %} alt="card.jpg"/>
+                <img src="{{ elem.product.image_url }}" alt="card.jpg"/>
             </a>
             <div class="Card-content">
-                <strong class="Card-title"><a href="product.html">{{ elem.product }}</a>
+                <strong class="Card-title"><a href="{{ elem.product.get_absolute_url }}">{{ elem.product }}</a>
                 </strong>
                 <div class="Card-description">
                     <div class="Card-cost">
@@ -25,13 +28,13 @@
                     <div class="Card-category">{{elem.product.category}}</div>
                     <div class="Card-hover">
                         <a class="Card-btn" href="#">
-                            <img src={% static "assets/img/icons/card/bookmark.svg" %} alt="bookmark.svg"/>
+                            <img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/>
                         </a>
                         <a class="Card-btn" href="{% url 'orders-polls:cart_add' elem.id %}">
-                            <img src={% static "assets/img/icons/card/cart.svg" %} alt="cart.svg"/>
+                            <img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/>
                         </a>
                         <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' elem.id %}">
-                            <img src={% static "assets/img/icons/card/change.svg" %} alt="change.svg"/>
+                            <img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/>
                         </a>
                     </div>
                 </div>
