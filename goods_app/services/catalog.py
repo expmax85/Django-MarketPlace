@@ -95,7 +95,7 @@ class CatalogByCategoriesMixin:
     @classmethod
     def get_full_data(cls, tag: str = '', search: str = '', slug: str = '') -> Tuple[QuerySet or List, List, List]:
         """метод возвращвет все товары или товары по тэгу или товары подходящие под запрос из строки поиска"""
-        goods = []
+
         if tag:
             goods = cls.get_data_by_tag(tag)
 
@@ -104,6 +104,9 @@ class CatalogByCategoriesMixin:
 
         elif search:
             goods = cls.get_data_by_search_query(search)
+
+        else:
+            goods = SellerProduct.objects.all()
 
         sellers, tags = cls.get_sellers_and_tags(some_goods=goods, main_tag=tag)
 
@@ -198,8 +201,10 @@ class CatalogByCategoriesMixin:
             goods = cls.get_data_by_tag(search_tag)
         elif search_query:
             goods = cls.get_data_by_search_query(search_query)
-        else:
+        elif slug:
             goods = cls.get_data_by_slug(slug)
+        else:
+            goods = SellerProduct.objects.all()
 
         goods = cls.filtering_data(goods, filter_data)
         sellers, tags = cls.get_sellers_and_tags(goods, search_tag)
