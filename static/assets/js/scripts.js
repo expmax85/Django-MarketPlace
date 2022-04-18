@@ -1012,6 +1012,9 @@ function getURL(url_base) {
     if (searchParams.has("main_tag")) {
         url_base = url_base + `main_tag=${searchParams.get("main_tag")}&`
     }
+    if (!searchParams.has("slug") && !searchParams.has("query") && !searchParams.has("main_tag")) {
+        url_base = url_base + ''
+    }
     return url_base
 }
 
