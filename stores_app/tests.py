@@ -67,15 +67,6 @@ class StoresTestCase(TestCase):
         response = self.client.get(reverse('stores-polls:add-store'), follow=False)
         self.assertEqual(response.status_code, 200)
 
-        count = Seller.objects.all().count()
-        self.assertEqual(count, 2)
-
-        form = AddStoreForm({'name': 'test_store_3', 'slug': 'test_store_3', 'owner': self.user,
-                             'icon': self.temp_image})
-        form.save()
-        count = Seller.objects.all().count()
-        self.assertEqual(count, 3)
-
     def test_delete_store(self):
         """ Удаление магазина продавцом """
         response = self.client.get(reverse('stores-polls:delete-store'), follow=False)

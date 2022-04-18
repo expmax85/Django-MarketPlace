@@ -35,6 +35,7 @@
  - `static` - статичные файлы сайта;
  - `uploads` - директория для загружаемых моделями файлов;
 5. Системные и служебные файлы:
+ - `config` - директория настроек django-проекта;
  - `env.template` - шаблон для заполнения файла настроек .env;
  - `urls.xlsx` - url-структура сайта;
  - прочие файлы и настройки проекта;
@@ -86,9 +87,7 @@ manager@user.com      |   Qerk1212   |      Контент-менеджер|
 
 Запуск обработки асинхронных задач:
 ```
-
 redis-server
 celery -A config worker -l INFO
 celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
-
 ```

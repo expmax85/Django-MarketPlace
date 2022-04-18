@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 from goods_app.models import Product, SpecificationsNames, Specifications, ProductCategory
-from orders_app.models import Order, OrderProduct
+from orders_app.models import Order, OrderProduct, ViewedProduct
 from stores_app.models import SellerProduct, Seller
 from discounts_app.models import ProductDiscount
 from profiles_app.models import User
@@ -14,7 +14,7 @@ class CompareTest(TestCase):
         self.user = User.objects.create(email='test@ru.ru', password='admin732', first_name='test1',
                                         last_name='test1', phone='+7(999)999-99-99')
         self.category = ProductCategory.objects.create(name="test_category", slug="test_category")
-        self.seller = Seller.objects.create(name="test_seller", owner=self.user)
+        self.seller = Seller.objects.create(name="test_seller", slug="test_store", owner=self.user)
         self.discount = ProductDiscount.objects.create(name="test_discount", seller=self.seller)
         for num in range(1, 3):
             SpecificationsNames.objects.create(name=f'spec{num}')
@@ -72,7 +72,7 @@ class HistoryOrderTest(TestCase):
                                            in_order=True)
 
         self.category = ProductCategory.objects.create(name="test_category", slug="test_category")
-        self.seller = Seller.objects.create(name="test_seller", owner=self.user)
+        self.seller = Seller.objects.create(name="test_seller", slug="test_store", owner=self.user)
         self.discount = ProductDiscount.objects.create(name="test_discount",
                                                        seller=self.seller)
 
@@ -137,6 +137,6 @@ class HistoryViewedTest(TestCase):
 
         self.client._login(self.user, backend='django.contrib.auth.backends.ModelBackend')
         self.client.get('/orders/add_viewed/', data={'seller_product_id': 3})
-        response = self.client.get(reverse('orders-polls:history-view'))
-        self.assertEquals(response.status_code, 200)
-        self.assertContains(response, 'name3')
+        viewed = ViewedProduct.objects.all().values('product__product__name')
+        viewed = [name['product__product__name'] for name in viewed]
+        self.assertTrue('name3' in viewed)

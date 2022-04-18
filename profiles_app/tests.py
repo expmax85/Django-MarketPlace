@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from stores_app.models import Seller
 from .forms import RegisterForm
 
 
@@ -71,10 +72,10 @@ class ProfilesAppTestCase(TestCase):
 
     def test_access_to_account_info(self):
         """Доступ к странице профиля зарегистрированным и анонимным пользователям"""
-        response = self.client.get(reverse('profiles-polls:private-room'))
+        response = self.client.get(reverse('profiles-polls:account-edit'), follow=False)
         self.assertNotEqual(response.status_code, 200)
         self.client.login(username=self.user, password='testp@sw0rd')
-        response = self.client.get(reverse('profiles-polls:private-room'))
+        response = self.client.get(reverse('profiles-polls:account-edit'), follow=False)
         self.assertEqual(response.status_code, 200)
 
     def test_edit_account_info_logout(self):
