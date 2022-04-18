@@ -13,7 +13,7 @@ from django.views.generic import ListView, DetailView
 from django.core.management import call_command
 
 from django.conf import settings
-from discounts_app.models import ProductDiscount, GroupDiscount
+from discounts_app.models import ProductDiscount, GroupDiscount, CartDiscount
 from stores_app.services import StoreServiceMixin
 from goods_app.services.catalog import get_categories
 from profiles_app.services import reset_phone_format
@@ -466,7 +466,7 @@ class EditCartDiscountView(StoreAppMixin, DetailView):
     """
     context_object_name = 'item'
     template_name = 'stores_app/product_discount_in_store.html'
-    model = GroupDiscount
+    model = CartDiscount
     slug_url_kwarg = 'slug'
 
     def get(self, request: HttpRequest, *args, **kwargs) -> Callable:
