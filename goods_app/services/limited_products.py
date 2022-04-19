@@ -138,7 +138,8 @@ def get_hot_offers(count: int = 9) -> Union[QuerySet, None]:
         queryset = SellerProduct.objects.select_related('seller', 'product',
                                                         'product__category',
                                                         'product__category__parent') \
-                                        .annotate(count=Count('product_discounts')) \
+                                        .annotate(count=Count('product_discounts',
+                                                              filter=Q(product_discounts__set_discount=False))) \
                                         .filter(count__gt=0).distinct()
         try:
             if len(list(queryset)) < count:
