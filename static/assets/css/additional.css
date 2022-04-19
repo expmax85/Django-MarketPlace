@@ -619,7 +619,8 @@ background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w
     color: white;
 }
 .auto_height{
-    height: auto !important;
+    height: 400px !important;
+    overflow: scroll !important;
 }
 .import__content{
     padding: 10px 10px;
@@ -635,6 +636,12 @@ background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w
 }
 .import__title{
     background: white;
+}
+.import_center{
+    width: 400px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 .store-name img {
     width: 100%;
