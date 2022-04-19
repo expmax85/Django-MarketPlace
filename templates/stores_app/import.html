@@ -26,7 +26,7 @@
         <div class="wrap">
            
             <div class="Section-content">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" class="input_form">
                     {% csrf_token %}
                     {{ import_form.as_p }}
                     <button type="submit">
@@ -38,9 +38,9 @@
                     {% for import in imports %}
                      <div class="imports__import">
                          <div class="import__header">
-                            <span class="">
-                                {{ import.filename }}
-                            </span>
+                            <div class="import_center">
+                                <span class="">{{ import.filename }}</span>
+                            </div>
                             <span>{{ import.status }}</span>
                             <div class="header__stats">
                                 <span class="stats_err">Errors: {{ import.errors }}</span>
