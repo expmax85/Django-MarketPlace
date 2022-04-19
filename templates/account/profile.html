@@ -40,8 +40,10 @@
                             </li>
                             <li class="menu-item"><a class="menu-link" href="{% url 'orders-polls:history-view' %}">{% trans 'Viewed products' %}</a>
                             </li>
+                            {% if perms.profiles_app.Sellers %}
                             <li class="menu-item"><a class="menu-link" href="{% url 'stores-polls:sellers-room' %}">{% trans 'Sellers room' %}</a>
                             </li>
+                            {% endif %}
                         </ul>
                    </div>
                 </div>

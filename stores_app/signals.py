@@ -24,6 +24,7 @@ def seller_reset_cache_del_handler(sender, **kwargs) -> None:
     instance.icon.delete()
     user_id = instance.owner_id
     cache.delete('stores:{}'.format(user_id))
+    cache.delete('seller_sp:{}'.format(user_id))
     cache.delete('stores:all')
 
 

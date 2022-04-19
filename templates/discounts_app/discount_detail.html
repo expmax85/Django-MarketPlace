@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load account socialaccount %}
+{% load goods_tags %}
 
 {% block title %}{% trans 'Discount detail' %}
 {% endblock %}
@@ -84,45 +85,7 @@
             </div>
           </header>
           <div class="Slider-box Cards Cards_hz">
-            {% for product, discounted_price, _ in products %}
-                <div class="Slider-item">
-                  <div class="Slider-content">
-                    <div class="Card"><a class="Card-picture" href="#"><img src="{{ product.product.image.url }}" alt="card.jpg"/></a>
-                      <div class="Card-content">
-                        <strong class="Card-title"><a href="#">{{ product.product.name }}</a>
-                        </strong>
-                        <div class="Card-description">
-                          <div class="Card-cost"><span class="Card-priceOld">${{ product.price }}</span><span class="Card-price">${{ discounted_price }}</span>
-                          </div>
-                          <div class="Card-category">{{ product.product.category }}
-                          </div>
-                          <div class="Card-hover">
-                              <a class="Card-btn" href="#">
-                                  <img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/>
-                              </a>
-                              <a class="Card-btn" href="{% url 'orders-polls:cart_add' product.id %}">
-                                  <img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/>
-                              </a>
-                              <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' product.id %}">
-                                  <img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/>
-                              </a>
-                          </div>
-                        </div>
-                      </div>
-                      {% if discount.type_of_discount == 'p' and not discount.set_discount %}
-                        <div class="Card-sale">-{{ discount.percent|floatformat:0}}%
-                        </div>
-                      {% elif discount.type_of_discount == 'f' and not discount.set_discount %}
-                        <div class="Card-sale" style="background-color: #d00d0d">-{{ discount.amount|floatformat:0}}$
-                        </div>
-                      {% elif discount.type_of_discount == 'fp' and not discount.set_discount %}
-                        <div class="Card-sale" style="background-color: #6888fc">!!!
-                        </div>
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-            {% endfor %}
+              {% cards products slider=True %}
           </div>
         </div>
       </div>

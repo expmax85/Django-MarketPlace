@@ -124,7 +124,7 @@ class AllSellerProductView(StoreAppMixin, ListView):
     paginate_by = 9
 
     def get_queryset(self):
-        products = self.get_seller_products(user=self.request.user, calculate_prices=True)
+        products = self.get_all_owner_products(user=self.request.user, calculate_prices=True)
         return list(products)
 
 
@@ -143,7 +143,7 @@ class StoreDetailView(StoreServiceMixin, DetailView):
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
         seller = self.get_object()
-        context['products'] = self.get_seller_products(user=seller.owner, calculate_prices=True)
+        context['products'] = self.get_seller_products(seller=seller, calculate_prices=True)
         return context
 
 
