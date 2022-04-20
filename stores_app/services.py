@@ -118,7 +118,7 @@ class StoreServiceMixin:
         instance.save()
 
     @classmethod
-    def get_seller_products(cls, seller: Seller, calculate_prices: bool = False) -> QuerySet:
+    def get_seller_products(cls, seller: Seller) -> QuerySet:
         """
         Get all products, added by user
         """
@@ -128,14 +128,13 @@ class StoreServiceMixin:
             products = SellerProduct.objects.select_related('seller', 'product',
                                                             'product__category',
                                                             'product__category__parent') \
-                                            .filter(seller__in=seller)
+                                            .filter(seller=seller)
             cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
-        if calculate_prices:
-            products = get_discounted_prices_for_seller_products(products)
+        products = get_discounted_prices_for_seller_products(products)
         return products
 
     @classmethod
-    def get_all_owner_products(cls, user: User, calculate_prices: bool = False) -> QuerySet:
+    def get_all_owner_products(cls, user: User) -> QuerySet:
         """
         Get all products, added by user
         """
@@ -147,8 +146,7 @@ class StoreServiceMixin:
                                                             'product__category__parent') \
                                             .filter(seller__owner=user)
             cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
-        if calculate_prices:
-            products = get_discounted_prices_for_seller_products(products)
+        products = get_discounted_prices_for_seller_products(products)
         return products
 
     @classmethod
