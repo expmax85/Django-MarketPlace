@@ -27,14 +27,16 @@ class CustomMenu(Menu):
                          'allauth.*',
                          'profiles_app.*',
                          'dynamic_preferences.*',
-                         'taggit.*',),
+                         'taggit.*',
+                         'django_celery_beat.*',),
             ),
             items.AppList(
                 _('Administration'),
                 models=('django.contrib.*',
                         'allauth.*',
                         'profiles_app.*',
-                        'taggit.*',),
+                        'taggit.*',
+                        'django_celery_beat.*',),
             ),
             items.MenuItem(_('Settings'), reverse('settings-polls:admin-setup')),
         ]

@@ -38,19 +38,21 @@ class CustomIndexDashboard(Dashboard):
             display="tabs",
             children=[
                 modules.AppList(
-                    title=_('Administration'),
-                    models=('django.contrib.*',
-                            'allauth.*',
-                            'profiles_app.*',
-                            'taggit.*',),
-                ),
-                modules.AppList(
                     title=_('Applications'),
                     exclude=('django.contrib.*',
                              'allauth.*',
                              'dynamic_preferences.*',
                              'profiles_app.*',
-                             'taggit.*',),
+                             'taggit.*',
+                             'django_celery_beat.*',),
+                ),
+                modules.AppList(
+                    title=_('Administration'),
+                    models=('django.contrib.*',
+                            'allauth.*',
+                            'profiles_app.*',
+                            'taggit.*',
+                            'django_celery_beat.*'),
                 ),
             ]
         ))
