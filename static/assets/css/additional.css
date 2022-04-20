@@ -653,7 +653,7 @@ background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w
     opacity: 1;
 }
 
-.Compare-error{
+.Compare-error {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -663,3 +663,13 @@ background-image: url("data:image/svg+xml,%3Csvg version='1' xmlns='http://www.w
     font-size: 22px;
     color: #0065d1;
 }
+
+#id_delivery li label {
+	width: 120px;
+}
+
+#id_delivery li label input {
+	width: 20%;
+    margin: 0;
+}
+
