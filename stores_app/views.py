@@ -293,6 +293,7 @@ class RequestNewProduct(StoreAppMixin, View):
         form = AddRequestNewProduct(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
+            print(form.cleaned_data)
             self.request_add_new_product(product=product, user=request.user)
             messages.add_message(request, settings.SEND_PRODUCT_REQUEST,
                                  _('Your request was sending. Wait the answer some before time to your email!'))

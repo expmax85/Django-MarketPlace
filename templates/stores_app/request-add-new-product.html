@@ -53,7 +53,7 @@
                   {% csrf_token %}
                   <div class="row">
                       <div class="row-block">
-                            <div class="form-group require-field">
+                          <div class="form-group require-field">
                               <label class="form-label" for="id_store">{% trans 'Store' %}</label>
                               <select name="store" id="id_store" required style="width: 100%;">
                                   <option value="" selected="">---------</option>
@@ -73,30 +73,22 @@
                               </select>
                               <span class="formerror">{{form.errors.category}}</span>
                           </div>
-                            <div class="form-group require-field">
+                          <div class="form-group require-field">
                               <label class="form-label" for="id_product_name">{% trans 'Product name' %}</label>
                               <input class="form-input" id="id_product_name" required name="name" type="text">
                               <span class="formerror">{{form.errors.name}}</span>
                           </div>
-                           <div class="form-group">
-                             <label class="form-label" for="avatar">{% trans 'Product image' %}
+                          <div class="form-group">
+                             <label class="form-label" for="image_id">{% trans 'Product image' %}
                              </label>
-                             {% if store.icon %}
-                             <div class="Profile-avatar" style="height: 175px;">
-                             {% else %}
                              <div class="Profile-avatar Profile-avatar_noimg" style="height: 175px;">
-                             {% endif %}
                                   <div class="Profile-img">
-                                  {% if product.image %}
-                                     <img src="{{ store.icon_url }}" alt="#.png"/>
-                                  {% else %}
                                       <img src="assets/img/#.png" alt="#.png">
-                                  {% endif %}
                                   </div>
                                   <span class="avatar-span">{% trans 'Click on picture for change' %}</span>
-                                  <label class="Profile-fileLabel" for="avatar">{% trans 'Choose image'  %}
+                                  <label class="Profile-fileLabel" for="image_id">{% trans 'Choose image'  %}
                                   </label>
-                                  <input class="Profile-file form-input" id="avatar" name="icon" type="file" data-validate="onlyImgAvatar"/>
+                                  <input class="Profile-file form-input" id="image_id" name="image" type="file" data-validate="onlyImgAvatar"/>
                              </div>
                              <span class="formerror">{{form.errors.image}}</span>
                           </div>
@@ -112,21 +104,20 @@
                               <label class="form-label" for="id_description">{% trans 'Description' %}</label>
                               <textarea class="form-area" name="description" cols="10" rows="9" maxlength="255" id="id_description"></textarea>
                               <span class="formerror">{{form.errors.description}}</span>
-                          </div>
-                           <div class="form-group">
+                         </div>
+                         <div class="form-group">
                               <label class="form-label" for="id_notes">{% trans 'Notes' %}</label>
                               <textarea class="form-area" name="notes" cols="10" rows="8" maxlength="255" id="id_notes" placeholder="Write the notes: for example if the category you need is missing"></textarea>
                               <span class="formerror">{{form.errors.notes}}</span>
-                          </div>
+                         </div>
 
-                          <div class="form-group custom_register_form-btns">
+                         <div class="form-group custom_register_form-btns">
                               <div class="Profile-btn  custom_align-center">
                                   <button class="btn btn_success" type="submit">{% trans 'Submit a creation request' %}</button>
                               </div>
-                          </div>
+                         </div>
                       </div>
                   </div>
-                </div>
               </form>
           </div>
       </div>

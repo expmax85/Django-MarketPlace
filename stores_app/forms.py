@@ -40,8 +40,8 @@ class AddRequestNewProduct(forms.ModelForm):
 
     class Meta:
         model = ProductRequest
-        fields = ['category', 'name', 'description', 'store', 'notes']
-        exclude = ['code', 'slug', 'image', 'average_price', 'rating', 'is_published', 'tags']
+        fields = ['category', 'name', 'description', 'store', 'notes','image']
+        exclude = ['code', 'slug', 'rating', 'is_published', 'tags']
 
 
 class AddRequestNewProductAdminForm(forms.ModelForm):
@@ -49,7 +49,7 @@ class AddRequestNewProductAdminForm(forms.ModelForm):
 
     class Meta:
         model = ProductRequest
-        exclude = ['rating', 'average_price', 'tags']
+        exclude = ['rating', 'tags']
 
 
 class ImportForm(forms.ModelForm):

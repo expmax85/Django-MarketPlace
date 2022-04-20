@@ -224,6 +224,7 @@ class StoreServiceMixin:
         """
         Create ProductRequest instance
         """
+        product.slug = "_".join([str(product.name) + str(product.category.name)])
         product.is_published = False
         product.user = user
         product.save()

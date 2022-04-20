@@ -43,10 +43,11 @@ class SellerProductAdmin(admin.ModelAdmin):
 
 @admin.register(ProductRequest)
 class ProductRequestAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_published', 'user', 'store')
+    list_display = ('get_image', 'name', 'is_published', 'user', 'store')
+    list_display_links = ('get_image', 'name')
     list_filter = ('user', 'store', 'category')
     search_fields = ('name', 'store', 'category')
-    readonly_fields = ('user', 'store', 'notes')
+    readonly_fields = ('get_image', 'user', 'store', 'notes')
     form = AddRequestNewProductAdminForm
 
     actions = ['mark_published']
@@ -57,3 +58,12 @@ class ProductRequestAdmin(admin.ModelAdmin):
             item.save(update_fields=['is_published'])
 
     mark_published.short_description = _('Publish')
+
+    def get_image(self, obj):
+        print(obj.image)
+        try:
+            return mark_safe(f'<img src="{obj.image.url}" width="60" height="60">')
+        except ValueError:
+            return mark_safe('<img src="" width="20" height="20">')
+
+    get_image.short_description = _('image')
