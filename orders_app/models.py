@@ -84,6 +84,10 @@ class Order(models.Model):
         """Метод получения количества товаров в заказе"""
         return len(self.order_products.all())
 
+    class Meta:
+        verbose_name = _('order')
+        verbose_name_plural = _('orders')
+
 
 class OrderProduct(models.Model):
     """
@@ -110,6 +114,10 @@ class OrderProduct(models.Model):
     def name(self):
         return self.__str__()
 
+    class Meta:
+        verbose_name = _('order product')
+        verbose_name_plural = _('order products')
+
 
 class ViewedProduct(models.Model):
     """ Модель просмотренного товара """
@@ -118,3 +126,7 @@ class ViewedProduct(models.Model):
     session = models.CharField(max_length=100, blank=True)
     product = models.ForeignKey('stores_app.SellerProduct', on_delete=models.CASCADE, related_name='viewed_list')
     date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('viewed product')
+        verbose_name_plural = _('viewed products')

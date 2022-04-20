@@ -24,7 +24,7 @@ def clear_unpaid_orders() -> None:
     """
     from orders_app.models import Order
 
-    time = datetime.datetime.now() - datetime.timedelta(minutes=10)
+    time = datetime.datetime.now() - datetime.timedelta(minutes=5)
     orders_to_clear = Order.objects.prefetch_related('order_products', 'order_products__seller_product').\
         filter(ordered__lte=time, in_order=True, paid=False)
 

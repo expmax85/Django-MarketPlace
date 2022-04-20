@@ -21,6 +21,8 @@ class Banner(models.Model):
 
     class Meta:
         db_table = 'banners'
+        verbose_name = _('banner')
+        verbose_name_plural = _('banners')
 
     def __str__(self):
         return self.title
