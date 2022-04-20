@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 class PaymentRequest(models.Model):
     """
-    Payment request model
+    Модель запроса оплаты
     """
     order = models.IntegerField(verbose_name=_('order number'))
     account = models.IntegerField(verbose_name=_('account number'))

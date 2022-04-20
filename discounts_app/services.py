@@ -1,3 +1,4 @@
+import decimal
 from datetime import date
 from decimal import Decimal
 
@@ -17,7 +18,7 @@ class DiscountsService:
         self.cart = cart
         self.discounts = self.get_priority_discounts_for_products()
 
-    def get_all_discounts_for_products(self):
+    def get_all_discounts_for_products(self) -> set:
         """
         Получить все скидки на список товаров
 
@@ -30,7 +31,7 @@ class DiscountsService:
 
         return set(discounts)
 
-    def get_priority_discounts_for_products(self):
+    def get_priority_discounts_for_products(self) -> list:
         """
         Получить приоритетные скидки на список товаров
 
@@ -196,7 +197,8 @@ class DiscountsService:
         return self.get_discounted_price_in_cart(product)
 
 
-def implement_discount(price, discount, cart_sum=None):
+def implement_discount(price: decimal, discount, cart_sum=None):
+    """Функция расчета цены со скидкой"""
     if discount.__class__.__name__ == 'ProductDiscount' and \
             discount.set_discount is True or cart_sum:
 
@@ -222,7 +224,12 @@ def implement_discount(price, discount, cart_sum=None):
     return Decimal(round(price, 2))
 
 
-def get_discounted_prices_for_seller_products(products, default_discount=None):
+def get_discounted_prices_for_seller_products(products: list, default_discount=None) -> zip:
+    """
+    Функция расчета цен со скидкой для тоавров продавцов, отображаемых на различных страницах сайта.
+    Принимает на вход спискок товаров в магазине SellerProducts и необязательный аргумент - дефолтную скидку.
+    Возвращает zip из кортежей (SellerProduct, цена со скидкой, сама скидка)
+    """
     discounted_prices = []
     discounts = []
 
@@ -233,7 +240,6 @@ def get_discounted_prices_for_seller_products(products, default_discount=None):
                 is_active=True,
                 set_discount=False
             ).order_by('-priority').first()
-            # discount = list(product.get_discount)
         else:
             discount = default_discount
 
@@ -242,7 +248,6 @@ def get_discounted_prices_for_seller_products(products, default_discount=None):
             discounts.append(None)
         else:
             price = implement_discount(price, discount)
-            # price = implement_discount(price, discount[0])
 
             if price < 1:
                 price = 1

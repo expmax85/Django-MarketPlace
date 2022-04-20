@@ -20,7 +20,7 @@ def set_periodic(sender, **kwrags) -> None:
 @app.task
 def clear_unpaid_orders() -> None:
     """
-    Функция
+    Функция очистки просроченных неоплаченных товаров
     """
     from orders_app.models import Order
 
@@ -31,7 +31,6 @@ def clear_unpaid_orders() -> None:
     for order in orders_to_clear:
         order_products = order.order_products.all()
         for o_p in order_products:
-            print(o_p.seller_product)
             o_p.seller_product.quantity += o_p.quantity
             o_p.seller_product.save()
 

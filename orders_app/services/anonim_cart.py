@@ -50,15 +50,13 @@ class AnonymCart:
             self.save()
 
     def __iter__(self):
-        """Проходим по товарам корзины и получаем соответствующие объекты Product"""
+        """Проходим по товарам корзины и получаем соответствующие объекты SellerProduct"""
         product_ids = self.cart.keys()
-        # Получаем объекты модели Product и передаем их в корзину.
         products = SellerProduct.objects.filter(id__in=product_ids)
         cart = self.cart.copy()
         for product in products:
             cart[str(product.id)]['seller_product'] = product
         for item in cart.values():
-            # item['price'] = Decimal(item['price'])
             item['price'] = float(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             yield item

@@ -24,7 +24,7 @@ PRIORITY_CHOICES = [
 
 class Discount(models.Model):
     """
-    Abstract discount model
+    Абстрактная модель скидок
     """
     name = models.CharField(verbose_name=_("Title discount"), max_length=25, null=True)
     slug = models.SlugField(null=True, blank=True)
@@ -35,15 +35,12 @@ class Discount(models.Model):
     priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES,
                                 default='1', verbose_name=_('Priority'))
     percent = models.FloatField(verbose_name=_("Percent"),
-                                # null=True, blank=True,
                                 validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
                                 default=0)
     amount = models.FloatField(verbose_name=_("Amount"),
-                               # null=True, blank=True,
                                validators=[MinValueValidator(0.0)],
                                default=0)
     fixed_price = models.FloatField(verbose_name=_("Fixed price"),
-                                    # null=True, blank=True,
                                     validators=[MinValueValidator(0.0)],
                                     default=0)
 
@@ -73,7 +70,7 @@ class Discount(models.Model):
 
 class ProductDiscount(Discount):
     """
-    ProductDiscount model
+    Модель товарной скидки
     """
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE,
                                related_name='product_discounts',
@@ -99,7 +96,7 @@ class ProductDiscount(Discount):
 
 class GroupDiscount(Discount):
     """
-    GroupDiscount model
+    Модель скидки на категорию товаров
     """
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE,
                                related_name='group_discounts',
@@ -115,7 +112,7 @@ class GroupDiscount(Discount):
 
 class CartDiscount(Discount):
     """
-    CartDiscount model
+    Модель скидки на корзину товаров
     """
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE,
                                related_name='cart_discounts',
