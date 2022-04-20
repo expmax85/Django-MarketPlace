@@ -18,7 +18,7 @@ def set_periodic(sender, **kwrags) -> None:
 @app.task
 def check_payments() -> None:
     """
-    Функция
+    Функция проверки заявок на оплату и изменения статуса заказа на Оплачен, если счёт валиден
     """
     from payments_app.models import PaymentRequest
     from orders_app.models import Order

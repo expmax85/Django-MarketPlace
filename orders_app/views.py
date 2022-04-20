@@ -399,12 +399,9 @@ class PaymentWithCardView(View):
             }
         })
         if result.is_success:
-            # Отметка заказа как оплаченного.
             order.paid = True
-            # Сохранение ID транзакции в заказе.
             order.braintree_id = result.transaction.id
             order.save()
-            print(result)
             return render(request, 'orders_app/payment_process.html', {'result': True})
         order.payment_error = re.search(r"(?<=')(.*?)(?=')", str(result)).group()
         order.save()
@@ -515,7 +512,6 @@ class CompareView(View):
         for item in compared. values():
             categories.append(item[6])
         return len(set(categories)) == 1
-
 
     @classmethod
     def get_quantity(cls, request):
